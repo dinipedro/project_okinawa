@@ -90,13 +90,14 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
         letterSpacing: "-0.02em",
       }}
     >
-      now
+      n
       <span
         className="text-primary"
         style={{ fontWeight: 700 }}
       >
-        ee
+        oo
       </span>
+      we
     </span>
   );
 
