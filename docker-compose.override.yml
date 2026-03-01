@@ -1,0 +1,23 @@
+# ===========================================
+# Docker Compose Override - Local Development
+# This file extends docker-compose.yml
+# ===========================================
+#
+# Usage:
+#   docker compose --profile dev up -d    # Start development environment
+#   docker compose --profile tools up -d  # Include pgAdmin
+#
+# ===========================================
+
+version: '3.8'
+
+services:
+  # Development overrides
+  backend-dev:
+    environment:
+      # Development-specific settings
+      DATABASE_LOGGING: "true"
+      SWAGGER_ENABLED: "true"
+      THROTTLE_LIMIT: "1000"
+    # Enable live reload
+    command: npm run start:dev

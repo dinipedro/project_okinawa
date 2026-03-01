@@ -1,0 +1,323 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { Text, Card, Button, FAB, Chip, Searchbar } from 'react-native-paper';
+import ApiService from '@/shared/services/api';
+import { useI18n } from '@/shared/hooks/useI18n';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { format } from 'date-fns';
+
+interface Reservation {
+  id: string;
+  customer_name: string;
+  customer_phone: string;
+  party_size: number;
+  reservation_time: string;
+  status: 'pending' | 'confirmed' | 'seated' | 'completed' | 'cancelled';
+  special_requests?: string;
+  table?: {
+    id: string;
+    table_number: string;
+  };
+}
+
+export default function ReservationsScreen({ navigation }: any) {
+  const { t } = useI18n();
+  const colors = useColors();
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'today'>('all');
+
+  useEffect(() => {
+    loadReservations();
+  }, [filter]);
+
+  const loadReservations = async () => {
+    setLoading(true);
+    try {
+      const params: any = {};
+      if (filter !== 'all') {
+        if (filter === 'today') {
+          params.date = format(new Date(), 'yyyy-MM-dd');
+        } else {
+          params.status = filter;
+        }
+      }
+      const response = await ApiService.getReservations(params);
+      setReservations(response.data);
+    } catch (error) {
+      console.error('Failed to load reservations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadReservations();
+    setRefreshing(false);
+  };
+
+  const updateStatus = async (id: string, status: string) => {
+    try {
+      await ApiService.updateReservationStatus(id, status);
+      loadReservations();
+    } catch (error) {
+      console.error('Failed to update reservation:', error);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return colors.warning;
+      case 'confirmed': return colors.success;
+      case 'seated': return colors.info;
+      case 'completed': return colors.foregroundMuted;
+      case 'cancelled': return colors.error;
+      default: return colors.foregroundMuted;
+    }
+  };
+
+  const filteredReservations = reservations.filter((reservation) =>
+    reservation.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    reservation.customer_phone.includes(searchQuery)
+  );
+
+  const styles = useMemo(() => StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.backgroundSecondary,
+    },
+    searchbar: {
+      margin: 15,
+      elevation: 2,
+      backgroundColor: colors.card,
+    },
+    filters: {
+      flexDirection: 'row',
+      paddingHorizontal: 15,
+      marginBottom: 10,
+      gap: 8,
+    },
+    filterChip: {
+      marginRight: 5,
+    },
+    list: {
+      padding: 15,
+    },
+    card: {
+      marginBottom: 15,
+      elevation: 2,
+      backgroundColor: colors.card,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 10,
+    },
+    headerLeft: {
+      flex: 1,
+    },
+    customerName: {
+      color: colors.foreground,
+    },
+    customerPhone: {
+      color: colors.foregroundSecondary,
+    },
+    details: {
+      marginVertical: 10,
+      gap: 5,
+    },
+    detailText: {
+      color: colors.foreground,
+    },
+    specialRequests: {
+      marginTop: 10,
+      fontStyle: 'italic',
+      color: colors.foregroundSecondary,
+    },
+    actions: {
+      flexDirection: 'row',
+      marginTop: 15,
+      gap: 10,
+    },
+    actionButton: {
+      flex: 1,
+    },
+    empty: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 50,
+    },
+    emptyText: {
+      color: colors.foregroundSecondary,
+    },
+    fab: {
+      position: 'absolute',
+      margin: 16,
+      right: 0,
+      bottom: 0,
+      backgroundColor: colors.primary,
+    },
+  }), [colors]);
+
+  const renderReservation = ({ item }: { item: Reservation }) => (
+    <Card style={styles.card}>
+      <Card.Content>
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Text variant="titleMedium" style={styles.customerName}>{item.customer_name}</Text>
+            <Text variant="bodySmall" style={styles.customerPhone}>{item.customer_phone}</Text>
+          </View>
+          <Chip
+            style={{ backgroundColor: getStatusColor(item.status) }}
+            textStyle={{ color: colors.primaryForeground }}
+          >
+            {t(`reservations.status.${item.status}`)}
+          </Chip>
+        </View>
+
+        <View style={styles.details}>
+          <Text variant="bodyMedium" style={styles.detailText}>
+            {format(new Date(item.reservation_time), 'dd/MM/yyyy HH:mm')}
+          </Text>
+          <Text variant="bodyMedium" style={styles.detailText}>
+            {t('reservations.partySize')}: {item.party_size}
+          </Text>
+          {item.table && (
+            <Text variant="bodyMedium" style={styles.detailText}>
+              {t('tables.table')}: {item.table.table_number}
+            </Text>
+          )}
+        </View>
+
+        {item.special_requests && (
+          <Text variant="bodySmall" style={styles.specialRequests}>
+            {t('reservations.specialRequests')}: {item.special_requests}
+          </Text>
+        )}
+
+        {item.status === 'pending' && (
+          <View style={styles.actions}>
+            <Button
+              mode="contained"
+              onPress={() => updateStatus(item.id, 'confirmed')}
+              style={styles.actionButton}
+              buttonColor={colors.primary}
+            >
+              {t('common.confirm')}
+            </Button>
+            <Button
+              mode="outlined"
+              onPress={() => updateStatus(item.id, 'cancelled')}
+              style={styles.actionButton}
+            >
+              {t('common.cancel')}
+            </Button>
+          </View>
+        )}
+
+        {item.status === 'confirmed' && (
+          <View style={styles.actions}>
+            <Button
+              mode="contained"
+              onPress={() => updateStatus(item.id, 'seated')}
+              style={styles.actionButton}
+              buttonColor={colors.primary}
+            >
+              {t('reservations.status.seated')}
+            </Button>
+          </View>
+        )}
+
+        {item.status === 'seated' && (
+          <View style={styles.actions}>
+            <Button
+              mode="contained"
+              onPress={() => updateStatus(item.id, 'completed')}
+              style={styles.actionButton}
+              buttonColor={colors.success}
+            >
+              {t('reservations.status.completed')}
+            </Button>
+          </View>
+        )}
+      </Card.Content>
+    </Card>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Searchbar
+        placeholder={t('common.search')}
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+        style={styles.searchbar}
+      />
+
+      <View style={styles.filters}>
+        <Chip
+          selected={filter === 'all'}
+          onPress={() => setFilter('all')}
+          style={styles.filterChip}
+          selectedColor={colors.primary}
+        >
+          {t('common.viewAll')}
+        </Chip>
+        <Chip
+          selected={filter === 'today'}
+          onPress={() => setFilter('today')}
+          style={styles.filterChip}
+          selectedColor={colors.primary}
+        >
+          {t('time.today')}
+        </Chip>
+        <Chip
+          selected={filter === 'pending'}
+          onPress={() => setFilter('pending')}
+          style={styles.filterChip}
+          selectedColor={colors.primary}
+        >
+          {t('reservations.status.pending')}
+        </Chip>
+        <Chip
+          selected={filter === 'confirmed'}
+          onPress={() => setFilter('confirmed')}
+          style={styles.filterChip}
+          selectedColor={colors.primary}
+        >
+          {t('reservations.status.confirmed')}
+        </Chip>
+      </View>
+
+      <FlatList
+        data={filteredReservations}
+        renderItem={renderReservation}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Text variant="bodyLarge" style={styles.emptyText}>{t('empty.reservations')}</Text>
+          </View>
+        }
+      />
+
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => navigation.navigate('CreateReservation')}
+      />
+    </View>
+  );
+}

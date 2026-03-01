@@ -1,0 +1,218 @@
+import { useState } from 'react';
+import { MobilePreviewProvider, useMobilePreview } from './context/MobilePreviewContext';
+import { ServiceTypeSelector } from './ServiceTypeSelector';
+import { HomeScreen } from './HomeScreen';
+import { LoginScreen } from './LoginScreen';
+import { OnboardingScreen } from './OnboardingScreen';
+import { ProfileScreen } from './ProfileScreen';
+import { SearchScreen } from './SearchScreen';
+
+// Client screens
+import { ExploreScreen } from './client/ExploreScreen';
+import { RestaurantDetailScreen } from './client/RestaurantDetailScreen';
+import { VirtualQueueScreen } from './client/VirtualQueueScreen';
+import { CallWaiterScreen } from './client/CallWaiterScreen';
+import { DishBuilderScreen } from './client/DishBuilderScreen';
+import { NewReservationScreen } from './client/NewReservationScreen';
+import { TrackLocationScreen } from './client/TrackLocationScreen';
+import { CartScreen } from './client/CartScreen';
+import { CheckoutScreen } from './client/CheckoutScreen';
+import { SplitPaymentScreen } from './client/SplitPaymentScreen';
+import { SplitByItemScreen } from './client/SplitByItemScreen';
+import { LoyaltyScreen } from './client/LoyaltyScreen';
+import { LoyaltyLeaderboardScreen } from './client/LoyaltyLeaderboardScreen';
+import { QRScannerScreen } from './client/QRScannerScreen';
+import { ReservationsScreen } from './client/ReservationsScreen';
+import { ReservationDetailScreen } from './client/ReservationDetailScreen';
+import { OrdersScreen } from './client/OrdersScreen';
+import { FavoritesScreen } from './client/FavoritesScreen';
+import { NotificationsScreen } from './client/NotificationsScreen';
+import { SettingsScreen } from './client/SettingsScreen';
+import { WalletScreen } from './client/WalletScreen';
+import { SharedOrderScreen } from './client/SharedOrderScreen';
+import { TipScreen } from './client/TipScreen';
+import { OrderStatusScreen } from './client/OrderStatusScreen';
+import { DigitalReceiptScreen } from './client/DigitalReceiptScreen';
+import { PairingAssistantScreen } from './client/PairingAssistantScreen';
+
+// Pub & Bar screens
+import { TabScreen, RepeatRoundSheet, TabSplitSheet, TabPaymentScreen } from './client/pub-bar';
+
+// Club screens
+import { TicketPurchaseScreen, QueueScreen, VipTableScreen, LineupScreen, BirthdayEntryRequestScreen } from './client/club';
+
+// Restaurant screens
+import { RestaurantDashboardScreen } from './restaurant/RestaurantDashboardScreen';
+import { RestaurantOrdersScreen } from './restaurant/RestaurantOrdersScreen';
+import { RestaurantMenuScreen } from './restaurant/RestaurantMenuScreen';
+import { RestaurantSettingsScreen } from './restaurant/RestaurantSettingsScreen';
+import { RestaurantReservationsScreen } from './restaurant/RestaurantReservationsScreen';
+import { TablesScreen } from './restaurant/TablesScreen';
+import { KitchenDisplayScreen } from './restaurant/KitchenDisplayScreen';
+import { BarKDSScreen } from './restaurant/BarKDSScreen';
+import { MaitreScreen } from './restaurant/MaitreScreen';
+import { ServiceTypeConfigScreen } from './restaurant/ServiceTypeConfigScreen';
+import { RoleDashboardScreen } from './restaurant/RoleDashboardScreen';
+import { TipsManagementScreen } from './restaurant/TipsManagementScreen';
+import { WaiterScreen } from './restaurant/WaiterScreen';
+import { StaffManagementScreen } from './restaurant/StaffManagementScreen';
+
+// Restaurant Pub & Bar screens
+import { TabManagementScreen, WaiterCallsScreen, HappyHourManagementScreen } from './restaurant/pub-bar';
+
+// Restaurant Club screens
+import { DoorControlScreen, QueueManagementScreen, VipTableManagementScreen, BirthdayApprovalScreen, PromoterManagementScreen } from './restaurant/club';
+
+type AppMode = 'client' | 'restaurant';
+
+const screenComponents: Record<string, React.ComponentType> = {
+  // Auth & Onboarding
+  login: LoginScreen,
+  onboarding: OnboardingScreen,
+  'service-type-select': ServiceTypeSelector,
+  
+  // Client Main
+  home: HomeScreen,
+  explore: ExploreScreen,
+  search: SearchScreen,
+  profile: ProfileScreen,
+  
+  // Client Restaurant Flow
+  'restaurant-detail': RestaurantDetailScreen,
+  'qr-scanner': QRScannerScreen,
+  'call-waiter': CallWaiterScreen,
+  'dish-builder': DishBuilderScreen,
+  'virtual-queue': VirtualQueueScreen,
+  'track-location': TrackLocationScreen,
+  
+  // Client Orders & Payment
+  cart: CartScreen,
+  checkout: CheckoutScreen,
+  'split-payment': SplitPaymentScreen,
+  'split-by-item': SplitByItemScreen,
+  'shared-order': SharedOrderScreen,
+  tip: TipScreen,
+  'order-status': OrderStatusScreen,
+  'digital-receipt': DigitalReceiptScreen,
+  'pairing-assistant': PairingAssistantScreen,
+  orders: OrdersScreen,
+  
+  // Client Reservations
+  reservations: ReservationsScreen,
+  'new-reservation': NewReservationScreen,
+  'reservation-detail': ReservationDetailScreen,
+  
+  // Client Loyalty & Rewards
+  loyalty: LoyaltyScreen,
+  'loyalty-leaderboard': LoyaltyLeaderboardScreen,
+  
+  // Client Account
+  favorites: FavoritesScreen,
+  notifications: NotificationsScreen,
+  settings: SettingsScreen,
+  wallet: WalletScreen,
+  
+  // Pub & Bar
+  'tab': TabScreen,
+  'repeat-round': RepeatRoundSheet,
+  'tab-split': TabSplitSheet,
+  'tab-payment': TabPaymentScreen,
+  
+  // Club & Balada
+  'ticket-purchase': TicketPurchaseScreen,
+  'club-queue': QueueScreen,
+  'vip-table': VipTableScreen,
+  'lineup': LineupScreen,
+  'birthday-entry-request': BirthdayEntryRequestScreen,
+  
+  // Restaurant Main
+  'restaurant-dashboard': RestaurantDashboardScreen,
+  'restaurant-orders': RestaurantOrdersScreen,
+  'restaurant-menu': RestaurantMenuScreen,
+  'restaurant-settings': RestaurantSettingsScreen,
+  'restaurant-reservations': RestaurantReservationsScreen,
+  
+  // Restaurant Operations
+  tables: TablesScreen,
+  'kitchen-kds': KitchenDisplayScreen,
+  'bar-kds': BarKDSScreen,
+  maitre: MaitreScreen,
+  waiter: WaiterScreen,
+  
+  // Restaurant Configuration
+  'service-type-config': ServiceTypeConfigScreen,
+  'role-dashboard': RoleDashboardScreen,
+  'staff-management': StaffManagementScreen,
+  'tips-management': TipsManagementScreen,
+  
+  // Restaurant Pub & Bar Management
+  'tab-management': TabManagementScreen,
+  'waiter-calls': WaiterCallsScreen,
+  'happy-hour-management': HappyHourManagementScreen,
+  
+  // Restaurant Club Management
+  'door-control': DoorControlScreen,
+  'queue-management': QueueManagementScreen,
+  'vip-table-management': VipTableManagementScreen,
+  'birthday-approval': BirthdayApprovalScreen,
+  'promoter-management': PromoterManagementScreen,
+};
+
+function MobilePreviewContent({ mode }: { mode: AppMode }) {
+  const { currentScreen, serviceType } = useMobilePreview();
+  
+  // If no service type selected, show selector (for demo purposes)
+  if (!serviceType && currentScreen === 'home') {
+    return <ServiceTypeSelector />;
+  }
+  
+  const ScreenComponent = screenComponents[currentScreen] || HomeScreen;
+  
+  return <ScreenComponent />;
+}
+
+interface MobilePreviewProps {
+  initialMode?: AppMode;
+  initialScreen?: string;
+}
+
+export function MobilePreview({ initialMode = 'client', initialScreen = 'home' }: MobilePreviewProps) {
+  const [mode, setMode] = useState<AppMode>(initialMode);
+  
+  return (
+    <MobilePreviewProvider initialScreen={initialScreen}>
+      <div className="h-full flex flex-col bg-background">
+        {/* Mode Switcher */}
+        <div className="flex border-b border-border">
+          <button
+            onClick={() => setMode('client')}
+            className={`flex-1 py-2 text-xs font-medium transition-colors ${
+              mode === 'client' 
+                ? 'bg-primary text-primary-foreground' 
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            App Cliente
+          </button>
+          <button
+            onClick={() => setMode('restaurant')}
+            className={`flex-1 py-2 text-xs font-medium transition-colors ${
+              mode === 'restaurant' 
+                ? 'bg-primary text-primary-foreground' 
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            App Restaurante
+          </button>
+        </div>
+        
+        {/* Screen Content */}
+        <div className="flex-1 overflow-hidden">
+          <MobilePreviewContent mode={mode} />
+        </div>
+      </div>
+    </MobilePreviewProvider>
+  );
+}
+
+export default MobilePreview;

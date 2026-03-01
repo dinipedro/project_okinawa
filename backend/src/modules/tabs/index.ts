@@ -1,0 +1,7 @@
+export * from './entities';
+export * from './tabs.module';
+export * from './tabs.service';
+export * from './tabs.controller';
+export * from './tabs.gateway';
+export * from './waiter-calls.service';
+export * from './happy-hour.service';
