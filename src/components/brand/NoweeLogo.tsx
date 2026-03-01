@@ -17,12 +17,10 @@ const sizeMap = {
 };
 
 /**
- * NOWEE Brand Logo
+ * NOOWE Brand Logo
  *
- * The mark is two overlapping circles — one warm orange, one teal —
- * forming a vesica piscis at their intersection.
- * Symbolizes connection, shared moments, and the meeting point
- * between people and experiences.
+ * The mark is two interlocking "O" rings — one warm orange, one teal —
+ * linked like chain links to symbolize connection and shared experiences.
  *
  * Modern Chic. Minimal. Memorable.
  */
