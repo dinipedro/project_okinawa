@@ -17,12 +17,10 @@ const sizeMap = {
 };
 
 /**
- * NOWEE Brand Logo
+ * NOOWE Brand Logo
  *
- * The mark is two overlapping circles — one warm orange, one teal —
- * forming a vesica piscis at their intersection.
- * Symbolizes connection, shared moments, and the meeting point
- * between people and experiences.
+ * The mark is two interlocking "O" rings — one warm orange, one teal —
+ * linked like chain links to symbolize connection and shared experiences.
  *
  * Modern Chic. Minimal. Memorable.
  */
@@ -42,35 +40,41 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="flex-shrink-0"
-      aria-label="NOWEE mark"
+      aria-label="NOOWE mark"
     >
-      {/* Left circle — Primary (warm orange) */}
+      {/* Left O — Primary (warm orange), ring style */}
       <circle
-        cx="24"
+        cx="22"
         cy="32"
-        r="18"
-        className="fill-primary"
+        r="14"
+        className="stroke-primary"
+        strokeWidth="4"
+        fill="none"
+        opacity="0.95"
+      />
+      {/* Right O — Secondary (teal), ring style */}
+      <circle
+        cx="42"
+        cy="32"
+        r="14"
+        className="stroke-secondary"
+        strokeWidth="4"
+        fill="none"
         opacity="0.9"
       />
-      {/* Right circle — Secondary (teal) */}
-      <circle
-        cx="40"
-        cy="32"
-        r="18"
-        className="fill-secondary"
-        opacity="0.75"
-      />
-      {/* Intersection glow — blend of both */}
-      <clipPath id="nowee-clip-left">
-        <circle cx="24" cy="32" r="18" />
+      {/* Interlock effect: hide the back segment of right ring behind left ring */}
+      {/* Left ring foreground overlap piece */}
+      <clipPath id="noowe-clip-right">
+        <rect x="28" y="18" width="8" height="14" />
       </clipPath>
       <circle
-        cx="40"
+        cx="22"
         cy="32"
-        r="18"
-        clipPath="url(#nowee-clip-left)"
-        fill="white"
-        opacity="0.35"
+        r="14"
+        className="stroke-primary"
+        strokeWidth="4"
+        fill="none"
+        clipPath="url(#noowe-clip-right)"
       />
     </svg>
   );
@@ -86,19 +90,20 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
         letterSpacing: "-0.02em",
       }}
     >
-      now
+      n
       <span
         className="text-primary"
         style={{ fontWeight: 700 }}
       >
-        ee
+        oo
       </span>
+      we
     </span>
   );
 
   if (variant === "mark") {
     return (
-      <div className={`inline-flex items-center ${className}`} role="img" aria-label="NOWEE">
+      <div className={`inline-flex items-center ${className}`} role="img" aria-label="NOOWE">
         <Mark />
       </div>
     );
@@ -106,7 +111,7 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
 
   if (variant === "wordmark") {
     return (
-      <div className={`inline-flex items-center ${className}`} role="img" aria-label="NOWEE">
+      <div className={`inline-flex items-center ${className}`} role="img" aria-label="NOOWE">
         <Wordmark />
       </div>
     );
@@ -117,7 +122,7 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
       className={`inline-flex items-center ${className}`}
       style={{ gap: `${gap}px` }}
       role="img"
-      aria-label="NOWEE"
+      aria-label="NOOWE"
     >
       <Mark />
       <Wordmark />
