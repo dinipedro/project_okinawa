@@ -33,57 +33,43 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
   const { height, fontSize } = sizeMap[size];
 
 
-  // Two interlocking chain links — vínculo, conexão
+  // Dois "o" tipográficos em forma de laços suaves (sem estética Mastercard)
   const InlineMark = () => {
-    const sw = 3.8; // stroke weight matching font
+    const sw = 3.4;
+
     return (
       <svg
         width="100%"
         height="100%"
-        viewBox="0 0 52 26"
+        viewBox="0 0 48 28"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        {/* Left link — rounded rect, orange */}
-        <rect
-          x={sw / 2}
-          y={sw / 2}
-          width={28}
-          height={26 - sw}
-          rx="9"
-          ry="9"
+        <ellipse
+          cx="15"
+          cy="14"
+          rx="10.5"
+          ry="9.5"
           className="stroke-primary"
           strokeWidth={sw}
-          fill="none"
         />
-        {/* Right link — rounded rect, teal, interlocked */}
-        <rect
-          x={22}
-          y={sw / 2}
-          width={28}
-          height={26 - sw}
-          rx="9"
-          ry="9"
+
+        <ellipse
+          cx="33"
+          cy="14"
+          rx="10.5"
+          ry="9.5"
           className="stroke-secondary"
           strokeWidth={sw}
-          fill="none"
         />
-        {/* Interlock illusion: redraw left link's right side OVER the right link's left side (top half) */}
-        <clipPath id={`chain-top-${size}`}>
-          <rect x="20" y="0" width="12" height="13" />
-        </clipPath>
-        <rect
-          x={sw / 2}
-          y={sw / 2}
-          width={28}
-          height={26 - sw}
-          rx="9"
-          ry="9"
-          className="stroke-primary"
-          strokeWidth={sw}
-          fill="none"
-          clipPath={`url(#chain-top-${size})`}
+
+        {/* realce sutil no cruzamento para parecer ligatura tipográfica */}
+        <path
+          d="M24 5.8 C26.2 7.8 26.2 20.2 24 22.2"
+          stroke="hsl(var(--foreground) / 0.18)"
+          strokeWidth={sw - 0.8}
+          strokeLinecap="round"
         />
       </svg>
     );
