@@ -33,48 +33,6 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
   const { height, fontSize } = sizeMap[size];
 
 
-  // Dois "o" tipográficos em forma de laços suaves (sem estética Mastercard)
-  const InlineMark = () => {
-    const sw = 3.4;
-
-    return (
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 48 28"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <ellipse
-          cx="15"
-          cy="14"
-          rx="10.5"
-          ry="9.5"
-          className="stroke-primary"
-          strokeWidth={sw}
-        />
-
-        <ellipse
-          cx="33"
-          cy="14"
-          rx="10.5"
-          ry="9.5"
-          className="stroke-secondary"
-          strokeWidth={sw}
-        />
-
-        {/* realce sutil no cruzamento para parecer ligatura tipográfica */}
-        <path
-          d="M24 5.8 C26.2 7.8 26.2 20.2 24 22.2"
-          stroke="hsl(var(--foreground) / 0.18)"
-          strokeWidth={sw - 0.8}
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  };
-
   const Wordmark = () => (
     <span
       className="text-foreground tracking-tight inline-flex items-center"
@@ -88,16 +46,11 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
       }}
     >
       <span>n</span>
-      <span
-        className="inline-block flex-shrink-0"
-        style={{
-          width: "1.5em",
-          height: "0.72em",
-          margin: "0 -0.06em",
-          transform: "translateY(0.06em)",
-        }}
-      >
-        <InlineMark />
+      <span className="text-primary inline-block" style={{ marginRight: "-0.16em" }}>
+        o
+      </span>
+      <span className="text-secondary inline-block" style={{ marginRight: "-0.02em" }}>
+        o
       </span>
       <span>we</span>
     </span>
