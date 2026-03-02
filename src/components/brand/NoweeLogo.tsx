@@ -98,21 +98,22 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
         fontFamily: "'Space Grotesk', 'Inter', sans-serif",
         fontWeight: 600,
         letterSpacing: "-0.02em",
+        textTransform: "lowercase",
       }}
     >
-      <span>N</span>
+      <span>n</span>
       <span
         className="inline-block flex-shrink-0"
         style={{
-          width: "1.3em",
-          height: "0.78em",
-          margin: "0 -0.02em",
-          transform: "translateY(0.04em)",
+          width: "1.5em",
+          height: "0.72em",
+          margin: "0 -0.06em",
+          transform: "translateY(0.06em)",
         }}
       >
         <InlineMark />
       </span>
-      <span>WE</span>
+      <span>we</span>
     </span>
   );
 
