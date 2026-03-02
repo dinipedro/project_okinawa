@@ -33,8 +33,8 @@ const NoweeLogo: React.FC<NoweeLogoProps> = ({
   const { height, fontSize } = sizeMap[size];
 
 
-  // Rings match the x-height of lowercase letters (~50% of fontSize for Space Grotesk)
-  const xHeight = fontSize * 0.52;
+  // Rings match the x-height of lowercase letters (~42% of fontSize for Space Grotesk)
+  const xHeight = fontSize * 0.42;
   const ringRadius = xHeight / 2;
   const overlap = ringRadius * 0.5;
   const strokeW = Math.max(1.5, fontSize * 0.07);
