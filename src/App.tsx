@@ -18,6 +18,7 @@ const PitchDeck = lazy(() => import("./pages/PitchDeck"));
 const AppPresentationDeck = lazy(() => import("./pages/AppPresentationDeck"));
 const RestaurantPitchDeck = lazy(() => import("./pages/RestaurantPitchDeck"));
 const InvestorPitchDeck = lazy(() => import("./pages/InvestorPitchDeck"));
+const PartnerPitchDeck = lazy(() => import("./pages/PartnerPitchDeck"));
 const QRCodeMaterials = lazy(() => import("./pages/QRCodeMaterials"));
 const LogoShowcase = lazy(() => import("./pages/LogoShowcase"));
 const BrandIdentity = lazy(() => import("./pages/BrandIdentity"));
@@ -55,6 +56,7 @@ const App = () => (
                     <Route path="/pitch/app" element={<AppPresentationDeck />} />
                     <Route path="/pitch/restaurants" element={<RestaurantPitchDeck />} />
                     <Route path="/pitch/investors" element={<InvestorPitchDeck />} />
+                    <Route path="/pitch/partner" element={<PartnerPitchDeck />} />
                     <Route path="/marketing/qr-codes" element={<QRCodeMaterials />} />
                     <Route path="/logo" element={<LogoShowcase />} />
                     <Route path="/brand" element={<BrandIdentity />} />
