@@ -18,6 +18,7 @@ const PitchDeck = lazy(() => import("./pages/PitchDeck"));
 const AppPresentationDeck = lazy(() => import("./pages/AppPresentationDeck"));
 const RestaurantPitchDeck = lazy(() => import("./pages/RestaurantPitchDeck"));
 const InvestorPitchDeck = lazy(() => import("./pages/InvestorPitchDeck"));
+const PartnerPitchDeck = lazy(() => import("./pages/PartnerPitchDeck"));
 const QRCodeMaterials = lazy(() => import("./pages/QRCodeMaterials"));
 const LogoShowcase = lazy(() => import("./pages/LogoShowcase"));
 const BrandIdentity = lazy(() => import("./pages/BrandIdentity"));
