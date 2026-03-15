@@ -4,7 +4,7 @@
  * Rich Menu with allergens/popularity → Per-Person Ordering → Interactive Split Bill → Tip & Loyalty → Review
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard, Gift, QrCode,
   Users, Timer, ArrowRight, UtensilsCrossed, CalendarDays, Baby, Heart,
