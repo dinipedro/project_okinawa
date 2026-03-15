@@ -393,7 +393,7 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <div className="px-5 space-y-2">
             {SAUCES.map(s => (
               <button key={s.id} onClick={() => toggleSauce(s.id)} className={`w-full flex items-center gap-3 p-3.5 rounded-xl border-2 transition-all ${sauces.includes(s.id) ? 'border-primary bg-primary/10' : 'border-border bg-card'}`}>
-                <span className="text-2xl">{s.emoji}</span>
+                <FoodImg id={s.imgId} size="sm" alt={s.name} />
                 <div className="flex-1 text-left">
                   <p className="font-semibold text-sm">{s.name}</p>
                   <p className="text-[10px] text-muted-foreground">{s.desc} · {s.cal} kcal</p>
