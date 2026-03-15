@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { DemoProvider, useDemoContext, type OrderStatus, type TableStatus } from '@/contexts/DemoContext';
+import { ItemIcon } from '@/components/demo/DemoShared';
 import {
   ArrowLeft, ArrowRight, Bell, BarChart3, UtensilsCrossed, LayoutGrid, CalendarDays,
   ChefHat, TrendingUp, Users, DollarSign, Clock, Check, Play, Pause,
