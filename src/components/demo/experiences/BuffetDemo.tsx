@@ -127,7 +127,7 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="Sabores Noowe" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🍽️</span>
+            <ItemIcon cat="buffet" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Buffet Self-Service</h2>
             <p className="text-sm text-muted-foreground">Sirva-se à vontade · R$ 79,90/kg</p>
           </div>
