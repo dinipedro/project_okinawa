@@ -504,7 +504,7 @@ export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title={selectedBottle.name} back="bottle-service" />
           <div className="text-center mb-4">
-            <ItemIcon cat={selectedBottle.iconCat} size="hero" className="mx-auto" />
+            <FoodImg id={selectedBottle.imgId} size="hero" alt={selectedBottle.name} className="mx-auto" />
             <h2 className="font-display text-lg font-bold mt-3">{selectedBottle.name}</h2>
             <p className="text-sm text-muted-foreground">{selectedBottle.desc}</p>
             <p className="font-display text-2xl font-bold text-primary mt-2">R$ {selectedBottle.price}</p>
