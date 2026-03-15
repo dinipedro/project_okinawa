@@ -225,7 +225,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
           {/* How it works */}
           <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 mb-4">
-            <p className="text-sm font-semibold text-primary mb-2">⚡ Como funciona o Skip the Line</p>
+            <div className="flex items-center gap-2 mb-2"><Zap className="w-4 h-4 text-primary" /><p className="text-sm font-semibold text-primary">Como funciona o Skip the Line</p></div>
             <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2"><span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">1</span>Monte seu pedido pelo app</div>
               <div className="flex items-center gap-2"><span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">2</span>Pague na hora — sem fila no caixa</div>
