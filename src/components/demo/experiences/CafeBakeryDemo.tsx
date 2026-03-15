@@ -400,7 +400,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           </div>
 
           <div className="text-center mb-4">
-            <span className="text-5xl">{selectedItem.emoji}</span>
+            <ItemIcon cat={selectedItem.iconCat} size="xl" className="mx-auto" />
             <h2 className="font-display text-lg font-bold mt-2">{selectedItem.name}</h2>
             <p className="text-xs text-muted-foreground">{selectedItem.desc}</p>
           </div>
