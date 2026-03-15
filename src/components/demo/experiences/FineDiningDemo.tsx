@@ -40,24 +40,24 @@ export const JOURNEY_STEPS = [
   { step: 11, label: 'Notificações', screens: ['notifications'] },
 ];
 
-export const SCREEN_INFO: Record<string, { emoji: string; title: string; desc: string }> = {
-  'home': { emoji: '🏠', title: 'Tela Inicial', desc: 'O cliente descobre restaurantes por proximidade, categoria e avaliação.' },
-  'restaurant': { emoji: '🍽️', title: 'Página do Restaurante', desc: 'Perfil completo com fotos, avaliações, features e acesso rápido ao cardápio e reservas.' },
-  'menu': { emoji: '📋', title: 'Cardápio Digital', desc: 'Menu digital com categorias, tags de alérgenos, tempo de preparo e harmonização IA.' },
-  'item': { emoji: '🍽️', title: 'Detalhe do Prato', desc: 'Detalhe do prato com foto, descrição e adição rápida à comanda.' },
-  'comanda': { emoji: '📝', title: 'Minha Comanda', desc: 'Revisão da comanda com ajuste de quantidades e convite de pessoas.' },
-  'fechar-conta': { emoji: '💳', title: 'Fechar Conta', desc: 'Fluxo integrado: veja quem está na mesa, convide pessoas, escolha dividir ou pagar tudo, selecione modo de divisão, gorjeta e método de pagamento — tudo em uma tela.' },
-  'order-status': { emoji: '👨‍🍳', title: 'Status do Pedido', desc: 'Acompanhamento em tempo real com status individual por item e nome do chef responsável.' },
-  'loyalty': { emoji: '🏆', title: 'Fidelidade', desc: 'Programa de pontos com níveis (Silver→Black), recompensas resgatáveis e histórico.' },
-  'reservations': { emoji: '📅', title: 'Reservas', desc: 'Reserva com convite de amigos, compartilhamento de link e código de confirmação.' },
-  'qr-scan': { emoji: '📷', title: 'QR Code', desc: 'Escaneamento do QR Code da mesa para associação automática.' },
-  'call-waiter': { emoji: '🙋', title: 'Chamar Equipe', desc: 'Chamada discreta: garçom, sommelier ou ajuda geral.' },
-  'profile': { emoji: '👤', title: 'Perfil', desc: 'Perfil do cliente com histórico, favoritos, nível de fidelidade e configurações.' },
-  'virtual-queue': { emoji: '⏱️', title: 'Fila Virtual', desc: 'Fila virtual para restaurantes lotados com acompanhamento em tempo real.' },
-  'my-orders': { emoji: '📦', title: 'Meus Pedidos', desc: 'Histórico de pedidos e pedido ativo.' },
-  'payment-success': { emoji: '✅', title: 'Pagamento Confirmado', desc: 'Confirmação com pontos ganhos, gorjeta e saldo restante da mesa.' },
-  'notifications': { emoji: '🔔', title: 'Notificações', desc: 'Convites para comanda, fila pronta, pontos ganhos, promoções e status de pedidos.' },
-  'ai-harmonization': { emoji: '🧠', title: 'Harmonização IA', desc: 'A IA sugere combinações perfeitas de pratos e bebidas baseado em suas preferências.' },
+export const SCREEN_INFO: Record<string, { title: string; desc: string }> = {
+  'home': { title: 'Tela Inicial', desc: 'O cliente descobre restaurantes por proximidade, categoria e avaliação.' },
+  'restaurant': { title: 'Página do Restaurante', desc: 'Perfil completo com fotos, avaliações, features e acesso rápido ao cardápio e reservas.' },
+  'menu': { title: 'Cardápio Digital', desc: 'Menu digital com categorias, tags de alérgenos, tempo de preparo e harmonização IA.' },
+  'item': { title: 'Detalhe do Prato', desc: 'Detalhe do prato com foto, descrição e adição rápida à comanda.' },
+  'comanda': { title: 'Minha Comanda', desc: 'Revisão da comanda com ajuste de quantidades e convite de pessoas.' },
+  'fechar-conta': { title: 'Fechar Conta', desc: 'Fluxo integrado: veja quem está na mesa, convide pessoas, escolha dividir ou pagar tudo, selecione modo de divisão, gorjeta e método de pagamento — tudo em uma tela.' },
+  'order-status': { title: 'Status do Pedido', desc: 'Acompanhamento em tempo real com status individual por item e nome do chef responsável.' },
+  'loyalty': { title: 'Fidelidade', desc: 'Programa de pontos com níveis (Silver→Black), recompensas resgatáveis e histórico.' },
+  'reservations': { title: 'Reservas', desc: 'Reserva com convite de amigos, compartilhamento de link e código de confirmação.' },
+  'qr-scan': { title: 'QR Code', desc: 'Escaneamento do QR Code da mesa para associação automática.' },
+  'call-waiter': { title: 'Chamar Equipe', desc: 'Chamada discreta: garçom, sommelier ou ajuda geral.' },
+  'profile': { title: 'Perfil', desc: 'Perfil do cliente com histórico, favoritos, nível de fidelidade e configurações.' },
+  'virtual-queue': { title: 'Fila Virtual', desc: 'Fila virtual para restaurantes lotados com acompanhamento em tempo real.' },
+  'my-orders': { title: 'Meus Pedidos', desc: 'Histórico de pedidos e pedido ativo.' },
+  'payment-success': { title: 'Pagamento Confirmado', desc: 'Confirmação com pontos ganhos, gorjeta e saldo restante da mesa.' },
+  'notifications': { title: 'Notificações', desc: 'Convites para comanda, fila pronta, pontos ganhos, promoções e status de pedidos.' },
+  'ai-harmonization': { title: 'Harmonização IA', desc: 'A IA sugere combinações perfeitas de pratos e bebidas baseado em suas preferências.' },
 };
 
 // ============ HOME ============
