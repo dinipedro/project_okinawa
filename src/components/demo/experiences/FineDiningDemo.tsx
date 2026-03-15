@@ -148,7 +148,7 @@ const NotificationsScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ on
     { id: 2, type: 'invite', title: 'Maria te convidou!', desc: 'Junte-se à comanda da Mesa 7 no Bistrô Noowe', time: '5 min', icon: UserPlus, color: 'bg-primary/10 text-primary', unread: true, action: 'Aceitar' },
     { id: 3, type: 'queue', title: 'Sua mesa está pronta!', desc: 'Bistrô Noowe · Mesa 12 está disponível', time: '12 min', icon: Timer, color: 'bg-warning/10 text-warning', unread: true },
     { id: 4, type: 'loyalty', title: '+125 pontos ganhos', desc: 'Visita ao Bistrô Noowe · Total: 1.250 pts', time: '2h', icon: Gift, color: 'bg-accent/10 text-accent' },
-    { id: 5, type: 'promo', title: '🎉 Happy Hour ativo!', desc: 'Drinks com 30% off até 19h no Bistrô Noowe', time: '3h', icon: Sparkles, color: 'bg-secondary/10 text-secondary' },
+    { id: 5, type: 'promo', title: 'Happy Hour ativo!', desc: 'Drinks com 30% off até 19h no Bistrô Noowe', time: '3h', icon: Sparkles, color: 'bg-secondary/10 text-secondary' },
     { id: 6, type: 'order', title: 'Seu pedido está pronto!', desc: 'Tartare de Atum e Filé ao Molho de Vinho', time: 'Ontem', icon: ChefHat, color: 'bg-primary/10 text-primary' },
   ];
   return (
