@@ -403,7 +403,7 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-success to-success/80 flex items-center justify-center mb-5 shadow-xl shadow-success/30">
             <Check className="w-12 h-12 text-primary-foreground" />
           </div>
-          <h2 className="font-display text-2xl font-bold mb-2">Bom apetite! 🍽️</h2>
+          <h2 className="font-display text-2xl font-bold mb-2">Bom apetite!</h2>
           <p className="text-sm text-muted-foreground mb-1">Pagamento confirmado — sem fila no caixa!</p>
           <p className="text-xs text-muted-foreground mb-4">Pode continuar comendo e voltar a pesar 😊</p>
           <div className="w-full p-4 rounded-xl bg-primary/5 border border-primary/20 mb-3 flex items-center gap-3">
