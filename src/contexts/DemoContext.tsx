@@ -415,7 +415,7 @@ export const DemoProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (preparingOrder) {
             setNotifications(n => [{
               id: `nk-${Date.now()}`,
-              type: 'kitchen_ready',
+              type: 'kitchen_ready' as const,
               message: `Pedido da Mesa ${preparingOrder.tableNumber} pronto para servir`,
               timestamp: new Date(),
               read: false,
