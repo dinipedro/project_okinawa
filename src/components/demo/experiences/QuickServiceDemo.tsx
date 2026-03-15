@@ -292,9 +292,9 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           {activeCategory === 'Combos' && (
             <div className="px-5 space-y-3 mt-3">
               {COMBOS.map(combo => (
-                <button key={combo.id} onClick={() => { addToCart({ id: combo.id, name: combo.name, price: combo.price, img: combo.img.slice(0, 2) }, 1); }} className="w-full p-4 rounded-xl border border-border bg-card text-left">
+                <button key={combo.id} onClick={() => { addToCart({ id: combo.id, name: combo.name, price: combo.price, img: combo.img }, 1); }} className="w-full p-4 rounded-xl border border-border bg-card text-left">
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl">{combo.img.slice(0, 2)}</span>
+                    <FoodImg id={combo.img} size="md" alt={combo.name} />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <p className="font-semibold text-sm">{combo.name}</p>
