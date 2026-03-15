@@ -123,7 +123,7 @@ interface DemoContextType {
 // ============ MOCK DATA ============
 
 const DEMO_RESTAURANT = {
-  name: 'Bistrô Aurora',
+  name: 'Bistrô Noowe',
   description: 'Gastronomia contemporânea com ingredientes locais e sazonais',
   cuisine: 'Contemporânea Brasileira',
   rating: 4.8,
