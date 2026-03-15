@@ -148,7 +148,7 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-3">
             <div className="rounded-2xl overflow-hidden border border-border bg-card">
               <div className="h-28 bg-gradient-to-r from-red-500/20 to-orange-500/20 flex items-center justify-center relative">
-                <span className="text-5xl">🍕</span>
+                <ItemIcon cat="pizza" size="hero" className="mx-auto" />
                 <div className="absolute top-2 right-2 flex gap-1">
                   <span className="px-2 py-0.5 rounded-full bg-success/90 text-primary-foreground text-[9px] font-bold">👶 Kids Friendly</span>
                   <span className="px-2 py-0.5 rounded-full bg-primary/90 text-primary-foreground text-[9px] font-bold">🐶 Pet OK</span>
