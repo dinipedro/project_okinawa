@@ -71,7 +71,7 @@ export const ChefsTableDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4">
-            <p className="text-sm text-muted-foreground">Experiências ✨</p>
+            <p className="text-sm text-muted-foreground">Experiências</p>
             <h1 className="font-display text-xl font-bold">Chef's Table</h1>
           </div>
           <GuidedHint text="Experiências exclusivas com poucos lugares" />
