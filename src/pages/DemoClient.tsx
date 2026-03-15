@@ -57,7 +57,7 @@ const GuidedHint: React.FC<{ text: string; pulse?: boolean }> = ({ text, pulse =
 
 type Screen =
   | 'home' | 'restaurant' | 'menu' | 'item' | 'comanda'
-  | 'fechar-conta' | 'split-by-item'
+  | 'fechar-conta'
   | 'order-status' | 'loyalty' | 'reservations'
   | 'qr-scan' | 'call-waiter' | 'profile' | 'virtual-queue' | 'my-orders'
   | 'payment-success' | 'notifications' | 'ai-harmonization';
@@ -66,7 +66,7 @@ type NavTab = 'explore' | 'orders' | 'scan' | 'loyalty' | 'profile';
 
 const getNavTab = (screen: Screen): NavTab => {
   if (['home', 'restaurant'].includes(screen)) return 'explore';
-  if (['menu', 'item', 'comanda', 'fechar-conta', 'split-by-item', 'order-status', 'my-orders', 'call-waiter', 'payment-success', 'ai-harmonization'].includes(screen)) return 'orders';
+  if (['menu', 'item', 'comanda', 'fechar-conta', 'order-status', 'my-orders', 'call-waiter', 'payment-success', 'ai-harmonization'].includes(screen)) return 'orders';
   if (['qr-scan'].includes(screen)) return 'scan';
   if (['loyalty'].includes(screen)) return 'loyalty';
   if (['profile', 'reservations', 'virtual-queue', 'notifications'].includes(screen)) return 'profile';
@@ -886,9 +886,11 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNa
   const [selectedPayment, setSelectedPayment] = useState('pix');
   const [tipPercent, setTipPercent] = useState(10);
   const [selectedItems, setSelectedItems] = useState<string[]>(['i1', 'i2']);
+  const [sharedItems, setSharedItems] = useState<string[]>(['i7']);
   const [fixedAmount, setFixedAmount] = useState(200);
   const [showInvite, setShowInvite] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   const orderItems = [
     { id: 'i1', name: 'Tartare de Atum', price: 58, orderedBy: 'Você' },
@@ -897,6 +899,7 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNa
     { id: 'i4', name: 'Crème Brûlée', price: 38, orderedBy: 'Maria' },
     { id: 'i5', name: 'Salmão Grelhado', price: 96, orderedBy: 'João' },
     { id: 'i6', name: 'Gin Tônica Aurora', price: 38, orderedBy: 'João' },
+    { id: 'i7', name: 'Batata Truffle Fries', price: 45, orderedBy: 'Mesa' },
   ];
 
   const guests = [
@@ -905,24 +908,31 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNa
     { id: 'joao', name: 'João Santos', role: 'Convidado', paid: false, items: ['i5', 'i6'] },
   ];
 
+  const unpaidGuests = guests.filter(g => !g.paid);
   const totalOrder = orderItems.reduce((s, i) => s + i.price, 0);
   const serviceCharge = Math.round(totalOrder * 0.1);
   const totalWithService = totalOrder + serviceCharge;
-  const paidByOthers = 120; // Maria's paid items
+  const paidByOthers = 120;
+  const sharedTotal = orderItems.filter(i => sharedItems.includes(i.id)).reduce((s, i) => s + i.price, 0);
+  const mySharedPortion = sharedTotal / guests.length;
 
   const calculateMyAmount = () => {
     if (payMode === 'solo') return totalWithService - paidByOthers;
     switch (splitMode) {
       case 'individual': {
-        const myItems = orderItems.filter(i => i.orderedBy === 'Você');
-        return myItems.reduce((s, i) => s + i.price, 0) + Math.round(myItems.reduce((s, i) => s + i.price, 0) * 0.1);
+        const myItems = orderItems.filter(i => i.orderedBy === 'Você' && !sharedItems.includes(i.id));
+        const myDirect = myItems.reduce((s, i) => s + i.price, 0);
+        return myDirect + mySharedPortion + Math.round((myDirect + mySharedPortion) * 0.1);
       }
-      case 'equal': {
-        const unpaidGuests = guests.filter(g => !g.paid).length;
-        return Math.round((totalWithService - paidByOthers) / unpaidGuests);
+      case 'equal':
+        return Math.round((totalWithService - paidByOthers) / unpaidGuests.length);
+      case 'selective': {
+        const directTotal = selectedItems.filter(id => !sharedItems.includes(id)).reduce((sum, itemId) => {
+          const item = orderItems.find(i => i.id === itemId);
+          return sum + (item ? item.price : 0);
+        }, 0);
+        return directTotal + mySharedPortion;
       }
-      case 'selective':
-        return selectedItems.reduce((sum, itemId) => { const item = orderItems.find(i => i.id === itemId); return sum + (item ? item.price : 0); }, 0);
       case 'fixed':
         return Math.min(fixedAmount, totalWithService - paidByOthers);
       default: return 0;
@@ -933,7 +943,19 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNa
   const myTip = Math.round(mySubtotal * tipPercent / 100);
   const myTotal = mySubtotal + myTip;
 
-  const toggleItem = (itemId: string) => setSelectedItems(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
+  const toggleItem = (itemId: string) => {
+    if (sharedItems.includes(itemId)) return;
+    setSelectedItems(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
+  };
+
+  const toggleShared = (itemId: string) => {
+    setSharedItems(prev => {
+      if (prev.includes(itemId)) return prev.filter(id => id !== itemId);
+      setSelectedItems(si => si.filter(id => id !== itemId));
+      return [...prev, itemId];
+    });
+    setExpandedItem(null);
+  };
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -1038,26 +1060,97 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNa
           </div>
         )}
 
-        {/* Selective Mode - Items */}
+        {/* Selective Mode - Items with inline "Dividir por todos" */}
         {payMode === 'split' && splitMode === 'selective' && (
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold text-foreground text-sm">Selecione os itens</h2>
-              <button onClick={() => onNavigate('split-by-item')} className="text-xs text-primary font-medium flex items-center gap-1">Tela completa <ChevronRight className="w-3 h-3" /></button>
-            </div>
+            <h2 className="font-semibold text-foreground text-sm mb-3">Selecione os itens que você paga</h2>
+
+            {/* Shared items banner */}
+            {sharedTotal > 0 && (
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/10 border border-accent/20 mb-3">
+                <Users className="w-4 h-4 text-accent shrink-0" />
+                <div className="flex-1">
+                  <p className="text-[10px] text-muted-foreground">
+                    Itens compartilhados: <span className="text-accent font-semibold">R$ {(sharedTotal / guests.length).toFixed(2)}/pessoa</span>
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2">
               {orderItems.map((item) => {
                 const isSelected = selectedItems.includes(item.id);
+                const isShared = sharedItems.includes(item.id);
                 const guest = guests.find(g => g.paid && g.items.includes(item.id));
                 const isPaid = !!guest;
+                const isExpanded = expandedItem === item.id;
+
                 return (
-                  <button key={item.id} onClick={() => !isPaid && toggleItem(item.id)} disabled={isPaid} className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 transition-all ${isPaid ? 'border-success/30 bg-success/5 opacity-60' : isSelected ? 'border-primary bg-primary/10' : 'border-border bg-card'}`}>
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isPaid ? 'border-success bg-success' : isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/30'}`}>
-                      {(isSelected || isPaid) && <Check className="w-3 h-3 text-primary-foreground" />}
-                    </div>
-                    <div className="flex-1 text-left"><p className="text-sm font-medium text-foreground">{item.name}</p><p className="text-xs text-muted-foreground">{item.orderedBy}{isPaid ? ' · Pago' : ''}</p></div>
-                    <span className="font-semibold text-sm text-foreground">R$ {item.price}</span>
-                  </button>
+                  <div key={item.id} className={`rounded-xl border-2 transition-all overflow-hidden ${
+                    isPaid ? 'border-success/30 bg-success/5 opacity-60'
+                    : isShared ? 'border-accent bg-accent/5'
+                    : isSelected ? 'border-primary bg-primary/10'
+                    : 'border-border bg-card'
+                  }`}>
+                    <button
+                      onClick={() => {
+                        if (isPaid) return;
+                        if (isShared) { setExpandedItem(isExpanded ? null : item.id); return; }
+                        toggleItem(item.id);
+                      }}
+                      onContextMenu={(e) => { e.preventDefault(); if (!isPaid) setExpandedItem(isExpanded ? null : item.id); }}
+                      className="w-full p-3 flex items-center gap-3"
+                    >
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                        isPaid ? 'border-success bg-success'
+                        : isShared ? 'border-accent bg-accent'
+                        : isSelected ? 'border-primary bg-primary'
+                        : 'border-muted-foreground/30'
+                      }`}>
+                        {(isSelected || isPaid) && <Check className="w-3 h-3 text-primary-foreground" />}
+                        {isShared && <Users className="w-2.5 h-2.5 text-primary-foreground" />}
+                      </div>
+                      <div className="flex-1 text-left">
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-sm font-medium text-foreground">{item.name}</p>
+                          {isShared && <span className="px-1.5 py-0.5 rounded-full bg-accent/20 text-accent text-[9px] font-semibold">÷ todos</span>}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {isPaid ? `${item.orderedBy} · Pago` : isShared ? `R$ ${(item.price / guests.length).toFixed(2)}/pessoa` : item.orderedBy}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-foreground">R$ {item.price}</span>
+                        {!isPaid && (
+                          <button onClick={(e) => { e.stopPropagation(); setExpandedItem(isExpanded ? null : item.id); }}
+                            className="p-1 rounded-lg hover:bg-muted transition-colors">
+                            <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          </button>
+                        )}
+                      </div>
+                    </button>
+
+                    {/* Inline expand: dividir por todos */}
+                    {isExpanded && !isPaid && (
+                      <div className="px-3 pb-3 pt-1 border-t border-border/50">
+                        <button
+                          onClick={() => toggleShared(item.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                            isShared ? 'bg-accent/10 border border-accent/30' : 'bg-muted/50 border border-transparent hover:border-accent/30'
+                          }`}
+                        >
+                          <Users className={`w-4 h-4 ${isShared ? 'text-accent' : 'text-muted-foreground'}`} />
+                          <div className="flex-1 text-left">
+                            <p className={`text-xs font-semibold ${isShared ? 'text-accent' : 'text-foreground'}`}>Dividir por todos</p>
+                            <p className="text-[10px] text-muted-foreground">R$ {(item.price / guests.length).toFixed(2)} p/ cada ({guests.length} pessoas)</p>
+                          </div>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isShared ? 'border-accent bg-accent' : 'border-muted-foreground/30'}`}>
+                            {isShared && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+                          </div>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
@@ -1113,6 +1206,9 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNa
           <h3 className="font-semibold text-foreground mb-3">Resumo</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-muted-foreground">Sua parte</span><span className="text-foreground">R$ {mySubtotal.toFixed(2)}</span></div>
+            {payMode === 'split' && sharedTotal > 0 && (
+              <div className="flex justify-between text-accent"><span className="flex items-center gap-1"><Users className="w-3 h-3" />Itens compartilhados</span><span>R$ {mySharedPortion.toFixed(2)}</span></div>
+            )}
             {tipPercent > 0 && <div className="flex justify-between"><span className="text-muted-foreground">Gorjeta ({tipPercent}%)</span><span className="text-foreground">R$ {myTip.toFixed(2)}</span></div>}
             {paidByOthers > 0 && <div className="flex justify-between text-success"><span>Pago por outros</span><span>- R$ {paidByOthers.toFixed(2)}</span></div>}
             <div className="border-t border-border pt-2 flex justify-between"><span className="font-semibold text-foreground">Você paga</span><span className="font-bold text-xl text-primary">R$ {myTotal.toFixed(2)}</span></div>
@@ -1130,197 +1226,8 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNa
   );
 };
 
-// ============ SPLIT BY ITEM (full screen drill-down) ============
 
-const SplitByItemScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNavigate }) => {
-  const [items, setItems] = useState([
-    { id: 1, name: 'Tartare de Atum', price: 58, assignedTo: 'Você' as string | null, sharedByAll: false },
-    { id: 2, name: 'Filé ao Molho de Vinho', price: 118, assignedTo: 'Você' as string | null, sharedByAll: false },
-    { id: 3, name: 'Risoto de Funghi', price: 82, assignedTo: 'Maria' as string | null, sharedByAll: false },
-    { id: 4, name: 'Crème Brûlée', price: 38, assignedTo: 'Maria' as string | null, sharedByAll: false },
-    { id: 5, name: 'Batata Truffle Fries', price: 45, assignedTo: null as string | null, sharedByAll: true },
-    { id: 6, name: 'Salmão Grelhado', price: 96, assignedTo: null as string | null, sharedByAll: false },
-    { id: 7, name: 'Gin Tônica Aurora', price: 38, assignedTo: null as string | null, sharedByAll: false },
-  ]);
-  const [selectedItem, setSelectedItem] = useState<number | null>(null);
-  const guestsList = [
-    { id: 'you', name: 'Você', color: 'from-primary to-accent' },
-    { id: 'maria', name: 'Maria', color: 'from-secondary to-secondary/80' },
-    { id: 'joao', name: 'João', color: 'from-destructive to-destructive/80' },
-  ];
 
-  const assignItem = (itemId: number, guestName: string) => {
-    setItems(items.map(item => item.id === itemId ? { ...item, assignedTo: guestName, sharedByAll: false } : item));
-    setSelectedItem(null);
-  };
-
-  const toggleSharedByAll = (itemId: number) => {
-    setItems(items.map(item => item.id === itemId ? { ...item, sharedByAll: !item.sharedByAll, assignedTo: null } : item));
-    setSelectedItem(null);
-  };
-
-  const getGuestTotal = (guestName: string) => {
-    const directItems = items.filter(item => item.assignedTo === guestName).reduce((sum, item) => sum + item.price, 0);
-    const sharedItems = items.filter(item => item.sharedByAll).reduce((sum, item) => sum + item.price / guestsList.length, 0);
-    return directItems + sharedItems;
-  };
-
-  const sharedTotal = items.filter(i => i.sharedByAll).reduce((s, i) => s + i.price, 0);
-  const totalOrder = items.reduce((s, i) => s + i.price, 0);
-  const unassigned = items.filter(i => !i.assignedTo && !i.sharedByAll);
-
-  return (
-    <div className="h-full bg-background flex flex-col">
-      <div className="p-4 space-y-4">
-        <div className="flex items-center gap-3">
-          <button onClick={() => onNavigate('fechar-conta')} className="p-2 rounded-xl hover:bg-muted transition-colors"><ArrowLeft className="h-5 w-5 text-foreground" /></button>
-          <div className="flex-1">
-            <h1 className="text-lg font-bold text-foreground">Dividir por Item</h1>
-            <p className="text-xs text-muted-foreground">Atribua cada item ou divida por todos</p>
-          </div>
-        </div>
-
-        {/* Guest summary chips */}
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {guestsList.map((guest) => (
-            <div key={guest.id} className="flex-shrink-0 px-3 py-2 rounded-xl bg-card/70 border border-border">
-              <div className="flex items-center gap-2">
-                <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${guest.color} flex items-center justify-center text-primary-foreground text-xs font-bold`}>{guest.name.charAt(0)}</div>
-                <div>
-                  <p className="text-xs font-medium text-foreground">{guest.name}</p>
-                  <p className="text-xs text-primary font-semibold">R$ {getGuestTotal(guest.name).toFixed(2)}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Shared items banner */}
-        {sharedTotal > 0 && (
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/10 border border-accent/20">
-            <Users className="w-4 h-4 text-accent shrink-0" />
-            <div className="flex-1">
-              <p className="text-xs font-semibold text-foreground">Itens compartilhados</p>
-              <p className="text-[10px] text-muted-foreground">
-                R$ {sharedTotal.toFixed(2)} dividido por {guestsList.length} = <span className="text-accent font-semibold">R$ {(sharedTotal / guestsList.length).toFixed(2)}/pessoa</span>
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="flex-1 px-4 space-y-3 overflow-y-auto pb-32">
-        {items.map((item) => (
-          <div key={item.id} className={`p-4 rounded-2xl border transition-all ${
-            item.sharedByAll
-              ? 'bg-accent/5 border-accent/30'
-              : item.assignedTo
-                ? 'bg-success/5 border-success/30'
-                : 'bg-card border-border'
-          }`}>
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-medium text-foreground text-sm">{item.name}</h3>
-                  {item.sharedByAll && (
-                    <span className="px-2 py-0.5 rounded-full bg-accent/20 text-accent text-[10px] font-semibold flex items-center gap-1">
-                      <Users className="w-2.5 h-2.5" />Dividido por todos
-                    </span>
-                  )}
-                  {item.assignedTo && !item.sharedByAll && (
-                    <span className="px-2 py-0.5 rounded-full bg-success/20 text-success text-xs">{item.assignedTo}</span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <p className="text-xs text-muted-foreground">R$ {item.price.toFixed(2)}</p>
-                  {item.sharedByAll && (
-                    <p className="text-[10px] text-accent">→ R$ {(item.price / guestsList.length).toFixed(2)}/pessoa</p>
-                  )}
-                </div>
-              </div>
-              <button onClick={() => setSelectedItem(selectedItem === item.id ? null : item.id)} className={`p-2 rounded-xl transition-all ${
-                item.sharedByAll
-                  ? 'bg-accent text-primary-foreground'
-                  : item.assignedTo
-                    ? 'bg-success text-primary-foreground'
-                    : 'bg-muted text-muted-foreground'
-              }`}>
-                {item.sharedByAll || item.assignedTo ? <Check className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              </button>
-            </div>
-
-            {/* Expanded assignment panel */}
-            {selectedItem === item.id && (
-              <div className="mt-3 pt-3 border-t border-border space-y-3">
-                {/* Share by all toggle */}
-                <button
-                  onClick={() => toggleSharedByAll(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all ${
-                    item.sharedByAll
-                      ? 'border-accent bg-accent/10'
-                      : 'border-dashed border-muted-foreground/30 hover:border-accent/50'
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    item.sharedByAll ? 'bg-accent text-primary-foreground' : 'bg-muted text-muted-foreground'
-                  }`}>
-                    <Users className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <p className={`text-xs font-semibold ${item.sharedByAll ? 'text-accent' : 'text-foreground'}`}>
-                      Dividir por todos
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">
-                      R$ {(item.price / guestsList.length).toFixed(2)} para cada ({guestsList.length} pessoas)
-                    </p>
-                  </div>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    item.sharedByAll ? 'border-accent bg-accent' : 'border-muted-foreground/30'
-                  }`}>
-                    {item.sharedByAll && <Check className="w-3 h-3 text-primary-foreground" />}
-                  </div>
-                </button>
-
-                {/* Or assign to specific person */}
-                <div>
-                  <p className="text-[10px] text-muted-foreground mb-2 uppercase tracking-wider">Ou atribuir a uma pessoa:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {guestsList.map((guest) => (
-                      <button key={guest.id} onClick={() => assignItem(item.id, guest.name)} className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
-                        item.assignedTo === guest.name && !item.sharedByAll
-                          ? `bg-gradient-to-r ${guest.color} text-primary-foreground`
-                          : 'bg-muted text-muted-foreground'
-                      }`}>
-                        <User className="h-3 w-3" /><span className="text-xs font-medium">{guest.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Footer */}
-      <div className="p-4 bg-card border-t border-border space-y-2">
-        {unassigned.length > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-warning/10 border border-warning/20">
-            <AlertCircle className="w-3.5 h-3.5 text-warning shrink-0" />
-            <span className="text-[10px] text-warning font-medium">{unassigned.length} {unassigned.length === 1 ? 'item não atribuído' : 'itens não atribuídos'}</span>
-          </div>
-        )}
-        <div className="flex justify-between items-center px-1 text-sm">
-          <span className="text-muted-foreground">Total da comanda</span>
-          <span className="font-bold text-foreground">R$ {totalOrder.toFixed(2)}</span>
-        </div>
-        <button onClick={() => onNavigate('fechar-conta')} className="w-full py-4 rounded-2xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold shadow-lg">
-          Confirmar Divisão
-        </button>
-      </div>
-    </div>
-  );
-};
 
 // ============ PAYMENT SUCCESS ============
 
@@ -1493,7 +1400,7 @@ const JOURNEY_STEPS = [
   { step: 3, label: 'Explorar cardápio', screens: ['menu', 'item', 'ai-harmonization'] },
   { step: 4, label: 'Montar comanda', screens: ['comanda'] },
   { step: 5, label: 'Acompanhar pedido', screens: ['order-status'] },
-  { step: 6, label: 'Fechar conta & pagar', screens: ['fechar-conta', 'split-by-item', 'payment-success'] },
+  { step: 6, label: 'Fechar conta & pagar', screens: ['fechar-conta', 'payment-success'] },
   { step: 7, label: 'Programa de fidelidade', screens: ['loyalty'] },
   { step: 8, label: 'Reservar mesa', screens: ['reservations'] },
   { step: 9, label: 'Fila virtual', screens: ['virtual-queue'] },
@@ -1528,7 +1435,6 @@ const DemoClientInner = () => {
       case 'profile': return <ProfileScreen onNavigate={handleNavigate} />;
       case 'virtual-queue': return <VirtualQueueScreen onNavigate={handleNavigate} />;
       case 'my-orders': return <MyOrdersScreen onNavigate={handleNavigate} />;
-      case 'split-by-item': return <SplitByItemScreen onNavigate={handleNavigate} />;
       case 'payment-success': return <PaymentSuccessScreen onNavigate={handleNavigate} />;
       case 'notifications': return <NotificationsScreen onNavigate={handleNavigate} />;
       case 'ai-harmonization': return <AIHarmonizationScreen onNavigate={handleNavigate} />;
@@ -1552,7 +1458,6 @@ const DemoClientInner = () => {
     'profile': { emoji: '👤', title: 'Perfil', desc: 'Perfil do cliente com histórico, favoritos, nível de fidelidade e configurações.' },
     'virtual-queue': { emoji: '⏱️', title: 'Fila Virtual', desc: 'Fila virtual para restaurantes lotados com acompanhamento em tempo real.' },
     'my-orders': { emoji: '📦', title: 'Meus Pedidos', desc: 'Histórico de pedidos e pedido ativo.' },
-    'split-by-item': { emoji: '🔀', title: 'Dividir por Item', desc: 'Atribuição visual de cada item a um participante da mesa.' },
     'payment-success': { emoji: '✅', title: 'Pagamento Confirmado', desc: 'Confirmação com pontos ganhos, gorjeta e saldo restante da mesa.' },
     'notifications': { emoji: '🔔', title: 'Notificações', desc: 'Convites para comanda, fila pronta, pontos ganhos, promoções e status de pedidos.' },
     'ai-harmonization': { emoji: '🧠', title: 'Harmonização IA', desc: 'A IA sugere combinações perfeitas de pratos e bebidas baseado em suas preferências.' },
