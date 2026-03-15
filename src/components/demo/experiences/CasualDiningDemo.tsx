@@ -190,7 +190,7 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="Cantina Noowe" back="home" right={<button className="w-8 h-8 rounded-full bg-muted flex items-center justify-center"><Heart className="w-4 h-4 text-muted-foreground" /></button>} />
           <div className="text-center mb-4">
-            <span className="text-6xl">🍕</span>
+            <ItemIcon cat="pizza" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Cantina Noowe</h2>
             <p className="text-sm text-muted-foreground">Comida italiana casual · Ambiente familiar</p>
             <div className="flex items-center justify-center gap-3 mt-2 text-xs">
