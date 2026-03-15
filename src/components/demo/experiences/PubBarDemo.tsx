@@ -365,7 +365,7 @@ export const PubBarDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <div className="space-y-2">
             {filtered.map(drink => (
               <button key={drink.id} onClick={() => { setSelectedDrink(drink); onNavigate('drink-detail'); }} className="w-full flex items-center gap-3 p-3 rounded-xl border border-border bg-card text-left">
-                <ItemIcon cat={drink.iconCat} size="md" />
+                <FoodImg id={drink.imgId} size="md" alt={drink.name} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
                     <p className="font-semibold text-sm">{drink.name}</p>
