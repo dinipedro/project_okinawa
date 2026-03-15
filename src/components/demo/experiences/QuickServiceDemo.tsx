@@ -647,7 +647,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             <>
               <h3 className="font-semibold text-sm mb-2 text-center">O que se destacou?</h3>
               <div className="flex flex-wrap gap-2 justify-center mb-5">
-                {['⚡ Velocidade', '🍔 Sabor', '📱 Praticidade', '😊 Atendimento', '💰 Custo-benefício', '📦 Embalagem'].map(tag => (
+                {['Velocidade', 'Sabor', 'Praticidade', 'Atendimento', 'Custo-benefício', 'Embalagem'].map(tag => (
                   <button key={tag} onClick={() => setRatingTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])}
                     className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${ratingTags.includes(tag) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-muted-foreground'}`}>
                     {tag}
