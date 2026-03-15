@@ -1,7 +1,7 @@
 /**
  * Demo Context - Simulation Engine for NOOWE Demo System
  * 
- * Provides realistic mock data and auto-simulation for the Bistrô Aurora demo restaurant.
+ * Provides realistic mock data and auto-simulation for the Bistrô Noowe demo restaurant.
  * Manages orders, tables, reservations, menu, and analytics with timed auto-progression.
  */
 
