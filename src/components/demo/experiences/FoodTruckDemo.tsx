@@ -97,12 +97,12 @@ export const FoodTruckDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             <Map className="w-5 h-5" />Ver Mapa ao Vivo
           </button>
           {[
-            { name: 'Taco Noowe', dist: '800m', cuisine: 'Mexicana', rating: 4.8, emoji: '🌮', active: true, wait: '~12 min' },
-            { name: 'Burger Bros', dist: '1.5km', cuisine: 'Burgers', rating: 4.5, emoji: '🍔', wait: '~20 min' },
-            { name: 'Açaí Tropical', dist: '2.1km', cuisine: 'Açaí & Bowls', rating: 4.3, emoji: '🫐', wait: '~8 min' },
+            { name: 'Taco Noowe', dist: '800m', cuisine: 'Mexicana', rating: 4.8, cat: 'taco', active: true, wait: '~12 min' },
+            { name: 'Burger Bros', dist: '1.5km', cuisine: 'Burgers', rating: 4.5, cat: 'burger', wait: '~20 min' },
+            { name: 'Açaí Tropical', dist: '2.1km', cuisine: 'Açaí & Bowls', rating: 4.3, cat: 'acai', wait: '~8 min' },
           ].map((truck, i) => (
             <button key={i} onClick={() => truck.active ? onNavigate('truck-detail') : undefined} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 mb-1.5 text-left border border-border bg-card">
-              <span className="text-2xl">{truck.emoji}</span>
+              <ItemIcon cat={truck.cat} />
               <div className="flex-1">
                 <p className="font-semibold text-sm">{truck.name}</p>
                 <p className="text-xs text-muted-foreground">{truck.cuisine} · {truck.dist}</p>
