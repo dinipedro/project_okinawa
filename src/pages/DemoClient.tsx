@@ -134,7 +134,7 @@ const DemoClientInner = () => {
                       : 'border-border bg-card hover:border-primary/30 hover:bg-muted/50'
                   }`}
                 >
-                  <span className="text-base">{st.emoji}</span>
+                  <ItemIcon cat={st.iconCat} size="xs" />
                   <div className="text-left">
                     <p className={`text-xs font-semibold ${isActive ? 'text-primary' : 'text-foreground'}`}>{st.name}</p>
                     <p className="text-[10px] text-muted-foreground hidden sm:block">{st.tagline}</p>
