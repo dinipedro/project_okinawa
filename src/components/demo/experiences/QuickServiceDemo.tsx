@@ -177,11 +177,11 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           {/* Other nearby */}
           <h3 className="font-display font-semibold text-sm mb-3">Mais por perto</h3>
           {[
-            { name: 'Burger Bros', dist: '800m', time: '8 min', rating: 4.3, emoji: '🍔' },
-            { name: 'Frango & Cia', dist: '1.2km', time: '10 min', rating: 4.1, emoji: '🍗' },
+            { name: 'Burger Bros', dist: '800m', time: '8 min', rating: 4.3, cat: 'burger' },
+            { name: 'Frango & Cia', dist: '1.2km', time: '10 min', rating: 4.1, cat: 'chicken' },
           ].map((r, i) => (
             <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 mb-1">
-              <span className="text-2xl">{r.emoji}</span>
+              <ItemIcon cat={r.cat} />
               <div className="flex-1"><p className="font-semibold text-sm">{r.name}</p><p className="text-xs text-muted-foreground">{r.dist} · {r.time}</p></div>
               <div className="flex items-center gap-1"><Star className="w-3 h-3 text-accent fill-accent" /><span className="text-xs font-semibold">{r.rating}</span></div>
             </div>
