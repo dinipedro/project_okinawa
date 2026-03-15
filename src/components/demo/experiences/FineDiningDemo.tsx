@@ -1157,9 +1157,14 @@ const LoyaltyScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNaviga
         ))}
       </div>
       <h3 className="font-display font-semibold text-sm mb-3">Recompensas</h3>
-      {[{ name: 'Sobremesa grátis', points: 500, emoji: '🍰' }, { name: 'Drink da casa', points: 800, emoji: '🍸' }, { name: 'Entrada premium', points: 1200, emoji: '🥗' }, { name: 'Jantar para 2', points: 3000, emoji: '🍽️' }].map((reward, i) => (
+      {[
+        { name: 'Sobremesa grátis', points: 500, cat: 'dessert' },
+        { name: 'Drink da casa', points: 800, cat: 'cocktail' },
+        { name: 'Entrada premium', points: 1200, cat: 'salad' },
+        { name: 'Jantar para 2', points: 3000, cat: 'chef' },
+      ].map((reward, i) => (
         <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors mb-1">
-          <span className="text-2xl">{reward.emoji}</span>
+          <ItemIcon cat={reward.cat} size="sm" />
           <div className="flex-1"><p className="font-semibold text-sm">{reward.name}</p><p className="text-xs text-muted-foreground">{reward.points} pontos</p></div>
           <button className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${loyaltyPoints >= reward.points ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
             {loyaltyPoints >= reward.points ? 'Resgatar' : `${reward.points - loyaltyPoints} pts`}

@@ -117,7 +117,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
   };
 
   const addRefill = (originalItem: CartItem) => {
-    setCart(prev => [...prev, { id: 'refill-' + Date.now(), name: `Refil ${originalItem.name}`, price: 5, emoji: '♻️', isRefill: true }]);
+    setCart(prev => [...prev, { id: 'refill-' + Date.now(), name: `Refil ${originalItem.name}`, price: 5, iconCat: 'coffee', isRefill: true }]);
   };
 
   switch (screen) {
