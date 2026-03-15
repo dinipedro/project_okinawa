@@ -360,7 +360,7 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <div className="px-5 space-y-1.5">
             {TOPPINGS.map(t => (
               <button key={t.id} onClick={() => toggleTopping(t.id)} className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${toppings.includes(t.id) ? 'border-primary bg-primary/5' : 'border-border/50 bg-card'}`}>
-                <span className="text-xl">{t.emoji}</span>
+                <FoodImg id={t.imgId} size="xs" alt={t.name} />
                 <div className="flex-1 text-left">
                   <p className="text-sm font-medium">{t.name}</p>
                   <div className="flex items-center gap-2">
