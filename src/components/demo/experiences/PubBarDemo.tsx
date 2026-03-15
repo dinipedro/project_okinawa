@@ -145,7 +145,7 @@ export const PubBarDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-3">
             <div className="rounded-2xl overflow-hidden border border-border bg-card">
               <div className="h-24 bg-gradient-to-r from-amber-600/20 to-yellow-700/20 flex items-center justify-center relative">
-                <span className="text-5xl">🍺</span>
+                <ItemIcon cat="beer" size="hero" />
                 <div className="absolute top-2 right-2">
                   <span className="px-2 py-0.5 rounded-full bg-warning/90 text-primary-foreground text-[9px] font-bold animate-pulse">🎉 Happy Hour</span>
                 </div>
