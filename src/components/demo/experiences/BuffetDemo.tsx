@@ -3,7 +3,7 @@
  * Deep UX: Discovery → Occupation/Menu → QR Check-in → Browse Stations → Smart Scale (multi-weigh) → Drinks Order → Live Comanda → Payment → Rating
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, CreditCard, Gift, QrCode,
   Search, MapPin, Scale, ArrowRight, Utensils, Droplets, Users,
