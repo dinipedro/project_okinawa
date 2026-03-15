@@ -89,7 +89,7 @@ export const FoodTruckDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4">
-            <p className="text-sm text-muted-foreground">Com fome? 🚚</p>
+            <p className="text-sm text-muted-foreground">Com fome?</p>
             <h1 className="font-display text-xl font-bold">Food Trucks ao vivo</h1>
           </div>
           <GuidedHint text="Localização em tempo real dos trucks por perto" />
