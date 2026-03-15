@@ -25,20 +25,20 @@ interface CartItem {
 }
 
 const CAFE_MENU = [
-  { id: 'c1', name: 'Espresso', price: 8, cat: 'Cafés', iconCat: 'coffee', refill: false, desc: 'Espresso duplo, grãos torrados na casa' },
-  { id: 'c2', name: 'Cappuccino', price: 16, cat: 'Cafés', iconCat: 'coffee', refill: false, desc: 'Espresso, leite vaporizado e espuma cremosa' },
-  { id: 'c3', name: 'Café Filtrado', price: 10, cat: 'Cafés', iconCat: 'coffee', refill: true, desc: 'Coado na hora, blend da casa. Refil R$ 5', customizable: true },
-  { id: 'c4', name: 'Latte', price: 18, cat: 'Cafés', iconCat: 'coffee', refill: false, desc: 'Espresso com leite cremoso, opção de flavors', customizable: true },
-  { id: 'c5', name: 'Cold Brew', price: 16, cat: 'Cafés', iconCat: 'coffee', refill: false, desc: 'Café extraído a frio por 24h, suave e refrescante' },
-  { id: 'c6', name: 'Chá Verde', price: 12, cat: 'Chás', iconCat: 'tea', refill: true, desc: 'Chá verde premium. Refil R$ 5' },
-  { id: 'c7', name: 'Chá de Camomila', price: 12, cat: 'Chás', iconCat: 'tea', refill: true, desc: 'Camomila orgânica. Refil R$ 5' },
-  { id: 'c8', name: 'Matcha Latte', price: 20, cat: 'Chás', iconCat: 'tea', refill: false, desc: 'Matcha japonês com leite de aveia', customizable: true },
-  { id: 'c9', name: 'Croissant Misto', price: 14, cat: 'Salgados', iconCat: 'bread', refill: false, desc: 'Croissant artesanal com queijo e presunto' },
-  { id: 'c10', name: 'Pão de Queijo (6un)', price: 12, cat: 'Salgados', iconCat: 'cheese', refill: false, desc: 'Pão de queijo mineiro quentinho' },
-  { id: 'c11', name: 'Sanduíche Caprese', price: 22, cat: 'Salgados', iconCat: 'sandwich', refill: false, desc: 'Mussarela de búfala, tomate, manjericão, pesto' },
-  { id: 'c12', name: 'Torta de Maçã', price: 16, cat: 'Doces', iconCat: 'dessert', refill: false, desc: 'Torta caseira com canela e sorvete' },
-  { id: 'c13', name: 'Brownie', price: 14, cat: 'Doces', iconCat: 'brownie', refill: false, desc: 'Brownie de chocolate 70% com nozes' },
-  { id: 'c14', name: 'Cookie & Cream', price: 12, cat: 'Doces', iconCat: 'cookie', refill: false, desc: 'Cookie artesanal com sorvete de baunilha' },
+  { id: 'c1', name: 'Espresso', price: 8, cat: 'Cafés', iconCat: 'coffee', imgId: 'espresso', refill: false, desc: 'Espresso duplo, grãos torrados na casa' },
+  { id: 'c2', name: 'Cappuccino', price: 16, cat: 'Cafés', iconCat: 'coffee', imgId: 'cappuccino', refill: false, desc: 'Espresso, leite vaporizado e espuma cremosa' },
+  { id: 'c3', name: 'Café Filtrado', price: 10, cat: 'Cafés', iconCat: 'coffee', imgId: 'filter-coffee', refill: true, desc: 'Coado na hora, blend da casa. Refil R$ 5', customizable: true },
+  { id: 'c4', name: 'Latte', price: 18, cat: 'Cafés', iconCat: 'coffee', imgId: 'latte', refill: false, desc: 'Espresso com leite cremoso, opção de flavors', customizable: true },
+  { id: 'c5', name: 'Cold Brew', price: 16, cat: 'Cafés', iconCat: 'coffee', imgId: 'cold-brew', refill: false, desc: 'Café extraído a frio por 24h, suave e refrescante' },
+  { id: 'c6', name: 'Chá Verde', price: 12, cat: 'Chás', iconCat: 'tea', imgId: 'green-tea', refill: true, desc: 'Chá verde premium. Refil R$ 5' },
+  { id: 'c7', name: 'Chá de Camomila', price: 12, cat: 'Chás', iconCat: 'tea', imgId: 'chamomile', refill: true, desc: 'Camomila orgânica. Refil R$ 5' },
+  { id: 'c8', name: 'Matcha Latte', price: 20, cat: 'Chás', iconCat: 'tea', imgId: 'matcha', refill: false, desc: 'Matcha japonês com leite de aveia', customizable: true },
+  { id: 'c9', name: 'Croissant Misto', price: 14, cat: 'Salgados', iconCat: 'bread', imgId: 'croissant', refill: false, desc: 'Croissant artesanal com queijo e presunto' },
+  { id: 'c10', name: 'Pão de Queijo (6un)', price: 12, cat: 'Salgados', iconCat: 'cheese', imgId: 'pao-queijo', refill: false, desc: 'Pão de queijo mineiro quentinho' },
+  { id: 'c11', name: 'Sanduíche Caprese', price: 22, cat: 'Salgados', iconCat: 'sandwich', imgId: 'sandwich-caprese', refill: false, desc: 'Mussarela de búfala, tomate, manjericão, pesto' },
+  { id: 'c12', name: 'Torta de Maçã', price: 16, cat: 'Doces', iconCat: 'dessert', imgId: 'apple-pie', refill: false, desc: 'Torta caseira com canela e sorvete' },
+  { id: 'c13', name: 'Brownie', price: 14, cat: 'Doces', iconCat: 'brownie', imgId: 'brownie', refill: false, desc: 'Brownie de chocolate 70% com nozes' },
+  { id: 'c14', name: 'Cookie & Cream', price: 12, cat: 'Doces', iconCat: 'cookie', imgId: 'cookie', refill: false, desc: 'Cookie artesanal com sorvete de baunilha' },
 ];
 
 const MILK_OPTIONS = ['Integral', 'Desnatado', 'Aveia', 'Amêndoas', 'Coco'];
