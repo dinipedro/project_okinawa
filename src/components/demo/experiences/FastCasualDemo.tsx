@@ -188,7 +188,7 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             </div>
           </button>
           {/* Popular bowls */}
-          <h3 className="font-semibold text-sm mb-2">🔥 Bowls populares</h3>
+          <h3 className="font-semibold text-sm mb-2">Bowls populares</h3>
           {[
             { name: 'Protein Power', items: 'Quinoa + Frango + Ovo + Avocado', cal: 520, price: 42 },
             { name: 'Veggie Zen', items: 'Mix Folhas + Tofu + Edamame + Pesto', cal: 380, price: 38 },
