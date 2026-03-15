@@ -113,7 +113,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
     if (extraShot) customs.push('Shot extra');
 
     const totalPrice = selectedItem.price + size.priceAdd + (selectedFlavor ? 3 : 0) + (extraShot ? 4 : 0);
-    setCart(prev => [...prev, { id: selectedItem.id + '-' + Date.now(), name: selectedItem.name, price: totalPrice, iconCat: selectedItem.iconCat, customizations: customs }]);
+    setCart(prev => [...prev, { id: selectedItem.id + '-' + Date.now(), name: selectedItem.name, price: totalPrice, iconCat: selectedItem.iconCat, imgId: selectedItem.imgId, customizations: customs }]);
     onNavigate('comanda');
   };
 
