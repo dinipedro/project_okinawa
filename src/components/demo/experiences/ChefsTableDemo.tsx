@@ -3,7 +3,7 @@
  * Deep UX: Discover → Detail → Date + Guests → Dietary Preferences → Wine Preferences → Payment → Countdown → Day-of Welcome → Course 1-3 + Sommelier → Photo Moment → Final Review + Certificate
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, CreditCard, Gift, Calendar,
   Crown, ChefHat, Wine, Camera, ArrowRight, Sparkles, Heart,
