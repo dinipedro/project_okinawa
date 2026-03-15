@@ -145,7 +145,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           </div>
 
           <div className="flex gap-3 mb-5 overflow-x-auto pb-1 scrollbar-hide">
-            {['Skip the Line ⚡', 'Burgers', 'Pizza', 'Açaí', 'Saudável'].map((cat, i) => (
+            {['Skip the Line', 'Burgers', 'Pizza', 'Açaí', 'Saudável'].map((cat, i) => (
               <button key={cat} className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap ${i === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>{cat}</button>
             ))}
           </div>
