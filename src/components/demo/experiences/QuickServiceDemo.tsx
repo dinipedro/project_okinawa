@@ -451,7 +451,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
               {cart.map(c => (
                 <div key={c.id} className="flex items-center gap-3 py-3 border-b border-border">
-                  <span className="text-2xl">{c.img}</span>
+                  <FoodImg id={c.img} size="sm" alt={c.name} />
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm">{c.name}</p>
                     {c.customizations && <p className="text-[10px] text-primary">{c.customizations.join(', ')}</p>}
