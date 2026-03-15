@@ -141,7 +141,7 @@ export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             </div>
           </button>
           <div className="p-3 rounded-2xl border border-border bg-card flex items-center gap-3">
-            <span className="text-3xl">🎤</span>
+            <ItemIcon cat="music" size="lg" />
             <div className="flex-1">
               <h3 className="font-semibold text-sm">Samba do Noowe</h3>
               <p className="text-[10px] text-muted-foreground">Sábado · Roda de samba · R$ 40</p>
