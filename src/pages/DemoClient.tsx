@@ -30,7 +30,7 @@ import { ClubDemo, JOURNEY_STEPS as CL_STEPS, SCREEN_INFO as CL_INFO } from '@/c
 interface DemoConfig {
   component: React.FC<{ screen: string; onNavigate: (s: string) => void }>;
   steps: { step: number; label: string; screens: string[] }[];
-  info: Record<string, { emoji: string; title: string; desc: string }>;
+  info: Record<string, { title: string; desc: string }>;
   defaultScreen: string;
   hasBottomNav: boolean;
 }
