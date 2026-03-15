@@ -50,7 +50,7 @@ interface Drink {
   id: string; name: string; price: number; priceHH: number;
   cat: string; abv?: number; ibu?: number;
   style?: string; desc?: string; isNew?: boolean;
-  iconCat: string;
+  iconCat: string; imgId: string;
 }
 
 const DRINKS: Drink[] = [
