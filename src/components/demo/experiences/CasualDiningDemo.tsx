@@ -542,7 +542,7 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title={item.name} back="menu" />
           <div className="text-center mb-4">
-            <ItemIcon cat={MENU_CAT_MAP[item.cat] || item.cat.toLowerCase()} size="hero" className="mx-auto" />
+            <FoodImg id={item.imgId || 'food-generic'} size="hero" alt={item.name} className="mx-auto" />
             <h2 className="font-display text-lg font-bold mt-3">{item.name}</h2>
             <p className="text-sm text-muted-foreground">{item.desc}</p>
             <p className="font-display text-xl font-bold text-primary mt-2">R$ {item.price}</p>
