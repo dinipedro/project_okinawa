@@ -1400,7 +1400,7 @@ const JOURNEY_STEPS = [
   { step: 3, label: 'Explorar cardápio', screens: ['menu', 'item', 'ai-harmonization'] },
   { step: 4, label: 'Montar comanda', screens: ['comanda'] },
   { step: 5, label: 'Acompanhar pedido', screens: ['order-status'] },
-  { step: 6, label: 'Fechar conta & pagar', screens: ['fechar-conta', 'split-by-item', 'payment-success'] },
+  { step: 6, label: 'Fechar conta & pagar', screens: ['fechar-conta', 'payment-success'] },
   { step: 7, label: 'Programa de fidelidade', screens: ['loyalty'] },
   { step: 8, label: 'Reservar mesa', screens: ['reservations'] },
   { step: 9, label: 'Fila virtual', screens: ['virtual-queue'] },
