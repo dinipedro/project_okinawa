@@ -52,12 +52,12 @@ export const SCREEN_INFO: Record<Screen, { title: string; desc: string }> = {
 interface Props { onNavigate: (s: Screen) => void; screen: Screen; }
 
 const BOTTLES = [
-  { id: 'b1', name: 'Absolut Vodka', price: 350, desc: '750ml · Inclui 4 energéticos', category: 'Vodka', iconCat: 'cocktail' },
-  { id: 'b2', name: 'Grey Goose', price: 580, desc: '750ml · Premium · Inclui tônica', category: 'Vodka', iconCat: 'cocktail' },
-  { id: 'b3', name: 'Moët Chandon', price: 650, desc: '750ml · Brut Impérial', category: 'Espumante', iconCat: 'wine' },
-  { id: 'b4', name: 'Johnnie Walker Black', price: 480, desc: '750ml · 12 anos · Inclui gelo e água', category: 'Whisky', iconCat: 'cocktail' },
-  { id: 'b5', name: 'Balde Cerveja (6)', price: 120, desc: '6 long necks premium', category: 'Cerveja', iconCat: 'beer' },
-  { id: 'b6', name: 'Don Julio Tequila', price: 520, desc: '750ml · Reposado · Inclui limões', category: 'Tequila', iconCat: 'cocktail' },
+  { id: 'b1', name: 'Absolut Vodka', price: 350, desc: '750ml · Inclui 4 energéticos', category: 'Vodka', iconCat: 'cocktail', imgId: 'vodka' },
+  { id: 'b2', name: 'Grey Goose', price: 580, desc: '750ml · Premium · Inclui tônica', category: 'Vodka', iconCat: 'cocktail', imgId: 'vodka' },
+  { id: 'b3', name: 'Moët Chandon', price: 650, desc: '750ml · Brut Impérial', category: 'Espumante', iconCat: 'wine', imgId: 'champagne' },
+  { id: 'b4', name: 'Johnnie Walker Black', price: 480, desc: '750ml · 12 anos · Inclui gelo e água', category: 'Whisky', iconCat: 'cocktail', imgId: 'whisky' },
+  { id: 'b5', name: 'Balde Cerveja (6)', price: 120, desc: '6 long necks premium', category: 'Cerveja', iconCat: 'beer', imgId: 'beer-bucket' },
+  { id: 'b6', name: 'Don Julio Tequila', price: 520, desc: '750ml · Reposado · Inclui limões', category: 'Tequila', iconCat: 'cocktail', imgId: 'tequila' },
 ];
 
 export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
