@@ -58,16 +58,16 @@ interface MenuItem {
 }
 
 const MENU: MenuItem[] = [
-  { id: 'm1', name: 'Lasanha Bolonhesa', price: 52, cat: 'Massas', desc: 'Camadas de massa fresca com ragu bolonhês e bechamel', popular: true, prepTime: 25, allergens: ['glúten', 'lactose'] },
-  { id: 'm2', name: 'Pizza Pepperoni', price: 58, cat: 'Pizzas', desc: 'Massa artesanal, pepperoni importado e mussarela', popular: true, prepTime: 18, allergens: ['glúten', 'lactose'] },
-  { id: 'm3', name: 'Risoto de Camarão', price: 72, cat: 'Especiais', desc: 'Arroz arbóreo, camarões grelhados e açafrão', prepTime: 30, allergens: ['crustáceos', 'lactose'] },
-  { id: 'm4', name: 'Filé à Parmegiana', price: 65, cat: 'Carnes', desc: 'Filé empanado com molho pomodoro e queijo gratinado', popular: true, prepTime: 22, allergens: ['glúten', 'lactose'] },
-  { id: 'm5', name: 'Salada Caesar', price: 38, cat: 'Saladas', desc: 'Alface romana, croutons, parmesão e molho caesar', vegetarian: true, prepTime: 8, allergens: ['glúten', 'lactose'] },
-  { id: 'm6', name: 'Tiramisù', price: 28, cat: 'Sobremesas', desc: 'Clássico italiano com café e mascarpone', prepTime: 5, allergens: ['glúten', 'lactose', 'ovos'] },
-  { id: 'm7', name: 'Mini Pizza Margherita', price: 25, cat: 'Kids', desc: 'Tamanho perfeito para os pequenos', kids: true, prepTime: 12, allergens: ['glúten', 'lactose'] },
-  { id: 'm8', name: 'Nuggets com Batata', price: 22, cat: 'Kids', desc: 'Nuggets caseiros com batata frita', kids: true, prepTime: 15, allergens: ['glúten'] },
-  { id: 'm9', name: 'Macarrão com Queijo', price: 20, cat: 'Kids', desc: 'Mac & cheese cremoso', kids: true, prepTime: 10, allergens: ['glúten', 'lactose'] },
-  { id: 'm10', name: 'Bruschetta', price: 26, cat: 'Entradas', desc: 'Tomate fresco, manjericão e azeite', vegetarian: true, prepTime: 8, allergens: ['glúten'] },
+  { id: 'm1', name: 'Lasanha Bolonhesa', price: 52, cat: 'Massas', desc: 'Camadas de massa fresca com ragu bolonhês e bechamel', popular: true, prepTime: 25, allergens: ['glúten', 'lactose'], imgId: 'lasagna' },
+  { id: 'm2', name: 'Pizza Pepperoni', price: 58, cat: 'Pizzas', desc: 'Massa artesanal, pepperoni importado e mussarela', popular: true, prepTime: 18, allergens: ['glúten', 'lactose'], imgId: 'pizza-pepperoni' },
+  { id: 'm3', name: 'Risoto de Camarão', price: 72, cat: 'Especiais', desc: 'Arroz arbóreo, camarões grelhados e açafrão', prepTime: 30, allergens: ['crustáceos', 'lactose'], imgId: 'risotto' },
+  { id: 'm4', name: 'Filé à Parmegiana', price: 65, cat: 'Carnes', desc: 'Filé empanado com molho pomodoro e queijo gratinado', popular: true, prepTime: 22, allergens: ['glúten', 'lactose'], imgId: 'parmegiana' },
+  { id: 'm5', name: 'Salada Caesar', price: 38, cat: 'Saladas', desc: 'Alface romana, croutons, parmesão e molho caesar', vegetarian: true, prepTime: 8, allergens: ['glúten', 'lactose'], imgId: 'caesar-salad' },
+  { id: 'm6', name: 'Tiramisù', price: 28, cat: 'Sobremesas', desc: 'Clássico italiano com café e mascarpone', prepTime: 5, allergens: ['glúten', 'lactose', 'ovos'], imgId: 'tiramisu' },
+  { id: 'm7', name: 'Mini Pizza Margherita', price: 25, cat: 'Kids', desc: 'Tamanho perfeito para os pequenos', kids: true, prepTime: 12, allergens: ['glúten', 'lactose'], imgId: 'pizza' },
+  { id: 'm8', name: 'Nuggets com Batata', price: 22, cat: 'Kids', desc: 'Nuggets caseiros com batata frita', kids: true, prepTime: 15, allergens: ['glúten'], imgId: 'nuggets' },
+  { id: 'm9', name: 'Macarrão com Queijo', price: 20, cat: 'Kids', desc: 'Mac & cheese cremoso', kids: true, prepTime: 10, allergens: ['glúten', 'lactose'], imgId: 'mac-cheese' },
+  { id: 'm10', name: 'Bruschetta', price: 26, cat: 'Entradas', desc: 'Tomate fresco, manjericão e azeite', vegetarian: true, prepTime: 8, allergens: ['glúten'], imgId: 'bruschetta' },
 ];
 
 const MENU_CAT_MAP: Record<string, string> = {
