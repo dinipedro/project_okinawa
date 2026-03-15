@@ -54,7 +54,7 @@ export const SCREEN_INFO: Record<Screen, { title: string; desc: string }> = {
 interface MenuItem {
   id: string; name: string; price: number; cat: string;
   desc: string; popular?: boolean; kids?: boolean; vegetarian?: boolean;
-  allergens?: string[]; prepTime?: number;
+  allergens?: string[]; prepTime?: number; imgId?: string;
 }
 
 const MENU: MenuItem[] = [
