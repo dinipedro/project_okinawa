@@ -597,7 +597,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-success to-success/80 flex items-center justify-center mb-6 shadow-xl shadow-success/30 animate-bounce">
             <Check className="w-12 h-12 text-primary-foreground" />
           </div>
-          <h2 className="font-display text-2xl font-bold mb-2">Pedido Pronto! 🎉</h2>
+          <h2 className="font-display text-2xl font-bold mb-2">Pedido Pronto!</h2>
           <p className="text-sm text-muted-foreground mb-4">Retire no balcão express</p>
 
           <div className="w-full p-5 rounded-2xl bg-card border border-border mb-4">
