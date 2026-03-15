@@ -148,7 +148,7 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           {/* Live station alerts */}
           <div className="p-3 rounded-xl bg-success/10 border border-success/20 mb-3 flex items-center gap-2">
             <ChefHat className="w-4 h-4 text-success" />
-            <span className="text-xs text-success font-medium">🔥 Fraldinha acabou de sair da churrasqueira!</span>
+            <span className="text-xs text-success font-medium">Fraldinha acabou de sair da churrasqueira!</span>
           </div>
           <div className="p-3 rounded-xl bg-warning/10 border border-warning/20 mb-4 flex items-center gap-2">
             <RefreshCw className="w-4 h-4 text-warning" />
