@@ -99,7 +99,7 @@ export const DriveThruDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4">
-            <p className="text-sm text-muted-foreground">Dirigindo? 🚗</p>
+            <p className="text-sm text-muted-foreground">No caminho?</p>
             <h1 className="font-display text-xl font-bold">Peça no caminho</h1>
           </div>
           <GuidedHint text="Peça pelo app, pague antecipado, retire sem esperar" />
