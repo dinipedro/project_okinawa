@@ -1060,26 +1060,97 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: Screen) => void }> = ({ onNa
           </div>
         )}
 
-        {/* Selective Mode - Items */}
+        {/* Selective Mode - Items with inline "Dividir por todos" */}
         {payMode === 'split' && splitMode === 'selective' && (
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold text-foreground text-sm">Selecione os itens</h2>
-              <button onClick={() => onNavigate('split-by-item')} className="text-xs text-primary font-medium flex items-center gap-1">Tela completa <ChevronRight className="w-3 h-3" /></button>
-            </div>
+            <h2 className="font-semibold text-foreground text-sm mb-3">Selecione os itens que você paga</h2>
+
+            {/* Shared items banner */}
+            {sharedTotal > 0 && (
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/10 border border-accent/20 mb-3">
+                <Users className="w-4 h-4 text-accent shrink-0" />
+                <div className="flex-1">
+                  <p className="text-[10px] text-muted-foreground">
+                    Itens compartilhados: <span className="text-accent font-semibold">R$ {(sharedTotal / guests.length).toFixed(2)}/pessoa</span>
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2">
               {orderItems.map((item) => {
                 const isSelected = selectedItems.includes(item.id);
+                const isShared = sharedItems.includes(item.id);
                 const guest = guests.find(g => g.paid && g.items.includes(item.id));
                 const isPaid = !!guest;
+                const isExpanded = expandedItem === item.id;
+
                 return (
-                  <button key={item.id} onClick={() => !isPaid && toggleItem(item.id)} disabled={isPaid} className={`w-full p-3 rounded-xl border-2 flex items-center gap-3 transition-all ${isPaid ? 'border-success/30 bg-success/5 opacity-60' : isSelected ? 'border-primary bg-primary/10' : 'border-border bg-card'}`}>
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isPaid ? 'border-success bg-success' : isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/30'}`}>
-                      {(isSelected || isPaid) && <Check className="w-3 h-3 text-primary-foreground" />}
-                    </div>
-                    <div className="flex-1 text-left"><p className="text-sm font-medium text-foreground">{item.name}</p><p className="text-xs text-muted-foreground">{item.orderedBy}{isPaid ? ' · Pago' : ''}</p></div>
-                    <span className="font-semibold text-sm text-foreground">R$ {item.price}</span>
-                  </button>
+                  <div key={item.id} className={`rounded-xl border-2 transition-all overflow-hidden ${
+                    isPaid ? 'border-success/30 bg-success/5 opacity-60'
+                    : isShared ? 'border-accent bg-accent/5'
+                    : isSelected ? 'border-primary bg-primary/10'
+                    : 'border-border bg-card'
+                  }`}>
+                    <button
+                      onClick={() => {
+                        if (isPaid) return;
+                        if (isShared) { setExpandedItem(isExpanded ? null : item.id); return; }
+                        toggleItem(item.id);
+                      }}
+                      onContextMenu={(e) => { e.preventDefault(); if (!isPaid) setExpandedItem(isExpanded ? null : item.id); }}
+                      className="w-full p-3 flex items-center gap-3"
+                    >
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                        isPaid ? 'border-success bg-success'
+                        : isShared ? 'border-accent bg-accent'
+                        : isSelected ? 'border-primary bg-primary'
+                        : 'border-muted-foreground/30'
+                      }`}>
+                        {(isSelected || isPaid) && <Check className="w-3 h-3 text-primary-foreground" />}
+                        {isShared && <Users className="w-2.5 h-2.5 text-primary-foreground" />}
+                      </div>
+                      <div className="flex-1 text-left">
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-sm font-medium text-foreground">{item.name}</p>
+                          {isShared && <span className="px-1.5 py-0.5 rounded-full bg-accent/20 text-accent text-[9px] font-semibold">÷ todos</span>}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {isPaid ? `${item.orderedBy} · Pago` : isShared ? `R$ ${(item.price / guests.length).toFixed(2)}/pessoa` : item.orderedBy}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-foreground">R$ {item.price}</span>
+                        {!isPaid && (
+                          <button onClick={(e) => { e.stopPropagation(); setExpandedItem(isExpanded ? null : item.id); }}
+                            className="p-1 rounded-lg hover:bg-muted transition-colors">
+                            <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                          </button>
+                        )}
+                      </div>
+                    </button>
+
+                    {/* Inline expand: dividir por todos */}
+                    {isExpanded && !isPaid && (
+                      <div className="px-3 pb-3 pt-1 border-t border-border/50">
+                        <button
+                          onClick={() => toggleShared(item.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                            isShared ? 'bg-accent/10 border border-accent/30' : 'bg-muted/50 border border-transparent hover:border-accent/30'
+                          }`}
+                        >
+                          <Users className={`w-4 h-4 ${isShared ? 'text-accent' : 'text-muted-foreground'}`} />
+                          <div className="flex-1 text-left">
+                            <p className={`text-xs font-semibold ${isShared ? 'text-accent' : 'text-foreground'}`}>Dividir por todos</p>
+                            <p className="text-[10px] text-muted-foreground">R$ {(item.price / guests.length).toFixed(2)} p/ cada ({guests.length} pessoas)</p>
+                          </div>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isShared ? 'border-accent bg-accent' : 'border-muted-foreground/30'}`}>
+                            {isShared && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+                          </div>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
