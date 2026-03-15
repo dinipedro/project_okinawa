@@ -370,7 +370,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
                   onNavigate('comanda');
                 }
               }} className="w-full flex items-center gap-3 p-3 rounded-xl border border-border bg-card text-left">
-                <span className="text-2xl">{item.emoji}</span>
+                <ItemIcon cat={item.iconCat} size="sm" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="font-semibold text-sm">{item.name}</p>
