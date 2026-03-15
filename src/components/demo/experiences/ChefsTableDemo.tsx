@@ -117,15 +117,15 @@ export const ChefsTableDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             <h3 className="font-semibold text-sm mb-2">O que esperar</h3>
             <div className="space-y-1.5">
               {[
-                { icon: '🍽️', text: '7 cursos de degustação exclusivos' },
-                { icon: '🍷', text: 'Harmonização completa de vinhos premium' },
-                { icon: '👨‍🍳', text: 'Interação direta com o chef a cada curso' },
-                { icon: '📜', text: 'Menu personalizado de lembrança assinado' },
-                { icon: '📸', text: 'Sessão de fotos com o chef' },
-                { icon: '🎖️', text: 'Certificado digital de participação' },
-                { icon: '⏱️', text: 'Duração: ~3 horas' },
+                { icon: UtensilsCrossed, text: '7 cursos de degustação exclusivos' },
+                { icon: Wine, text: 'Harmonização completa de vinhos premium' },
+                { icon: ChefHat, text: 'Interação direta com o chef a cada curso' },
+                { icon: Award, text: 'Menu personalizado de lembrança assinado' },
+                { icon: Camera, text: 'Sessão de fotos com o chef' },
+                { icon: Crown, text: 'Certificado digital de participação' },
+                { icon: Clock, text: 'Duração: ~3 horas' },
               ].map((item, i) => (
-                <p key={i} className="text-xs text-muted-foreground flex items-center gap-2"><span>{item.icon}</span>{item.text}</p>
+                <p key={i} className="text-xs text-muted-foreground flex items-center gap-2"><item.icon className="w-3.5 h-3.5 text-primary shrink-0" />{item.text}</p>
               ))}
             </div>
           </div>

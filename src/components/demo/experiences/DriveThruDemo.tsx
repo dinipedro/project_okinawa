@@ -143,7 +143,7 @@ export const DriveThruDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="NOOWE Drive" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🚗</span>
+            <ItemIcon cat="drive" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Drive-Thru Inteligente</h2>
             <p className="text-sm text-muted-foreground">Peça agora. Pague antes. Retire sem espera.</p>
           </div>

@@ -221,7 +221,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
           {/* Features */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {['☕ Refil R$ 5', '🐕 Pet Friendly', '🅿️ Estacionamento', '♿ Acessível', '🌱 Opções veganas'].map(f => (
+            {['Refil R$ 5', 'Pet Friendly', 'Estacionamento', 'Acessível', 'Opções veganas'].map(f => (
               <span key={f} className="px-3 py-1 rounded-full bg-muted text-xs text-muted-foreground">{f}</span>
             ))}
           </div>

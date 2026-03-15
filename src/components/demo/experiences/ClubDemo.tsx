@@ -156,7 +156,7 @@ export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="NOOWE Club" back="home" right={<button className="w-8 h-8 rounded-full bg-muted flex items-center justify-center"><Share2 className="w-4 h-4" /></button>} />
           <div className="text-center mb-4">
-            <span className="text-5xl">🎵</span>
+            <ItemIcon cat="club" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Tech House Night</h2>
             <p className="text-sm text-muted-foreground">Sáb, 22 Mar · 23:00 - 06:00</p>
             <p className="text-xs text-muted-foreground mt-1 flex items-center justify-center gap-1"><MapPin className="w-3 h-3" /> Vila Olímpia, São Paulo</p>

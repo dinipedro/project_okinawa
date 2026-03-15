@@ -196,12 +196,12 @@ export const PubBarDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           )}
           <div className="grid grid-cols-3 gap-2 mb-4">
             {[
-              { label: 'Torneiras', value: '20', icon: '🍺' },
-              { label: 'Drinks', value: '15+', icon: '🍸' },
-              { label: 'Petiscos', value: '8', icon: '🍟' },
+              { label: 'Torneiras', value: '20', icon: Beer },
+              { label: 'Drinks', value: '15+', icon: Sparkles },
+              { label: 'Petiscos', value: '8', icon: UtensilsCrossed },
             ].map(s => (
               <div key={s.label} className="p-2.5 rounded-xl bg-muted/30 text-center">
-                <span className="text-lg">{s.icon}</span>
+                <s.icon className="w-5 h-5 text-primary mx-auto" />
                 <p className="text-xs font-bold">{s.value}</p>
                 <p className="text-[9px] text-muted-foreground">{s.label}</p>
               </div>

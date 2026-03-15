@@ -201,13 +201,13 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           </div>
           <div className="grid grid-cols-4 gap-2 mb-4">
             {[
-              { icon: '🍕', label: 'Cardápio' },
-              { icon: '📸', label: 'Fotos' },
-              { icon: '⭐', label: 'Avaliações' },
-              { icon: '📍', label: 'Como ir' },
+              { icon: UtensilsCrossed, label: 'Cardápio' },
+              { icon: Heart, label: 'Fotos' },
+              { icon: Star, label: 'Avaliações' },
+              { icon: MapPin, label: 'Como ir' },
             ].map(a => (
               <button key={a.label} className="p-2 rounded-xl bg-muted/50 text-center">
-                <span className="text-lg">{a.icon}</span>
+                <a.icon className="w-5 h-5 text-primary mx-auto" />
                 <p className="text-[9px] text-muted-foreground mt-0.5">{a.label}</p>
               </button>
             ))}

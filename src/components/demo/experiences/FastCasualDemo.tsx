@@ -213,7 +213,7 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="NOOWE Fresh" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🥗</span>
+            <ItemIcon cat="salad" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Monte do zero ou repita</h2>
             <p className="text-sm text-muted-foreground">100% fresco · Calorias calculadas em tempo real</p>
           </div>

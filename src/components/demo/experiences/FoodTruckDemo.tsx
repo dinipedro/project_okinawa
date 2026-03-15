@@ -167,7 +167,7 @@ export const FoodTruckDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="Taco Noowe" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🌮</span>
+            <ItemIcon cat="taco" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Taco Noowe</h2>
             <p className="text-sm text-muted-foreground">Tacos artesanais mexicanos autênticos</p>
             <div className="flex items-center justify-center gap-3 mt-2 text-xs">

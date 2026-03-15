@@ -192,7 +192,7 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
               <div key={i} className="p-3 rounded-xl border border-border bg-card">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">{station.emoji}</span>
+                    <ItemIcon cat={station.cat} size="sm" />
                     <span className="font-semibold text-sm">{station.name}</span>
                   </div>
                   <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${

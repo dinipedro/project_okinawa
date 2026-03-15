@@ -238,7 +238,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-4">
             {COMBOS.map(combo => (
               <div key={combo.id} className="flex-shrink-0 w-36 p-3 rounded-xl bg-card border border-border">
-                <span className="text-2xl">{combo.img.slice(0, 2)}</span>
+                <ItemIcon cat="combos" size="sm" />
                 <p className="font-semibold text-xs mt-1">{combo.name}</p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <span className="text-xs line-through text-muted-foreground">R$ {combo.original}</span>

@@ -119,12 +119,12 @@ const HomeScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNavigate 
       </div>
       <h3 className="font-display font-semibold text-sm mb-3">Perto de você</h3>
       {[
-        { name: 'Bistrô Noowe', dist: '350m', cuisine: 'Contemporânea', rating: 4.8, active: true },
-        { name: 'Sushi Kenzo', dist: '800m', cuisine: 'Japonesa', rating: 4.6 },
-        { name: 'La Pasta Fresca', dist: '1.2km', cuisine: 'Italiana', rating: 4.5 },
+        { name: 'Bistrô Noowe', dist: '350m', cuisine: 'Contemporânea', rating: 4.8, active: true, cat: 'chef' },
+        { name: 'Sushi Kenzo', dist: '800m', cuisine: 'Japonesa', rating: 4.6, cat: 'sushi' },
+        { name: 'La Pasta Fresca', dist: '1.2km', cuisine: 'Italiana', rating: 4.5, cat: 'pasta' },
       ].map((r, i) => (
         <button key={i} onClick={() => r.active ? onNavigate('restaurant') : undefined} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors mb-1">
-          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-lg">{['🍽️', '🍣', '🍝'][i]}</div>
+          <ItemIcon cat={r.cat} size="lg" />
           <div className="flex-1 text-left">
             <div className="font-semibold text-sm">{r.name}</div>
             <div className="text-xs text-muted-foreground">{r.cuisine} · {r.dist}</div>
