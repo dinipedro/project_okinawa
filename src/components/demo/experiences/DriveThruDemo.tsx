@@ -124,13 +124,13 @@ export const DriveThruDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           {/* How it works mini */}
           <div className="grid grid-cols-4 gap-1.5">
             {[
-              { step: '1', label: 'Peça', emoji: '📱' },
-              { step: '2', label: 'Pague', emoji: '💳' },
-              { step: '3', label: 'Dirija', emoji: '🚗' },
-              { step: '4', label: 'Retire', emoji: '✅' },
+              { step: '1', label: 'Peça', icon: Smartphone },
+              { step: '2', label: 'Pague', icon: CreditCard },
+              { step: '3', label: 'Dirija', icon: Car },
+              { step: '4', label: 'Retire', icon: Check },
             ].map(s => (
               <div key={s.step} className="p-2 rounded-xl bg-muted/30 text-center">
-                <span className="text-lg">{s.emoji}</span>
+                <s.icon className="w-5 h-5 text-primary mx-auto" />
                 <p className="text-[9px] text-muted-foreground">{s.label}</p>
               </div>
             ))}
