@@ -4,7 +4,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { useDemoContext, type DemoMenuItem } from '@/contexts/DemoContext';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, ArrowRight, Search, MapPin, Star, Clock, Heart,
   Minus, Plus, X, ChevronRight, CreditCard,
