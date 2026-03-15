@@ -354,7 +354,7 @@ export const ChefsTableDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <Header title="Amuse-Bouche" back="welcome" sub="Curso 1 de 7" />
           <CourseProgress current={1} total={7} />
           <div className="text-center mb-4">
-            <ItemIcon cat="seafood" size="hero" className="mx-auto" />
+            <FoodImg id="amuse-bouche" size="hero" alt="Tartar de Vieira" className="mx-auto" />
             <p className="text-xs text-primary font-semibold uppercase tracking-wider mb-1 mt-3">Amuse-Bouche</p>
             <h2 className="font-display text-xl font-bold">Tartar de Vieira</h2>
             <p className="text-xs text-muted-foreground mt-1">com yuzu, microgreens e ostra Miyagi</p>
