@@ -373,7 +373,7 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <div className="space-y-2 mb-4">
             {waitlistDrinks.map((drink, i) => (
               <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card">
-                <ItemIcon cat={drink.cat} size="sm" />
+                <FoodImg id={drink.imgId} size="sm" alt={drink.name} />
                 <div className="flex-1">
                   <p className="font-semibold text-sm">{drink.name}</p>
                   <p className="text-xs text-muted-foreground">R$ {drink.price}</p>
