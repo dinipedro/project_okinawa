@@ -159,7 +159,7 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4">
-            <p className="text-sm text-muted-foreground">Olá! 🥗</p>
+            <p className="text-sm text-muted-foreground">Olá</p>
             <h1 className="font-display text-xl font-bold">Monte seu prato ideal</h1>
           </div>
           <GuidedHint text="Customize cada ingrediente do seu bowl perfeito" />
