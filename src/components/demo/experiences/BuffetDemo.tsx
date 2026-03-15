@@ -259,7 +259,7 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
                   <span>Parcial</span><span className="text-primary">R$ {(485 * 79.9 / 1000).toFixed(2)}</span>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground mb-4">💡 Pode voltar e pesar mais vezes!</p>
+              <p className="text-xs text-muted-foreground mb-4">Pode voltar e pesar mais vezes!</p>
               <div className="w-full grid grid-cols-2 gap-2">
                 <button onClick={() => { setWeighHistory(prev => [...prev, 485]); setWeight(0); }} className="py-3 border border-border rounded-xl font-semibold text-sm flex items-center justify-center gap-1">
                   <RefreshCw className="w-3.5 h-3.5" />Pesar Mais
