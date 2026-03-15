@@ -214,7 +214,7 @@ export const DriveThruDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="Personalizar" back="menu" />
           <div className="text-center mb-4">
-            <ItemIcon cat={customItem.iconCat} size="hero" className="mx-auto" />
+            <FoodImg id={customItem.imgId} size="hero" alt={customItem.name} className="mx-auto" />
             <h2 className="font-display text-lg font-bold mt-2">{customItem.name}</h2>
             <p className="text-xs text-muted-foreground">{customItem.desc}</p>
           </div>
