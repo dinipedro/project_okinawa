@@ -3,11 +3,11 @@
  * Deep UX: Order Ahead → Menu Customization → Payment → GPS Live Tracking → Geofencing Trigger → Kitchen Notification → Lane Assignment → Pickup → Rating
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard, Gift,
   MapPin, Navigation, Car, ArrowRight, Loader2, Radio, Zap,
-  ChefHat, Bell, AlertCircle, Search,
+  ChefHat, Bell, AlertCircle, Search, Smartphone,
 } from 'lucide-react';
 
 type Screen = 'home' | 'restaurant' | 'menu' | 'customize' | 'cart' | 'payment' | 'gps-tracking' | 'geofence' | 'lane-assign' | 'pickup' | 'done';
@@ -99,14 +99,14 @@ export const DriveThruDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4">
-            <p className="text-sm text-muted-foreground">Dirigindo? 🚗</p>
+            <p className="text-sm text-muted-foreground">No caminho?</p>
             <h1 className="font-display text-xl font-bold">Peça no caminho</h1>
           </div>
           <GuidedHint text="Peça pelo app, pague antecipado, retire sem esperar" />
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-4">
             <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
               <div className="flex items-center gap-3">
-                <span className="text-4xl">🚗</span>
+                <ItemIcon cat="drive" size="xl" />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-display text-lg font-bold">NOOWE Drive</h3>
@@ -124,13 +124,13 @@ export const DriveThruDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           {/* How it works mini */}
           <div className="grid grid-cols-4 gap-1.5">
             {[
-              { step: '1', label: 'Peça', emoji: '📱' },
-              { step: '2', label: 'Pague', emoji: '💳' },
-              { step: '3', label: 'Dirija', emoji: '🚗' },
-              { step: '4', label: 'Retire', emoji: '✅' },
+              { step: '1', label: 'Peça', icon: Smartphone },
+              { step: '2', label: 'Pague', icon: CreditCard },
+              { step: '3', label: 'Dirija', icon: Car },
+              { step: '4', label: 'Retire', icon: Check },
             ].map(s => (
               <div key={s.step} className="p-2 rounded-xl bg-muted/30 text-center">
-                <span className="text-lg">{s.emoji}</span>
+                <s.icon className="w-5 h-5 text-primary mx-auto" />
                 <p className="text-[9px] text-muted-foreground">{s.label}</p>
               </div>
             ))}
@@ -143,7 +143,7 @@ export const DriveThruDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="NOOWE Drive" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🚗</span>
+            <ItemIcon cat="drive" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Drive-Thru Inteligente</h2>
             <p className="text-sm text-muted-foreground">Peça agora. Pague antes. Retire sem espera.</p>
           </div>

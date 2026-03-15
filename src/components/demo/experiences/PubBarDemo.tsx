@@ -5,12 +5,13 @@
  * Per-Consumption Split → Close Tab → Rate
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard, Gift, QrCode,
   Users, Timer, ArrowRight, Beer, RefreshCw, UserPlus, Share2,
   Copy, Send, ChevronDown, Zap, Sparkles, DollarSign, AlertTriangle,
   Bell, ThumbsUp, MapPin, Search, Thermometer, ChevronRight, Lock,
+  UtensilsCrossed,
 } from 'lucide-react';
 
 type Screen =
@@ -127,7 +128,7 @@ export const PubBarDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-3">
-            <p className="text-sm text-muted-foreground">Sexta-feira! 🍺</p>
+            <p className="text-sm text-muted-foreground">Sexta-feira</p>
             <h1 className="font-display text-xl font-bold">Bares por perto</h1>
           </div>
           <div className="flex items-center gap-2 mb-4">
@@ -137,7 +138,7 @@ export const PubBarDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             </div>
           </div>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-4">
-            {['Happy Hour 🎉', 'Cerveja Artesanal 🍺', 'Coquetelaria 🍸', 'Ao vivo 🎵', 'Petiscos 🍟'].map((f, i) => (
+            {['Happy Hour', 'Cerveja Artesanal', 'Coquetelaria', 'Ao vivo', 'Petiscos'].map((f, i) => (
               <button key={f} className={`px-3 py-1.5 rounded-full text-[10px] font-medium whitespace-nowrap ${i === 0 ? 'bg-warning text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>{f}</button>
             ))}
           </div>
@@ -145,7 +146,7 @@ export const PubBarDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-3">
             <div className="rounded-2xl overflow-hidden border border-border bg-card">
               <div className="h-24 bg-gradient-to-r from-amber-600/20 to-yellow-700/20 flex items-center justify-center relative">
-                <span className="text-5xl">🍺</span>
+                <ItemIcon cat="beer" size="hero" />
                 <div className="absolute top-2 right-2">
                   <span className="px-2 py-0.5 rounded-full bg-warning/90 text-primary-foreground text-[9px] font-bold animate-pulse">🎉 Happy Hour</span>
                 </div>
@@ -175,7 +176,7 @@ export const PubBarDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="Noowe Tap House" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🍺</span>
+            <ItemIcon cat="beer" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Noowe Tap House</h2>
             <p className="text-sm text-muted-foreground">20 torneiras artesanais · Ambiente social</p>
             <div className="flex items-center justify-center gap-3 mt-2 text-xs">
@@ -196,12 +197,12 @@ export const PubBarDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           )}
           <div className="grid grid-cols-3 gap-2 mb-4">
             {[
-              { label: 'Torneiras', value: '20', icon: '🍺' },
-              { label: 'Drinks', value: '15+', icon: '🍸' },
-              { label: 'Petiscos', value: '8', icon: '🍟' },
+              { label: 'Torneiras', value: '20', icon: Beer },
+              { label: 'Drinks', value: '15+', icon: Sparkles },
+              { label: 'Petiscos', value: '8', icon: UtensilsCrossed },
             ].map(s => (
               <div key={s.label} className="p-2.5 rounded-xl bg-muted/30 text-center">
-                <span className="text-lg">{s.icon}</span>
+                <s.icon className="w-5 h-5 text-primary mx-auto" />
                 <p className="text-xs font-bold">{s.value}</p>
                 <p className="text-[9px] text-muted-foreground">{s.label}</p>
               </div>

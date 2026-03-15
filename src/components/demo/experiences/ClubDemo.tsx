@@ -5,7 +5,7 @@
  * Min Spend Tracker (real-time) → Dance Floor Ordering → End of Night Summary → Rate & Uber
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard, Gift, QrCode,
   Users, Timer, ArrowRight, Music, Ticket, Crown, MapPin, UserPlus,
@@ -99,7 +99,7 @@ export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-3">
-            <p className="text-sm text-muted-foreground">Hoje à noite 🎵</p>
+            <p className="text-sm text-muted-foreground">Hoje à noite</p>
             <h1 className="font-display text-xl font-bold">Eventos & Clubs</h1>
           </div>
           <div className="flex items-center gap-2 mb-4">
@@ -112,7 +112,7 @@ export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             </button>
           </div>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-4">
-            {['Hoje 🔥', 'Este fds', 'Tech House', 'Funk', 'Sertanejo', 'Open Bar'].map((f, i) => (
+            {['Hoje', 'Este fds', 'Tech House', 'Funk', 'Sertanejo', 'Open Bar'].map((f, i) => (
               <button key={f} className={`px-3 py-1.5 rounded-full text-[10px] font-medium whitespace-nowrap ${i === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>{f}</button>
             ))}
           </div>
@@ -120,7 +120,7 @@ export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <button onClick={() => onNavigate('club-detail')} className="w-full text-left mb-3">
             <div className="rounded-2xl overflow-hidden border border-border bg-card">
               <div className="h-32 bg-gradient-to-br from-purple-600/30 to-pink-600/30 flex items-center justify-center relative">
-                <span className="text-5xl">🎵</span>
+                <ItemIcon cat="club" size="hero" />
                 <div className="absolute top-2 left-3 flex gap-1">
                   <span className="px-2 py-0.5 rounded-full bg-primary/90 text-primary-foreground text-[9px] font-bold">HOJE</span>
                   <span className="px-2 py-0.5 rounded-full bg-warning/90 text-primary-foreground text-[9px] font-bold">Lote 2</span>
@@ -141,7 +141,7 @@ export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             </div>
           </button>
           <div className="p-3 rounded-2xl border border-border bg-card flex items-center gap-3">
-            <span className="text-3xl">🎤</span>
+            <ItemIcon cat="music" size="lg" />
             <div className="flex-1">
               <h3 className="font-semibold text-sm">Samba do Noowe</h3>
               <p className="text-[10px] text-muted-foreground">Sábado · Roda de samba · R$ 40</p>
@@ -156,7 +156,7 @@ export const ClubDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="NOOWE Club" back="home" right={<button className="w-8 h-8 rounded-full bg-muted flex items-center justify-center"><Share2 className="w-4 h-4" /></button>} />
           <div className="text-center mb-4">
-            <span className="text-5xl">🎵</span>
+            <ItemIcon cat="club" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Tech House Night</h2>
             <p className="text-sm text-muted-foreground">Sáb, 22 Mar · 23:00 - 06:00</p>
             <p className="text-xs text-muted-foreground mt-1 flex items-center justify-center gap-1"><MapPin className="w-3 h-3" /> Vila Olímpia, São Paulo</p>

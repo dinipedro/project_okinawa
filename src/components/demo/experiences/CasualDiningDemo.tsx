@@ -4,7 +4,7 @@
  * Rich Menu with allergens/popularity → Per-Person Ordering → Interactive Split Bill → Tip & Loyalty → Review
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard, Gift, QrCode,
   Users, Timer, ArrowRight, UtensilsCrossed, CalendarDays, Baby, Heart,
@@ -127,7 +127,7 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-3">
-            <p className="text-sm text-muted-foreground">Boa noite 👨‍👩‍👧‍👦</p>
+            <p className="text-sm text-muted-foreground">Boa noite</p>
             <h1 className="font-display text-xl font-bold">Jantar em família</h1>
           </div>
           <div className="flex items-center gap-2 mb-4">
@@ -148,7 +148,7 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-3">
             <div className="rounded-2xl overflow-hidden border border-border bg-card">
               <div className="h-28 bg-gradient-to-r from-red-500/20 to-orange-500/20 flex items-center justify-center relative">
-                <span className="text-5xl">🍕</span>
+                <ItemIcon cat="pizza" size="hero" className="mx-auto" />
                 <div className="absolute top-2 right-2 flex gap-1">
                   <span className="px-2 py-0.5 rounded-full bg-success/90 text-primary-foreground text-[9px] font-bold">👶 Kids Friendly</span>
                   <span className="px-2 py-0.5 rounded-full bg-primary/90 text-primary-foreground text-[9px] font-bold">🐶 Pet OK</span>
@@ -172,7 +172,7 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             </div>
           </button>
           <div className="p-3 rounded-2xl border border-border bg-card mb-3 flex items-center gap-3">
-            <span className="text-3xl">🍣</span>
+            <ItemIcon cat="sushi" size="lg" />
             <div className="flex-1">
               <h3 className="font-semibold text-sm">Sushi Noowe</h3>
               <p className="text-[10px] text-muted-foreground">Japonês · R$$$$ · 1.2km</p>
@@ -190,7 +190,7 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="Cantina Noowe" back="home" right={<button className="w-8 h-8 rounded-full bg-muted flex items-center justify-center"><Heart className="w-4 h-4 text-muted-foreground" /></button>} />
           <div className="text-center mb-4">
-            <span className="text-6xl">🍕</span>
+            <ItemIcon cat="pizza" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Cantina Noowe</h2>
             <p className="text-sm text-muted-foreground">Comida italiana casual · Ambiente familiar</p>
             <div className="flex items-center justify-center gap-3 mt-2 text-xs">
@@ -201,13 +201,13 @@ export const CasualDiningDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           </div>
           <div className="grid grid-cols-4 gap-2 mb-4">
             {[
-              { icon: '🍕', label: 'Cardápio' },
-              { icon: '📸', label: 'Fotos' },
-              { icon: '⭐', label: 'Avaliações' },
-              { icon: '📍', label: 'Como ir' },
+              { icon: UtensilsCrossed, label: 'Cardápio' },
+              { icon: Heart, label: 'Fotos' },
+              { icon: Star, label: 'Avaliações' },
+              { icon: MapPin, label: 'Como ir' },
             ].map(a => (
               <button key={a.label} className="p-2 rounded-xl bg-muted/50 text-center">
-                <span className="text-lg">{a.icon}</span>
+                <a.icon className="w-5 h-5 text-primary mx-auto" />
                 <p className="text-[9px] text-muted-foreground mt-0.5">{a.label}</p>
               </button>
             ))}

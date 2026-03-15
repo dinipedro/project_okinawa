@@ -35,6 +35,15 @@ const CATEGORY_ICONS: Record<string, React.FC<{ className?: string }>> = {
   ticket: Ticket, event: Ticket,
   location: MapPin, map: MapPin,
   order: ShoppingBag, bag: ShoppingBag,
+  // PT-BR demo categories
+  grelhados: Flame, massas: UtensilsCrossed, saladas: Leaf,
+  acompanhamentos: UtensilsCrossed, sobremesas: CakeSlice,
+  cafés: Coffee, chás: Coffee, salgados: Sandwich, doces: CakeSlice,
+  bebidas: Droplets, sucos: Droplets, refrigerantes: Droplets,
+  cervejas: Beer, vinhos: Wine, combos: ShoppingBag,
+  individuais: UtensilsCrossed, burgers: UtensilsCrossed, pizzas: Pizza,
+  especiais: ChefHat, carnes: Flame, entradas: UtensilsCrossed,
+  kids: UtensilsCrossed, petiscos: UtensilsCrossed,
   generic: UtensilsCrossed,
 };
 

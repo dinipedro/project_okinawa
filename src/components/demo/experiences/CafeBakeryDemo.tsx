@@ -3,7 +3,7 @@
  * Deep journey: Discover → QR Scan → Work Mode → Coffee Customization → Comanda Live → Refill → Payment → Loyalty
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard,
   Wifi, Battery, Plug, Volume2, Coffee, Gift, QrCode, RefreshCw,
@@ -125,7 +125,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Bom dia ☕</p>
+              <p className="text-sm text-muted-foreground">Bom dia</p>
               <h1 className="font-display text-xl font-bold">Encontrar um café</h1>
             </div>
             <button className="relative w-9 h-9 rounded-full bg-muted flex items-center justify-center">
@@ -145,7 +145,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-4">
             <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-700/10 to-orange-800/10 border border-amber-700/20">
               <div className="flex items-center gap-3">
-                <span className="text-4xl">☕</span>
+                <ItemIcon cat="coffee" size="xl" />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-display text-lg font-bold">Café Noowe</h3>
@@ -173,11 +173,11 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           {/* Other cafés */}
           <h3 className="font-display font-semibold text-sm mb-3">Mais opções</h3>
           {[
-            { name: 'Padaria Artesanal', dist: '450m', wifi: true, rating: 4.4, emoji: '🥖' },
-            { name: 'Chá & Companhia', dist: '900m', wifi: true, rating: 4.2, emoji: '🍵' },
+            { name: 'Padaria Artesanal', dist: '450m', wifi: true, rating: 4.4, cat: 'bakery' },
+            { name: 'Chá & Companhia', dist: '900m', wifi: true, rating: 4.2, cat: 'tea' },
           ].map((r, i) => (
             <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 mb-1">
-              <span className="text-2xl">{r.emoji}</span>
+              <ItemIcon cat={r.cat} />
               <div className="flex-1"><p className="font-semibold text-sm">{r.name}</p><p className="text-xs text-muted-foreground">{r.dist} {r.wifi ? '· Wi-Fi' : ''}</p></div>
               <div className="flex items-center gap-1"><Star className="w-3 h-3 text-accent fill-accent" /><span className="text-xs font-semibold">{r.rating}</span></div>
             </div>
@@ -194,7 +194,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             <div className="w-8" />
           </div>
           <div className="text-center mb-4">
-            <span className="text-6xl">☕</span>
+            <ItemIcon cat="coffee" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Café Noowe</h2>
             <p className="text-sm text-muted-foreground">Seu espaço para trabalhar e saborear</p>
             <div className="flex items-center justify-center gap-3 mt-2 text-sm">
@@ -221,7 +221,7 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
           {/* Features */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {['☕ Refil R$ 5', '🐕 Pet Friendly', '🅿️ Estacionamento', '♿ Acessível', '🌱 Opções veganas'].map(f => (
+            {['Refil R$ 5', 'Pet Friendly', 'Estacionamento', 'Acessível', 'Opções veganas'].map(f => (
               <span key={f} className="px-3 py-1 rounded-full bg-muted text-xs text-muted-foreground">{f}</span>
             ))}
           </div>

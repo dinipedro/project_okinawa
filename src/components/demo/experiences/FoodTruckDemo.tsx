@@ -3,7 +3,7 @@
  * Deep UX: Map Discovery → Schedule → Truck Detail → Virtual Queue → Pre-Order → Cart → Payment → Live Prep → Push Ready → Pickup → Loyalty
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard, Gift,
   MapPin, Navigation, Timer, ArrowRight, Loader2, Bell, Map,
@@ -89,7 +89,7 @@ export const FoodTruckDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4">
-            <p className="text-sm text-muted-foreground">Com fome? 🚚</p>
+            <p className="text-sm text-muted-foreground">Com fome?</p>
             <h1 className="font-display text-xl font-bold">Food Trucks ao vivo</h1>
           </div>
           <GuidedHint text="Localização em tempo real dos trucks por perto" />
@@ -97,12 +97,12 @@ export const FoodTruckDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             <Map className="w-5 h-5" />Ver Mapa ao Vivo
           </button>
           {[
-            { name: 'Taco Noowe', dist: '800m', cuisine: 'Mexicana', rating: 4.8, emoji: '🌮', active: true, wait: '~12 min' },
-            { name: 'Burger Bros', dist: '1.5km', cuisine: 'Burgers', rating: 4.5, emoji: '🍔', wait: '~20 min' },
-            { name: 'Açaí Tropical', dist: '2.1km', cuisine: 'Açaí & Bowls', rating: 4.3, emoji: '🫐', wait: '~8 min' },
+            { name: 'Taco Noowe', dist: '800m', cuisine: 'Mexicana', rating: 4.8, cat: 'taco', active: true, wait: '~12 min' },
+            { name: 'Burger Bros', dist: '1.5km', cuisine: 'Burgers', rating: 4.5, cat: 'burger', wait: '~20 min' },
+            { name: 'Açaí Tropical', dist: '2.1km', cuisine: 'Açaí & Bowls', rating: 4.3, cat: 'acai', wait: '~8 min' },
           ].map((truck, i) => (
             <button key={i} onClick={() => truck.active ? onNavigate('truck-detail') : undefined} className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 mb-1.5 text-left border border-border bg-card">
-              <span className="text-2xl">{truck.emoji}</span>
+              <ItemIcon cat={truck.cat} />
               <div className="flex-1">
                 <p className="font-semibold text-sm">{truck.name}</p>
                 <p className="text-xs text-muted-foreground">{truck.cuisine} · {truck.dist}</p>
@@ -167,7 +167,7 @@ export const FoodTruckDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="Taco Noowe" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🌮</span>
+            <ItemIcon cat="taco" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Taco Noowe</h2>
             <p className="text-sm text-muted-foreground">Tacos artesanais mexicanos autênticos</p>
             <div className="flex items-center justify-center gap-3 mt-2 text-xs">

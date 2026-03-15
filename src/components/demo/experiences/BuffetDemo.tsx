@@ -3,7 +3,7 @@
  * Deep UX: Discovery → Occupation/Menu → QR Check-in → Browse Stations → Smart Scale (multi-weigh) → Drinks Order → Live Comanda → Payment → Rating
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, CreditCard, Gift, QrCode,
   Search, MapPin, Scale, ArrowRight, Utensils, Droplets, Users,
@@ -36,12 +36,12 @@ export const SCREEN_INFO: Record<Screen, { emoji: string; title: string; desc: s
 };
 
 const STATIONS = [
-  { name: 'Grelhados', emoji: '🥩', items: ['Fraldinha', 'Linguiça', 'Frango'], status: 'fresh' as const },
-  { name: 'Massas', emoji: '🍝', items: ['Espaguete', 'Penne', 'Lasanha'], status: 'fresh' as const },
-  { name: 'Saladas', emoji: '🥗', items: ['Folhas Mix', 'Tabule', 'Grega'], status: 'fresh' as const },
-  { name: 'Acompanhamentos', emoji: '🍚', items: ['Arroz', 'Feijão', 'Purê', 'Farofa'], status: 'replenishing' as const },
-  { name: 'Sobremesas', emoji: '🍰', items: ['Pudim', 'Mousse', 'Frutas'], status: 'fresh' as const },
-  { name: 'Sushi Bar', emoji: '🍣', items: ['Salmão', 'Atum', 'Philadelphia'], status: 'fresh' as const },
+  { name: 'Grelhados', cat: 'grelhados', items: ['Fraldinha', 'Linguiça', 'Frango'], status: 'fresh' as const },
+  { name: 'Massas', cat: 'massas', items: ['Espaguete', 'Penne', 'Lasanha'], status: 'fresh' as const },
+  { name: 'Saladas', cat: 'saladas', items: ['Folhas Mix', 'Tabule', 'Grega'], status: 'fresh' as const },
+  { name: 'Acompanhamentos', cat: 'acompanhamentos', items: ['Arroz', 'Feijão', 'Purê', 'Farofa'], status: 'replenishing' as const },
+  { name: 'Sobremesas', cat: 'sobremesas', items: ['Pudim', 'Mousse', 'Frutas'], status: 'fresh' as const },
+  { name: 'Sushi Bar', cat: 'sushi', items: ['Salmão', 'Atum', 'Philadelphia'], status: 'fresh' as const },
 ];
 
 const DRINK_MENU = [
@@ -96,14 +96,14 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4">
-            <p className="text-sm text-muted-foreground">Bom almoço 🍽️</p>
+            <p className="text-sm text-muted-foreground">Bom almoço</p>
             <h1 className="font-display text-xl font-bold">Buffets por perto</h1>
           </div>
           <GuidedHint text="Buffet com balança inteligente e comanda digital" />
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-4">
             <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20">
               <div className="flex items-center gap-3">
-                <span className="text-4xl">🍽️</span>
+                <ItemIcon cat="buffet" size="xl" />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-display text-lg font-bold">Sabores Noowe</h3>
@@ -127,19 +127,19 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="Sabores Noowe" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🍽️</span>
+            <ItemIcon cat="buffet" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Buffet Self-Service</h2>
             <p className="text-sm text-muted-foreground">Sirva-se à vontade · R$ 79,90/kg</p>
           </div>
           <div className="grid grid-cols-2 gap-2 mb-4">
             {[
-              { label: 'Opções Hoje', value: '84+', emoji: '🍖' },
-              { label: 'Preço/kg', value: 'R$ 79,90', emoji: '⚖️' },
-              { label: 'Sushi Bar', value: '✓ Incluso', emoji: '🍣' },
-              { label: 'Ocupação', value: '65%', emoji: '👥' },
+              { label: 'Opções Hoje', value: '84+', icon: ChefHat },
+              { label: 'Preço/kg', value: 'R$ 79,90', icon: Scale },
+              { label: 'Sushi Bar', value: '✓ Incluso', icon: Utensils },
+              { label: 'Ocupação', value: '65%', icon: Users },
             ].map((s, i) => (
               <div key={i} className="p-3 rounded-xl bg-muted/30 text-center">
-                <span className="text-xl">{s.emoji}</span>
+                <s.icon className="w-5 h-5 text-primary mx-auto" />
                 <p className="text-xs font-bold mt-1">{s.value}</p>
                 <p className="text-[9px] text-muted-foreground">{s.label}</p>
               </div>
@@ -148,7 +148,7 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           {/* Live station alerts */}
           <div className="p-3 rounded-xl bg-success/10 border border-success/20 mb-3 flex items-center gap-2">
             <ChefHat className="w-4 h-4 text-success" />
-            <span className="text-xs text-success font-medium">🔥 Fraldinha acabou de sair da churrasqueira!</span>
+            <span className="text-xs text-success font-medium">Fraldinha acabou de sair da churrasqueira!</span>
           </div>
           <div className="p-3 rounded-xl bg-warning/10 border border-warning/20 mb-4 flex items-center gap-2">
             <RefreshCw className="w-4 h-4 text-warning" />
@@ -192,7 +192,7 @@ export const BuffetDemo: React.FC<Props> = ({ onNavigate, screen }) => {
               <div key={i} className="p-3 rounded-xl border border-border bg-card">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">{station.emoji}</span>
+                    <ItemIcon cat={station.cat} size="sm" />
                     <span className="font-semibold text-sm">{station.name}</span>
                   </div>
                   <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${

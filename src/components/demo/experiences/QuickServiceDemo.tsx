@@ -3,7 +3,7 @@
  * Deep journey: Discover → Skip the Line → Menu with Combos → Item Customization → Cart → Payment → Live Prep Tracking → Pickup → Rating
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Search, Star, Clock, Minus, Plus, Check, Loader2,
   Zap, Timer, QrCode, ChevronRight, CreditCard, Gift, Smartphone,
@@ -130,7 +130,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Bom dia 👋</p>
+              <p className="text-sm text-muted-foreground">Bom dia</p>
               <h1 className="font-display text-xl font-bold">Pedido rápido</h1>
             </div>
             <button className="relative w-9 h-9 rounded-full bg-muted flex items-center justify-center">
@@ -145,7 +145,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           </div>
 
           <div className="flex gap-3 mb-5 overflow-x-auto pb-1 scrollbar-hide">
-            {['Skip the Line ⚡', 'Burgers', 'Pizza', 'Açaí', 'Saudável'].map((cat, i) => (
+            {['Skip the Line', 'Burgers', 'Pizza', 'Açaí', 'Saudável'].map((cat, i) => (
               <button key={cat} className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap ${i === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>{cat}</button>
             ))}
           </div>
@@ -154,7 +154,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-5 group">
             <div className="p-4 rounded-2xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20">
               <div className="flex items-center gap-3">
-                <span className="text-4xl">⚡</span>
+                <ItemIcon cat="quick" size="xl" />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-display text-lg font-bold">NOOWE Express</h3>
@@ -177,11 +177,11 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           {/* Other nearby */}
           <h3 className="font-display font-semibold text-sm mb-3">Mais por perto</h3>
           {[
-            { name: 'Burger Bros', dist: '800m', time: '8 min', rating: 4.3, emoji: '🍔' },
-            { name: 'Frango & Cia', dist: '1.2km', time: '10 min', rating: 4.1, emoji: '🍗' },
+            { name: 'Burger Bros', dist: '800m', time: '8 min', rating: 4.3, cat: 'burger' },
+            { name: 'Frango & Cia', dist: '1.2km', time: '10 min', rating: 4.1, cat: 'chicken' },
           ].map((r, i) => (
             <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 mb-1">
-              <span className="text-2xl">{r.emoji}</span>
+              <ItemIcon cat={r.cat} />
               <div className="flex-1"><p className="font-semibold text-sm">{r.name}</p><p className="text-xs text-muted-foreground">{r.dist} · {r.time}</p></div>
               <div className="flex items-center gap-1"><Star className="w-3 h-3 text-accent fill-accent" /><span className="text-xs font-semibold">{r.rating}</span></div>
             </div>
@@ -199,7 +199,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           </div>
 
           <div className="text-center mb-4">
-            <span className="text-6xl">⚡</span>
+            <ItemIcon cat="quick" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">NOOWE Express</h2>
             <p className="text-sm text-muted-foreground">Fast Food Premium · Tempo médio 5 min</p>
             <div className="flex items-center justify-center gap-3 mt-2 text-sm">
@@ -225,7 +225,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
           {/* How it works */}
           <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 mb-4">
-            <p className="text-sm font-semibold text-primary mb-2">⚡ Como funciona o Skip the Line</p>
+            <div className="flex items-center gap-2 mb-2"><Zap className="w-4 h-4 text-primary" /><p className="text-sm font-semibold text-primary">Como funciona o Skip the Line</p></div>
             <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2"><span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">1</span>Monte seu pedido pelo app</div>
               <div className="flex items-center gap-2"><span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">2</span>Pague na hora — sem fila no caixa</div>
@@ -238,7 +238,7 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-4">
             {COMBOS.map(combo => (
               <div key={combo.id} className="flex-shrink-0 w-36 p-3 rounded-xl bg-card border border-border">
-                <span className="text-2xl">{combo.img.slice(0, 2)}</span>
+                <ItemIcon cat="combos" size="sm" />
                 <p className="font-semibold text-xs mt-1">{combo.name}</p>
                 <div className="flex items-center gap-1.5 mt-1">
                   <span className="text-xs line-through text-muted-foreground">R$ {combo.original}</span>

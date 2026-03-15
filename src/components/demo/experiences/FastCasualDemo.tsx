@@ -3,7 +3,7 @@
  * Deep UX: Discovery → Saved Bowls → Dish Builder (4 steps) → Allergy/Nutrition → Favorites → Payment → Live Prep → Pickup → Rating
  */
 import React, { useState, useEffect } from 'react';
-import { GuidedHint } from '../DemoShared';
+import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Loader2, Star, Clock, ChevronRight,
   Leaf, Flame, Droplets, Wheat, CreditCard, Gift, Plus,
@@ -159,7 +159,7 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
       return (
         <div className="px-5 pb-4">
           <div className="pt-2 pb-4">
-            <p className="text-sm text-muted-foreground">Olá! 🥗</p>
+            <p className="text-sm text-muted-foreground">Olá</p>
             <h1 className="font-display text-xl font-bold">Monte seu prato ideal</h1>
           </div>
           <GuidedHint text="Customize cada ingrediente do seu bowl perfeito" />
@@ -171,7 +171,7 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           <button onClick={() => onNavigate('restaurant')} className="w-full text-left mb-4">
             <div className="p-4 rounded-2xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
               <div className="flex items-center gap-3">
-                <span className="text-4xl">🥗</span>
+                <ItemIcon cat="salad" size="xl" />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-display text-lg font-bold">NOOWE Fresh</h3>
@@ -188,13 +188,13 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
             </div>
           </button>
           {/* Popular bowls */}
-          <h3 className="font-semibold text-sm mb-2">🔥 Bowls populares</h3>
+          <h3 className="font-semibold text-sm mb-2">Bowls populares</h3>
           {[
             { name: 'Protein Power', items: 'Quinoa + Frango + Ovo + Avocado', cal: 520, price: 42 },
             { name: 'Veggie Zen', items: 'Mix Folhas + Tofu + Edamame + Pesto', cal: 380, price: 38 },
           ].map((bowl, i) => (
             <button key={i} onClick={() => onNavigate('restaurant')} className="w-full flex items-center gap-3 p-3 rounded-xl border border-border bg-card mb-2 text-left">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-lg">{i === 0 ? '💪' : '🧘'}</div>
+              <ItemIcon cat={i === 0 ? 'meat' : 'veggie'} />
               <div className="flex-1">
                 <p className="font-semibold text-sm">{bowl.name}</p>
                 <p className="text-[10px] text-muted-foreground">{bowl.items}</p>
@@ -213,7 +213,7 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
         <div className="px-5 pb-4">
           <Header title="NOOWE Fresh" back="home" />
           <div className="text-center mb-4">
-            <span className="text-5xl">🥗</span>
+            <ItemIcon cat="salad" size="hero" className="mx-auto" />
             <h2 className="font-display text-xl font-bold mt-2">Monte do zero ou repita</h2>
             <p className="text-sm text-muted-foreground">100% fresco · Calorias calculadas em tempo real</p>
           </div>
