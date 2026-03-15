@@ -7,7 +7,7 @@ import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, CreditCard, Gift, Calendar,
   Crown, ChefHat, Wine, Camera, ArrowRight, Sparkles, Heart,
-  Users, Lock, MessageCircle, Share2, Award, Loader2,
+  Users, Lock, MessageCircle, Share2, Award, Loader2, UtensilsCrossed,
 } from 'lucide-react';
 
 type Screen = 'home' | 'detail' | 'reservation' | 'dietary' | 'wine-pref' | 'payment' | 'countdown' | 'welcome' | 'course-1' | 'course-2' | 'course-3' | 'photo' | 'finale';

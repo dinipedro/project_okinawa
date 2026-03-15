@@ -7,7 +7,7 @@ import { GuidedHint, ItemIcon } from '../DemoShared';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard, Gift,
   MapPin, Navigation, Car, ArrowRight, Loader2, Radio, Zap,
-  ChefHat, Bell, AlertCircle, Search,
+  ChefHat, Bell, AlertCircle, Search, Smartphone,
 } from 'lucide-react';
 
 type Screen = 'home' | 'restaurant' | 'menu' | 'customize' | 'cart' | 'payment' | 'gps-tracking' | 'geofence' | 'lane-assign' | 'pickup' | 'done';

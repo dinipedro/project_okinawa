@@ -11,6 +11,7 @@ import {
   Users, Timer, ArrowRight, Beer, RefreshCw, UserPlus, Share2,
   Copy, Send, ChevronDown, Zap, Sparkles, DollarSign, AlertTriangle,
   Bell, ThumbsUp, MapPin, Search, Thermometer, ChevronRight, Lock,
+  UtensilsCrossed,
 } from 'lucide-react';
 
 type Screen =
