@@ -206,7 +206,7 @@ const DemoClientInner = () => {
           {/* Info sidebar */}
           <div className="hidden xl:block w-72 shrink-0 sticky top-8">
             <div className="p-5 rounded-2xl bg-card border border-border mb-5">
-              <h3 className="font-display font-bold mb-2">{info.emoji} {info.title}</h3>
+              <h3 className="font-display font-bold mb-2">{info.title}</h3>
               <p className="text-sm text-muted-foreground">{info.desc}</p>
             </div>
 
