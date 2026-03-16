@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { GuidedHint, ItemIcon } from '../DemoShared';
 import DemoOrderStatus, { ORDER_STEPS } from '../DemoOrderStatus';
 import DemoPayment from '../DemoPayment';
+import DemoPaymentSuccess from '../DemoPaymentSuccess';
 import { FoodImg } from '../FoodImages';
 import {
   ArrowLeft, Check, Loader2, Star, Clock, ChevronRight,
@@ -559,25 +560,16 @@ export const FastCasualDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
     case 'ready':
       return (
-        <div className="flex flex-col items-center justify-center h-full px-5 text-center">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-success to-success/80 flex items-center justify-center mb-5 shadow-xl shadow-success/30">
-            <Check className="w-12 h-12 text-primary-foreground" />
-          </div>
-          <h2 className="font-display text-2xl font-bold mb-2">Bowl Pronto! 🥗</h2>
-          <p className="text-sm text-muted-foreground mb-1">Preparado em 8 minutos</p>
-          <div className="w-full p-5 rounded-2xl bg-card border border-border mb-4 mt-4">
-            <p className="text-xs text-muted-foreground">Bandeja / Código</p>
-            <p className="font-display text-4xl font-bold tracking-widest text-success mt-1">#42</p>
-            <p className="text-xs text-muted-foreground mt-1">Balcão de retirada · Setor A</p>
-          </div>
-          <div className="w-full p-3 rounded-xl bg-primary/5 border border-primary/20 mb-4 flex items-center gap-3">
-            <Gift className="w-5 h-5 text-primary" />
-            <div className="text-left"><p className="text-sm font-semibold">+45 pontos ganhos!</p><p className="text-xs text-muted-foreground">Stamp 7/10 · 3 mais para bowl grátis!</p></div>
-          </div>
-          <button onClick={() => onNavigate('rating')} className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-semibold flex items-center justify-center gap-2">
-            <Star className="w-5 h-5" />Avaliar (+10 pts bônus)
-          </button>
-        </div>
+        <DemoPaymentSuccess
+          heading="Bowl Pronto!"
+          subtitle="Preparado em 8 minutos"
+          summaryItems={[
+            { label: 'Código / Bandeja', value: '#42', highlight: 'success' },
+            { label: 'Retirada', value: 'Balcão · Setor A' },
+          ]}
+          loyaltyReward={{ points: '+45 pontos ganhos!', description: 'Stamp 7/10 · 3 mais para bowl grátis!' }}
+          primaryAction={{ label: 'Avaliar (+10 pts bônus)', onClick: () => onNavigate('rating'), icon: Star }}
+        />
       );
 
     case 'rating':

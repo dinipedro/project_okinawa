@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { GuidedHint, ItemIcon } from '../DemoShared';
 import { FoodImg } from '../FoodImages';
 import DemoPayment from '../DemoPayment';
+import DemoPaymentSuccess from '../DemoPaymentSuccess';
 import {
   ArrowLeft, Check, Star, Clock, Plus, Minus, CreditCard, Gift,
   MapPin, Navigation, Timer, ArrowRight, Loader2, Bell, Map, Sparkles,
@@ -402,31 +403,21 @@ export const FoodTruckDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
     case 'ready':
       return (
-        <div className="flex flex-col items-center justify-center h-full px-5 text-center">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-success to-success/80 flex items-center justify-center mb-5 shadow-xl shadow-success/30">
-            <Check className="w-12 h-12 text-primary-foreground" />
-          </div>
-          <h2 className="font-display text-2xl font-bold mb-2">Pedido Pronto!</h2>
-          <p className="text-sm text-muted-foreground mb-4">Retire no truck — Taco Noowe</p>
-          <div className="w-full p-5 rounded-2xl bg-card border border-border mb-4">
-            <p className="text-xs text-muted-foreground">Código de retirada</p>
-            <p className="font-display text-4xl font-bold tracking-widest text-success mt-1">TN-023</p>
-          </div>
-          <div className="w-full p-3 rounded-xl bg-primary/5 border border-primary/20 mb-3 flex items-center gap-3">
-            <Gift className="w-5 h-5 text-primary" />
-            <div className="text-left"><p className="text-sm font-semibold">+10 pontos ganhos!</p><p className="text-xs text-muted-foreground">Stamp 4 de 8 — taco grátis em breve!</p></div>
-          </div>
-          <div className="w-full grid grid-cols-8 gap-1.5 mb-4">
-            {Array.from({length: 8}).map((_, i) => (
-              <div key={i} className={`h-8 rounded-lg flex items-center justify-center ${i < 4 ? 'bg-primary/20' : 'bg-muted/30'}`}>
-                {i < 4 ? <UtensilsCrossed className="w-3.5 h-3.5 text-primary" /> : <span className="text-xs text-muted-foreground">{i+1}</span>}
-              </div>
-            ))}
-          </div>
-          <button onClick={() => onNavigate('rating')} className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-semibold flex items-center justify-center gap-2">
-            <Star className="w-5 h-5" />Avaliar
-          </button>
-        </div>
+        <DemoPaymentSuccess
+          heading="Pedido Pronto!"
+          subtitle="Retire no truck — Taco Noowe"
+          summaryItems={[
+            { label: 'Código de retirada', value: 'TN-023', highlight: 'success' },
+          ]}
+          loyaltyReward={{ points: '+10 pontos ganhos!', description: 'Stamp 4 de 8 — taco grátis em breve!' }}
+          stats={[
+            { label: 'Stamp 1', value: '✓' },
+            { label: 'Stamp 2', value: '✓' },
+            { label: 'Stamp 3', value: '✓' },
+            { label: 'Stamp 4', value: '✓' },
+          ]}
+          primaryAction={{ label: 'Avaliar', onClick: () => onNavigate('rating'), icon: Star }}
+        />
       );
 
     case 'rating':

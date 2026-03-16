@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { GuidedHint, ItemIcon } from '../DemoShared';
 import DemoOrderStatus, { ORDER_STEPS } from '../DemoOrderStatus';
 import DemoPayment from '../DemoPayment';
+import DemoPaymentSuccess from '../DemoPaymentSuccess';
 import { FoodImg } from '../FoodImages';
 import {
   ArrowLeft, Search, Star, Clock, Minus, Plus, Check, Loader2,
@@ -543,27 +544,16 @@ export const QuickServiceDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
     case 'ready':
       return (
-        <div className="flex flex-col items-center justify-center h-full px-5 text-center">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-success to-success/80 flex items-center justify-center mb-6 shadow-xl shadow-success/30 animate-bounce">
-            <Check className="w-12 h-12 text-primary-foreground" />
-          </div>
-          <h2 className="font-display text-2xl font-bold mb-2">Pedido Pronto!</h2>
-          <p className="text-sm text-muted-foreground mb-4">Retire no balcão express</p>
-
-          <div className="w-full p-5 rounded-2xl bg-card border border-border mb-4">
-            <p className="font-display text-4xl font-bold tracking-widest text-success">NE-847</p>
-            <p className="text-xs text-muted-foreground mt-2">Tempo total: 4 min 32s ⚡</p>
-          </div>
-
-          <div className="w-full p-3 rounded-xl bg-primary/5 border border-primary/20 mb-4 flex items-center gap-3">
-            <Award className="w-5 h-5 text-accent" />
-            <div className="text-left"><p className="text-sm font-semibold">+{Math.round(cartTotal / 10)} pontos ganhos!</p><p className="text-xs text-muted-foreground">Total acumulado: {340 + Math.round(cartTotal / 10)} pts</p></div>
-          </div>
-
-          <button onClick={() => onNavigate('rating')} className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-semibold shadow-glow">
-            Avaliar Experiência
-          </button>
-        </div>
+        <DemoPaymentSuccess
+          heading="Pedido Pronto!"
+          subtitle="Retire no balcão express"
+          summaryItems={[
+            { label: 'Código', value: 'NE-847', highlight: 'success' },
+            { label: 'Tempo total', value: '4 min 32s ⚡' },
+          ]}
+          loyaltyReward={{ points: `+${Math.round(cartTotal / 10)} pontos ganhos!`, description: `Total acumulado: ${340 + Math.round(cartTotal / 10)} pts` }}
+          primaryAction={{ label: 'Avaliar Experiência', onClick: () => onNavigate('rating'), icon: Star }}
+        />
       );
 
     case 'rating':
