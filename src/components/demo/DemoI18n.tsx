@@ -1550,7 +1550,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Padaria Artesanal': 'Artisan Bakery',
     'Chá & Companhia': 'Tea & Co.',
     'Pequeno': 'Small',
-    'Grande': 'Large',
     '8 de 10 cafés — mais 2 e o próximo é GRÁTIS!': '8 of 10 coffees — 2 more and the next is FREE!',
 
     // ── Casual Dining Missing Items ──
@@ -1564,9 +1563,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Macarrão com Queijo': 'Mac & Cheese',
     'Porção de Pão de Alho': 'Garlic Bread Portion',
     'Próxima sobremesa kids grátis em 2 visitas': 'Next free kids dessert in 2 visits',
-    'Maria': 'Maria',
-    'João': 'João',
-    'Sofia': 'Sofia',
 
     // ── Chef's Table Missing Items ──
     'Nível Gold desbloqueado': 'Gold Level unlocked',
@@ -1574,10 +1570,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     // ── Club Missing Items ──
     'Grey Goose': 'Grey Goose',
     'Moët Chandon': 'Moët Chandon',
-    'Johnnie Walker Black': 'Johnnie Walker Black',
-    'Balde Cerveja (6)': 'Beer Bucket (6)',
-    'Don Julio Reposado': 'Don Julio Reposado',
-    'Gin Tônica': 'Gin & Tonic',
     'Vodka Red Bull': 'Vodka Red Bull',
     'Shot Tequila': 'Tequila Shot',
     'DJ Marcos': 'DJ Marcos',
@@ -1608,7 +1600,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Wrap Grelhado': 'Grilled Wrap',
     'Sundae': 'Sundae',
     'Café Latte 400ml': 'Café Latte 400ml',
-    'Milkshake 500ml': 'Milkshake 500ml',
     'Bacon Extra': 'Extra Bacon',
     'Queijo Extra': 'Extra Cheese',
     'Stamp #12 — próximo combo grátis!': 'Stamp #12 — next combo free!',
@@ -1628,7 +1619,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Mostarda & Mel': 'Honey Mustard',
     'Pesto de Manjericão': 'Basil Pesto',
     'Protein Power': 'Protein Power',
-    'Veggie Zen': 'Veggie Zen',
     'Stamp 7/10 · 3 mais para bowl grátis!': 'Stamp 7/10 · 3 more for a free bowl!',
 
     // ── Fine Dining Missing Items ──
@@ -1642,22 +1632,13 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Bônus de aniversário': 'Birthday bonus',
     'Resgate: Drink da casa': 'Redeem: House drink',
     'Gold': 'Gold',
-    'Silver': 'Silver',
     'Platinum': 'Platinum',
     'Black': 'Black',
-    'Jantar para 2': 'Dinner for 2',
-    'Entrada premium': 'Premium starter',
-    'Sobremesa grátis': 'Free dessert',
-    'Drink da casa': 'House drink',
     'Convidado pendente': 'Pending guest',
 
     // ── Food Truck Missing Items ──
     'Taco al Pastor (3un)': 'Taco al Pastor (3pc)',
     'Taco de Carnitas (3un)': 'Carnitas Taco (3pc)',
-    'Taco Vegetariano (3un)': 'Veggie Taco (3pc)',
-    'Quesadilla Frango': 'Chicken Quesadilla',
-    'Nachos Supreme': 'Nachos Supreme',
-    'Churros (4un)': 'Churros (4pc)',
     'Taco Noowe': 'Taco Noowe',
     'Burger Bros': 'Burger Bros',
     'Stamp 4 de 8 — taco grátis em breve!': 'Stamp 4 of 8 — free taco coming soon!',
@@ -1665,13 +1646,9 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     // ── Pub & Bar Missing Items ──
     'Pilsen Premium': 'Premium Pilsner',
     'Stout de Chocolate': 'Chocolate Stout',
-    'Wheat Beer': 'Wheat Beer',
     'Gin Tônica Artesanal': 'Artisan Gin & Tonic',
     'Porção de Batata': 'Potato Portion',
     'Lucas': 'Lucas',
-    'Ana': 'Ana',
-    'Seletivo': 'Selective',
-    'Próximo chopp grátis em 3 visitas': 'Next free draft beer in 3 visits',
 
     // ── Quick Service Missing Items ──
     'Smash Burger Classic': 'Classic Smash Burger',
@@ -1686,6 +1663,12 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Ovo Frito': 'Fried Egg',
     'Jalapeño': 'Jalapeño',
     'Frango & Cia': 'Chicken & Co.',
+    'Nuggets (6un)': 'Nuggets (6pc)',
+    'Refri 500ml': 'Soft Drink 500ml',
+    'Suco': 'Juice',
+    'Milkshake': 'Milkshake',
+    'NOOWE Express · Quick Service': 'NOOWE Express · Quick Service',
+    'Total acumulado: ${340 + Math.round(cartTotal / 10)} pts': 'Total balance: ${340 + Math.round(cartTotal / 10)} pts',
   },
   es: {
     // ── Common UI ──
@@ -2709,7 +2692,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Padaria Artesanal': 'Panadería Artesanal',
     'Chá & Companhia': 'Té y Compañía',
     'Pequeno': 'Pequeño',
-    'Grande': 'Grande',
     '8 de 10 cafés — mais 2 e o próximo é GRÁTIS!': '¡8 de 10 cafés — 2 más y el próximo es GRATIS!',
 
     // ── Casual Dining Missing Items ──
@@ -2727,9 +2709,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Caça ao Tesouro': 'Búsqueda del Tesoro',
     'Chef Mirim': 'Chef Junior',
     'Próxima sobremesa kids grátis em 2 visitas': 'Próximo postre kids gratis en 2 visitas',
-    'Maria': 'María',
-    'João': 'João',
-    'Sofia': 'Sofía',
 
     // ── Chef's Table Missing Items ──
     'Nível Gold desbloqueado': 'Nivel Gold desbloqueado',
@@ -2737,10 +2716,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     // ── Club Missing Items ──
     'Grey Goose': 'Grey Goose',
     'Moët Chandon': 'Moët Chandon',
-    'Johnnie Walker Black': 'Johnnie Walker Black',
-    'Balde Cerveja (6)': 'Balde de Cerveza (6)',
-    'Don Julio Reposado': 'Don Julio Reposado',
-    'Gin Tônica': 'Gin Tonic',
     'Vodka Red Bull': 'Vodka Red Bull',
     'Shot Tequila': 'Shot de Tequila',
     'DJ Marcos': 'DJ Marcos',
@@ -2771,7 +2746,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Wrap Grelhado': 'Wrap a la Parrilla',
     'Sundae': 'Sundae',
     'Café Latte 400ml': 'Café Latte 400ml',
-    'Milkshake 500ml': 'Malteada 500ml',
     'Bacon Extra': 'Tocino Extra',
     'Queijo Extra': 'Queso Extra',
     'Stamp #12 — próximo combo grátis!': '¡Sello #12 — próximo combo gratis!',
@@ -2791,7 +2765,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Mostarda & Mel': 'Mostaza y Miel',
     'Pesto de Manjericão': 'Pesto de Albahaca',
     'Protein Power': 'Protein Power',
-    'Veggie Zen': 'Veggie Zen',
     'Stamp 7/10 · 3 mais para bowl grátis!': '¡Sello 7/10 · 3 más para bowl gratis!',
 
     // ── Fine Dining Missing Items ──
@@ -2810,22 +2783,13 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Bônus de aniversário': 'Bono de cumpleaños',
     'Resgate: Drink da casa': 'Canje: Trago de la casa',
     'Gold': 'Gold',
-    'Silver': 'Silver',
     'Platinum': 'Platinum',
     'Black': 'Black',
-    'Jantar para 2': 'Cena para 2',
-    'Entrada premium': 'Entrada premium',
-    'Sobremesa grátis': 'Postre gratis',
-    'Drink da casa': 'Trago de la casa',
     'Convidado pendente': 'Invitado pendiente',
 
     // ── Food Truck Missing Items ──
     'Taco al Pastor (3un)': 'Taco al Pastor (3un)',
     'Taco de Carnitas (3un)': 'Taco de Carnitas (3un)',
-    'Taco Vegetariano (3un)': 'Taco Vegetariano (3un)',
-    'Quesadilla Frango': 'Quesadilla de Pollo',
-    'Nachos Supreme': 'Nachos Supreme',
-    'Churros (4un)': 'Churros (4un)',
     'Taco Noowe': 'Taco Noowe',
     'Burger Bros': 'Burger Bros',
     'Stamp 4 de 8 — taco grátis em breve!': '¡Sello 4 de 8 — taco gratis pronto!',
@@ -2833,13 +2797,9 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     // ── Pub & Bar Missing Items ──
     'Pilsen Premium': 'Pilsen Premium',
     'Stout de Chocolate': 'Stout de Chocolate',
-    'Wheat Beer': 'Wheat Beer',
     'Gin Tônica Artesanal': 'Gin Tonic Artesanal',
     'Porção de Batata': 'Porción de Papas',
     'Lucas': 'Lucas',
-    'Ana': 'Ana',
-    'Seletivo': 'Selectivo',
-    'Próximo chopp grátis em 3 visitas': 'Próximo chopp gratis en 3 visitas',
 
     // ── Quick Service Missing Items ──
     'Smash Burger Classic': 'Smash Burger Clásica',
