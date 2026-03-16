@@ -2472,6 +2472,9 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     // WaiterScreen
     'Aguardar Aproximação': 'Wait for Approach',
     'Processar na Maquininha': 'Process on Card Machine',
+    // VirtualQueueScreen (dynamic)
+    'à sua frente': 'ahead of you',
+    'Você é o próximo!': 'You\'re next!',
   },
   es: {
     // ── Common UI ──
