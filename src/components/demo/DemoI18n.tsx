@@ -897,7 +897,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Status do Pedido': 'Order Status',
     'Notificação': 'Notification',
     'Pedir drinks': 'Order drinks',
-    'Pedir drinks e aperitivos': 'Order drinks and appetizers',
     'Como deseja pagar?': 'How would you like to pay?',
     'Modo de divisão': 'Split mode',
     'Resumo da sua parte': 'Your share summary',
