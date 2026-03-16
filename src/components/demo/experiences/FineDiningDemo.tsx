@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useDemoContext, type DemoMenuItem } from '@/contexts/DemoContext';
 import { GuidedHint, ItemIcon } from '../DemoShared';
 import DemoOrderStatus, { ORDER_STEPS } from '../DemoOrderStatus';
+import DemoPayment from '../DemoPayment';
 import DemoPaymentSuccess from '../DemoPaymentSuccess';
 import {
   ArrowLeft, ArrowRight, Search, MapPin, Star, Clock, Heart,
@@ -21,7 +22,7 @@ import {
 
 type Screen =
   | 'home' | 'restaurant' | 'menu' | 'item' | 'comanda'
-  | 'fechar-conta' | 'order-status' | 'loyalty' | 'reservations'
+  | 'fechar-conta' | 'payment' | 'order-status' | 'loyalty' | 'reservations'
   | 'qr-scan' | 'call-waiter' | 'profile' | 'virtual-queue' | 'my-orders'
   | 'payment-success' | 'notifications' | 'ai-harmonization';
 
@@ -47,7 +48,8 @@ export const SCREEN_INFO: Record<string, { title: string; desc: string }> = {
   'menu': { title: 'Cardápio Digital', desc: 'Menu digital com categorias, tags de alérgenos, tempo de preparo e harmonização IA.' },
   'item': { title: 'Detalhe do Prato', desc: 'Detalhe do prato com foto, descrição e adição rápida à comanda.' },
   'comanda': { title: 'Minha Comanda', desc: 'Revisão da comanda com ajuste de quantidades e convite de pessoas.' },
-  'fechar-conta': { title: 'Fechar Conta', desc: 'Fluxo integrado: veja quem está na mesa, convide pessoas, escolha dividir ou pagar tudo, selecione modo de divisão, gorjeta e método de pagamento — tudo em uma tela.' },
+  'fechar-conta': { title: 'Fechar Conta', desc: 'Configure como a conta será dividida, convide pessoas e revise sua parte antes de seguir para o pagamento.' },
+  'payment': { title: 'Pagamento', desc: 'Tela padronizada de pagamento com os mesmos métodos, layout e resumo usados em todas as demos.' },
   'order-status': { title: 'Status do Pedido', desc: 'Acompanhamento em tempo real com status individual por item e nome do chef responsável.' },
   'loyalty': { title: 'Fidelidade', desc: 'Programa de pontos com níveis (Silver→Black), recompensas resgatáveis e histórico.' },
   'reservations': { title: 'Reservas', desc: 'Reserva com convite de amigos, compartilhamento de link e código de confirmação.' },
@@ -730,7 +732,6 @@ const OrderStatusScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
 const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNavigate }) => {
   const [payMode, setPayMode] = useState<'solo' | 'split'>('split');
   const [splitMode, setSplitMode] = useState<'individual' | 'equal' | 'selective' | 'fixed'>('individual');
-  const [selectedPayment, setSelectedPayment] = useState('pix');
   const [tipPercent, setTipPercent] = useState(10);
   const [selectedItems, setSelectedItems] = useState<string[]>(['i1', 'i2']);
   const [sharedItems, setSharedItems] = useState<string[]>(['i7']);
@@ -738,6 +739,7 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
   const [showInvite, setShowInvite] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const [checkoutStep, setCheckoutStep] = useState<'config' | 'payment'>('config');
 
   const orderItems = [
     { id: 'i1', name: 'Tartare de Atum', price: 58, orderedBy: 'Você' },
@@ -801,6 +803,35 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
     });
     setExpandedItem(null);
   };
+
+  if (checkoutStep === 'payment') {
+    return (
+      <DemoPayment
+        title="Pagamento"
+        subtitle="Bistrô Noowe · Mesa 7"
+        total={`R$ ${myTotal.toFixed(2)}`}
+        totalLabel="Você paga"
+        items={[
+          { label: 'Sua parte', value: `R$ ${mySubtotal.toFixed(2)}` },
+          ...(payMode === 'split' && sharedTotal > 0
+            ? [{ label: 'Itens compartilhados', value: `R$ ${mySharedPortion.toFixed(2)}`, highlight: 'accent' as const }]
+            : []),
+          ...(tipPercent > 0
+            ? [{ label: `Gorjeta (${tipPercent}%)`, value: `R$ ${myTip.toFixed(2)}` }]
+            : []),
+          ...(paidByOthers > 0
+            ? [{ label: 'Pago por outros', value: `- R$ ${paidByOthers.toFixed(2)}`, highlight: 'success' as const }]
+            : []),
+        ]}
+        infoBanner={{ icon: Zap, text: 'Pagamento premium com os mesmos métodos disponíveis em todas as demos', variant: 'primary' }}
+        showTip={false}
+        fullMethodGrid={true}
+        onBack={() => setCheckoutStep('config')}
+        onConfirm={() => onNavigate('payment-success')}
+        ctaLabel={`Pagar R$ ${myTotal.toFixed(2)}`}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -972,41 +1003,8 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
           </div>
         )}
 
-        {/* Tip */}
-        <div>
-          <h2 className="font-semibold text-foreground text-sm mb-3">Gorjeta</h2>
-          <div className="flex gap-2">
-            {[0, 10, 15, 20].map((p) => (
-              <button key={p} onClick={() => setTipPercent(p)} className={`flex-1 py-3 rounded-xl border-2 font-semibold text-sm transition-all ${tipPercent === p ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground'}`}>
-                {p === 0 ? 'Sem' : `${p}%`}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Payment method */}
-        <div>
-          <h2 className="font-semibold text-foreground text-sm mb-3">Forma de pagamento</h2>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { id: 'pix', name: 'PIX', icon: QrCode },
-              { id: 'credit', name: 'Crédito', icon: CreditCard },
-              { id: 'apple', name: 'Apple Pay', icon: Smartphone },
-              { id: 'google', name: 'Google Pay', icon: Smartphone },
-              { id: 'tap', name: 'TAP to Pay', icon: Nfc },
-              { id: 'wallet', name: 'Carteira', icon: Wallet },
-            ].map((method) => (
-              <button key={method.id} onClick={() => setSelectedPayment(method.id)} className={`p-3 rounded-xl border-2 text-center transition-all ${selectedPayment === method.id ? 'border-primary bg-primary/10' : 'border-border bg-card'}`}>
-                <method.icon className={`w-5 h-5 mx-auto mb-1 ${selectedPayment === method.id ? 'text-primary' : 'text-muted-foreground'}`} />
-                <span className={`text-xs font-medium ${selectedPayment === method.id ? 'text-primary' : 'text-muted-foreground'}`}>{method.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Summary */}
         <div className="p-4 rounded-2xl bg-card border border-border">
-          <h3 className="font-semibold text-foreground mb-3">Resumo</h3>
+          <h3 className="font-semibold text-foreground mb-3">Resumo da sua parte</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-muted-foreground">Sua parte</span><span className="text-foreground">R$ {mySubtotal.toFixed(2)}</span></div>
             {payMode === 'split' && sharedTotal > 0 && (
@@ -1020,8 +1018,8 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
       </div>
 
       <div className="p-5 bg-card border-t border-border">
-        <button onClick={() => onNavigate('payment-success')} className="w-full py-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold rounded-2xl shadow-xl shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-          <CreditCard className="w-5 h-5" />Pagar R$ {myTotal.toFixed(2)}
+        <button onClick={() => setCheckoutStep('payment')} className="w-full py-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold rounded-2xl shadow-xl shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <CreditCard className="w-5 h-5" />Continuar para Pagamento
         </button>
       </div>
     </div>
@@ -1188,7 +1186,9 @@ export const FineDiningDemo: React.FC<{ screen: string; onNavigate: (s: string) 
     case 'menu': return <MenuScreen onNavigate={onNavigate} onSelectItem={handleSelectItem} />;
     case 'item': return selectedItem ? <ItemDetailScreen item={selectedItem} onNavigate={onNavigate} /> : <HomeScreen onNavigate={onNavigate} />;
     case 'comanda': return <ComandaScreen onNavigate={onNavigate} />;
-    case 'fechar-conta': return <FecharContaScreen onNavigate={onNavigate} />;
+    case 'fechar-conta':
+    case 'payment':
+      return <FecharContaScreen onNavigate={onNavigate} />;
     case 'order-status': return <OrderStatusScreen onNavigate={onNavigate} />;
     case 'loyalty': return <LoyaltyScreen onNavigate={onNavigate} />;
     case 'reservations': return <ReservationsScreen onNavigate={onNavigate} />;
