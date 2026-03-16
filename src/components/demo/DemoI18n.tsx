@@ -940,7 +940,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Detalhe do prato com foto, descrição e adição rápida à comanda.': 'Dish detail with photo, description and quick add to order.',
     
     'Revisão da comanda com ajuste de quantidades e convite de pessoas.': 'Order review with quantity adjustments and guest invites.',
-    'Fechar Conta': 'Close Tab',
+    
     'Configure como a conta será dividida, convide pessoas e revise sua parte antes de seguir para o pagamento.': 'Configure how the bill will be split, invite people and review your share before proceeding to payment.',
     'Status do Pedido': 'Order Status',
     'Acompanhamento em tempo real com status individual por item e nome do chef responsável.': 'Real-time tracking with individual item status and responsible chef name.',
