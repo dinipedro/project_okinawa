@@ -158,7 +158,7 @@ const DemoClientInner = () => {
             <div className={`flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r ${activeServiceType?.color || ''} border border-border/50`}>
               <ItemIcon cat={activeServiceType?.iconCat || 'generic'} size="lg" />
               <div>
-                <h1 className="font-display text-lg font-bold text-foreground">{activeServiceType?.restaurant}</h1>
+                <h1 className="font-display text-lg font-bold text-foreground">{activeServiceType ? translateText(activeServiceType.restaurant) : ''}</h1>
                 <p className="text-sm text-muted-foreground">{activeServiceType ? t('serviceTypes', activeServiceType.id) : ''} · {activeServiceType ? t('serviceTypeTaglines', activeServiceType.id) : ''}</p>
               </div>
             </div>
