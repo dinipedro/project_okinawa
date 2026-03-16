@@ -247,7 +247,7 @@ const DemoPayment: React.FC<PaymentConfig> = ({
                 : infoBanner.variant === 'warning'
                   ? 'text-warning'
                   : 'text-primary'
-            }`}>{infoBanner.text}</span>
+            }`}>{translateText(infoBanner.text)}</span>
           </div>
         )}
 
@@ -255,13 +255,13 @@ const DemoPayment: React.FC<PaymentConfig> = ({
         {estimatedTime && (
           <div className="p-3 rounded-xl bg-muted/30 flex items-center gap-2">
             <Clock className="w-4 h-4 text-primary" />
-            <span className="text-xs font-medium">Preparo estimado: <strong>{estimatedTime}</strong></span>
+            <span className="text-xs font-medium">{translateText('Preparo estimado')}: <strong>{estimatedTime}</strong></span>
           </div>
         )}
 
         {/* Summary Card */}
         <div className="bg-card rounded-2xl p-4 shadow-md border border-border">
-          <h3 className="font-semibold text-foreground text-sm mb-3">Resumo</h3>
+          <h3 className="font-semibold text-foreground text-sm mb-3">{translateText('Resumo')}</h3>
           <div className="space-y-2">
             {items.map((item, i) => (
               <div key={i} className="flex justify-between text-sm">
@@ -270,23 +270,23 @@ const DemoPayment: React.FC<PaymentConfig> = ({
                   item.highlight === 'warning' ? 'text-warning' :
                   item.highlight === 'accent' ? 'text-accent' :
                   'text-muted-foreground'
-                }>{item.label}</span>
+                }>{translateText(item.label)}</span>
                 <span className={
                   item.highlight === 'success' ? 'text-success font-medium' :
                   item.highlight === 'warning' ? 'text-warning font-medium' :
                   item.highlight === 'accent' ? 'text-accent font-medium' :
                   'text-foreground'
-                }>{item.value}</span>
+                }>{translateText(item.value)}</span>
               </div>
             ))}
             {showTip && tipPercent > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Gorjeta ({tipPercent}%)</span>
+                <span className="text-muted-foreground">{translateText('Gorjeta')} ({tipPercent}%)</span>
                 <span>R$ {tipAmount}</span>
               </div>
             )}
             <div className="border-t border-border pt-2 mt-1 flex justify-between">
-              <span className="font-semibold text-foreground">{totalLabel}</span>
+              <span className="font-semibold text-foreground">{translateText(totalLabel)}</span>
               <span className="font-bold text-xl text-primary">{total}</span>
             </div>
           </div>
@@ -300,7 +300,7 @@ const DemoPayment: React.FC<PaymentConfig> = ({
           className="w-full py-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold rounded-2xl shadow-xl shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
           <CreditCard className="w-5 h-5" />
-          {ctaLabel || `Pagar ${total}`}
+          {translateText(ctaLabel || `Pagar ${total}`)}
         </button>
       </div>
     </div>

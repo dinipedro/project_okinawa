@@ -188,12 +188,12 @@ const DemoSplitBill: React.FC<SplitBillConfig> = ({
                     line.highlight === 'success' ? 'text-success' :
                     line.highlight === 'warning' ? 'text-warning' :
                     'text-muted-foreground'
-                  }>{line.label}</span>
+                  }>{translateText(line.label)}</span>
                   <span className={
                     line.highlight === 'success' ? 'text-success font-medium' :
                     line.highlight === 'warning' ? 'text-warning font-medium' :
                     'text-foreground'
-                  }>{line.value}</span>
+                  }>{translateText(line.value)}</span>
                 </div>
               ))}
             </div>
@@ -203,9 +203,9 @@ const DemoSplitBill: React.FC<SplitBillConfig> = ({
         {/* Your amount highlight */}
         {yourAmount && (
           <div className="bg-primary/5 rounded-2xl p-4 border border-primary/20">
-            <p className="text-xs font-semibold text-foreground mb-1">Você paga:</p>
+            <p className="text-xs font-semibold text-foreground mb-1">{translateText('Você paga')}:</p>
             <div className="flex justify-between font-bold text-lg">
-              <span className="text-foreground">Total</span>
+              <span className="text-foreground">{translateText('Total')}</span>
               <span className="text-primary">{yourAmount}</span>
             </div>
           </div>
@@ -219,7 +219,7 @@ const DemoSplitBill: React.FC<SplitBillConfig> = ({
           className="w-full py-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold rounded-2xl shadow-xl shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
           <CreditCard className="w-5 h-5" />
-          {ctaLabel || 'Prosseguir para Pagamento'}
+          {translateText(ctaLabel || 'Prosseguir para Pagamento')}
         </button>
       </div>
     </div>

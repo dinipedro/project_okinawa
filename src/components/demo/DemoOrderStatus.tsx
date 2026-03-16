@@ -371,7 +371,7 @@ const DemoOrderStatus: React.FC<OrderStatusConfig> = ({
                   key={i}
                   className="w-full py-3 rounded-xl bg-muted text-foreground font-medium text-sm hover:bg-muted/80 transition-colors"
                 >
-                  {opt}
+                  {translateText(opt)}
                 </button>
               ))}
             </div>
@@ -386,7 +386,7 @@ const DemoOrderStatus: React.FC<OrderStatusConfig> = ({
               className="w-full py-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold rounded-xl shadow-glow flex items-center justify-center gap-2"
             >
               {actionButton.icon && <actionButton.icon className="w-5 h-5" />}
-              {actionButton.label}
+              {translateText(actionButton.label)}
             </button>
           </div>
         )}
