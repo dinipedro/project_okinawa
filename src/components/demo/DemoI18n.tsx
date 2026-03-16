@@ -383,7 +383,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Salão': 'Dining Room',
     'Terraço': 'Terrace',
     'Qualquer': 'Any',
-    'Entrar na Fila Virtual': 'Join Virtual Queue',
     'Você está na fila!': 'You\'re in line!',
     'Posição': 'Position',
     'Você · Mesa para 2': 'You · Table for 2',
@@ -777,7 +776,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
 
     // ── Club specific ──
     'Camarotes VIP': 'VIP Booths',
-    'Fila Virtual': 'Virtual Queue',
     'Pedir da Pista': 'Order from Floor',
     'Tracker de Consumação': 'Consumption Tracker',
     'Consumação Mínima': 'Minimum Spend',
@@ -809,7 +807,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Open bar completo': 'Full open bar',
     'Área VIP inclusa': 'VIP area included',
     'restantes': 'remaining',
-    'Simular Chegada': 'Simulate Arrival',
     'Skip — Camarote VIP': 'Skip — VIP Booth',
     'Tab digital aberto': 'Digital tab opened',
     'Consumo rastreado em tempo real': 'Consumption tracked in real-time',
@@ -900,7 +897,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Status do Pedido': 'Order Status',
     'Notificação': 'Notification',
     'Pedir drinks': 'Order drinks',
-    'Pedir drinks e aperitivos': 'Order drinks and appetizers',
     'Como deseja pagar?': 'How would you like to pay?',
     'Modo de divisão': 'Split mode',
     'Resumo da sua parte': 'Your share summary',
@@ -1234,7 +1230,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     '⏳ Reabastecendo': '⏳ Reabasteciendo',
     '✓ Registrado': '✓ Registrado',
     'Pesar Mais': 'Pesar más',
-    'Pedir Bebidas': 'Pedir bebidas',
 
     // ── Chef's Table specific ──
     'Exclusivo': 'Exclusivo',
@@ -1295,10 +1290,8 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Pendente': 'Pendiente',
     'Recusou': 'Rechazó',
     'Pista': 'Pista',
-    'Simular Chegada': 'Simular llegada',
 
     // ── AI Harmonization ──
-    'Harmonização IA': 'Maridaje IA',
     'Preferência de bebida': 'Preferencia de bebida',
     'Vinho Tinto': 'Vino tinto',
     'Vinho Branco': 'Vino blanco',
