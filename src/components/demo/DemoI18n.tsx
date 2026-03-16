@@ -3607,9 +3607,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Subtotal (${cart.length} itens)': 'Subtotal (${cart.length} items)',
     'Superfood proteico': 'Superfood proteico',
     'Taco Vegetariano (3un)': 'Taco Vegetariano (3un)',
-    'Tempo
-Médio': 'Tiempo
-Medio',
+    'Tempo Médio': 'Tiempo Medio',
     'Tempo Real': 'Tiempo Real',
     'Tempo médio: 5 min': 'Tiempo promedio: 5 min',
     'Tempo total': 'Tiempo total',
