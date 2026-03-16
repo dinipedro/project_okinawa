@@ -578,7 +578,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Japonesa': 'Japanese',
     'Italiana': 'Italian',
     'Mexicana': 'Mexican',
-    'Reservar Mesa': 'Reserve Table',
+    
     'Escanear': 'Scan',
     'Reservar': 'Reserve',
     'Fila rápida': 'Fast queue',
