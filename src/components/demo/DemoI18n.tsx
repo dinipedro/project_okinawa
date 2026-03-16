@@ -1212,8 +1212,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Camarote VIP': 'Camarote VIP',
     'Bottle Service': 'Bottle Service',
     'Conta & Consumação': 'Cuenta y consumo mínimo',
-    'Ver Cardápio': 'Ver Menú',
-    'Reservar Mesa': 'Reservar Mesa',
+    
 
     // ── Notifications ──
     'Notificações': 'Notificaciones',
