@@ -977,7 +977,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Walk-in com fila inteligente ou reserva antecipada.': 'Walk-in with smart queue or advance reservation.',
     
     'Posição em tempo real com notificação push.': 'Real-time position with push notification.',
-    'Pedir na Espera': 'Order While Waiting',
+    
     'Peça drinks enquanto aguarda — vai pra comanda.': 'Order drinks while waiting — goes to your tab.',
     'Cardápio kids, cadeirão e kit de atividades.': 'Kids menu, high chair and activity kit.',
     'Atividades Kids': 'Kids Activities',
