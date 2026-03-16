@@ -3360,6 +3360,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Geofencing ativado': 'Geofencing activado',
     'Grupos 10+': 'Grupos 10+',
     'Harmonização Final': 'Maridaje Final',
+    'Estações ao Vivo': 'Estaciones en Vivo',
     'Harmonização Perfeita': 'Maridaje Perfecto',
     'Harmonização completa de vinhos premium': 'Maridaje completo de vinos premium',
     'Harmonização de vinhos e drinks': 'Maridaje de vinos y tragos',
