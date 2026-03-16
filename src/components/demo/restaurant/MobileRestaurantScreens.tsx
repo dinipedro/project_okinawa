@@ -606,16 +606,108 @@ const MobileStock: React.FC = () => (
 const MobileCalls: React.FC = () => {
   const { notifications } = useDemoContext();
   const waiterCalls = notifications.filter(item => item.type === 'waiter_call');
+  const mockCalls = [
+    { id: 'mc1', table: 3, message: 'Dúvida sobre prato', time: '2min', urgent: false, category: 'Atendimento' },
+    { id: 'mc2', table: 8, message: 'Reclamação — tempo de espera', time: '5min', urgent: true, category: 'Escalação' },
+    { id: 'mc3', table: 5, message: 'Acessibilidade — cadeira especial', time: '1min', urgent: true, category: 'Acessibilidade' },
+    { id: 'mc4', table: 1, message: 'Quer ver cardápio de sobremesas', time: '8min', urgent: false, category: 'Pedido' },
+  ];
   return (
     <div className="space-y-2">
-      {waiterCalls.map(item => (
-        <div key={item.id} className="rounded-2xl border border-border bg-card p-3">
+      {mockCalls.filter(c => c.urgent).length > 0 && (
+        <div className="flex items-center gap-2 p-2 rounded-2xl bg-destructive/10 border border-destructive/20 animate-pulse">
+          <Bell className="h-3.5 w-3.5 text-destructive" />
+          <p className="text-[10px] font-semibold text-destructive">{mockCalls.filter(c => c.urgent).length} urgente(s)!</p>
+        </div>
+      )}
+      {mockCalls.map(call => (
+        <div key={call.id} className={`rounded-2xl border-2 p-3 ${call.urgent ? 'border-destructive/20 bg-destructive/5' : 'border-border bg-card'}`}>
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-destructive/10"><Bell className="h-4 w-4 text-destructive" /></div>
-            <div>
-              <p className="text-sm font-semibold">{item.message}</p>
-              <p className="text-[11px] text-muted-foreground">{formatTimeAgo(item.timestamp)}</p>
+            <div className={`flex h-9 w-9 items-center justify-center rounded-xl font-display font-bold text-sm ${
+              call.urgent ? 'bg-destructive/10 text-destructive' : 'bg-primary/10 text-primary'
+            }`}>{call.table}</div>
+            <div className="flex-1">
+              <div className="flex items-center gap-1">
+                <p className="text-xs font-semibold">{call.message}</p>
+                {call.urgent && <span className="px-1 py-0.5 rounded bg-destructive/10 text-destructive text-[7px] font-bold">URGENTE</span>}
+              </div>
+              <p className="text-[10px] text-muted-foreground">Mesa {call.table} · {call.time} atrás · {call.category}</p>
             </div>
+            <button className="px-2 py-1 rounded-lg bg-primary text-primary-foreground text-[10px] font-semibold">Atender</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const MobilePayment: React.FC = () => {
+  const { tables } = useDemoContext();
+  const myTables = tables.filter(t => ['occupied', 'billing'].includes(t.status));
+  return (
+    <div className="space-y-3">
+      <div className="rounded-2xl border border-border bg-gradient-to-r from-primary/10 to-secondary/10 p-3">
+        <p className="text-xs font-semibold">Cobrar na Mesa</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5">TAP to Pay, PIX QR ou cartão</p>
+      </div>
+      {myTables.map(table => (
+        <div key={table.id} className="rounded-2xl border border-border bg-card p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-sm">{table.number}</div>
+            <div className="flex-1">
+              <p className="text-xs font-semibold">{table.customerName}</p>
+              <p className="text-[10px] text-muted-foreground">{table.seats} pessoas</p>
+            </div>
+            <span className="font-display font-bold text-sm text-primary">R$ {table.orderTotal || 0}</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1.5">
+            {[
+              { label: 'TAP to Pay', emoji: '📱', highlight: true },
+              { label: 'PIX QR', emoji: '📲', highlight: false },
+              { label: 'Cartão', emoji: '💳', highlight: false },
+              { label: 'Dinheiro', emoji: '💵', highlight: false },
+            ].map(m => (
+              <button key={m.label} className={`flex items-center gap-1.5 p-2 rounded-xl text-[10px] font-semibold ${
+                m.highlight ? 'bg-primary/10 border border-primary/20 text-primary' : 'bg-muted/30 border border-border text-foreground'
+              }`}>
+                <span>{m.emoji}</span> {m.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const MobileActions: React.FC = () => {
+  const { tables } = useDemoContext();
+  const myTables = tables.filter(t => ['occupied', 'billing'].includes(t.status));
+  return (
+    <div className="space-y-3">
+      <div className="rounded-2xl border border-border bg-muted/30 p-3">
+        <p className="text-xs font-semibold">Ações na Mesa</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5">Execute ações pelo cliente quando precisar de ajuda com o app</p>
+      </div>
+      {myTables.map(table => (
+        <div key={table.id} className="rounded-2xl border border-border bg-card p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-xs">{table.number}</div>
+            <p className="text-xs font-semibold">{table.customerName}</p>
+          </div>
+          <div className="grid grid-cols-3 gap-1">
+            {[
+              { label: 'Add item', color: 'text-primary' },
+              { label: 'Conta', color: 'text-warning' },
+              { label: 'Dividir', color: 'text-secondary' },
+              { label: 'Gerente', color: 'text-destructive' },
+              { label: 'Cortesia', color: 'text-accent-foreground' },
+              { label: 'Cancelar', color: 'text-destructive' },
+            ].map(action => (
+              <button key={action.label} className="p-1.5 rounded-lg hover:bg-muted/30 text-left">
+                <span className={`text-[10px] font-medium ${action.color}`}>{action.label}</span>
+              </button>
+            ))}
           </div>
         </div>
       ))}
@@ -627,13 +719,22 @@ const MobileTips: React.FC = () => (
   <div className="space-y-4">
     <CompactStat label="Gorjetas do dia" value="R$ 410" tone="success" />
     <div className="space-y-2">
-      {[45, 62, 120, 85, 98].map((amount, index) => (
+      {[
+        { table: 8, customer: 'Grupo Aniversário', amount: 120, pct: '15%' },
+        { table: 5, customer: 'Grupo Pedro', amount: 85, pct: '12%' },
+        { table: 10, customer: 'Carlos M.', amount: 98, pct: '10%' },
+        { table: 3, customer: 'João & Ana', amount: 62, pct: '10%' },
+        { table: 1, customer: 'Maria S.', amount: 45, pct: '15%' },
+      ].map((tip, index) => (
         <div key={index} className="flex items-center justify-between rounded-2xl border border-border bg-card p-3">
-          <div>
-            <p className="text-sm font-semibold">Mesa {index + 1}</p>
-            <p className="text-[11px] text-muted-foreground">Recebido hoje</p>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-success/10 flex items-center justify-center text-[10px] font-bold text-success">{tip.table}</div>
+            <div>
+              <p className="text-sm font-semibold">{tip.customer}</p>
+              <p className="text-[10px] text-muted-foreground">{tip.pct} da conta</p>
+            </div>
           </div>
-          <span className="text-xs font-semibold text-success">R$ {amount}</span>
+          <span className="text-xs font-semibold text-success">+R$ {tip.amount}</span>
         </div>
       ))}
     </div>
