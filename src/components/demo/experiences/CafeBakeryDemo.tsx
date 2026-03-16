@@ -566,8 +566,6 @@ export const CafeBakeryDemo: React.FC<Props> = ({ onNavigate, screen }) => {
           secondaryAction={{ label: 'Voltar ao Início', onClick: () => onNavigate('home') }}
         />
       );
-        </div>
-      );
 
     default: return null;
   }
