@@ -1103,7 +1103,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Perto de você': 'Near you',
     'Bowls populares': 'Popular bowls',
     'Começar': 'Start',
-    'Status do Pedido': 'Order Status',
+    
     'Notificação': 'Notification',
     'Pedir drinks': 'Order drinks',
     'Como deseja pagar?': 'How would you like to pay?',
