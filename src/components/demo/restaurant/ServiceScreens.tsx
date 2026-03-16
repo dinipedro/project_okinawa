@@ -283,7 +283,7 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
   const [tableDetailTab, setTableDetailTab] = useState<'guests' | 'orders' | 'menu' | 'charge'>('guests');
   const [addingGuest, setAddingGuest] = useState(false);
   const [newGuestName, setNewGuestName] = useState('');
-  const [addedGuests, setAddedGuests] = useState<Array<{ id: string; name: string; hasApp: false; paid: false; orders: Array<{ id: string; item: string; qty: number; price: number; status: 'pending'; sentAt: string }> }>>([]);
+  const [addedGuests, setAddedGuests] = useState<TableGuest[]>([]);
   const [menuCategory, setMenuCategory] = useState(WAITER_MENU[0].cat);
   const [orderingForGuest, setOrderingForGuest] = useState<string | null>(null);
   const [pendingOrder, setPendingOrder] = useState<Array<{ item: string; qty: number; price: number }>>([]);
@@ -296,7 +296,7 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
   const readyDishes = KITCHEN_PIPELINE.filter(d => d.status === 'ready' && !pickedUp.includes(d.id));
   const activeFeed = LIVE_FEED.filter(f => !handledItems.includes(f.id));
 
-  const getAllGuests = (tableNum: number) => {
+  const getAllGuests = (tableNum: number): TableGuest[] => {
     const base = getTableGuests(tableNum);
     const added = addedGuests.filter(g => g.id.startsWith(`added-${tableNum}-`));
     return [...base, ...added];
@@ -304,12 +304,12 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
 
   const handleAddGuest = (tableNum: number) => {
     if (!newGuestName.trim()) return;
-    const newGuest = {
+    const newGuest: TableGuest = {
       id: `added-${tableNum}-${Date.now()}`,
       name: newGuestName.trim(),
-      hasApp: false as const,
-      paid: false as const,
-      orders: [] as Array<{ id: string; item: string; qty: number; price: number; status: 'pending'; sentAt: string }>,
+      hasApp: false,
+      paid: false,
+      orders: [],
     };
     setAddedGuests(prev => [...prev, newGuest]);
     setNewGuestName('');
