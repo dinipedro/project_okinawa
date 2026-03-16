@@ -158,6 +158,10 @@ export const MaitreScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
 
 // ============ WAITER VIEW (Phone Shell) — Command Center Redesign ============
 
+type GuestOrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'served' | 'cancelled';
+type GuestOrder = { id: string; item: string; qty: number; price: number; status: GuestOrderStatus; sentAt: string };
+type TableGuest = { id: string; name: string; hasApp: boolean; paid: boolean; method?: string; orders: GuestOrder[] };
+
 const KITCHEN_PIPELINE = [
   { id: 'k1', dish: 'Filé ao Molho de Vinho', qty: 2, table: 5, chef: 'Chef Felipe', status: 'ready' as const, readyAgo: 3, sla: 20, elapsed: 22 },
   { id: 'k2', dish: 'Petit Gâteau', qty: 1, table: 10, chef: 'Cozinheiro Thiago', status: 'ready' as const, readyAgo: 1, sla: 12, elapsed: 11 },
@@ -176,14 +180,93 @@ const LIVE_FEED = [
   { id: 'lf7', time: '12min', table: 5, event: 'Novo pedido registrado', detail: '1x Tiramisu + 1x Café Espresso via app', type: 'order' as const, urgency: 'info' as const },
 ];
 
-const TABLE_GUESTS = (table: { customerName?: string; orderTotal?: number; seats: number; number: number }) => [
-  { name: table.customerName || 'Titular', hasApp: true, paid: true, amount: Math.round((table.orderTotal || 0) * 0.4), items: ['Filé ao Molho', 'Suco Natural'], status: 'served' as const },
-  { name: 'Convidado 2', hasApp: true, paid: false, amount: Math.round((table.orderTotal || 0) * 0.35), items: ['Risotto', 'Vinho Tinto'], status: 'eating' as const },
-  { name: 'Convidado 3', hasApp: false, paid: false, amount: Math.round((table.orderTotal || 0) * 0.25), items: ['Salmão Grelhado'], status: 'waiting_food' as const },
-].slice(0, Math.min(3, table.seats));
+// Richer guest data with individual orders
+const TABLE_GUESTS_DATA: Record<number, TableGuest[]> = {
+  1: [
+    { id: 'g1-1', name: 'Maria S.', hasApp: true, paid: false, orders: [
+      { id: 'oi1', item: 'Tartare de Atum', qty: 1, price: 58, status: 'served', sentAt: '18:32' },
+      { id: 'oi2', item: 'Risotto de Cogumelos', qty: 1, price: 62, status: 'preparing', sentAt: '19:05' },
+    ]},
+    { id: 'g1-2', name: 'Paulo R.', hasApp: false, paid: false, orders: [
+      { id: 'oi3', item: 'Salmão Grelhado', qty: 1, price: 72, status: 'preparing', sentAt: '19:05' },
+    ]},
+  ],
+  3: [
+    { id: 'g3-1', name: 'João', hasApp: true, paid: false, orders: [
+      { id: 'oi4', item: 'Costela Braseada', qty: 1, price: 78, status: 'confirmed', sentAt: '19:10' },
+      { id: 'oi5', item: 'Vinho Tinto', qty: 1, price: 45, status: 'served', sentAt: '18:50' },
+    ]},
+    { id: 'g3-2', name: 'Ana', hasApp: true, paid: true, method: 'Apple Pay', orders: [
+      { id: 'oi6', item: 'Polvo Grelhado', qty: 1, price: 68, status: 'served', sentAt: '18:50' },
+      { id: 'oi7', item: 'Tiramisu', qty: 1, price: 32, status: 'preparing', sentAt: '19:15' },
+    ]},
+    { id: 'g3-3', name: 'Convidado 3', hasApp: false, paid: false, orders: [] },
+  ],
+  5: [
+    { id: 'g5-1', name: 'Pedro M.', hasApp: true, paid: true, method: 'PIX', orders: [
+      { id: 'oi8', item: 'Filé ao Molho de Vinho', qty: 1, price: 89, status: 'ready', sentAt: '18:40' },
+      { id: 'oi9', item: 'Café Espresso', qty: 1, price: 12, status: 'served', sentAt: '18:25' },
+    ]},
+    { id: 'g5-2', name: 'Lucas C.', hasApp: true, paid: false, orders: [
+      { id: 'oi10', item: 'Filé ao Molho de Vinho', qty: 1, price: 89, status: 'ready', sentAt: '18:40' },
+      { id: 'oi11', item: 'Tiramisu', qty: 1, price: 32, status: 'pending', sentAt: '19:18' },
+    ]},
+    { id: 'g5-3', name: 'Mariana', hasApp: false, paid: false, orders: [
+      { id: 'oi12', item: 'Salmão Grelhado', qty: 1, price: 72, status: 'preparing', sentAt: '18:55' },
+    ]},
+  ],
+  8: [
+    { id: 'g8-1', name: 'Rafael C.', hasApp: true, paid: true, method: 'Apple Pay', orders: [
+      { id: 'oi13', item: 'Polvo Grelhado', qty: 1, price: 68, status: 'served', sentAt: '18:30' },
+    ]},
+    { id: 'g8-2', name: 'Fernanda A.', hasApp: true, paid: false, orders: [
+      { id: 'oi14', item: 'Costela Braseada', qty: 1, price: 78, status: 'preparing', sentAt: '19:00' },
+    ]},
+    { id: 'g8-3', name: 'Thiago S.', hasApp: false, paid: false, orders: [
+      { id: 'oi15', item: 'Tartare de Atum', qty: 1, price: 58, status: 'confirmed', sentAt: '19:08' },
+      { id: 'oi16', item: 'Cerveja Artesanal', qty: 2, price: 24, status: 'served', sentAt: '18:35' },
+    ]},
+    { id: 'g8-4', name: 'Juliana', hasApp: false, paid: false, orders: [] },
+  ],
+  10: [
+    { id: 'g10-1', name: 'Carlos M.', hasApp: true, paid: false, orders: [
+      { id: 'oi17', item: 'Petit Gâteau', qty: 1, price: 38, status: 'ready', sentAt: '19:00' },
+      { id: 'oi18', item: 'Café Espresso', qty: 1, price: 12, status: 'served', sentAt: '18:45' },
+    ]},
+  ],
+};
+
+const getTableGuests = (tableNum: number): TableGuest[] => TABLE_GUESTS_DATA[tableNum] || [];
+
+// Simple menu categories for ordering flow
+const WAITER_MENU = [
+  { cat: 'Entradas', items: [
+    { id: 'm1', name: 'Tartare de Atum', price: 58, time: '8min' },
+    { id: 'm2', name: 'Burrata com Presunto', price: 52, time: '5min' },
+    { id: 'm3', name: 'Polvo Grelhado', price: 68, time: '12min' },
+    { id: 'm4', name: 'Carpaccio de Wagyu', price: 72, time: '6min' },
+  ]},
+  { cat: 'Principais', items: [
+    { id: 'm5', name: 'Filé ao Molho de Vinho', price: 89, time: '20min' },
+    { id: 'm6', name: 'Risotto de Cogumelos', price: 62, time: '25min' },
+    { id: 'm7', name: 'Salmão Grelhado', price: 72, time: '18min' },
+    { id: 'm8', name: 'Costela Braseada', price: 78, time: '15min' },
+  ]},
+  { cat: 'Sobremesas', items: [
+    { id: 'm9', name: 'Petit Gâteau', price: 38, time: '12min' },
+    { id: 'm10', name: 'Tiramisu', price: 32, time: '5min' },
+    { id: 'm11', name: 'Crème Brûlée', price: 34, time: '8min' },
+  ]},
+  { cat: 'Bebidas', items: [
+    { id: 'm12', name: 'Café Espresso', price: 12, time: '3min' },
+    { id: 'm13', name: 'Vinho Tinto (taça)', price: 45, time: '1min' },
+    { id: 'm14', name: 'Cerveja Artesanal', price: 24, time: '1min' },
+    { id: 'm15', name: 'Suco Natural', price: 16, time: '5min' },
+  ]},
+];
 
 export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
-  const { orders, tables, notifications } = useDemoContext();
+  const { orders, tables, notifications, menu } = useDemoContext();
   const [waiterTab, setWaiterTab] = useState<'live' | 'tables' | 'kitchen' | 'charge'>('live');
   const myTables = tables.filter(t => ['occupied', 'billing'].includes(t.status));
   const waiterCalls = notifications.filter(n => n.type === 'waiter_call' && !n.read);
@@ -193,18 +276,71 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
   const [handledItems, setHandledItems] = useState<string[]>([]);
   const [pickedUp, setPickedUp] = useState<string[]>([]);
 
+  // Table detail sub-views
+  const [tableDetailTab, setTableDetailTab] = useState<'guests' | 'orders' | 'menu' | 'charge'>('guests');
+  const [addingGuest, setAddingGuest] = useState(false);
+  const [newGuestName, setNewGuestName] = useState('');
+  const [addedGuests, setAddedGuests] = useState<TableGuest[]>([]);
+  const [menuCategory, setMenuCategory] = useState(WAITER_MENU[0].cat);
+  const [orderingForGuest, setOrderingForGuest] = useState<string | null>(null);
+  const [pendingOrder, setPendingOrder] = useState<Array<{ item: string; qty: number; price: number }>>([]);
+  const [sentOrders, setSentOrders] = useState<Array<{ id: string; guest: string; item: string; qty: number; price: number; status: string; sentAt: string }>>([]);
+  const [cancelledOrders, setCancelledOrders] = useState<string[]>([]);
+  const [editingOrder, setEditingOrder] = useState<string | null>(null);
+  const [orderSentToast, setOrderSentToast] = useState(false);
+
   const activeOrders = orders.filter(o => !['paid', 'delivered'].includes(o.status));
   const readyDishes = KITCHEN_PIPELINE.filter(d => d.status === 'ready' && !pickedUp.includes(d.id));
   const activeFeed = LIVE_FEED.filter(f => !handledItems.includes(f.id));
 
+  const getAllGuests = (tableNum: number): TableGuest[] => {
+    const base = getTableGuests(tableNum);
+    const added = addedGuests.filter(g => g.id.startsWith(`added-${tableNum}-`));
+    return [...base, ...added];
+  };
+
+  const handleAddGuest = (tableNum: number) => {
+    if (!newGuestName.trim()) return;
+    const newGuest: TableGuest = {
+      id: `added-${tableNum}-${Date.now()}`,
+      name: newGuestName.trim(),
+      hasApp: false,
+      paid: false,
+      orders: [],
+    };
+    setAddedGuests(prev => [...prev, newGuest]);
+    setNewGuestName('');
+    setAddingGuest(false);
+  };
+
+  const handleSendOrder = (tableNum: number, guestId: string) => {
+    if (pendingOrder.length === 0) return;
+    const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const newSent = pendingOrder.map((item, i) => ({
+      id: `sent-${Date.now()}-${i}`,
+      guest: guestId,
+      item: item.item,
+      qty: item.qty,
+      price: item.price,
+      status: 'pending',
+      sentAt: now,
+    }));
+    setSentOrders(prev => [...prev, ...newSent]);
+    setPendingOrder([]);
+    setOrderingForGuest(null);
+    setTableDetailTab('orders');
+    setOrderSentToast(true);
+    setTimeout(() => setOrderSentToast(false), 3000);
+  };
+
   return (
     <div className="space-y-6">
-      <GuidedHint text="Central de comando do garçom — feed ao vivo, pipeline da cozinha e terminal de cobrança" />
+      <GuidedHint text="Central de comando do garçom — gestão completa de mesas, pedidos, cardápio e cobrança" />
 
       <div className="flex justify-center">
         <PhoneShell>
           <div className="bg-background min-h-full flex flex-col">
-            {/* Header — status bar */}
+            {/* Header */}
             <div className="bg-gradient-to-r from-primary via-primary/90 to-accent px-4 pt-2 pb-4">
               <div className="flex items-center justify-between mb-3">
                 <div>
@@ -226,7 +362,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                   </div>
                 </div>
               </div>
-              {/* Quick metrics */}
               <div className="grid grid-cols-4 gap-1.5">
                 {[
                   { label: 'Mesas', value: myTables.length.toString(), urgent: false },
@@ -242,7 +377,7 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
               </div>
             </div>
 
-            {/* Tab navigation */}
+            {/* Tab nav */}
             <div className="flex border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
               {[
                 { id: 'live' as const, label: 'Ao Vivo', badge: activeFeed.filter(f => f.urgency !== 'info').length },
@@ -252,7 +387,7 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
               ].map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => { setWaiterTab(tab.id); setSelectedTable(null); setPaymentStep('guests'); setSelectedGuest(null); }}
+                  onClick={() => { setWaiterTab(tab.id); setSelectedTable(null); setPaymentStep('guests'); setSelectedGuest(null); setTableDetailTab('guests'); }}
                   className={`flex-1 py-2.5 text-[10px] font-semibold border-b-2 transition-all relative ${
                     waiterTab === tab.id ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'
                   }`}
@@ -267,11 +402,22 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
               ))}
             </div>
 
-            {/* Content area */}
+            {/* Toast */}
+            {orderSentToast && (
+              <div className="absolute top-32 left-4 right-4 z-50 bg-success text-success-foreground rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg animate-in slide-in-from-top-2">
+                <Check className="w-5 h-5" />
+                <div>
+                  <p className="text-xs font-bold">Pedido enviado para a cozinha!</p>
+                  <p className="text-[9px] opacity-80">O chef recebeu e vai começar a preparar</p>
+                </div>
+              </div>
+            )}
+
+            {/* Content */}
             <div className="flex-1 overflow-y-auto">
               <div className="p-3 space-y-2.5">
 
-                {/* ═══ AO VIVO — Real-time activity stream ═══ */}
+                {/* ═══ AO VIVO ═══ */}
                 {waiterTab === 'live' && (
                   <>
                     {readyDishes.length > 0 && (
@@ -286,7 +432,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                         <button onClick={() => setWaiterTab('kitchen')} className="px-2.5 py-1 rounded-lg bg-destructive text-destructive-foreground text-[9px] font-bold">Ver</button>
                       </div>
                     )}
-
                     {activeFeed.map(item => {
                       const config = {
                         kitchen_ready: { icon: ChefHat, color: 'text-destructive', bg: 'bg-destructive/10', border: 'border-destructive/20', action: 'Retirar' },
@@ -319,6 +464,7 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                                 setHandledItems(prev => [...prev, item.id]);
                                 if (item.type === 'payment_needed') { setWaiterTab('charge'); setSelectedTable(item.table); }
                                 if (item.type === 'kitchen_ready') { setWaiterTab('kitchen'); }
+                                if (item.type === 'call') { setWaiterTab('tables'); setSelectedTable(item.table); }
                               }}
                               className={`w-full py-2 text-[10px] font-bold border-t ${config.border} ${
                                 item.urgency === 'critical' ? 'bg-destructive text-destructive-foreground' :
@@ -331,7 +477,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                         </div>
                       );
                     })}
-
                     {activeFeed.length === 0 && (
                       <div className="text-center py-12">
                         <Check className="w-10 h-10 text-success/30 mx-auto mb-2" />
@@ -342,52 +487,50 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                   </>
                 )}
 
-                {/* ═══ MESAS — Table overview + drill-down ═══ */}
+                {/* ═══ MESAS — overview ═══ */}
                 {waiterTab === 'tables' && !selectedTable && (
                   <>
                     {myTables.map(table => {
-                      const guests = TABLE_GUESTS(table);
-                      const paidPct = Math.round((guests.filter(g => g.paid).length / guests.length) * 100);
-                      const tableOrders = orders.filter(o => o.tableNumber === table.number && !['paid'].includes(o.status));
-                      const hasCall = waiterCalls.some(c => c.message.includes(`Mesa ${table.number}`)) || LIVE_FEED.some(f => f.table === table.number && f.type === 'call');
+                      const guests = getAllGuests(table.number);
+                      const paidCount = guests.filter(g => g.paid).length;
+                      const paidPct = guests.length > 0 ? Math.round((paidCount / guests.length) * 100) : 0;
+                      const noAppCount = guests.filter(g => !g.hasApp && !g.paid).length;
+                      const totalOrders = guests.reduce((a, g) => a + g.orders.length, 0) + sentOrders.filter(s => guests.some(g => g.id === s.guest)).length;
                       const hasReady = KITCHEN_PIPELINE.some(d => d.table === table.number && d.status === 'ready' && !pickedUp.includes(d.id));
                       return (
-                        <button key={table.id} onClick={() => setSelectedTable(table.number)} className={`w-full text-left rounded-xl border-2 overflow-hidden transition-all ${
-                          hasCall ? 'border-warning/40 bg-warning/5' :
+                        <button key={table.id} onClick={() => { setSelectedTable(table.number); setTableDetailTab('guests'); }} className={`w-full text-left rounded-xl border-2 overflow-hidden transition-all ${
                           hasReady ? 'border-destructive/30 bg-destructive/5' :
+                          noAppCount > 0 ? 'border-warning/20 bg-warning/5' :
                           table.status === 'billing' ? 'border-info/30 bg-info/5' : 'border-border bg-card'
                         }`}>
                           <div className="p-3">
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2.5">
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-display font-bold text-sm ${
-                                  hasReady ? 'bg-destructive/10 text-destructive animate-pulse' :
-                                  hasCall ? 'bg-warning/10 text-warning' : 'bg-primary/10 text-primary'
+                                  hasReady ? 'bg-destructive/10 text-destructive animate-pulse' : 'bg-primary/10 text-primary'
                                 }`}>{table.number}</div>
                                 <div>
                                   <p className="font-semibold text-xs">{table.customerName}</p>
-                                  <p className="text-[9px] text-muted-foreground">{table.seats} pessoas · {table.occupiedSince ? `${Math.round((Date.now() - table.occupiedSince.getTime()) / 60000)}min` : '—'}</p>
+                                  <p className="text-[9px] text-muted-foreground">{guests.length} pessoas · {totalOrders} pedidos</p>
                                 </div>
                               </div>
                               <div className="text-right">
                                 <span className="font-display font-bold text-xs text-primary">R$ {table.orderTotal || 0}</span>
                                 <div className="flex items-center gap-1 mt-0.5">
                                   {hasReady && <span className="text-[7px] font-bold text-destructive bg-destructive/10 px-1 rounded">PRATO</span>}
-                                  {hasCall && <span className="text-[7px] font-bold text-warning bg-warning/10 px-1 rounded">CHAMADO</span>}
+                                  {noAppCount > 0 && <span className="text-[7px] font-bold text-warning bg-warning/10 px-1 rounded">{noAppCount} S/APP</span>}
                                 </div>
                               </div>
                             </div>
-                            {/* Guest avatars with status */}
                             <div className="flex items-center gap-1 mt-1">
-                              {guests.map((g, i) => (
-                                <div key={i} className="flex items-center gap-1">
-                                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[7px] font-bold ${
-                                    g.paid ? 'bg-success/20 text-success' : g.hasApp ? 'bg-info/20 text-info' : 'bg-warning/20 text-warning'
-                                  }`}>{g.paid ? '✓' : g.hasApp ? '📱' : '!'}</div>
-                                </div>
+                              {guests.slice(0, 5).map((g, i) => (
+                                <div key={i} className={`w-5 h-5 rounded-full flex items-center justify-center text-[7px] font-bold ${
+                                  g.paid ? 'bg-success/20 text-success' : g.hasApp ? 'bg-info/20 text-info' : 'bg-warning/20 text-warning'
+                                }`}>{g.paid ? '✓' : g.hasApp ? '📱' : '!'}</div>
                               ))}
+                              {guests.length > 5 && <span className="text-[8px] text-muted-foreground">+{guests.length - 5}</span>}
                               <div className="flex-1 h-1.5 bg-muted rounded-full ml-2 overflow-hidden">
-                                <div className="h-full bg-gradient-to-r from-success to-success/60 rounded-full transition-all" style={{ width: `${paidPct}%` }} />
+                                <div className="h-full bg-gradient-to-r from-success to-success/60 rounded-full" style={{ width: `${paidPct}%` }} />
                               </div>
                               <span className="text-[8px] font-bold text-muted-foreground ml-1">{paidPct}%</span>
                             </div>
@@ -398,32 +541,39 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                   </>
                 )}
 
-                {/* ═══ TABLE DETAIL — Full command center ═══ */}
+                {/* ═══ TABLE DETAIL — Full Command Center ═══ */}
                 {waiterTab === 'tables' && selectedTable && (() => {
                   const table = myTables.find(t => t.number === selectedTable);
                   if (!table) return null;
-                  const guests = TABLE_GUESTS(table);
-                  const paidPct = Math.round((guests.filter(g => g.paid).length / guests.length) * 100);
-                  const tableDishes = KITCHEN_PIPELINE.filter(d => d.table === selectedTable);
-                  const tableOrders = orders.filter(o => o.tableNumber === selectedTable && !['paid'].includes(o.status));
+                  const guests = getAllGuests(selectedTable);
+                  const paidCount = guests.filter(g => g.paid).length;
+                  const paidPct = guests.length > 0 ? Math.round((paidCount / guests.length) * 100) : 0;
+                  const allOrders = [
+                    ...guests.flatMap(g => g.orders.map(o => ({ ...o, guestName: g.name, guestId: g.id, hasApp: g.hasApp }))),
+                    ...sentOrders.filter(s => guests.some(g => g.id === s.guest)).map(s => ({
+                      id: s.id, item: s.item, qty: s.qty, price: s.price, status: s.status,
+                      sentAt: s.sentAt, guestName: guests.find(g => g.id === s.guest)?.name || 'Convidado', guestId: s.guest, hasApp: false,
+                    })),
+                  ].filter(o => !cancelledOrders.includes(o.id));
+                  const tableTotal = allOrders.reduce((a, o) => a + o.price * o.qty, 0);
 
                   return (
-                    <div className="space-y-2.5">
-                      <button onClick={() => setSelectedTable(null)} className="flex items-center gap-1 text-[10px] text-primary font-semibold">
+                    <div className="space-y-2">
+                      {/* Back + Table Header */}
+                      <button onClick={() => { setSelectedTable(null); setTableDetailTab('guests'); }} className="flex items-center gap-1 text-[10px] text-primary font-semibold">
                         <ChevronLeft className="w-3 h-3" /> Todas as mesas
                       </button>
 
-                      {/* Table header */}
                       <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 rounded-xl p-3">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-display text-xl font-bold">Mesa {table.number}</p>
-                            <p className="text-[10px] text-muted-foreground">{table.customerName} · {table.seats} pessoas · {table.occupiedSince ? `${Math.round((Date.now() - table.occupiedSince.getTime()) / 60000)}min` : '—'}</p>
+                            <p className="font-display text-lg font-bold">Mesa {table.number}</p>
+                            <p className="text-[9px] text-muted-foreground">{table.customerName} · {guests.length} pessoas · {table.occupiedSince ? `${Math.round((Date.now() - table.occupiedSince.getTime()) / 60000)}min` : '—'}</p>
                           </div>
                           <div className="text-right">
-                            <span className="font-display text-lg font-bold text-primary">R$ {table.orderTotal || 0}</span>
+                            <span className="font-display text-lg font-bold text-primary">R$ {tableTotal}</span>
                             <div className="flex items-center gap-1 mt-0.5">
-                              <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden w-16">
+                              <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                                 <div className="h-full bg-success rounded-full" style={{ width: `${paidPct}%` }} />
                               </div>
                               <span className="text-[8px] font-bold">{paidPct}%</span>
@@ -432,105 +582,429 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                         </div>
                       </div>
 
-                      {/* Guest cards — the heart of the table view */}
-                      <div className="space-y-1.5">
-                        <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-semibold px-1">Clientes na mesa</p>
-                        {guests.map((guest, i) => {
-                          const statusConfig = {
-                            served: { label: 'Servido', color: 'text-success', bg: 'bg-success/10' },
-                            eating: { label: 'Comendo', color: 'text-primary', bg: 'bg-primary/10' },
-                            waiting_food: { label: 'Aguardando prato', color: 'text-warning', bg: 'bg-warning/10' },
-                          }[guest.status];
-                          return (
-                            <div key={i} className={`rounded-xl border p-2.5 ${
-                              guest.paid ? 'border-success/20 bg-success/5 opacity-70' :
-                              !guest.hasApp ? 'border-warning/30 bg-warning/5' : 'border-border bg-card'
-                            }`}>
-                              <div className="flex items-center gap-2">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold ${
-                                  guest.paid ? 'bg-success/20 text-success' : guest.hasApp ? 'bg-info/20 text-info' : 'bg-warning/20 text-warning'
-                                }`}>{guest.paid ? '✓' : guest.hasApp ? '📱' : '!'}</div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-1.5">
-                                    <p className="text-[11px] font-semibold truncate">{guest.name}</p>
-                                    <span className={`px-1 py-0.5 rounded text-[7px] font-bold ${guest.hasApp ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
-                                      {guest.hasApp ? 'APP' : 'SEM APP'}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-2 mt-0.5">
-                                    <span className={`text-[8px] font-medium ${statusConfig.color}`}>{statusConfig.label}</span>
-                                    <span className="text-[8px] text-muted-foreground">· {guest.items.join(', ')}</span>
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-[11px] font-bold">R$ {guest.amount}</p>
-                                  {guest.paid ? (
-                                    <span className="text-[7px] text-success font-medium">Pago ✓</span>
-                                  ) : !guest.hasApp ? (
-                                    <button onClick={() => { setWaiterTab('charge'); setSelectedTable(table.number); setSelectedGuest(guest.name); setPaymentStep('method'); }}
-                                      className="mt-0.5 px-2 py-0.5 rounded bg-primary text-primary-foreground text-[8px] font-bold">Cobrar</button>
-                                  ) : (
-                                    <span className="text-[7px] text-info font-medium">No app</span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Kitchen pipeline for this table */}
-                      {tableDishes.length > 0 && (
-                        <div className="space-y-1.5">
-                          <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-semibold px-1">Pipeline cozinha</p>
-                          {tableDishes.map(dish => (
-                            <div key={dish.id} className={`rounded-xl border p-2.5 flex items-center gap-2.5 ${
-                              dish.status === 'ready' && !pickedUp.includes(dish.id) ? 'border-destructive/30 bg-destructive/5' : 'border-border bg-card'
-                            }`}>
-                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                                dish.status === 'ready' ? 'bg-success/10' : 'bg-warning/10'
-                              }`}>
-                                {dish.status === 'ready' ? <Check className="w-4 h-4 text-success" /> : <Clock className="w-4 h-4 text-warning" />}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-[11px] font-semibold truncate">{dish.qty}x {dish.dish}</p>
-                                <p className="text-[9px] text-muted-foreground">{dish.chef} · {dish.elapsed}min</p>
-                              </div>
-                              {dish.status === 'ready' && !pickedUp.includes(dish.id) ? (
-                                <button onClick={() => setPickedUp(prev => [...prev, dish.id])}
-                                  className="px-2 py-1 rounded-lg bg-destructive text-destructive-foreground text-[9px] font-bold animate-pulse">Retirar</button>
-                              ) : dish.status === 'preparing' ? (
-                                <div className="w-12">
-                                  <div className="h-1 bg-muted rounded-full overflow-hidden">
-                                    <div className="h-full bg-warning rounded-full" style={{ width: `${(dish.elapsed / dish.sla) * 100}%` }} />
-                                  </div>
-                                  <p className="text-[7px] text-muted-foreground text-center mt-0.5">{dish.sla - dish.elapsed}min</p>
-                                </div>
-                              ) : (
-                                <span className="text-[9px] text-success font-medium">Retirado ✓</span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Quick actions */}
-                      <div className="grid grid-cols-3 gap-1.5 pt-1">
+                      {/* Sub-tabs: Guests | Orders | Menu | Charge */}
+                      <div className="flex bg-muted/30 rounded-lg p-0.5">
                         {[
-                          { label: 'Fazer pedido', icon: Plus, color: 'bg-primary text-primary-foreground' },
-                          { label: 'Cobrar mesa', icon: Smartphone, color: 'bg-secondary text-secondary-foreground', onClick: () => { setWaiterTab('charge'); setSelectedTable(table.number); } },
-                          { label: 'Chamar gerente', icon: Shield, color: 'border border-border text-foreground' },
-                        ].map((a, i) => (
-                          <button key={i} onClick={a.onClick} className={`flex flex-col items-center gap-1 p-2.5 rounded-xl text-[9px] font-semibold ${a.color}`}>
-                            <a.icon className="w-4 h-4" /> {a.label}
+                          { id: 'guests' as const, label: 'Pessoas', count: guests.length },
+                          { id: 'orders' as const, label: 'Pedidos', count: allOrders.length },
+                          { id: 'menu' as const, label: 'Cardápio', count: 0 },
+                          { id: 'charge' as const, label: 'Cobrar', count: guests.filter(g => !g.paid).length },
+                        ].map(t => (
+                          <button key={t.id} onClick={() => setTableDetailTab(t.id)}
+                            className={`flex-1 py-1.5 rounded-md text-[9px] font-semibold transition-all relative ${
+                              tableDetailTab === t.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground'
+                            }`}>
+                            {t.label}
+                            {t.count > 0 && <span className="ml-0.5 text-[7px] opacity-60">({t.count})</span>}
                           </button>
                         ))}
                       </div>
+
+                      {/* ── PESSOAS TAB ── */}
+                      {tableDetailTab === 'guests' && (
+                        <div className="space-y-1.5">
+                          {guests.map(guest => {
+                            const guestOrders = allOrders.filter(o => o.guestId === guest.id);
+                            const guestTotal = guestOrders.reduce((a, o) => a + o.price * o.qty, 0);
+                            const activeOrderCount = guestOrders.filter(o => o.status !== 'served' && o.status !== 'cancelled').length;
+                            return (
+                              <div key={guest.id} className={`rounded-xl border p-2.5 ${
+                                guest.paid ? 'border-success/20 bg-success/5 opacity-70' :
+                                !guest.hasApp ? 'border-warning/20 bg-warning/5' : 'border-border bg-card'
+                              }`}>
+                                <div className="flex items-center gap-2">
+                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                                    guest.paid ? 'bg-success/20 text-success' : guest.hasApp ? 'bg-info/20 text-info' : 'bg-warning/20 text-warning'
+                                  }`}>{guest.paid ? '✓' : guest.hasApp ? '📱' : '!'}</div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-1.5">
+                                      <p className="text-[11px] font-semibold truncate">{guest.name}</p>
+                                      <span className={`px-1 py-0.5 rounded text-[7px] font-bold ${guest.hasApp ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
+                                        {guest.hasApp ? 'APP' : 'SEM APP'}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                      <span className="text-[8px] text-muted-foreground">{guestOrders.length} itens</span>
+                                      {activeOrderCount > 0 && <span className="text-[8px] text-warning font-medium">{activeOrderCount} em andamento</span>}
+                                      {guest.paid && <span className="text-[8px] text-success">Pago via {guest.method}</span>}
+                                    </div>
+                                  </div>
+                                  <div className="text-right shrink-0">
+                                    <p className="text-[11px] font-bold">R$ {guestTotal}</p>
+                                    <div className="flex gap-1 mt-1">
+                                      {!guest.paid && (
+                                        <button onClick={() => { setOrderingForGuest(guest.id); setTableDetailTab('menu'); setPendingOrder([]); }}
+                                          className="px-1.5 py-0.5 rounded bg-primary text-primary-foreground text-[7px] font-bold">+ Pedir</button>
+                                      )}
+                                      {!guest.paid && !guest.hasApp && (
+                                        <button onClick={() => { setSelectedGuest(guest.name); setTableDetailTab('charge'); }}
+                                          className="px-1.5 py-0.5 rounded bg-secondary text-secondary-foreground text-[7px] font-bold">Cobrar</button>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+
+                          {/* Add guest */}
+                          {addingGuest ? (
+                            <div className="rounded-xl border-2 border-dashed border-primary/30 p-3 space-y-2">
+                              <p className="text-[10px] font-semibold">Adicionar convidado sem app</p>
+                              <input
+                                type="text"
+                                value={newGuestName}
+                                onChange={e => setNewGuestName(e.target.value)}
+                                placeholder="Nome do convidado"
+                                className="w-full px-3 py-2 rounded-lg border border-border bg-background text-xs"
+                                autoFocus
+                              />
+                              <div className="flex gap-2">
+                                <button onClick={() => handleAddGuest(selectedTable)} className="flex-1 py-2 rounded-lg bg-primary text-primary-foreground text-[10px] font-bold">Adicionar</button>
+                                <button onClick={() => { setAddingGuest(false); setNewGuestName(''); }} className="py-2 px-3 rounded-lg border border-border text-[10px]">Cancelar</button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button onClick={() => setAddingGuest(true)} className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border-2 border-dashed border-muted-foreground/20 text-muted-foreground hover:border-primary/30 hover:text-primary transition-colors">
+                              <UserPlus className="w-4 h-4" />
+                              <span className="text-[10px] font-semibold">Adicionar convidado sem app</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {/* ── PEDIDOS TAB ── */}
+                      {tableDetailTab === 'orders' && (
+                        <div className="space-y-2">
+                          {/* Status summary */}
+                          <div className="grid grid-cols-4 gap-1">
+                            {[
+                              { label: 'Pendente', count: allOrders.filter(o => ['pending', 'confirmed'].includes(o.status)).length, color: 'text-warning', bg: 'bg-warning/10' },
+                              { label: 'Preparando', count: allOrders.filter(o => o.status === 'preparing').length, color: 'text-info', bg: 'bg-info/10' },
+                              { label: 'Pronto', count: allOrders.filter(o => o.status === 'ready').length, color: 'text-destructive', bg: 'bg-destructive/10' },
+                              { label: 'Servido', count: allOrders.filter(o => o.status === 'served').length, color: 'text-success', bg: 'bg-success/10' },
+                            ].map((s, i) => (
+                              <div key={i} className={`rounded-lg p-1.5 text-center ${s.bg}`}>
+                                <p className={`font-bold text-sm ${s.color}`}>{s.count}</p>
+                                <p className="text-[7px] text-muted-foreground">{s.label}</p>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Order list grouped by status */}
+                          {['ready', 'preparing', 'confirmed', 'pending', 'served'].map(status => {
+                            const items = allOrders.filter(o => o.status === status);
+                            if (items.length === 0) return null;
+                            const statusConfig: Record<string, { label: string; color: string; bg: string; dotColor: string }> = {
+                              pending: { label: 'ENVIADO — AGUARDANDO', color: 'text-warning', bg: 'bg-warning/10', dotColor: 'bg-warning' },
+                              confirmed: { label: 'CONFIRMADO', color: 'text-info', bg: 'bg-info/10', dotColor: 'bg-info' },
+                              preparing: { label: 'PREPARANDO', color: 'text-info', bg: 'bg-info/10', dotColor: 'bg-info animate-pulse' },
+                              ready: { label: '🔔 PRONTO — RETIRAR', color: 'text-destructive', bg: 'bg-destructive/10', dotColor: 'bg-destructive animate-pulse' },
+                              served: { label: 'SERVIDO ✓', color: 'text-success', bg: 'bg-success/10', dotColor: 'bg-success' },
+                            };
+                            const cfg = statusConfig[status];
+                            return (
+                              <div key={status} className="space-y-1">
+                                <p className={`text-[8px] uppercase tracking-wider font-bold px-1 flex items-center gap-1 ${cfg.color}`}>
+                                  <div className={`w-1.5 h-1.5 rounded-full ${cfg.dotColor}`} /> {cfg.label}
+                                </p>
+                                {items.map(order => (
+                                  <div key={order.id} className={`rounded-xl border p-2.5 ${
+                                    status === 'ready' ? 'border-destructive/30 bg-destructive/5' :
+                                    status === 'preparing' ? 'border-info/20 bg-info/5' :
+                                    status === 'served' ? 'border-success/20 bg-success/5 opacity-60' : 'border-border bg-card'
+                                  }`}>
+                                    <div className="flex items-center gap-2">
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-[11px] font-semibold">{order.qty}x {order.item}</p>
+                                        <div className="flex items-center gap-2 mt-0.5">
+                                          <span className={`text-[8px] ${order.hasApp ? 'text-info' : 'text-warning'}`}>
+                                            {order.hasApp ? '📱' : '👤'} {order.guestName}
+                                          </span>
+                                          <span className="text-[8px] text-muted-foreground">· {order.sentAt}</span>
+                                        </div>
+                                      </div>
+                                      <span className="text-[10px] font-bold">R$ {order.price * order.qty}</span>
+                                      {/* Actions */}
+                                      {status !== 'served' && (
+                                        <div className="flex gap-1">
+                                          {status === 'ready' && (
+                                            <button onClick={() => setPickedUp(prev => [...prev, order.id])}
+                                              className="px-2 py-1 rounded-lg bg-destructive text-destructive-foreground text-[8px] font-bold">Servir</button>
+                                          )}
+                                          {['pending', 'confirmed'].includes(status) && (
+                                            <>
+                                              <button onClick={() => setEditingOrder(editingOrder === order.id ? null : order.id)}
+                                                className="p-1 rounded-lg bg-muted hover:bg-muted/80">
+                                                <Edit3 className="w-3 h-3 text-muted-foreground" />
+                                              </button>
+                                              <button onClick={() => setCancelledOrders(prev => [...prev, order.id])}
+                                                className="p-1 rounded-lg bg-destructive/10 hover:bg-destructive/20">
+                                                <X className="w-3 h-3 text-destructive" />
+                                              </button>
+                                            </>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                    {/* Edit expanded */}
+                                    {editingOrder === order.id && (
+                                      <div className="mt-2 pt-2 border-t border-border space-y-2">
+                                        <div className="flex gap-2">
+                                          <button className="flex-1 py-1.5 rounded-lg bg-warning/10 text-warning text-[9px] font-bold">Alterar qtd</button>
+                                          <button className="flex-1 py-1.5 rounded-lg bg-info/10 text-info text-[9px] font-bold">Trocar item</button>
+                                          <button onClick={() => setCancelledOrders(prev => [...prev, order.id])}
+                                            className="flex-1 py-1.5 rounded-lg bg-destructive/10 text-destructive text-[9px] font-bold">Cancelar</button>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          })}
+
+                          {allOrders.length === 0 && (
+                            <div className="text-center py-8">
+                              <BookOpen className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                              <p className="text-xs text-muted-foreground">Nenhum pedido ainda</p>
+                              <button onClick={() => setTableDetailTab('menu')} className="mt-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-[10px] font-bold">Abrir Cardápio</button>
+                            </div>
+                          )}
+
+                          <button onClick={() => { setTableDetailTab('menu'); setOrderingForGuest(null); }} className="w-full py-2.5 rounded-xl border-2 border-dashed border-primary/20 text-primary text-[10px] font-semibold hover:border-primary/40 transition-colors">
+                            + Adicionar mais itens
+                          </button>
+                        </div>
+                      )}
+
+                      {/* ── CARDÁPIO TAB (Ordering) ── */}
+                      {tableDetailTab === 'menu' && (
+                        <div className="space-y-2">
+                          {/* Ordering for */}
+                          <div className="rounded-xl bg-info/5 border border-info/20 p-2.5">
+                            <p className="text-[9px] text-info font-semibold uppercase tracking-wider">Fazendo pedido para</p>
+                            {orderingForGuest ? (
+                              <div className="flex items-center gap-2 mt-1">
+                                <p className="text-xs font-bold">{guests.find(g => g.id === orderingForGuest)?.name || 'Convidado'}</p>
+                                <button onClick={() => setOrderingForGuest(null)} className="text-[8px] text-primary underline">trocar</button>
+                              </div>
+                            ) : (
+                              <div className="flex gap-1 mt-1.5 flex-wrap">
+                                {guests.filter(g => !g.paid).map(g => (
+                                  <button key={g.id} onClick={() => setOrderingForGuest(g.id)}
+                                    className={`px-2 py-1 rounded-lg text-[9px] font-semibold border ${
+                                      !g.hasApp ? 'border-warning/30 bg-warning/10 text-warning' : 'border-border bg-card text-foreground'
+                                    }`}>
+                                    {!g.hasApp ? '👤 ' : '📱 '}{g.name}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Category pills */}
+                          <div className="flex gap-1 overflow-x-auto pb-1">
+                            {WAITER_MENU.map(c => (
+                              <button key={c.cat} onClick={() => setMenuCategory(c.cat)}
+                                className={`px-2.5 py-1 rounded-full text-[9px] font-medium whitespace-nowrap ${
+                                  menuCategory === c.cat ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                                }`}>{c.cat}</button>
+                            ))}
+                          </div>
+
+                          {/* Menu items */}
+                          {WAITER_MENU.find(c => c.cat === menuCategory)?.items.map(item => {
+                            const inCart = pendingOrder.find(o => o.item === item.name);
+                            return (
+                              <div key={item.id} className={`rounded-xl border p-2.5 flex items-center gap-2.5 ${
+                                inCart ? 'border-primary/30 bg-primary/5' : 'border-border bg-card'
+                              }`}>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[11px] font-semibold">{item.name}</p>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="text-[10px] font-bold text-primary">R$ {item.price}</span>
+                                    <span className="text-[8px] text-muted-foreground">⏱ {item.time}</span>
+                                  </div>
+                                </div>
+                                {inCart ? (
+                                  <div className="flex items-center gap-1.5">
+                                    <button onClick={() => setPendingOrder(prev => {
+                                      const existing = prev.find(o => o.item === item.name);
+                                      if (existing && existing.qty <= 1) return prev.filter(o => o.item !== item.name);
+                                      return prev.map(o => o.item === item.name ? { ...o, qty: o.qty - 1 } : o);
+                                    })} className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs font-bold">−</button>
+                                    <span className="text-xs font-bold w-4 text-center">{inCart.qty}</span>
+                                    <button onClick={() => setPendingOrder(prev => prev.map(o => o.item === item.name ? { ...o, qty: o.qty + 1 } : o))}
+                                      className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">+</button>
+                                  </div>
+                                ) : (
+                                  <button onClick={() => {
+                                    if (!orderingForGuest) return;
+                                    setPendingOrder(prev => [...prev, { item: item.name, qty: 1, price: item.price }]);
+                                  }} disabled={!orderingForGuest}
+                                    className={`px-2.5 py-1.5 rounded-lg text-[9px] font-bold ${
+                                      orderingForGuest ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground cursor-not-allowed'
+                                    }`}>
+                                    + Adicionar
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })}
+
+                          {/* Cart / send button */}
+                          {pendingOrder.length > 0 && orderingForGuest && (
+                            <div className="sticky bottom-0 bg-background border-t border-border -mx-3 px-3 py-2.5 space-y-2">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <p className="text-[10px] font-semibold">{pendingOrder.reduce((a, o) => a + o.qty, 0)} itens</p>
+                                  <p className="text-[9px] text-muted-foreground">{guests.find(g => g.id === orderingForGuest)?.name}</p>
+                                </div>
+                                <p className="font-display font-bold text-primary">R$ {pendingOrder.reduce((a, o) => a + o.price * o.qty, 0)}</p>
+                              </div>
+                              <button onClick={() => handleSendOrder(selectedTable, orderingForGuest)}
+                                className="w-full py-3 rounded-xl bg-success text-success-foreground font-bold text-sm flex items-center justify-center gap-2">
+                                <ChefHat className="w-4 h-4" /> Enviar para Cozinha
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* ── COBRAR TAB ── */}
+                      {tableDetailTab === 'charge' && (
+                        <>
+                          {paymentStep === 'guests' && (
+                            <div className="space-y-2">
+                              <div className="rounded-xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/10 p-2.5">
+                                <p className="text-[10px] font-semibold">Cobrança Mesa {selectedTable}</p>
+                                <p className="text-[9px] text-muted-foreground">Quem pagou pelo app aparece automaticamente. Cobre apenas quem precisa.</p>
+                              </div>
+                              {guests.map(guest => {
+                                const guestOrders = allOrders.filter(o => o.guestId === guest.id);
+                                const guestTotal = guestOrders.reduce((a, o) => a + o.price * o.qty, 0);
+                                return (
+                                  <div key={guest.id} className={`rounded-xl border p-2.5 ${
+                                    guest.paid ? 'border-success/20 bg-success/5 opacity-60' : !guest.hasApp ? 'border-warning/20 bg-warning/5' : 'border-border bg-card'
+                                  }`}>
+                                    <div className="flex items-center gap-2">
+                                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[8px] font-bold ${
+                                        guest.paid ? 'bg-success/20 text-success' : guest.hasApp ? 'bg-info/20 text-info' : 'bg-warning/20 text-warning'
+                                      }`}>{guest.paid ? '✓' : guest.hasApp ? '📱' : '!'}</div>
+                                      <div className="flex-1">
+                                        <p className="text-[11px] font-semibold">{guest.name}</p>
+                                        <p className="text-[8px] text-muted-foreground">
+                                          {guest.paid ? `Pago via ${guest.method} ✓` : guest.hasApp ? 'Pagando pelo app' : 'Sem app — cobrar manualmente'}
+                                        </p>
+                                      </div>
+                                      <span className="text-[11px] font-bold">R$ {guestTotal}</span>
+                                      {!guest.paid && !guest.hasApp && (
+                                        <button onClick={() => { setSelectedGuest(guest.name); setPaymentStep('method'); }}
+                                          className="px-2 py-1 rounded-lg bg-primary text-primary-foreground text-[8px] font-bold">Cobrar</button>
+                                      )}
+                                      {!guest.paid && guest.hasApp && (
+                                        <span className="px-1.5 py-0.5 rounded bg-info/10 text-info text-[8px]">No app</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                              <div className="rounded-xl border border-border p-2.5 flex items-center justify-between bg-muted/20">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                                    <div className="h-full bg-success rounded-full" style={{ width: `${paidPct}%` }} />
+                                  </div>
+                                  <span className="text-[9px] text-muted-foreground">{paidCount}/{guests.length} pagos</span>
+                                </div>
+                                <span className="font-display font-bold text-sm text-primary">Total: R$ {tableTotal}</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {paymentStep === 'method' && (
+                            <div className="space-y-2.5">
+                              <button onClick={() => { setPaymentStep('guests'); setSelectedGuest(null); }} className="flex items-center gap-1 text-[10px] text-primary font-semibold">
+                                <ChevronLeft className="w-3 h-3" /> Voltar
+                              </button>
+                              <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 p-4 text-center">
+                                <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Mesa {selectedTable} · {selectedGuest}</p>
+                                <p className="font-display text-3xl font-bold text-primary mt-1">
+                                  R$ {allOrders.filter(o => o.guestName === selectedGuest).reduce((a, o) => a + o.price * o.qty, 0) || Math.round(tableTotal * 0.25)}
+                                </p>
+                              </div>
+                              <div className="space-y-1.5">
+                                {[
+                                  { id: 'tap', label: 'TAP to Pay (NFC)', desc: 'Encoste o cartão no celular', highlight: true, icon: '📱' },
+                                  { id: 'pix', label: 'PIX QR Code', desc: 'Gere o QR e mostre ao cliente', highlight: false, icon: '⚡' },
+                                  { id: 'card', label: 'Cartão (Chip/Senha)', desc: 'Maquininha vinculada', highlight: false, icon: '💳' },
+                                  { id: 'cash', label: 'Dinheiro', desc: 'Confirme valor recebido', highlight: false, icon: '💵' },
+                                ].map(m => (
+                                  <button key={m.id} onClick={() => setPaymentStep('processing')}
+                                    className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
+                                      m.highlight ? 'border-primary bg-primary/5 shadow-sm' : 'border-border bg-card'
+                                    }`}>
+                                    <span className="text-lg">{m.icon}</span>
+                                    <div className="text-left flex-1">
+                                      <p className="text-xs font-semibold">{m.label}</p>
+                                      <p className="text-[9px] text-muted-foreground">{m.desc}</p>
+                                    </div>
+                                    {m.highlight && <span className="px-1.5 py-0.5 rounded bg-success/10 text-success text-[7px] font-bold">RECOMENDADO</span>}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {paymentStep === 'processing' && (
+                            <div className="text-center py-6 space-y-4">
+                              <div className="relative w-24 h-24 mx-auto">
+                                <div className="absolute inset-0 rounded-full border-4 border-primary/20 animate-ping" />
+                                <div className="absolute inset-2 rounded-full border-4 border-primary/30 animate-pulse" />
+                                <div className="absolute inset-4 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <Smartphone className="w-8 h-8 text-primary" />
+                                </div>
+                              </div>
+                              <div>
+                                <p className="font-display font-bold text-sm">Aproxime o cartão</p>
+                                <p className="text-[9px] text-muted-foreground mt-1">Peça ao cliente encostar o cartão no celular</p>
+                              </div>
+                              <div className="flex items-center gap-2 justify-center text-[9px] text-primary">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" /> Aguardando...
+                              </div>
+                              <div className="space-y-2 pt-2">
+                                <button onClick={() => setPaymentStep('done')} className="w-full py-3 rounded-xl bg-success text-success-foreground font-semibold text-sm">
+                                  Confirmar Pagamento
+                                </button>
+                                <button onClick={() => setPaymentStep('method')} className="w-full py-2 rounded-xl border border-border text-xs text-muted-foreground">
+                                  Trocar método
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {paymentStep === 'done' && (
+                            <div className="text-center py-8 space-y-3">
+                              <div className="w-14 h-14 rounded-full bg-success/10 flex items-center justify-center mx-auto">
+                                <Check className="w-7 h-7 text-success" />
+                              </div>
+                              <p className="font-display font-bold text-success">Pagamento confirmado!</p>
+                              <p className="text-[9px] text-muted-foreground">Mesa {selectedTable} · {selectedGuest}</p>
+                              <p className="text-[9px] text-muted-foreground">Recibo enviado automaticamente</p>
+                              <div className="flex gap-2 justify-center pt-2">
+                                <button className="px-3 py-1.5 rounded-lg border border-border text-[10px] font-semibold">Imprimir</button>
+                                <button onClick={() => { setPaymentStep('guests'); setSelectedGuest(null); }}
+                                  className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-[10px] font-semibold">Próximo →</button>
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
                   );
                 })()}
 
-                {/* ═══ COZINHA — Kitchen pipeline ═══ */}
+                {/* ═══ COZINHA ═══ */}
                 {waiterTab === 'kitchen' && (
                   <>
                     {readyDishes.length > 0 && (
@@ -542,8 +1016,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                         </div>
                       </div>
                     )}
-
-                    {/* Ready dishes — urgent */}
                     {readyDishes.length > 0 && (
                       <div className="space-y-1.5">
                         <p className="text-[9px] uppercase tracking-wider text-destructive font-bold px-1 flex items-center gap-1">
@@ -566,8 +1038,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                         ))}
                       </div>
                     )}
-
-                    {/* Preparing dishes */}
                     <div className="space-y-1.5">
                       <p className="text-[9px] uppercase tracking-wider text-warning font-bold px-1 flex items-center gap-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse" /> PREPARANDO
@@ -592,8 +1062,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                         </div>
                       ))}
                     </div>
-
-                    {/* Picked up */}
                     {pickedUp.length > 0 && (
                       <div className="space-y-1.5">
                         <p className="text-[9px] uppercase tracking-wider text-success font-bold px-1">✓ SERVIDO</p>
@@ -611,7 +1079,7 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                   </>
                 )}
 
-                {/* ═══ COBRAR — Payment terminal ═══ */}
+                {/* ═══ COBRAR (global) ═══ */}
                 {waiterTab === 'charge' && (
                   <>
                     {paymentStep === 'guests' && (
@@ -621,7 +1089,7 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                           <p className="text-[9px] text-muted-foreground mt-0.5">Quem pagou pelo app aparece automaticamente. Cobre apenas quem precisa do garçom.</p>
                         </div>
                         {myTables.map(table => {
-                          const guests = TABLE_GUESTS(table);
+                          const guests = getAllGuests(table.number);
                           const paidCount = guests.filter(g => g.paid).length;
                           const needsWaiter = guests.filter(g => !g.paid && !g.hasApp);
                           const waitingApp = guests.filter(g => !g.paid && g.hasApp);
@@ -637,7 +1105,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                                     {needsWaiter.length > 0 && <span className="text-[9px] text-warning font-bold">· {needsWaiter.length} sem app</span>}
                                   </div>
                                 </div>
-                                {/* Progress ring */}
                                 <div className="relative w-10 h-10">
                                   <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
                                     <circle cx="18" cy="18" r="15" fill="none" stroke="hsl(var(--muted))" strokeWidth="3" />
@@ -656,9 +1123,9 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                                     }`}>{guest.paid ? '✓' : guest.hasApp ? '📱' : '!'}</div>
                                     <div className="flex-1 min-w-0">
                                       <p className="text-[10px] font-medium truncate">{guest.name}</p>
-                                      <p className="text-[8px] text-muted-foreground">{guest.paid ? 'Pago via app' : guest.hasApp ? 'Pagando pelo app' : 'Precisa do garçom'}</p>
+                                      <p className="text-[8px] text-muted-foreground">{guest.paid ? `Pago via ${guest.method}` : guest.hasApp ? 'Pagando pelo app' : 'Precisa do garçom'}</p>
                                     </div>
-                                    <span className="text-[10px] font-semibold">R$ {guest.amount}</span>
+                                    <span className="text-[10px] font-semibold">R$ {guest.orders.reduce((a: number, o: { price: number; qty: number }) => a + o.price * o.qty, 0)}</span>
                                     {!guest.paid && !guest.hasApp && (
                                       <button onClick={() => { setSelectedTable(table.number); setSelectedGuest(guest.name); setPaymentStep('method'); }}
                                         className="px-2 py-1 rounded-lg bg-primary text-primary-foreground text-[8px] font-bold">Cobrar</button>
@@ -680,7 +1147,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                         <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 p-4 text-center">
                           <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Mesa {selectedTable} · {selectedGuest || 'Convidado'}</p>
                           <p className="font-display text-3xl font-bold text-primary mt-1">R$ {Math.round((myTables.find(t => t.number === selectedTable)?.orderTotal || 0) * 0.25)}</p>
-                          <p className="text-[9px] text-muted-foreground mt-1">Selecione como cobrar</p>
                         </div>
                         <div className="space-y-1.5">
                           {[
@@ -758,7 +1224,6 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
     </div>
   );
 };
-
 // Tiny helper
 const LayoutGridIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
