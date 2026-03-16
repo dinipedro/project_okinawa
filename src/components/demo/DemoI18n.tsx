@@ -2228,6 +2228,7 @@ export function DemoAutoTranslate({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const textMapRef = useRef(new WeakMap<Text, string>());
   const attrMapRef = useRef(new WeakMap<HTMLElement, Record<string, string>>());
+  const isTranslatingRef = useRef(false);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -2241,7 +2242,10 @@ export function DemoAutoTranslate({ children }: { children: ReactNode }) {
         const current = element.getAttribute(attr);
         if (!current || !current.trim()) continue;
         if (!(attr in originals)) originals[attr] = current;
-        element.setAttribute(attr, translateDemoText(originals[attr], lang));
+        const translated = translateDemoText(originals[attr], lang);
+        if (current !== translated) {
+          element.setAttribute(attr, translated);
+        }
       }
 
       attrMapRef.current.set(element, originals);
@@ -2254,7 +2258,10 @@ export function DemoAutoTranslate({ children }: { children: ReactNode }) {
         if (!currentText.trim()) return;
         if (!textMapRef.current.has(textNode)) textMapRef.current.set(textNode, currentText);
         const original = textMapRef.current.get(textNode) ?? currentText;
-        textNode.nodeValue = translateDemoText(original, lang);
+        const translated = translateDemoText(original, lang);
+        if (textNode.nodeValue !== translated) {
+          textNode.nodeValue = translated;
+        }
         return;
       }
 
@@ -2266,20 +2273,50 @@ export function DemoAutoTranslate({ children }: { children: ReactNode }) {
       Array.from(element.childNodes).forEach(walk);
     };
 
-    walk(root);
+    const runTranslation = () => {
+      if (isTranslatingRef.current) return;
+      isTranslatingRef.current = true;
+      try {
+        walk(root);
+      } finally {
+        isTranslatingRef.current = false;
+      }
+    };
+
+    runTranslation();
 
     const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+      if (isTranslatingRef.current) return;
+
+      let needsWork = false;
+      const nodesToWalk: Node[] = [];
+
+      for (const mutation of mutations) {
         if (mutation.type === 'characterData') {
-          walk(mutation.target);
+          nodesToWalk.push(mutation.target);
+          needsWork = true;
         }
-
-        mutation.addedNodes.forEach(walk);
-
+        if (mutation.addedNodes.length > 0) {
+          mutation.addedNodes.forEach(n => nodesToWalk.push(n));
+          needsWork = true;
+        }
         if (mutation.type === 'attributes' && mutation.target instanceof HTMLElement) {
-          translateElement(mutation.target);
+          nodesToWalk.push(mutation.target);
+          needsWork = true;
         }
-      });
+      }
+
+      if (!needsWork) return;
+
+      isTranslatingRef.current = true;
+      try {
+        for (const node of nodesToWalk) {
+          if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).hasAttribute?.('data-no-translate')) continue;
+          walk(node);
+        }
+      } finally {
+        isTranslatingRef.current = false;
+      }
     });
 
     observer.observe(root, {
