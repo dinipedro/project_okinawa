@@ -263,7 +263,7 @@ const DemoOrderStatus: React.FC<OrderStatusConfig> = ({
         <div className="mx-4 bg-card rounded-3xl p-4 shadow-lg border border-border mb-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-muted-foreground text-sm">Tempo estimado</p>
+              <p className="text-muted-foreground text-sm">{translateText('Tempo estimado')}</p>
               <p className="text-3xl font-bold text-foreground">{etaRange}</p>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
@@ -281,7 +281,7 @@ const DemoOrderStatus: React.FC<OrderStatusConfig> = ({
         {/* Pickup Code Card (for counter-pickup services) */}
         {pickupCode && (
           <div className="mx-4 bg-card rounded-2xl p-4 shadow-md border border-border mb-4 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Código de retirada</p>
+            <p className="text-xs text-muted-foreground mb-1">{translateText('Código de retirada')}</p>
             <p className="font-display text-3xl font-bold tracking-widest text-primary">{pickupCode}</p>
           </div>
         )}
@@ -289,7 +289,7 @@ const DemoOrderStatus: React.FC<OrderStatusConfig> = ({
         {/* Items Status */}
         <div className="px-4 mb-4">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Seus itens
+            {translateText('Seus itens')}
           </h2>
           <div className="space-y-3">
             {items.map((item) => {
