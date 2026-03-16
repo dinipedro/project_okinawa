@@ -1292,7 +1292,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Pista': 'Pista',
 
     // ── AI Harmonization ──
-    'Harmonização IA': 'Maridaje IA',
     'Preferência de bebida': 'Preferencia de bebida',
     'Vinho Tinto': 'Vino tinto',
     'Vinho Branco': 'Vino blanco',
