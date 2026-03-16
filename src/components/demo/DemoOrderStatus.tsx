@@ -9,7 +9,7 @@ import {
   MessageCircle, Loader2, CheckCircle, Zap, Search,
   Package, Truck, MapPin, Scale, Flame, Wine,
   type LucideIcon,
-} from 'lucide-react';
+import { useDemoI18n } from './DemoI18n';
 
 // ============ TYPES ============
 

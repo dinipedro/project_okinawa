@@ -7,6 +7,7 @@ import {
   ArrowLeft, CreditCard, Users, User, Check, DollarSign,
   Receipt, type LucideIcon,
 } from 'lucide-react';
+import { useDemoI18n } from './DemoI18n';
 
 // ============ TYPES ============
 

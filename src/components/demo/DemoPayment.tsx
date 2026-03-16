@@ -8,6 +8,7 @@ import {
   ArrowLeft, CreditCard, QrCode, Smartphone, Wallet, Check,
   Award, Clock, Zap, Gift, type LucideIcon,
 } from 'lucide-react';
+import { useDemoI18n } from './DemoI18n';
 
 // ============ TYPES ============
 
