@@ -1722,9 +1722,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Cada um paga o seu': 'Each pays their own',
     'Café #8 de 10!': 'Coffee #8 of 10!',
     'Café extraído a frio por 24h, suave e refrescante': 'Cold-brewed for 24h, smooth and refreshing',
-    'Calorias
-Calculadas': 'Calories
-Calculated',
+    'Calorias Calculadas': 'Calories Calculated',
     'Camomila orgânica. Refil R$ 5': 'Organic chamomile. Refill R$ 5',
     'Cancelada': 'Canceled',
     'Cancelamento': 'Cancellation',
@@ -1823,9 +1821,7 @@ Calculated',
     'Hambúrguer de grão de bico, rúcula, tomate seco, tahini': 'Chickpea burger, arugula, sun-dried tomato, tahini',
     'Harmoniza com taninos encorpados': 'Pairs with full-bodied tannins',
     'Hibisco com limão, sem açúcar': 'Hibiscus with lime, no sugar',
-    'Ingredientes
-Frescos': 'Fresh
-Ingredients',
+    'Ingredientes Frescos': 'Fresh Ingredients',
     'Ingredientes frescos': 'Fresh ingredients',
     'Iniciar preparo': 'Start prep',
     'Insumos e alertas': 'Supplies and alerts',
@@ -1902,9 +1898,7 @@ Ingredients',
     'Subtotal (${cart.length} itens)': 'Subtotal (${cart.length} items)',
     'Superfood proteico': 'Protein superfood',
     'Taco Vegetariano (3un)': 'Veggie Taco (3pc)',
-    'Tempo
-Médio': 'Average
-Time',
+    'Tempo Médio': 'Average Time',
     'Tempo Real': 'Real Time',
     'Tempo médio: 5 min': 'Avg. time: 5 min',
     'Tempo total': 'Total time',
@@ -3437,9 +3431,7 @@ Time',
     'Cada um paga o seu': 'Cada uno paga lo suyo',
     'Café #8 de 10!': '¡Café #8 de 10!',
     'Café extraído a frio por 24h, suave e refrescante': 'Café extraído en frío por 24h, suave y refrescante',
-    'Calorias
-Calculadas': 'Calorías
-Calculadas',
+    'Calorias Calculadas': 'Calorías Calculadas',
     'Camomila orgânica. Refil R$ 5': 'Manzanilla orgánica. Refill R$ 5',
     'Cancelada': 'Cancelada',
     'Cancelamento': 'Cancelación',
@@ -3538,9 +3530,7 @@ Calculadas',
     'Hambúrguer de grão de bico, rúcula, tomate seco, tahini': 'Hamburguesa de garbanzo, rúcula, tomate seco, tahini',
     'Harmoniza com taninos encorpados': 'Armoniza con taninos corpulentos',
     'Hibisco com limão, sem açúcar': 'Hibisco con limón, sin azúcar',
-    'Ingredientes
-Frescos': 'Ingredientes
-Frescos',
+    'Ingredientes Frescos': 'Ingredientes Frescos',
     'Ingredientes frescos': 'Ingredientes frescos',
     'Iniciar preparo': 'Iniciar preparación',
     'Insumos e alertas': 'Insumos y alertas',
@@ -3617,9 +3607,7 @@ Frescos',
     'Subtotal (${cart.length} itens)': 'Subtotal (${cart.length} items)',
     'Superfood proteico': 'Superfood proteico',
     'Taco Vegetariano (3un)': 'Taco Vegetariano (3un)',
-    'Tempo
-Médio': 'Tiempo
-Medio',
+    'Tempo Médio': 'Tiempo Medio',
     'Tempo Real': 'Tiempo Real',
     'Tempo médio: 5 min': 'Tiempo promedio: 5 min',
     'Tempo total': 'Tiempo total',
