@@ -260,27 +260,21 @@ export const ChefsTableDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
     case 'payment':
       return (
-        <div className="flex flex-col items-center justify-center h-full px-5 text-center">
-          <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mb-4">
-            <Check className="w-8 h-8 text-success" />
-          </div>
-          <h2 className="font-display text-xl font-bold mb-2">Reserva Confirmada!</h2>
-          <p className="text-sm text-muted-foreground mb-1">Mesa do Chef Noowe</p>
-          <p className="text-xs text-muted-foreground mb-4">Sáb, 22 Mar · 20:00 · {guests} pessoas</p>
-          <div className="w-full p-4 rounded-xl bg-primary/5 border border-primary/20 mb-3">
-            <p className="text-xs text-muted-foreground">Código de confirmação</p>
-            <p className="font-display text-3xl font-bold tracking-widest text-primary mt-1">MC-047</p>
-          </div>
-          <div className="w-full p-3 rounded-xl bg-muted/30 mb-4 text-left text-xs text-muted-foreground space-y-1">
-            <p className="flex items-center gap-2"><MapPin className="w-3 h-3 text-primary shrink-0" /> Endereço enviado por email</p>
-            <p className="flex items-center gap-2"><Shirt className="w-3 h-3 text-primary shrink-0" /> Dress code: Smart Casual</p>
-            <p className="flex items-center gap-2"><Timer className="w-3 h-3 text-primary shrink-0" /> Chegue 10 min antes (20:00)</p>
-            <p className="flex items-center gap-2"><ClipboardList className="w-3 h-3 text-primary shrink-0" /> Suas preferências foram enviadas ao chef</p>
-          </div>
-          <button onClick={() => onNavigate('countdown')} className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-semibold">
-            Continuar
-          </button>
-        </div>
+        <DemoPaymentSuccess
+          heading="Reserva Confirmada!"
+          subtitle={`Mesa do Chef Noowe · Sáb, 22 Mar · 20:00 · ${guests} pessoas`}
+          summaryItems={[
+            { label: 'Experiência', value: `R$ ${guests * 680}` },
+            { label: 'Código', value: 'MC-047', highlight: 'primary' },
+          ]}
+          badge={{ icon: ChefHat, text: 'Suas preferências foram enviadas ao chef' }}
+          stats={[
+            { label: 'Dress Code', value: 'Smart Casual' },
+            { label: 'Chegada', value: '19:50' },
+            { label: 'Pessoas', value: `${guests}` },
+          ]}
+          primaryAction={{ label: 'Continuar', onClick: () => onNavigate('countdown'), icon: ArrowRight }}
+        />
       );
 
     case 'countdown':
