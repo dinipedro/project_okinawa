@@ -189,7 +189,7 @@ const DemoClientInner = () => {
                       }`}>
                         {isPast && !isActive ? <Check className="w-3 h-3" /> : step}
                       </div>
-                      <span className={`text-xs ${isActive ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>{label}</span>
+                      <span className={`text-xs ${isActive ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>{translateText(label)}</span>
                     </button>
                   );
                 })}
