@@ -1821,9 +1821,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Hambúrguer de grão de bico, rúcula, tomate seco, tahini': 'Chickpea burger, arugula, sun-dried tomato, tahini',
     'Harmoniza com taninos encorpados': 'Pairs with full-bodied tannins',
     'Hibisco com limão, sem açúcar': 'Hibiscus with lime, no sugar',
-    'Ingredientes
-Frescos': 'Fresh
-Ingredients',
+    'Ingredientes Frescos': 'Fresh Ingredients',
     'Ingredientes frescos': 'Fresh ingredients',
     'Iniciar preparo': 'Start prep',
     'Insumos e alertas': 'Supplies and alerts',
