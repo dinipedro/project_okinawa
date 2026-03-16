@@ -1230,7 +1230,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     '⏳ Reabastecendo': '⏳ Reabasteciendo',
     '✓ Registrado': '✓ Registrado',
     'Pesar Mais': 'Pesar más',
-    'Pedir Bebidas': 'Pedir bebidas',
 
     // ── Chef's Table specific ──
     'Exclusivo': 'Exclusivo',
