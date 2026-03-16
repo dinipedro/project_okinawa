@@ -5,6 +5,8 @@
 import React, { useState, useEffect } from 'react';
 import { GuidedHint, ItemIcon } from '../DemoShared';
 import { FoodImg } from '../FoodImages';
+import DemoPayment from '../DemoPayment';
+import DemoPaymentSuccess from '../DemoPaymentSuccess';
 import {
   ArrowLeft, Check, Star, Clock, Plus, CreditCard, Gift, QrCode,
   Search, MapPin, Scale, ArrowRight, Utensils, Droplets, Users,
