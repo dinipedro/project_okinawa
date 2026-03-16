@@ -387,29 +387,17 @@ export const DriveThruDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
     case 'pickup':
       return (
-        <div className="flex flex-col items-center justify-center h-full px-5 text-center">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-success to-success/80 flex items-center justify-center mb-5 shadow-xl shadow-success/30">
-            <Check className="w-12 h-12 text-primary-foreground" />
-          </div>
-          <h2 className="font-display text-2xl font-bold mb-2 flex items-center gap-2">Boa viagem! <Car className="w-6 h-6 text-primary" /></h2>
-          <p className="text-sm text-muted-foreground mb-1">Pedido entregue em <strong>1min 48s</strong></p>
-          <p className="text-xs text-primary font-semibold mb-4">Sem sair do carro. Sem esperar. Sem fila.</p>
-          <div className="w-full p-3 rounded-xl bg-primary/5 border border-primary/20 mb-3 flex items-center gap-3">
-            <Gift className="w-5 h-5 text-primary" />
-            <div className="text-left"><p className="text-sm font-semibold">+{Math.round(cartTotal / 5)} pontos ganhos!</p><p className="text-xs text-muted-foreground">Stamp #12 — próximo combo grátis!</p></div>
-          </div>
-          <div className="w-full flex items-center justify-center gap-2 mb-4">
-            {[1,2,3,4,5].map(i => (
-              <Star key={i} className={`w-7 h-7 ${i <= 5 ? 'text-accent fill-accent' : 'text-muted'}`} />
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {['Rápido', 'Quentinho', 'Correto', 'Atendimento'].map(tag => (
-              <button key={tag} className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium">{tag}</button>
-            ))}
-          </div>
-          <button onClick={() => onNavigate('home')} className="w-full py-3 border border-border rounded-xl font-semibold text-sm">Voltar ao Início</button>
-        </div>
+        <DemoPaymentSuccess
+          heading="Boa viagem!"
+          subtitle="Pedido entregue em 1min 48s · Sem sair do carro"
+          summaryItems={[
+            { label: 'Código', value: 'ND-056', highlight: 'success' },
+            { label: 'Tempo total', value: '1min 48s' },
+          ]}
+          loyaltyReward={{ points: `+${Math.round(cartTotal / 5)} pontos ganhos!`, description: 'Stamp #12 — próximo combo grátis!' }}
+          badge={{ text: 'Sem sair do carro. Sem esperar. Sem fila.' }}
+          primaryAction={{ label: 'Voltar ao Início', onClick: () => onNavigate('home') }}
+        />
       );
 
     default: return null;

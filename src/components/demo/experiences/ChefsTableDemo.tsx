@@ -480,28 +480,25 @@ export const ChefsTableDemo: React.FC<Props> = ({ onNavigate, screen }) => {
 
     case 'finale':
       return (
-        <div className="flex flex-col items-center justify-center h-full px-5 text-center">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center mb-5 shadow-xl">
-            <Award className="w-12 h-12 text-primary-foreground" />
-          </div>
-          <h2 className="font-display text-xl font-bold mb-1 flex items-center gap-2">Certificado Digital <Trophy className="w-5 h-5 text-accent" /></h2>
-          <p className="text-sm text-muted-foreground mb-4">Mesa do Chef Noowe · 22 Mar 2026</p>
-          <div className="w-full p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 mb-4">
-            <p className="text-xs text-muted-foreground">Certificamos que</p>
-            <p className="font-display text-lg font-bold mt-1">Você</p>
-            <p className="text-xs text-muted-foreground mt-1">participou da experiência exclusiva</p>
-            <p className="font-display font-bold text-primary mt-1">Mesa do Chef · 7 Cursos</p>
-            <p className="text-xs text-muted-foreground mt-2 italic">com Chef Ricardo Oliveira</p>
-          </div>
-          <div className="w-full p-3 rounded-xl bg-primary/5 border border-primary/20 mb-3 flex items-center gap-3">
-            <Gift className="w-5 h-5 text-primary" />
-            <div className="text-left"><p className="text-sm font-semibold">+680 pontos ganhos!</p><p className="text-xs text-muted-foreground flex items-center gap-1">Nível Gold desbloqueado <Crown className="w-3 h-3 text-accent" /></p></div>
-          </div>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            {[1,2,3,4,5].map(i => <Star key={i} className="w-7 h-7 text-accent fill-accent" />)}
-          </div>
-          <button onClick={() => onNavigate('home')} className="w-full py-3 border border-border rounded-xl font-semibold text-sm">Voltar ao Início</button>
-        </div>
+        <DemoPaymentSuccess
+          icon={Award}
+          gradientFrom="from-accent"
+          gradientTo="to-primary"
+          heading="Certificado Digital"
+          subtitle="Mesa do Chef Noowe · 22 Mar 2026"
+          summaryItems={[
+            { label: 'Experiência', value: 'Mesa do Chef · 7 Cursos', highlight: 'primary' },
+            { label: 'Chef', value: 'Ricardo Oliveira' },
+          ]}
+          loyaltyReward={{ points: '+680 pontos ganhos!', description: 'Nível Gold desbloqueado' }}
+          badge={{ icon: Crown, text: 'Certificado de participação exclusiva' }}
+          stats={[
+            { label: 'Cursos', value: '7' },
+            { label: 'Vinhos', value: '5' },
+            { label: 'Avaliação', value: '★★★★★' },
+          ]}
+          secondaryAction={{ label: 'Voltar ao Início', onClick: () => onNavigate('home') }}
+        />
       );
 
     default: return null;
