@@ -383,7 +383,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Salão': 'Dining Room',
     'Terraço': 'Terrace',
     'Qualquer': 'Any',
-    'Entrar na Fila Virtual': 'Join Virtual Queue',
     'Você está na fila!': 'You\'re in line!',
     'Posição': 'Position',
     'Você · Mesa para 2': 'You · Table for 2',
