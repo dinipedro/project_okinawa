@@ -858,6 +858,9 @@ export const MobileRestaurantScreen: React.FC<{
       {screen === 'stock' && <MobileStock />}
       {screen === 'waiter-calls' && <MobileCalls />}
       {screen === 'waiter-tips' && <MobileTips />}
+      {screen === 'waiter-payment' && <MobilePayment />}
+      {screen === 'waiter-actions' && <MobileActions />}
+      {screen === 'waiter-table-detail' && <MobileWaiter />}
       {screen === 'floor-flow' && <MobileFloorFlow />}
       {screen === 'daily-report' && <MobileDailyReport />}
 
