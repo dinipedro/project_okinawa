@@ -19,7 +19,9 @@ export type RestaurantScreen =
   // New role-specific screens
   | 'manager-ops' | 'approvals' | 'barman-station' | 'drink-recipes'
   | 'cook-station' | 'stock' | 'waiter-calls' | 'waiter-tips'
-  | 'floor-flow' | 'daily-report';
+  | 'floor-flow' | 'daily-report'
+  // Enhanced waiter screens
+  | 'waiter-table-detail' | 'waiter-payment' | 'waiter-actions';
 
 export type StaffRole = 'owner' | 'manager' | 'maitre' | 'barman' | 'chef' | 'cook' | 'waiter';
 
@@ -99,8 +101,10 @@ export const ROLE_JOURNEYS: Record<StaffRole, RoleJourneyStage[]> = {
   ],
   waiter: [
     { screen: 'waiter', label: 'Minhas Mesas', icon: LayoutGrid, desc: 'Mesas atribuídas e pedidos' },
+    { screen: 'waiter-calls', label: 'Chamados', icon: Bell, desc: 'Chamados em tempo real dos clientes' },
+    { screen: 'waiter-payment', label: 'Cobrar / TAP', icon: Smartphone, desc: 'Processar pagamento na mesa' },
+    { screen: 'waiter-actions', label: 'Ações na Mesa', icon: HandPlatter, desc: 'Executar ações pelo cliente' },
     { screen: 'orders', label: 'Pedidos Ativos', icon: UtensilsCrossed, desc: 'Pedidos das suas mesas' },
-    { screen: 'waiter-calls', label: 'Chamados', icon: Bell, desc: 'Chamados de clientes' },
     { screen: 'waiter-tips', label: 'Gorjetas', icon: DollarSign, desc: 'Suas gorjetas do dia' },
   ],
 };
@@ -128,6 +132,9 @@ export const SCREEN_INFO: Record<RestaurantScreen, { title: string; desc: string
   stock: { title: 'Controle de Estoque', desc: 'Insumos, alertas de nível baixo e reposição' },
   'waiter-calls': { title: 'Chamados de Clientes', desc: 'Chamados pendentes das suas mesas' },
   'waiter-tips': { title: 'Minhas Gorjetas', desc: 'Gorjetas recebidas hoje e histórico' },
+  'waiter-table-detail': { title: 'Detalhe da Mesa', desc: 'Detalhes completos da mesa, pedidos e status dos clientes' },
+  'waiter-payment': { title: 'Cobrar na Mesa', desc: 'TAP to Pay, PIX QR e cartão — transforme o celular em maquininha' },
+  'waiter-actions': { title: 'Ações na Mesa', desc: 'Executar ações pelo cliente: adicionar itens, solicitar conta, chamar gerente' },
   'floor-flow': { title: 'Fluxo do Salão', desc: 'Fila virtual, tempos de espera e rotação' },
   'daily-report': { title: 'Relatório do Dia', desc: 'Fechamento, métricas e comparativos' },
 };
