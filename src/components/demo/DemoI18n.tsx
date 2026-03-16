@@ -2305,8 +2305,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
 
     // ── Menu Tags ──
     'Sem Glúten': 'Sin Gluten',
-    'Vegetariano': 'Vegetariano',
-    'Vegano': 'Vegano',
     'Orgânico': 'Orgánico',
     'Sem Lactose': 'Sin Lactosa',
     'Picante': 'Picante',
