@@ -1012,7 +1012,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Primeiro curso com história do chef.': 'First course with chef\'s story.',
     'Prato Principal': 'Main Course',
     'Wagyu A5 com harmonização do sommelier.': 'Wagyu A5 with sommelier pairing.',
-    'Sobremesa': 'Dessert',
+    
     'Grand finale com soufflé e espumante.': 'Grand finale with soufflé and sparkling wine.',
     'Foto': 'Photo',
     'Registro com o chef e menu assinado.': 'Photo with the chef and signed menu.',
