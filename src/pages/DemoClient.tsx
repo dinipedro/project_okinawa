@@ -103,150 +103,151 @@ const DemoClientInner = () => {
         <meta name="description" content={t('client', 'metaDesc')} />
       </Helmet>
 
-      <div className="min-h-screen bg-muted/30 flex flex-col items-center py-6 px-4">
-        {/* Header */}
-        <div className="w-full max-w-7xl flex items-center justify-between mb-4">
-          <Link to="/demo" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" />{t('shared', 'backToDemo')}
-          </Link>
-          <div className="flex items-center gap-3">
-            <DemoLangSelector />
-            <Link to="/demo/restaurant" className="px-3 py-1.5 rounded-full border border-border text-xs font-medium hover:bg-muted transition-colors">
-              {t('shared', 'viewRestaurantDemo')}
+      <DemoAutoTranslate>
+        <div className="min-h-screen bg-muted/30 flex flex-col items-center py-6 px-4">
+          {/* Header */}
+          <div className="w-full max-w-7xl flex items-center justify-between mb-4">
+            <Link to="/demo" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <ArrowLeft className="w-4 h-4" />{t('shared', 'backToDemo')}
             </Link>
-            <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">{t('shared', 'demoClient')}</span>
-          </div>
-        </div>
-
-        {/* Service Type Selector */}
-        <div className="w-full max-w-7xl mb-6">
-          <div className="flex items-center gap-3 mb-3">
-            <Zap className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-semibold text-foreground">{t('client', 'chooseExperience')}</h2>
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            {SERVICE_TYPES.map((st) => {
-              const isActive = serviceType === st.id;
-              return (
-                <button
-                  key={st.id}
-                  onClick={() => setServiceType(st.id)}
-                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all whitespace-nowrap ${
-                    isActive
-                      ? 'border-primary bg-primary/10 shadow-sm shadow-primary/10'
-                      : 'border-border bg-card hover:border-primary/30 hover:bg-muted/50'
-                  }`}
-                >
-                  <ItemIcon cat={st.iconCat} size="xs" />
-                  <div className="text-left">
-                    <p className={`text-xs font-semibold ${isActive ? 'text-primary' : 'text-foreground'}`}>{st.name}</p>
-                    <p className="text-[10px] text-muted-foreground hidden sm:block">{st.tagline}</p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Active demo title */}
-        <div className="w-full max-w-7xl mb-4">
-          <div className={`flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r ${activeServiceType?.color || ''} border border-border/50`}>
-            <ItemIcon cat={activeServiceType?.iconCat || 'generic'} size="lg" />
-            <div>
-              <h1 className="font-display text-lg font-bold text-foreground">{activeServiceType?.restaurant}</h1>
-              <p className="text-sm text-muted-foreground">{activeServiceType?.name} · {activeServiceType?.tagline}</p>
+            <div className="flex items-center gap-3">
+              <DemoLangSelector />
+              <Link to="/demo/restaurant" className="px-3 py-1.5 rounded-full border border-border text-xs font-medium hover:bg-muted transition-colors">
+                {t('shared', 'viewRestaurantDemo')}
+              </Link>
+              <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">{t('shared', 'demoClient')}</span>
             </div>
           </div>
-        </div>
 
-        {/* Main content: sidebar + phone + info */}
-        <div className="flex gap-8 items-start max-w-7xl w-full justify-center">
-          {/* Journey sidebar */}
-          <div className="hidden md:block w-60 shrink-0 sticky top-8">
-            <h2 className="font-display text-sm font-bold mb-1 text-foreground">{t('client', 'clientJourney')}</h2>
-            <p className="text-xs text-muted-foreground mb-4">{t('shared', 'followSteps')}</p>
-            <div className="space-y-0.5">
-              {config?.steps.map(({ step, label, screens }) => {
-                const isActive = screens.includes(currentScreen);
-                const isPast = currentStepIdx > config.steps.findIndex(s => s.step === step);
+          {/* Service Type Selector */}
+          <div className="w-full max-w-7xl mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <Zap className="w-4 h-4 text-primary" />
+              <h2 className="text-sm font-semibold text-foreground">{t('client', 'chooseExperience')}</h2>
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              {SERVICE_TYPES.map((st) => {
+                const isActive = serviceType === st.id;
                 return (
                   <button
-                    key={step}
-                    onClick={() => setCurrentScreen(screens[0])}
-                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl transition-all text-left ${
-                      isActive ? 'bg-primary/10 border border-primary/20' : 'hover:bg-muted/50'
+                    key={st.id}
+                    onClick={() => setServiceType(st.id)}
+                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'border-primary bg-primary/10 shadow-sm shadow-primary/10'
+                        : 'border-border bg-card hover:border-primary/30 hover:bg-muted/50'
                     }`}
                   >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
-                      isActive ? 'bg-primary text-primary-foreground'
-                      : isPast ? 'bg-success/20 text-success'
-                      : 'bg-muted text-muted-foreground'
-                    }`}>
-                      {isPast && !isActive ? <Check className="w-3 h-3" /> : step}
+                    <ItemIcon cat={st.iconCat} size="xs" />
+                    <div className="text-left">
+                      <p className={`text-xs font-semibold ${isActive ? 'text-primary' : 'text-foreground'}`}>{t('serviceTypes', st.id)}</p>
+                      <p className="text-[10px] text-muted-foreground hidden sm:block">{t('serviceTypeTaglines', st.id)}</p>
                     </div>
-                    <span className={`text-xs ${isActive ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>{label}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Phone */}
-          <div className="relative">
-            <PhoneShell>
-              {ActiveDemo && <ActiveDemo screen={currentScreen} onNavigate={setCurrentScreen} />}
-            </PhoneShell>
-            {config?.hasBottomNav && (
-              <BottomNav
-                activeTab={FD_TAB_MAP[currentScreen] || 'explore'}
-                onTabChange={handleTabChange}
-                cartCount={cartCount}
-                notifCount={3}
-              />
-            )}
+          {/* Active demo title */}
+          <div className="w-full max-w-7xl mb-4">
+            <div className={`flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r ${activeServiceType?.color || ''} border border-border/50`}>
+              <ItemIcon cat={activeServiceType?.iconCat || 'generic'} size="lg" />
+              <div>
+                <h1 className="font-display text-lg font-bold text-foreground">{activeServiceType?.restaurant}</h1>
+                <p className="text-sm text-muted-foreground">{activeServiceType ? t('serviceTypes', activeServiceType.id) : ''} · {activeServiceType ? t('serviceTypeTaglines', activeServiceType.id) : ''}</p>
+              </div>
+            </div>
           </div>
 
-          {/* Info sidebar */}
-          <div className="hidden xl:block w-72 shrink-0 sticky top-8">
-            <div className="p-5 rounded-2xl bg-card border border-border mb-5">
-              <h3 className="font-display font-bold mb-2">{info.title}</h3>
-              <p className="text-sm text-muted-foreground">{info.desc}</p>
-            </div>
-
-            {/* Service type features */}
-            <div className="p-5 rounded-2xl bg-card border border-border mb-5">
-              <h3 className="font-display font-bold text-sm mb-3 flex items-center gap-2">
-                <ItemIcon cat={activeServiceType?.iconCat || 'generic'} size="xs" />
-                {activeServiceType?.name}
-              </h3>
-              <div className="space-y-2">
-                {config?.steps.slice(0, 5).map(({ step, label }) => (
-                  <div key={step} className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Check className="w-3 h-3 text-success shrink-0" />
-                    <span>{label}</span>
-                  </div>
-                ))}
-                {(config?.steps.length ?? 0) > 5 && (
-                  <p className="text-xs text-muted-foreground/60">+{(config?.steps.length ?? 0) - 5} {t('shared', 'stepsInJourney')}</p>
-                )}
+          {/* Main content: sidebar + phone + info */}
+          <div className="flex gap-8 items-start max-w-7xl w-full justify-center">
+            {/* Journey sidebar */}
+            <div className="hidden md:block w-60 shrink-0 sticky top-8">
+              <h2 className="font-display text-sm font-bold mb-1 text-foreground">{t('client', 'clientJourney')}</h2>
+              <p className="text-xs text-muted-foreground mb-4">{t('shared', 'followSteps')}</p>
+              <div className="space-y-0.5">
+                {config?.steps.map(({ step, label, screens }) => {
+                  const isActive = screens.includes(currentScreen);
+                  const isPast = currentStepIdx > config.steps.findIndex(s => s.step === step);
+                  return (
+                    <button
+                      key={step}
+                      onClick={() => setCurrentScreen(screens[0])}
+                      className={`w-full flex items-center gap-3 p-2.5 rounded-xl transition-all text-left ${
+                        isActive ? 'bg-primary/10 border border-primary/20' : 'hover:bg-muted/50'
+                      }`}
+                    >
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                        isActive ? 'bg-primary text-primary-foreground'
+                        : isPast ? 'bg-success/20 text-success'
+                        : 'bg-muted text-muted-foreground'
+                      }`}>
+                        {isPast && !isActive ? <Check className="w-3 h-3" /> : step}
+                      </div>
+                      <span className={`text-xs ${isActive ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>{label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/10">
-              <h3 className="font-display font-bold mb-2">{t('shared', 'wantThis')}</h3>
-              <p className="text-xs text-muted-foreground mb-4">{t('shared', 'ctaDescClient')}</p>
-              <a
-                href="https://wa.me/5511999999999?text=Olá! Vi a demo do app cliente da NOOWE e gostaria de saber mais."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm shadow-glow"
-              >
-                {t('shared', 'talkToTeam')}
-              </a>
+            {/* Phone */}
+            <div className="relative">
+              <PhoneShell>
+                {ActiveDemo && <ActiveDemo screen={currentScreen} onNavigate={setCurrentScreen} />}
+              </PhoneShell>
+              {config?.hasBottomNav && (
+                <BottomNav
+                  activeTab={FD_TAB_MAP[currentScreen] || 'explore'}
+                  onTabChange={handleTabChange}
+                  cartCount={cartCount}
+                  notifCount={3}
+                />
+              )}
+            </div>
+
+            {/* Info sidebar */}
+            <div className="hidden xl:block w-72 shrink-0 sticky top-8">
+              <div className="p-5 rounded-2xl bg-card border border-border mb-5">
+                <h3 className="font-display font-bold mb-2">{info.title}</h3>
+                <p className="text-sm text-muted-foreground">{info.desc}</p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-card border border-border mb-5">
+                <h3 className="font-display font-bold text-sm mb-3 flex items-center gap-2">
+                  <ItemIcon cat={activeServiceType?.iconCat || 'generic'} size="xs" />
+                  {activeServiceType ? t('serviceTypes', activeServiceType.id) : ''}
+                </h3>
+                <div className="space-y-2">
+                  {config?.steps.slice(0, 5).map(({ step, label }) => (
+                    <div key={step} className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Check className="w-3 h-3 text-success shrink-0" />
+                      <span>{label}</span>
+                    </div>
+                  ))}
+                  {(config?.steps.length ?? 0) > 5 && (
+                    <p className="text-xs text-muted-foreground/60">+{(config?.steps.length ?? 0) - 5} {t('shared', 'stepsInJourney')}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/10">
+                <h3 className="font-display font-bold mb-2">{t('shared', 'wantThis')}</h3>
+                <p className="text-xs text-muted-foreground mb-4">{t('shared', 'ctaDescClient')}</p>
+                <a
+                  href="https://wa.me/5511999999999?text=Olá! Vi a demo do app cliente da NOOWE e gostaria de saber mais."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm shadow-glow"
+                >
+                  {t('shared', 'talkToTeam')}
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </DemoAutoTranslate>
     </>
   );
 };
