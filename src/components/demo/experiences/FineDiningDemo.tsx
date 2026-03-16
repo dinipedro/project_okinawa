@@ -804,6 +804,35 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
     setExpandedItem(null);
   };
 
+  if (checkoutStep === 'payment') {
+    return (
+      <DemoPayment
+        title="Pagamento"
+        subtitle="Bistrô Noowe · Mesa 7"
+        total={`R$ ${myTotal.toFixed(2)}`}
+        totalLabel="Você paga"
+        items={[
+          { label: 'Sua parte', value: `R$ ${mySubtotal.toFixed(2)}` },
+          ...(payMode === 'split' && sharedTotal > 0
+            ? [{ label: 'Itens compartilhados', value: `R$ ${mySharedPortion.toFixed(2)}`, highlight: 'accent' as const }]
+            : []),
+          ...(tipPercent > 0
+            ? [{ label: `Gorjeta (${tipPercent}%)`, value: `R$ ${myTip.toFixed(2)}` }]
+            : []),
+          ...(paidByOthers > 0
+            ? [{ label: 'Pago por outros', value: `- R$ ${paidByOthers.toFixed(2)}`, highlight: 'success' as const }]
+            : []),
+        ]}
+        infoBanner={{ icon: Zap, text: 'Pagamento premium com os mesmos métodos disponíveis em todas as demos', variant: 'primary' }}
+        showTip={false}
+        fullMethodGrid={true}
+        onBack={() => setCheckoutStep('config')}
+        onConfirm={() => onNavigate('payment-success')}
+        ctaLabel={`Pagar R$ ${myTotal.toFixed(2)}`}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="bg-gradient-to-r from-primary to-accent px-5 py-4">
@@ -974,41 +1003,8 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
           </div>
         )}
 
-        {/* Tip */}
-        <div>
-          <h2 className="font-semibold text-foreground text-sm mb-3">Gorjeta</h2>
-          <div className="flex gap-2">
-            {[0, 10, 15, 20].map((p) => (
-              <button key={p} onClick={() => setTipPercent(p)} className={`flex-1 py-3 rounded-xl border-2 font-semibold text-sm transition-all ${tipPercent === p ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground'}`}>
-                {p === 0 ? 'Sem' : `${p}%`}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Payment method */}
-        <div>
-          <h2 className="font-semibold text-foreground text-sm mb-3">Forma de pagamento</h2>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { id: 'pix', name: 'PIX', icon: QrCode },
-              { id: 'credit', name: 'Crédito', icon: CreditCard },
-              { id: 'apple', name: 'Apple Pay', icon: Smartphone },
-              { id: 'google', name: 'Google Pay', icon: Smartphone },
-              { id: 'tap', name: 'TAP to Pay', icon: Nfc },
-              { id: 'wallet', name: 'Carteira', icon: Wallet },
-            ].map((method) => (
-              <button key={method.id} onClick={() => setSelectedPayment(method.id)} className={`p-3 rounded-xl border-2 text-center transition-all ${selectedPayment === method.id ? 'border-primary bg-primary/10' : 'border-border bg-card'}`}>
-                <method.icon className={`w-5 h-5 mx-auto mb-1 ${selectedPayment === method.id ? 'text-primary' : 'text-muted-foreground'}`} />
-                <span className={`text-xs font-medium ${selectedPayment === method.id ? 'text-primary' : 'text-muted-foreground'}`}>{method.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Summary */}
         <div className="p-4 rounded-2xl bg-card border border-border">
-          <h3 className="font-semibold text-foreground mb-3">Resumo</h3>
+          <h3 className="font-semibold text-foreground mb-3">Resumo da sua parte</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span className="text-muted-foreground">Sua parte</span><span className="text-foreground">R$ {mySubtotal.toFixed(2)}</span></div>
             {payMode === 'split' && sharedTotal > 0 && (
@@ -1022,8 +1018,8 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
       </div>
 
       <div className="p-5 bg-card border-t border-border">
-        <button onClick={() => onNavigate('payment-success')} className="w-full py-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold rounded-2xl shadow-xl shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-          <CreditCard className="w-5 h-5" />Pagar R$ {myTotal.toFixed(2)}
+        <button onClick={() => setCheckoutStep('payment')} className="w-full py-4 bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold rounded-2xl shadow-xl shadow-primary/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <CreditCard className="w-5 h-5" />Continuar para Pagamento
         </button>
       </div>
     </div>
