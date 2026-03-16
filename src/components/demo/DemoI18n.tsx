@@ -999,9 +999,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Alertas': 'Alerts',
     'No mobile, o mapa vira uma grade operacional rápida para seleção e ação.': 'On mobile, the table map becomes a quick operational grid for selection and action.',
     'Sem cliente no momento': 'No guest at the moment',
-    'Nenhum chamado agora.': 'No calls right now.',
     'Reservas confirmadas': 'Confirmed reservations',
-    'Minhas mesas': 'My tables',
     'Fluxo atual': 'Current flow',
     'Fechamento operacional': 'Operational closing',
     'Caixa conciliado': 'Cash register reconciled',
@@ -1050,13 +1048,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Sommelier': 'Sommelier',
     'pedidos': 'orders',
     'gorjetas': 'tips',
-    'Seg': 'Mon',
-    'Ter': 'Tue',
-    'Qua': 'Wed',
-    'Qui': 'Thu',
-    'Sex': 'Fri',
-    'Sáb': 'Sat',
-    'Dom': 'Sun',
 
     // ── Owner role: Table Map ──
     'Planta interativa do salão — clique nas mesas para ver detalhes e alterar status': 'Interactive floor plan — click tables for details and status changes',
@@ -1140,7 +1131,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Acesso total ao sistema': 'Full system access',
     'Gestão operacional, equipe, relatórios': 'Operational management, team, reports',
     'KDS, gestão de cardápio, estoque': 'KDS, menu management, stock',
-    'Pedidos, mesas, atendimento': 'Orders, tables, service',
     'KDS bar, pedidos de bebidas': 'Bar KDS, drink orders',
     'Reservas, fila, mapa de mesas': 'Reservations, queue, table map',
     'Editar': 'Edit',
@@ -1225,8 +1215,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Nenhuma mesa disponível': 'No tables available',
 
     // ── Owner role: Waiter screen ──
-    'Assim fica o app no celular do garçom — mesas, chamados e gorjetas em tempo real': 'This is how the app looks on the waiter\'s phone — tables, calls and tips in real time',
-    'Olá, Bruno 👋': 'Hello, Bruno 👋',
     'Suas Mesas': 'Your Tables',
     'Mesas': 'Tables',
     'Pedidos': 'Orders',
@@ -1307,24 +1295,13 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Modo de Preparo': 'Preparation Method',
 
     // ── Manager role: Waiter Calls ──
-    'Chamados em tempo real — atenda discretamente sem que o cliente precise levantar a mão': 'Real-time calls — serve discreetly without the guest raising their hand',
     'Atendidos': 'Attended',
     'Tempo Médio': 'Average Time',
-    'Cliente solicitou o garçom': 'Customer called the waiter',
-    'Solicita falar com gerente': 'Requests to speak with manager',
-    'Pedido de sobremesa': 'Dessert order',
-    'Solicita a conta': 'Requests the bill',
-    'URGENTE': 'URGENT',
-    'Atendido': 'Attended',
 
     // ── Manager role: Waiter Tips ──
-    'Acompanhe suas gorjetas em tempo real — transparência total': 'Track your tips in real time — full transparency',
     'Média/Mesa': 'Average/Table',
     'mesas hoje': 'tables today',
     'mesas': 'tables',
-    'Gorjetas de Hoje': 'Today\'s Tips',
-    'da conta': 'of the bill',
-    'Sua Semana': 'Your Week',
 
     // ── Manager role: Floor Flow ──
     'Controle o fluxo do salão — tempos de permanência, fila e rotação de mesas': 'Control floor flow — stay times, queue and table rotation',
@@ -2716,6 +2693,56 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Insumos e alertas': 'Supplies and alerts',
     'Estação de preparo': 'Prep station',
 
+    // ── Waiter (Garçom) role: journey & screen info ──
+    'Mesas, pedidos e gorjetas': 'Tables, orders and tips',
+    'Minhas Mesas': 'My Tables',
+    'Mesas atribuídas e pedidos': 'Assigned tables and orders',
+    'Pedidos das suas mesas': 'Your tables orders',
+    'Chamados de clientes': 'Customer calls',
+    'Suas gorjetas do dia': 'Your tips today',
+    'Visão do Garçom': 'Waiter View',
+    'Mesas, pedidos, chamados e gorjetas': 'Tables, orders, calls and tips',
+    'Chamados de Clientes': 'Customer Calls',
+    'Chamados pendentes das suas mesas': 'Pending calls from your tables',
+    'Minhas Gorjetas': 'My Tips',
+    'Gorjetas recebidas hoje e histórico': 'Tips received today and history',
+    'Pedidos, mesas, atendimento': 'Orders, tables, service',
+    // ── Waiter: WaiterScreen ──
+    'Assim fica o app no celular do garçom — mesas, chamados e gorjetas em tempo real': 'This is how the app looks on the waiter phone — tables, calls and tips in real time',
+    'Olá, Bruno 👋': 'Hello, Bruno 👋',
+    '30min atrás': '30min ago',
+    '1h atrás': '1h ago',
+    '1h30 atrás': '1h30 ago',
+    '2h atrás': '2h ago',
+    '2h30 atrás': '2h30 ago',
+    // ── Waiter: WaiterCallsScreen ──
+    'Chamados em tempo real — atenda discretamente sem que o cliente precise levantar a mão': 'Real-time calls — attend discreetly without the customer raising their hand',
+    'Cliente solicitou o garçom': 'Customer called the waiter',
+    'Solicita falar com gerente': 'Requests to speak with manager',
+    'Pedido de sobremesa': 'Dessert order',
+    'Solicita a conta': 'Requests the bill',
+    'URGENTE': 'URGENT',
+    'Atendido': 'Attended',
+    // ── Waiter: WaiterTipsScreen ──
+    'Acompanhe suas gorjetas em tempo real — transparência total': 'Track your tips in real time — full transparency',
+    '23 mesas': '23 tables',
+    '8 mesas hoje': '8 tables today',
+    'Gorjetas de Hoje': 'Today Tips',
+    'da conta': 'of the bill',
+    'Sua Semana': 'Your Week',
+    'Seg': 'Mon',
+    'Ter': 'Tue',
+    'Qua': 'Wed',
+    'Qui': 'Thu',
+    'Sex': 'Fri',
+    'Sáb': 'Sat',
+    'Dom': 'Sun',
+    // ── Waiter: Mobile ──
+    'Minhas mesas': 'My tables',
+    'Nenhum chamado agora.': 'No calls right now.',
+    'pedido(s) ativo(s)': 'active order(s)',
+
+
   },
   es: {
     // ── Common UI ──
@@ -3287,9 +3314,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Alertas': 'Alertas',
     'No mobile, o mapa vira uma grade operacional rápida para seleção e ação.': 'En móvil, el mapa se convierte en una cuadrícula operativa rápida para seleccionar y actuar.',
     'Sem cliente no momento': 'Sin cliente en este momento',
-    'Nenhum chamado agora.': 'Ningún llamado ahora.',
     'Reservas confirmadas': 'Reservas confirmadas',
-    'Minhas mesas': 'Mis mesas',
     'Fluxo atual': 'Flujo actual',
     'Fechamento operacional': 'Cierre operativo',
     'Caixa conciliado': 'Caja conciliada',
@@ -3338,13 +3363,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Sommelier': 'Sommelier',
     'pedidos': 'pedidos',
     'gorjetas': 'propinas',
-    'Seg': 'Lun',
-    'Ter': 'Mar',
-    'Qua': 'Mié',
-    'Qui': 'Jue',
-    'Sex': 'Vie',
-    'Sáb': 'Sáb',
-    'Dom': 'Dom',
 
     // ── Owner role: Table Map ──
     'Planta interativa do salão — clique nas mesas para ver detalhes e alterar status': 'Plano interactivo del salón — haz clic en las mesas para ver detalles y cambiar estado',
@@ -3428,7 +3446,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Acesso total ao sistema': 'Acceso total al sistema',
     'Gestão operacional, equipe, relatórios': 'Gestión operativa, equipo, informes',
     'KDS, gestão de cardápio, estoque': 'KDS, gestión del menú, inventario',
-    'Pedidos, mesas, atendimento': 'Pedidos, mesas, atención',
     'KDS bar, pedidos de bebidas': 'KDS bar, pedidos de bebidas',
     'Reservas, fila, mapa de mesas': 'Reservas, cola, mapa de mesas',
     'Editar': 'Editar',
@@ -3517,8 +3534,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Nenhuma mesa disponível': 'Ninguna mesa disponible',
 
     // ── Owner role: Waiter screen ──
-    'Assim fica o app no celular do garçom — mesas, chamados e gorjetas em tempo real': 'Así se ve la app en el celular del mesero — mesas, llamados y propinas en tiempo real',
-    'Olá, Bruno 👋': 'Hola, Bruno 👋',
     'Suas Mesas': 'Tus Mesas',
     'Mesas': 'Mesas',
     'Pedidos': 'Pedidos',
@@ -3599,24 +3614,13 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Modo de Preparo': 'Modo de Preparación',
 
     // ── Manager role: Waiter Calls ──
-    'Chamados em tempo real — atenda discretamente sem que o cliente precise levantar a mão': 'Llamados en tiempo real — atiende discretamente sin que el cliente levante la mano',
     'Atendidos': 'Atendidos',
     'Tempo Médio': 'Tiempo Promedio',
-    'Cliente solicitou o garçom': 'El cliente llamó al mesero',
-    'Solicita falar com gerente': 'Solicita hablar con el gerente',
-    'Pedido de sobremesa': 'Pedido de postre',
-    'Solicita a conta': 'Solicita la cuenta',
-    'URGENTE': 'URGENTE',
-    'Atendido': 'Atendido',
 
     // ── Manager role: Waiter Tips ──
-    'Acompanhe suas gorjetas em tempo real — transparência total': 'Sigue tus propinas en tiempo real — transparencia total',
     'Média/Mesa': 'Promedio/Mesa',
     'mesas hoje': 'mesas hoy',
     'mesas': 'mesas',
-    'Gorjetas de Hoje': 'Propinas de Hoy',
-    'da conta': 'de la cuenta',
-    'Sua Semana': 'Tu Semana',
 
     // ── Manager role: Floor Flow ──
     'Controle o fluxo do salão — tempos de permanência, fila e rotação de mesas': 'Controla el flujo del salón — tiempos de permanencia, cola y rotación de mesas',
@@ -5303,6 +5307,56 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Insumos e alertas': 'Insumos y alertas',
 
     'Estação de preparo': 'Estación de preparación',
+
+    // ── Waiter (Garçom) role: journey & screen info ──
+    'Mesas, pedidos e gorjetas': 'Mesas, pedidos y propinas',
+    'Minhas Mesas': 'Mis Mesas',
+    'Mesas atribuídas e pedidos': 'Mesas asignadas y pedidos',
+    'Pedidos das suas mesas': 'Pedidos de tus mesas',
+    'Chamados de clientes': 'Llamados de clientes',
+    'Suas gorjetas do dia': 'Tus propinas del día',
+    'Visão do Garçom': 'Vista del Mesero',
+    'Mesas, pedidos, chamados e gorjetas': 'Mesas, pedidos, llamados y propinas',
+    'Chamados de Clientes': 'Llamados de Clientes',
+    'Chamados pendentes das suas mesas': 'Llamados pendientes de tus mesas',
+    'Minhas Gorjetas': 'Mis Propinas',
+    'Gorjetas recebidas hoje e histórico': 'Propinas recibidas hoy e historial',
+    'Pedidos, mesas, atendimento': 'Pedidos, mesas, atención',
+    // ── Waiter: WaiterScreen ──
+    'Assim fica o app no celular do garçom — mesas, chamados e gorjetas em tempo real': 'Así se ve la app en el celular del mesero — mesas, llamados y propinas en tiempo real',
+    'Olá, Bruno 👋': 'Hola, Bruno 👋',
+    '30min atrás': 'hace 30min',
+    '1h atrás': 'hace 1h',
+    '1h30 atrás': 'hace 1h30',
+    '2h atrás': 'hace 2h',
+    '2h30 atrás': 'hace 2h30',
+    // ── Waiter: WaiterCallsScreen ──
+    'Chamados em tempo real — atenda discretamente sem que o cliente precise levantar a mão': 'Llamados en tiempo real — atiende discretamente sin que el cliente levante la mano',
+    'Cliente solicitou o garçom': 'El cliente llamó al mesero',
+    'Solicita falar com gerente': 'Solicita hablar con el gerente',
+    'Pedido de sobremesa': 'Pedido de postre',
+    'Solicita a conta': 'Solicita la cuenta',
+    'URGENTE': 'URGENTE',
+    'Atendido': 'Atendido',
+    // ── Waiter: WaiterTipsScreen ──
+    'Acompanhe suas gorjetas em tempo real — transparência total': 'Sigue tus propinas en tiempo real — transparencia total',
+    '23 mesas': '23 mesas',
+    '8 mesas hoje': '8 mesas hoy',
+    'Gorjetas de Hoje': 'Propinas de Hoy',
+    'da conta': 'de la cuenta',
+    'Sua Semana': 'Tu Semana',
+    'Seg': 'Lun',
+    'Ter': 'Mar',
+    'Qua': 'Mié',
+    'Qui': 'Jue',
+    'Sex': 'Vie',
+    'Sáb': 'Sáb',
+    'Dom': 'Dom',
+    // ── Waiter: Mobile ──
+    'Minhas mesas': 'Mis mesas',
+    'Nenhum chamado agora.': 'Ningún llamado ahora.',
+    'pedido(s) ativo(s)': 'pedido(s) activo(s)',
+
 
 
   },
