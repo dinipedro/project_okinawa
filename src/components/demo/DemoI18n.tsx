@@ -2864,6 +2864,9 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'KDS Cozinha': 'KDS Kitchen',
     'Limão Tahiti': 'Tahiti Lime',
     'Marcar pronto': 'Mark as ready',
+    'Maitre': 'Maitre',
+    'Painel do Maitre': 'Maitre Panel',
+    'Painel Operacional': 'Operations Panel',
 
 
   },
@@ -5507,6 +5510,9 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'KDS Cozinha': 'KDS Cocina',
     'Limão Tahiti': 'Limón Tahití',
     'Marcar pronto': 'Marcar listo',
+    'Maitre': 'Maitre',
+    'Painel do Maitre': 'Panel del Maitre',
+    'Painel Operacional': 'Panel Operacional',
 
 
 
