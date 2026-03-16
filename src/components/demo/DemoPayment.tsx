@@ -197,7 +197,7 @@ const DemoPayment: React.FC<PaymentConfig> = ({
                   }`} />
                   <span className={`text-xs font-medium ${
                     selectedPayment === method.id ? 'text-primary' : 'text-muted-foreground'
-                  }`}>{method.name}</span>
+                  }`}>{translateText(method.name)}</span>
                 </button>
               ))}
             </div>
@@ -215,8 +215,8 @@ const DemoPayment: React.FC<PaymentConfig> = ({
                 >
                   <method.icon className="w-5 h-5 text-muted-foreground" />
                   <div className="flex-1 text-left">
-                    <p className="text-sm font-semibold">{method.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{method.detail}</p>
+                    <p className="text-sm font-semibold">{translateText(method.name)}</p>
+                    <p className="text-[10px] text-muted-foreground">{translateText(method.detail)}</p>
                   </div>
                   {selectedPayment === method.id && <Check className="w-4 h-4 text-primary" />}
                 </button>
