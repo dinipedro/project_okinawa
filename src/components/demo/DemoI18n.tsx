@@ -4066,10 +4066,27 @@ function applyReplacements(text: string, replacements: ReplacementRule[]) {
   return replacements.reduce((acc, [pattern, replacement]) => acc.replace(pattern, replacement), text);
 }
 
+function normalizeTranslationKey(text: string) {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+const NORMALIZED_EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, string>> = {
+  en: Object.fromEntries(
+    Object.entries(EXACT_TEXT_TRANSLATIONS.en).map(([key, value]) => [normalizeTranslationKey(key), value]),
+  ),
+  es: Object.fromEntries(
+    Object.entries(EXACT_TEXT_TRANSLATIONS.es).map(([key, value]) => [normalizeTranslationKey(key), value]),
+  ),
+};
+
+function getExactTranslation(text: string, lang: Exclude<DemoLang, 'pt'>) {
+  return EXACT_TEXT_TRANSLATIONS[lang][text] ?? NORMALIZED_EXACT_TEXT_TRANSLATIONS[lang][normalizeTranslationKey(text)];
+}
+
 export function translateDemoText(text: string, lang: DemoLang): string {
   if (!text || lang === 'pt') return text;
 
-  const exact = EXACT_TEXT_TRANSLATIONS[lang as Exclude<DemoLang, 'pt'>]?.[text];
+  const exact = getExactTranslation(text, lang as Exclude<DemoLang, 'pt'>);
   if (exact) return exact;
 
   const replacements = lang === 'en' ? EN_REPLACEMENTS : ES_REPLACEMENTS;
