@@ -389,7 +389,6 @@ const DemoRestaurantInner = () => {
                       screen={activeScreen}
                       onNavigate={handleNavigate}
                       onSelectRole={handleRoleChange}
-                      viewMode="desktop"
                     />
                   </div>
                 </div>
