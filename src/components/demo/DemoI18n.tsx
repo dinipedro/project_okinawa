@@ -980,7 +980,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     
     'Peça drinks enquanto aguarda — vai pra comanda.': 'Order drinks while waiting — goes to your tab.',
     'Cardápio kids, cadeirão e kit de atividades.': 'Kids menu, high chair and activity kit.',
-    'Atividades Kids': 'Kids Activities',
+    
     'Jogos e colorir enquanto espera a comida.': 'Games and coloring while waiting for food.',
     'Menu com alérgenos, popularidade e fotos.': 'Menu with allergens, popularity and photos.',
     'Ingredientes, alérgenos e personalização.': 'Ingredients, allergens and customization.',
