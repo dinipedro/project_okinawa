@@ -1186,7 +1186,9 @@ export const FineDiningDemo: React.FC<{ screen: string; onNavigate: (s: string) 
     case 'menu': return <MenuScreen onNavigate={onNavigate} onSelectItem={handleSelectItem} />;
     case 'item': return selectedItem ? <ItemDetailScreen item={selectedItem} onNavigate={onNavigate} /> : <HomeScreen onNavigate={onNavigate} />;
     case 'comanda': return <ComandaScreen onNavigate={onNavigate} />;
-    case 'fechar-conta': return <FecharContaScreen onNavigate={onNavigate} />;
+    case 'fechar-conta':
+    case 'payment':
+      return <FecharContaScreen onNavigate={onNavigate} />;
     case 'order-status': return <OrderStatusScreen onNavigate={onNavigate} />;
     case 'loyalty': return <LoyaltyScreen onNavigate={onNavigate} />;
     case 'reservations': return <ReservationsScreen onNavigate={onNavigate} />;
