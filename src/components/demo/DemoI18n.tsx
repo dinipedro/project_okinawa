@@ -2740,7 +2740,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Wrap Grelhado': 'Wrap a la Parrilla',
     'Sundae': 'Sundae',
     'Café Latte 400ml': 'Café Latte 400ml',
-    'Milkshake 500ml': 'Malteada 500ml',
     'Bacon Extra': 'Tocino Extra',
     'Queijo Extra': 'Queso Extra',
     'Stamp #12 — próximo combo grátis!': '¡Sello #12 — próximo combo gratis!',
@@ -2760,7 +2759,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Mostarda & Mel': 'Mostaza y Miel',
     'Pesto de Manjericão': 'Pesto de Albahaca',
     'Protein Power': 'Protein Power',
-    'Veggie Zen': 'Veggie Zen',
     'Stamp 7/10 · 3 mais para bowl grátis!': '¡Sello 7/10 · 3 más para bowl gratis!',
 
     // ── Fine Dining Missing Items ──
@@ -2779,22 +2777,13 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Bônus de aniversário': 'Bono de cumpleaños',
     'Resgate: Drink da casa': 'Canje: Trago de la casa',
     'Gold': 'Gold',
-    'Silver': 'Silver',
     'Platinum': 'Platinum',
     'Black': 'Black',
-    'Jantar para 2': 'Cena para 2',
-    'Entrada premium': 'Entrada premium',
-    'Sobremesa grátis': 'Postre gratis',
-    'Drink da casa': 'Trago de la casa',
     'Convidado pendente': 'Invitado pendiente',
 
     // ── Food Truck Missing Items ──
     'Taco al Pastor (3un)': 'Taco al Pastor (3un)',
     'Taco de Carnitas (3un)': 'Taco de Carnitas (3un)',
-    'Taco Vegetariano (3un)': 'Taco Vegetariano (3un)',
-    'Quesadilla Frango': 'Quesadilla de Pollo',
-    'Nachos Supreme': 'Nachos Supreme',
-    'Churros (4un)': 'Churros (4un)',
     'Taco Noowe': 'Taco Noowe',
     'Burger Bros': 'Burger Bros',
     'Stamp 4 de 8 — taco grátis em breve!': '¡Sello 4 de 8 — taco gratis pronto!',
@@ -2802,13 +2791,9 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     // ── Pub & Bar Missing Items ──
     'Pilsen Premium': 'Pilsen Premium',
     'Stout de Chocolate': 'Stout de Chocolate',
-    'Wheat Beer': 'Wheat Beer',
     'Gin Tônica Artesanal': 'Gin Tonic Artesanal',
     'Porção de Batata': 'Porción de Papas',
     'Lucas': 'Lucas',
-    'Ana': 'Ana',
-    'Seletivo': 'Selectivo',
-    'Próximo chopp grátis em 3 visitas': 'Próximo chopp gratis en 3 visitas',
 
     // ── Quick Service Missing Items ──
     'Smash Burger Classic': 'Smash Burger Clásica',
