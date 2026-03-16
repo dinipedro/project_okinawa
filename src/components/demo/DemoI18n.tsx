@@ -1722,9 +1722,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Cada um paga o seu': 'Each pays their own',
     'Café #8 de 10!': 'Coffee #8 of 10!',
     'Café extraído a frio por 24h, suave e refrescante': 'Cold-brewed for 24h, smooth and refreshing',
-    'Calorias
-Calculadas': 'Calories
-Calculated',
+    'Calorias Calculadas': 'Calories Calculated',
     'Camomila orgânica. Refil R$ 5': 'Organic chamomile. Refill R$ 5',
     'Cancelada': 'Canceled',
     'Cancelamento': 'Cancellation',
