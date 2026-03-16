@@ -2720,6 +2720,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Sobremesas': 'Postres',
     'Burgers': 'Hamburguesas',
     'Combos': 'Combos',
+    'Carrinho': 'Carrito',
     'Individuais': 'Individuales',
     'Cafés especiais': 'Cafés especiales',
     'Chás': 'Tés',
