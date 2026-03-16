@@ -1124,7 +1124,7 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                                       <p className="text-[10px] font-medium truncate">{guest.name}</p>
                                       <p className="text-[8px] text-muted-foreground">{guest.paid ? `Pago via ${guest.method}` : guest.hasApp ? 'Pagando pelo app' : 'Precisa do garçom'}</p>
                                     </div>
-                                    <span className="text-[10px] font-semibold">R$ {guest.orders.reduce((a, o) => a + o.price * o.qty, 0)}</span>
+                                    <span className="text-[10px] font-semibold">R$ {guest.orders.reduce((a: number, o: { price: number; qty: number }) => a + o.price * o.qty, 0)}</span>
                                     {!guest.paid && !guest.hasApp && (
                                       <button onClick={() => { setSelectedTable(table.number); setSelectedGuest(guest.name); setPaymentStep('method'); }}
                                         className="px-2 py-1 rounded-lg bg-primary text-primary-foreground text-[8px] font-bold">Cobrar</button>
