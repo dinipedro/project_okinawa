@@ -732,7 +732,6 @@ const OrderStatusScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
 const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNavigate }) => {
   const [payMode, setPayMode] = useState<'solo' | 'split'>('split');
   const [splitMode, setSplitMode] = useState<'individual' | 'equal' | 'selective' | 'fixed'>('individual');
-  const [selectedPayment, setSelectedPayment] = useState('pix');
   const [tipPercent, setTipPercent] = useState(10);
   const [selectedItems, setSelectedItems] = useState<string[]>(['i1', 'i2']);
   const [sharedItems, setSharedItems] = useState<string[]>(['i7']);
@@ -740,6 +739,7 @@ const FecharContaScreen: React.FC<{ onNavigate: (s: string) => void }> = ({ onNa
   const [showInvite, setShowInvite] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const [checkoutStep, setCheckoutStep] = useState<'config' | 'payment'>('config');
 
   const orderItems = [
     { id: 'i1', name: 'Tartare de Atum', price: 58, orderedBy: 'Você' },
