@@ -776,7 +776,6 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
 
     // ── Club specific ──
     'Camarotes VIP': 'VIP Booths',
-    'Fila Virtual': 'Virtual Queue',
     'Pedir da Pista': 'Order from Floor',
     'Tracker de Consumação': 'Consumption Tracker',
     'Consumação Mínima': 'Minimum Spend',
