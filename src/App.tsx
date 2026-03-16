@@ -25,7 +25,7 @@ const BrandIdentity = lazy(() => import("./pages/BrandIdentity"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const Demo = lazy(() => import("./pages/Demo"));
 const DemoClient = lazy(() => import("./pages/DemoClient"));
-
+const DemoRestaurant = lazy(() => import("./pages/DemoRestaurant"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
