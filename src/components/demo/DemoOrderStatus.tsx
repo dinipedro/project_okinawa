@@ -242,7 +242,7 @@ const DemoOrderStatus: React.FC<OrderStatusConfig> = ({
                     <span className={`text-[10px] mt-1.5 font-medium text-center leading-tight ${
                       isActive ? 'text-primary-foreground' : 'text-primary-foreground/60'
                     }`}>
-                      {step.label}
+                      {translateText(step.label)}
                     </span>
                   </div>
                   {index < steps.length - 1 && (
