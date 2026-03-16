@@ -3435,9 +3435,7 @@ Time',
     'Cada um paga o seu': 'Cada uno paga lo suyo',
     'Café #8 de 10!': '¡Café #8 de 10!',
     'Café extraído a frio por 24h, suave e refrescante': 'Café extraído en frío por 24h, suave y refrescante',
-    'Calorias
-Calculadas': 'Calorías
-Calculadas',
+    'Calorias Calculadas': 'Calorías Calculadas',
     'Camomila orgânica. Refil R$ 5': 'Manzanilla orgánica. Refill R$ 5',
     'Cancelada': 'Cancelada',
     'Cancelamento': 'Cancelación',
