@@ -414,23 +414,71 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                 </div>
               )}
 
-              {/* === COBRAR / TAP TO PAY TAB === */}
+              {/* === COBRAR — Task-oriented flow === */}
               {waiterScreen === 'payment' && (
                 <div className="space-y-3">
                   {paymentStep === 'select' && (
                     <>
-                      <p className="text-xs text-muted-foreground">Selecione a mesa para cobrar:</p>
-                      {myTables.map(table => (
-                        <button key={table.id} onClick={() => { setSelectedTable(table.number); setPaymentStep('method'); }}
-                          className="w-full text-left flex items-center gap-3 p-3 rounded-xl border border-border bg-card">
-                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center font-display font-bold text-primary">{table.number}</div>
-                          <div className="flex-1">
-                            <p className="text-sm font-semibold">{table.customerName}</p>
-                            <p className="text-[10px] text-muted-foreground">{table.seats} pessoas</p>
+                      {/* Who needs to pay? — contextual, not a boring list */}
+                      <div className="rounded-xl bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10 p-3">
+                        <p className="text-xs font-semibold text-foreground">Quem precisa pagar?</p>
+                        <p className="text-[10px] text-muted-foreground">Clientes sem app precisam de cobrança via garçom</p>
+                      </div>
+                      {myTables.map(table => {
+                        const guestsMock = [
+                          { name: table.customerName || 'Titular', hasApp: true, paid: true, amount: Math.round((table.orderTotal || 0) * 0.4) },
+                          { name: 'Convidado 2', hasApp: true, paid: false, amount: Math.round((table.orderTotal || 0) * 0.35) },
+                          { name: 'Convidado 3', hasApp: false, paid: false, amount: Math.round((table.orderTotal || 0) * 0.25) },
+                        ].slice(0, Math.min(3, table.seats));
+                        const unpaid = guestsMock.filter(g => !g.paid);
+                        const needsWaiter = guestsMock.filter(g => !g.hasApp && !g.paid);
+                        if (unpaid.length === 0) return null;
+                        return (
+                          <div key={table.id} className="bg-card rounded-xl border border-border overflow-hidden">
+                            <div className="flex items-center gap-3 p-3 bg-muted/20 border-b border-border">
+                              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center font-display font-bold text-primary">{table.number}</div>
+                              <div className="flex-1">
+                                <p className="text-sm font-semibold">{table.customerName}</p>
+                                <p className="text-[10px] text-muted-foreground">R$ {table.orderTotal || 0} total</p>
+                              </div>
+                              {/* Progress ring */}
+                              <div className="relative w-10 h-10">
+                                <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
+                                  <circle cx="18" cy="18" r="15" fill="none" stroke="hsl(var(--muted))" strokeWidth="3" />
+                                  <circle cx="18" cy="18" r="15" fill="none" stroke="hsl(var(--success))" strokeWidth="3" strokeDasharray={`${(guestsMock.filter(g => g.paid).length / guestsMock.length) * 94} 94`} strokeLinecap="round" />
+                                </svg>
+                                <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">
+                                  {guestsMock.filter(g => g.paid).length}/{guestsMock.length}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="p-2.5 space-y-1.5">
+                              {guestsMock.map((guest, i) => (
+                                <div key={i} className={`flex items-center gap-2 p-2 rounded-lg ${guest.paid ? 'opacity-40' : needsWaiter.includes(guest) ? 'bg-warning/5 border border-warning/20' : ''}`}>
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-bold ${
+                                    guest.paid ? 'bg-success/10 text-success' : guest.hasApp ? 'bg-info/10 text-info' : 'bg-warning/10 text-warning'
+                                  }`}>
+                                    {guest.paid ? '✓' : guest.hasApp ? 'A' : '!'}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium truncate">{guest.name}</p>
+                                    <p className="text-[9px] text-muted-foreground">
+                                      {guest.paid ? 'Pago pelo app' : guest.hasApp ? 'Aguardando no app' : 'Precisa do garçom'}
+                                    </p>
+                                  </div>
+                                  <span className="text-xs font-semibold">R$ {guest.amount}</span>
+                                  {!guest.paid && !guest.hasApp && (
+                                    <button onClick={() => { setSelectedTable(table.number); setPaymentStep('method'); }}
+                                      className="px-2.5 py-1 rounded-lg bg-primary text-primary-foreground text-[10px] font-bold">
+                                      Cobrar
+                                    </button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                          <span className="font-display font-bold text-sm">R$ {table.orderTotal || 0}</span>
-                        </button>
-                      ))}
+                        );
+                      })}
                     </>
                   )}
 
@@ -439,126 +487,156 @@ export const WaiterScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
                       <button onClick={() => setPaymentStep('select')} className="flex items-center gap-1 text-xs text-primary font-semibold">
                         <ChevronLeft className="w-4 h-4" /> Voltar
                       </button>
-                      <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-4 text-center">
-                        <p className="text-xs text-muted-foreground">Cobrando Mesa {selectedTable}</p>
-                        <p className="font-display text-3xl font-bold text-primary mt-1">R$ {myTables.find(t => t.number === selectedTable)?.orderTotal || 0}</p>
-                        <p className="text-[10px] text-muted-foreground mt-1">Valor total da conta</p>
+                      <div className="rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 p-4 text-center">
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Mesa {selectedTable} · Convidado 3</p>
+                        <p className="font-display text-3xl font-bold text-primary mt-1">R$ {Math.round((myTables.find(t => t.number === selectedTable)?.orderTotal || 0) * 0.25)}</p>
                       </div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Método de Pagamento</p>
-                      {[
-                        { id: 'tap', label: 'TAP to Pay (NFC)', desc: 'Aproxime o cartão do cliente', icon: '📱', highlight: true },
-                        { id: 'pix', label: 'PIX QR Code', desc: 'Gerar código para pagamento instantâneo', icon: '📲', highlight: false },
-                        { id: 'card', label: 'Cartão (inserir)', desc: 'Crédito ou débito com chip/senha', icon: '💳', highlight: false },
-                        { id: 'cash', label: 'Dinheiro', desc: 'Pagamento em espécie', icon: '💵', highlight: false },
-                      ].map(method => (
-                        <button key={method.id} onClick={() => { setSelectedPayMethod(method.id); setPaymentStep('processing'); }}
-                          className={`w-full text-left flex items-center gap-3 p-3.5 rounded-xl border-2 transition-all ${
-                            method.highlight ? 'border-primary bg-primary/5 hover:bg-primary/10' : 'border-border bg-card hover:bg-muted/30'
-                          }`}>
-                          <span className="text-2xl">{method.icon}</span>
-                          <div>
-                            <p className="text-sm font-semibold">{method.label}</p>
-                            <p className="text-[10px] text-muted-foreground">{method.desc}</p>
-                          </div>
-                          {method.highlight && <span className="ml-auto px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[9px] font-bold">RECOMENDADO</span>}
-                        </button>
-                      ))}
+                      <div className="space-y-2">
+                        {[
+                          { id: 'tap', label: 'TAP to Pay', desc: 'Encoste o cartão', icon: Smartphone, highlight: true },
+                          { id: 'pix', label: 'PIX', desc: 'QR Code instantâneo', icon: Smartphone, highlight: false },
+                          { id: 'card', label: 'Cartão', desc: 'Chip e senha', icon: DollarSign, highlight: false },
+                          { id: 'cash', label: 'Dinheiro', desc: 'Confirmar recebimento', icon: DollarSign, highlight: false },
+                        ].map(m => (
+                          <button key={m.id} onClick={() => { setSelectedPayMethod(m.id); setPaymentStep('processing'); }}
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
+                              m.highlight ? 'border-primary bg-primary/5' : 'border-border bg-card'
+                            }`}>
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${m.highlight ? 'bg-primary/10' : 'bg-muted'}`}>
+                              <m.icon className={`w-5 h-5 ${m.highlight ? 'text-primary' : 'text-muted-foreground'}`} />
+                            </div>
+                            <div className="text-left flex-1">
+                              <p className="text-sm font-semibold">{m.label}</p>
+                              <p className="text-[10px] text-muted-foreground">{m.desc}</p>
+                            </div>
+                            {m.highlight && <span className="px-2 py-0.5 rounded-full bg-success/10 text-success text-[8px] font-bold">RÁPIDO</span>}
+                          </button>
+                        ))}
+                      </div>
                     </>
                   )}
 
                   {paymentStep === 'processing' && (
-                    <div className="text-center py-8 space-y-4">
-                      <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto animate-pulse">
-                        {selectedPayMethod === 'tap' && <Smartphone className="w-10 h-10 text-primary" />}
-                        {selectedPayMethod === 'pix' && <div className="w-14 h-14 rounded-lg bg-muted border-2 border-foreground/20 flex items-center justify-center text-xs font-bold">QR</div>}
-                        {selectedPayMethod === 'card' && <DollarSign className="w-10 h-10 text-primary" />}
-                        {selectedPayMethod === 'cash' && <DollarSign className="w-10 h-10 text-primary" />}
-                      </div>
-                      {selectedPayMethod === 'tap' && (
+                    <div className="text-center py-6 space-y-4">
+                      {selectedPayMethod === 'pix' ? (
                         <>
-                          <p className="font-display font-bold text-lg">Aproxime o Cartão</p>
-                          <p className="text-sm text-muted-foreground">Peça ao cliente para aproximar o cartão na parte traseira do celular</p>
-                        </>
-                      )}
-                      {selectedPayMethod === 'pix' && (
-                        <>
-                          <p className="font-display font-bold text-lg">QR Code PIX</p>
-                          <p className="text-sm text-muted-foreground">Mostre o QR ao cliente para pagamento via PIX</p>
-                          <div className="w-32 h-32 mx-auto bg-muted rounded-xl border-4 border-foreground/10 flex items-center justify-center">
-                            <div className="grid grid-cols-5 gap-0.5">
-                              {Array.from({ length: 25 }).map((_, i) => (
-                                <div key={i} className={`w-4 h-4 rounded-sm ${Math.random() > 0.4 ? 'bg-foreground' : 'bg-background'}`} />
+                          <p className="text-xs text-muted-foreground">Mostre ao cliente</p>
+                          <div className="w-36 h-36 mx-auto bg-card rounded-2xl border-2 border-border p-3 flex items-center justify-center">
+                            <div className="grid grid-cols-7 gap-px">
+                              {Array.from({ length: 49 }).map((_, i) => (
+                                <div key={i} className={`w-3 h-3 ${Math.random() > 0.4 ? 'bg-foreground' : 'bg-transparent'}`} />
                               ))}
                             </div>
                           </div>
+                          <p className="font-display font-bold text-lg">PIX · R$ {Math.round((myTables.find(t => t.number === selectedTable)?.orderTotal || 0) * 0.25)}</p>
+                          <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground">
+                            <div className="w-1.5 h-1.5 rounded-full bg-warning animate-pulse" /> Aguardando confirmação
+                          </div>
                         </>
-                      )}
-                      {selectedPayMethod === 'card' && (
+                      ) : (
                         <>
-                          <p className="font-display font-bold text-lg">Insira o Cartão</p>
-                          <p className="text-sm text-muted-foreground">Aguardando inserção do cartão com chip...</p>
+                          <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                            <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center animate-pulse">
+                              <Smartphone className="w-8 h-8 text-primary" />
+                            </div>
+                          </div>
+                          <p className="font-display font-bold text-lg">
+                            {selectedPayMethod === 'tap' ? 'Aproxime o cartão' : selectedPayMethod === 'card' ? 'Insira o cartão' : 'Confirme o valor'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {selectedPayMethod === 'tap' ? 'Peça ao cliente encostar o cartão no celular' : selectedPayMethod === 'card' ? 'Insira o chip e aguarde a senha' : `R$ ${Math.round((myTables.find(t => t.number === selectedTable)?.orderTotal || 0) * 0.25)} em espécie`}
+                          </p>
+                          <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" /> Processando...
+                          </div>
                         </>
                       )}
-                      {selectedPayMethod === 'cash' && (
-                        <>
-                          <p className="font-display font-bold text-lg">Pagamento em Dinheiro</p>
-                          <p className="text-sm text-muted-foreground">Confirme o recebimento do valor</p>
-                        </>
-                      )}
-                      <button onClick={() => setPaymentStep('done')} className="px-6 py-2.5 rounded-xl bg-success text-success-foreground font-semibold text-sm">
-                        {selectedPayMethod === 'cash' ? 'Confirmar Recebimento' : 'Simular Aprovação'}
+                      <button onClick={() => setPaymentStep('done')} className="w-full py-3 rounded-xl bg-success text-success-foreground font-semibold text-sm">
+                        Confirmar Pagamento
                       </button>
                     </div>
                   )}
 
                   {paymentStep === 'done' && (
-                    <div className="text-center py-8 space-y-4">
-                      <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto">
-                        <Check className="w-10 h-10 text-success" />
+                    <div className="text-center py-8 space-y-3">
+                      <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto">
+                        <Check className="w-8 h-8 text-success" />
                       </div>
-                      <p className="font-display font-bold text-lg text-success">Pagamento Aprovado!</p>
-                      <p className="text-sm text-muted-foreground">Mesa {selectedTable} · R$ {myTables.find(t => t.number === selectedTable)?.orderTotal || 0}</p>
-                      <div className="flex gap-2 justify-center">
-                        <button className="px-4 py-2 rounded-xl border border-border text-xs font-semibold">Enviar Recibo</button>
-                        <button onClick={() => { setPaymentStep('select'); setSelectedTable(null); }} className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold">
-                          Nova Cobrança
-                        </button>
+                      <p className="font-display font-bold text-success">Pagamento confirmado!</p>
+                      <p className="text-xs text-muted-foreground">Mesa {selectedTable} · Convidado 3</p>
+                      <div className="flex gap-2 justify-center mt-4">
+                        <button className="px-3 py-1.5 rounded-lg border border-border text-[11px] font-semibold">Recibo</button>
+                        <button onClick={() => { setPaymentStep('select'); setSelectedTable(null); }}
+                          className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-[11px] font-semibold">Próximo</button>
                       </div>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* === AÇÕES NA MESA TAB === */}
+              {/* === AÇÕES — Situational, not a button dump === */}
               {waiterScreen === 'actions' && (
                 <div className="space-y-3">
-                  <div className="bg-muted/30 rounded-xl p-3 border border-border">
-                    <p className="text-xs font-semibold">Executar ação pelo cliente</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">Quando o cliente tiver dificuldade com o app, você pode executar ações por ele</p>
-                  </div>
-                  {myTables.map(table => (
-                    <div key={table.id} className="bg-card rounded-xl border border-border p-3">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-sm">{table.number}</div>
-                        <p className="text-sm font-semibold">{table.customerName}</p>
+                  {/* Live feed of things needing action */}
+                  {[
+                    { table: 5, situation: 'Prato pronto na cozinha', detail: '2x Filé ao Molho · Chef Felipe marcou como pronto há 2min', urgency: 'high' as const, action: 'Retirar e servir', actionType: 'pickup' as const },
+                    { table: 3, situation: 'Cliente sem app quer pedir', detail: 'Mesa com 1 convidado sem o app instalado', urgency: 'medium' as const, action: 'Fazer pedido', actionType: 'order' as const },
+                    { table: 8, situation: 'Pedido de sobremesa', detail: 'Cliente quer ver cardápio de sobremesas', urgency: 'low' as const, action: 'Mostrar cardápio', actionType: 'menu' as const },
+                    { table: 10, situation: 'Cortesia solicitada', detail: 'Aniversário — solicitar cortesia de sobremesa ao gerente', urgency: 'medium' as const, action: 'Pedir ao gerente', actionType: 'approval' as const },
+                    { table: 1, situation: 'Conta solicitada', detail: '1 convidado sem app precisa de cobrança via garçom', urgency: 'medium' as const, action: 'Cobrar', actionType: 'payment' as const },
+                  ].map((item, i) => (
+                    <div key={i} className={`rounded-xl border-2 overflow-hidden ${
+                      item.urgency === 'high' ? 'border-destructive/30 bg-destructive/5' :
+                      item.urgency === 'medium' ? 'border-warning/20 bg-card' : 'border-border bg-card'
+                    }`}>
+                      <div className="p-3">
+                        <div className="flex items-start gap-3">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-display font-bold shrink-0 ${
+                            item.urgency === 'high' ? 'bg-destructive/10 text-destructive' :
+                            item.urgency === 'medium' ? 'bg-warning/10 text-warning' : 'bg-primary/10 text-primary'
+                          }`}>
+                            {item.table}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <p className="text-sm font-semibold">{item.situation}</p>
+                              {item.urgency === 'high' && (
+                                <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-destructive/10 text-destructive text-[8px] font-bold animate-pulse">
+                                  <div className="w-1 h-1 rounded-full bg-destructive" /> AGORA
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">{item.detail}</p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-1.5">
-                        {[
-                          { label: 'Adicionar item', icon: Plus, color: 'text-primary' },
-                          { label: 'Ver cardápio', icon: BookOpen, color: 'text-info' },
-                          { label: 'Solicitar conta', icon: DollarSign, color: 'text-warning' },
-                          { label: 'Chamar gerente', icon: Shield, color: 'text-destructive' },
-                          { label: 'Dividir conta', icon: Users, color: 'text-secondary' },
-                          { label: 'Transferir mesa', icon: ArrowRight, color: 'text-accent-foreground' },
-                        ].map((action, i) => (
-                          <button key={i} className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/30 text-left transition-colors">
-                            <action.icon className={`w-3.5 h-3.5 ${action.color}`} />
-                            <span className="text-[11px] font-medium">{action.label}</span>
-                          </button>
-                        ))}
-                      </div>
+                      <button className={`w-full py-2.5 text-xs font-semibold border-t transition-colors ${
+                        item.urgency === 'high'
+                          ? 'border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive/20'
+                          : item.urgency === 'medium'
+                            ? 'border-warning/20 bg-warning/5 text-warning hover:bg-warning/10'
+                            : 'border-border bg-muted/20 text-primary hover:bg-muted/40'
+                      }`}>
+                        {item.action} →
+                      </button>
                     </div>
                   ))}
+
+                  {/* Quick actions bottom bar */}
+                  <div className="pt-2 border-t border-border">
+                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-2">Ações rápidas</p>
+                    <div className="flex gap-2">
+                      {[
+                        { label: 'Novo pedido', icon: Plus },
+                        { label: 'Chamar gerente', icon: Shield },
+                        { label: 'Transferir mesa', icon: ArrowRight },
+                      ].map((a, i) => (
+                        <button key={i} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border border-border text-[10px] font-semibold text-muted-foreground hover:bg-muted/30">
+                          <a.icon className="w-3 h-3" /> {a.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
