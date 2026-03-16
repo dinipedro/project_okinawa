@@ -21,6 +21,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { useDemoContext, type OrderStatus, type TableStatus } from '@/contexts/DemoContext';
+import { useDemoI18n } from '@/components/demo/DemoI18n';
 import {
   DRINK_RECIPES,
   PENDING_APPROVALS,
