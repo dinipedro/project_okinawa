@@ -3674,7 +3674,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Seletivo': 'Selectivo',
     'Seu Bowl': 'Tu Bowl',
     'Silver': 'Silver',
-    'Sobremesa grátis': 'Postre gratis',
+    // 'Sobremesa grátis' — moved to Fine Dining section
     'Sofia': 'Sofía',
     'Subtotal (${cart.length} itens)': 'Subtotal (${cart.length} items)',
     'Superfood proteico': 'Superfood proteico',
