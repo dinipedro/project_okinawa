@@ -684,22 +684,175 @@ export const WaiterCallsScreen: React.FC<{ onNavigate: (screen: string) => void 
   );
 };
 
-// ============ WAITER PAYMENT (TAP to Pay, PIX, Card) ============
+// ============ WAITER PAYMENT (Redesigned — Guest-centric flow) ============
 
 export const WaiterPaymentScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
-  const { tables, orders } = useDemoContext();
+  const { tables } = useDemoContext();
   const myTables = tables.filter(t => ['occupied', 'billing'].includes(t.status));
-  const [step, setStep] = useState<'select' | 'method' | 'processing' | 'done'>('select');
-  const [selectedTable, setSelectedTable] = useState<number | null>(null);
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
-  const paymentMethods = [
-    { id: 'tap', label: 'TAP to Pay (NFC)', desc: 'Aproxime o cartão do cliente na parte traseira do celular', icon: '📱', highlight: true },
-    { id: 'pix', label: 'PIX QR Code', desc: 'Gerar código para pagamento instantâneo', icon: '📲', highlight: false },
-    { id: 'card', label: 'Cartão (chip/senha)', desc: 'Crédito ou débito — insira o cartão', icon: '💳', highlight: false },
-    { id: 'cash', label: 'Dinheiro', desc: 'Pagamento em espécie com confirmação', icon: '💵', highlight: false },
+  const getGuests = (table: typeof myTables[0]) => [
+    { name: table.customerName || 'Titular', hasApp: true, paid: true, amount: Math.round((table.orderTotal || 0) * 0.4) },
+    { name: 'Convidado 2', hasApp: true, paid: false, amount: Math.round((table.orderTotal || 0) * 0.35) },
+    { name: 'Convidado 3', hasApp: false, paid: false, amount: Math.round((table.orderTotal || 0) * 0.25) },
+  ].slice(0, Math.min(3, table.seats));
+
+  return (
+    <div className="space-y-6">
+      <GuidedHint text="Acompanhe quem já pagou pelo app e cobre quem precisa — celular vira maquininha" />
+
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-card rounded-xl border border-border p-4 text-center">
+          <p className="font-display text-3xl font-bold text-primary">{myTables.length}</p>
+          <p className="text-xs text-muted-foreground">Mesas ativas</p>
+        </div>
+        <div className="bg-card rounded-xl border border-border p-4 text-center">
+          <p className="font-display text-3xl font-bold text-warning">{myTables.reduce((a, t) => a + getGuests(t).filter(g => !g.paid && !g.hasApp).length, 0)}</p>
+          <p className="text-xs text-muted-foreground">Sem app</p>
+        </div>
+        <div className="bg-card rounded-xl border border-border p-4 text-center">
+          <p className="font-display text-3xl font-bold text-success">{myTables.reduce((a, t) => a + getGuests(t).filter(g => !g.paid && g.hasApp).length, 0)}</p>
+          <p className="text-xs text-muted-foreground">Pagando no app</p>
+        </div>
+      </div>
+
+      {myTables.map(table => {
+        const guests = getGuests(table);
+        const paidPct = Math.round((guests.filter(g => g.paid).length / guests.length) * 100);
+        return (
+          <div key={table.id} className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="flex items-center gap-4 p-4 bg-muted/20 border-b border-border">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center font-display text-lg font-bold text-primary">{table.number}</div>
+              <div className="flex-1">
+                <p className="font-semibold">{table.customerName}</p>
+                <p className="text-xs text-muted-foreground">{table.seats} pessoas · R$ {table.orderTotal || 0}</p>
+              </div>
+              <div className="relative w-14 h-14">
+                <svg className="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="hsl(var(--muted))" strokeWidth="3" />
+                  <circle cx="18" cy="18" r="15" fill="none" stroke="hsl(var(--success))" strokeWidth="3" strokeDasharray={`${(paidPct / 100) * 94} 94`} strokeLinecap="round" />
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">{paidPct}%</span>
+              </div>
+            </div>
+            <div className="p-3 space-y-1.5">
+              {guests.map((guest, i) => (
+                <div key={i} className={`flex items-center gap-3 p-3 rounded-xl ${
+                  guest.paid ? 'bg-success/5 opacity-60' : !guest.hasApp ? 'bg-warning/5 border border-warning/20' : 'bg-muted/20'
+                }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                    guest.paid ? 'bg-success/10 text-success' : guest.hasApp ? 'bg-info/10 text-info' : 'bg-warning/10 text-warning'
+                  }`}>{guest.paid ? '✓' : guest.hasApp ? '📱' : '!'}</div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{guest.name}</p>
+                    <p className="text-[10px] text-muted-foreground">{guest.paid ? 'Pago pelo app ✓' : guest.hasApp ? 'Aguardando no app' : 'Sem app — precisa do garçom'}</p>
+                  </div>
+                  <p className="text-sm font-display font-bold">R$ {guest.amount}</p>
+                  {!guest.paid && !guest.hasApp && (
+                    <button className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold shadow-glow">Cobrar</button>
+                  )}
+                  {!guest.paid && guest.hasApp && (
+                    <span className="px-2 py-1 rounded-full bg-info/10 text-info text-[10px] font-medium">No app</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+// ============ WAITER ACTIONS (Redesigned — Situational feed) ============
+
+export const WaiterActionsScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
+  const [handledActions, setHandledActions] = useState<string[]>([]);
+
+  const situations = [
+    { id: 'a1', table: 5, urgency: 'critical' as const, icon: ChefHat, iconBg: 'bg-destructive/10', iconColor: 'text-destructive',
+      title: 'Prato pronto — retirar agora', detail: '2x Filé ao Molho de Vinho · Chef Felipe marcou PRONTO há 2min', action: 'Retirar da cozinha', timeAgo: '2min' },
+    { id: 'a2', table: 10, urgency: 'critical' as const, icon: ChefHat, iconBg: 'bg-destructive/10', iconColor: 'text-destructive',
+      title: 'Sobremesa pronta — servir', detail: '1x Petit Gâteau · Cozinheiro Thiago', action: 'Retirar e servir', timeAgo: '1min' },
+    { id: 'a3', table: 3, urgency: 'high' as const, icon: Plus, iconBg: 'bg-warning/10', iconColor: 'text-warning',
+      title: 'Cliente sem app quer pedir', detail: 'Convidado 3 não tem o app — faça o pedido por ele', action: 'Abrir cardápio', timeAgo: '4min' },
+    { id: 'a4', table: 1, urgency: 'high' as const, icon: DollarSign, iconBg: 'bg-warning/10', iconColor: 'text-warning',
+      title: 'Conta solicitada', detail: '1 convidado sem app precisa de cobrança', action: 'Cobrar agora', timeAgo: '3min' },
+    { id: 'a5', table: 8, urgency: 'medium' as const, icon: Star, iconBg: 'bg-info/10', iconColor: 'text-info',
+      title: 'Cortesia — aniversário', detail: 'Solicitar Petit Gâteau cortesia ao gerente Marina', action: 'Solicitar aprovação', timeAgo: '8min' },
   ];
 
+  const active = situations.filter(s => !handledActions.includes(s.id));
+  const criticals = active.filter(s => s.urgency === 'critical');
+
+  return (
+    <div className="space-y-6">
+      <GuidedHint text="Feed de situações em tempo real — o que precisa da sua atenção agora, por prioridade" />
+
+      {criticals.length > 0 && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/20 animate-pulse">
+          <ChefHat className="w-5 h-5 text-destructive" />
+          <div>
+            <p className="text-sm font-bold text-destructive">{criticals.length} prato(s) pronto(s) para retirar!</p>
+            <p className="text-xs text-destructive/70">A cozinha está esperando</p>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-card rounded-xl border border-border p-4 text-center">
+          <p className="font-display text-2xl font-bold text-destructive">{active.filter(s => s.urgency === 'critical').length}</p>
+          <p className="text-[10px] text-muted-foreground">Cozinha</p>
+        </div>
+        <div className="bg-card rounded-xl border border-border p-4 text-center">
+          <p className="font-display text-2xl font-bold text-warning">{active.filter(s => s.urgency === 'high').length}</p>
+          <p className="text-[10px] text-muted-foreground">Clientes</p>
+        </div>
+        <div className="bg-card rounded-xl border border-border p-4 text-center">
+          <p className="font-display text-2xl font-bold text-success">{handledActions.length}</p>
+          <p className="text-[10px] text-muted-foreground">Resolvidos</p>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {active.map(item => {
+          const ItemIcon = item.icon;
+          return (
+            <div key={item.id} className={`bg-card rounded-xl border-2 overflow-hidden ${
+              item.urgency === 'critical' ? 'border-destructive/30' : item.urgency === 'high' ? 'border-warning/20' : 'border-border'
+            }`}>
+              <div className="flex items-start gap-4 p-4">
+                <div className={`w-12 h-12 rounded-xl ${item.iconBg} flex items-center justify-center shrink-0 ${item.urgency === 'critical' ? 'animate-pulse' : ''}`}>
+                  <ItemIcon className={`w-6 h-6 ${item.iconColor}`} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-display font-bold text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-lg">Mesa {item.table}</span>
+                    <span className="text-[10px] text-muted-foreground">{item.timeAgo} atrás</span>
+                    {item.urgency === 'critical' && <span className="px-2 py-0.5 rounded-full bg-destructive/10 text-destructive text-[9px] font-bold animate-pulse">IMEDIATO</span>}
+                  </div>
+                  <p className="text-sm font-semibold mt-1">{item.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.detail}</p>
+                </div>
+              </div>
+              <button onClick={() => setHandledActions([...handledActions, item.id])}
+                className={`w-full py-3 text-sm font-semibold border-t ${
+                  item.urgency === 'critical' ? 'border-destructive/20 bg-destructive text-destructive-foreground' :
+                  item.urgency === 'high' ? 'border-warning/20 bg-warning/10 text-warning' : 'border-border bg-muted/20 text-primary'
+                }`}>{item.action} →</button>
+            </div>
+          );
+        })}
+        {active.length === 0 && (
+          <div className="text-center py-16">
+            <CheckCircle2 className="w-12 h-12 text-success/30 mx-auto mb-3" />
+            <p className="font-display font-bold text-lg text-success">Tudo em dia!</p>
+            <p className="text-sm text-muted-foreground">Nenhuma ação pendente</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
   return (
     <div className="space-y-6">
       <GuidedHint text="Transforme o celular em uma maquininha — TAP to Pay, PIX, cartão ou dinheiro para clientes sem app" />

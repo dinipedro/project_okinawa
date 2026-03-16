@@ -646,69 +646,91 @@ const MobilePayment: React.FC = () => {
   const myTables = tables.filter(t => ['occupied', 'billing'].includes(t.status));
   return (
     <div className="space-y-3">
-      <div className="rounded-2xl border border-border bg-gradient-to-r from-primary/10 to-secondary/10 p-3">
-        <p className="text-xs font-semibold">Cobrar na Mesa</p>
-        <p className="text-[10px] text-muted-foreground mt-0.5">TAP to Pay, PIX QR ou cartão</p>
+      <div className="rounded-2xl bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10 p-3">
+        <p className="text-xs font-semibold">Quem precisa pagar?</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5">Acompanhe quem pagou pelo app e cobre quem precisa</p>
       </div>
-      {myTables.map(table => (
-        <div key={table.id} className="rounded-2xl border border-border bg-card p-3">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-sm">{table.number}</div>
-            <div className="flex-1">
-              <p className="text-xs font-semibold">{table.customerName}</p>
-              <p className="text-[10px] text-muted-foreground">{table.seats} pessoas</p>
+      {myTables.map(table => {
+        const guests = [
+          { name: table.customerName || 'Titular', hasApp: true, paid: true, amount: Math.round((table.orderTotal || 0) * 0.4) },
+          { name: 'Convidado 2', hasApp: true, paid: false, amount: Math.round((table.orderTotal || 0) * 0.35) },
+          { name: 'Convidado 3', hasApp: false, paid: false, amount: Math.round((table.orderTotal || 0) * 0.25) },
+        ].slice(0, Math.min(3, table.seats));
+        const paidPct = Math.round((guests.filter(g => g.paid).length / guests.length) * 100);
+        return (
+          <div key={table.id} className="rounded-2xl border border-border bg-card overflow-hidden">
+            <div className="flex items-center gap-2 p-3 bg-muted/20 border-b border-border">
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-sm">{table.number}</div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold">{table.customerName}</p>
+                <p className="text-[10px] text-muted-foreground">R$ {table.orderTotal || 0}</p>
+              </div>
+              <span className="text-[10px] font-bold text-success">{paidPct}%</span>
             </div>
-            <span className="font-display font-bold text-sm text-primary">R$ {table.orderTotal || 0}</span>
+            <div className="p-2 space-y-1">
+              {guests.map((guest, i) => (
+                <div key={i} className={`flex items-center gap-2 p-2 rounded-lg ${
+                  guest.paid ? 'opacity-40' : !guest.hasApp ? 'bg-warning/5 border border-warning/15' : ''
+                }`}>
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[7px] font-bold ${
+                    guest.paid ? 'bg-success/10 text-success' : guest.hasApp ? 'bg-info/10 text-info' : 'bg-warning/10 text-warning'
+                  }`}>{guest.paid ? '✓' : guest.hasApp ? 'A' : '!'}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-medium truncate">{guest.name}</p>
+                    <p className="text-[9px] text-muted-foreground">{guest.paid ? 'Pago' : guest.hasApp ? 'No app' : 'Sem app'}</p>
+                  </div>
+                  <span className="text-[10px] font-semibold">R$ {guest.amount}</span>
+                  {!guest.paid && !guest.hasApp && (
+                    <button className="px-2 py-0.5 rounded bg-primary text-primary-foreground text-[9px] font-bold">Cobrar</button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-1.5">
-            {[
-              { label: 'TAP to Pay', emoji: '📱', highlight: true },
-              { label: 'PIX QR', emoji: '📲', highlight: false },
-              { label: 'Cartão', emoji: '💳', highlight: false },
-              { label: 'Dinheiro', emoji: '💵', highlight: false },
-            ].map(m => (
-              <button key={m.label} className={`flex items-center gap-1.5 p-2 rounded-xl text-[10px] font-semibold ${
-                m.highlight ? 'bg-primary/10 border border-primary/20 text-primary' : 'bg-muted/30 border border-border text-foreground'
-              }`}>
-                <span>{m.emoji}</span> {m.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
 
 const MobileActions: React.FC = () => {
-  const { tables } = useDemoContext();
-  const myTables = tables.filter(t => ['occupied', 'billing'].includes(t.status));
+  const situations = [
+    { table: 5, title: 'Prato pronto — retirar', detail: '2x Filé ao Molho · Chef Felipe', urgency: 'critical' as const, action: 'Retirar' },
+    { table: 10, title: 'Sobremesa pronta', detail: 'Petit Gâteau · Cozinheiro Thiago', urgency: 'critical' as const, action: 'Servir' },
+    { table: 3, title: 'Cliente quer pedir', detail: 'Convidado sem app', urgency: 'high' as const, action: 'Fazer pedido' },
+    { table: 1, title: 'Conta solicitada', detail: '1 sem app — cobrar via garçom', urgency: 'high' as const, action: 'Cobrar' },
+    { table: 8, title: 'Cortesia — aniversário', detail: 'Solicitar ao gerente', urgency: 'medium' as const, action: 'Solicitar' },
+  ];
+  const criticals = situations.filter(s => s.urgency === 'critical');
+
   return (
-    <div className="space-y-3">
-      <div className="rounded-2xl border border-border bg-muted/30 p-3">
-        <p className="text-xs font-semibold">Ações na Mesa</p>
-        <p className="text-[10px] text-muted-foreground mt-0.5">Execute ações pelo cliente quando precisar de ajuda com o app</p>
-      </div>
-      {myTables.map(table => (
-        <div key={table.id} className="rounded-2xl border border-border bg-card p-3">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-xs">{table.number}</div>
-            <p className="text-xs font-semibold">{table.customerName}</p>
+    <div className="space-y-2">
+      {criticals.length > 0 && (
+        <div className="flex items-center gap-2 p-2 rounded-2xl bg-destructive/10 border border-destructive/20 animate-pulse">
+          <ChefHat className="h-3.5 w-3.5 text-destructive" />
+          <p className="text-[10px] font-bold text-destructive">{criticals.length} prato(s) pronto(s)!</p>
+        </div>
+      )}
+      {situations.map((item, i) => (
+        <div key={i} className={`rounded-2xl border-2 overflow-hidden ${
+          item.urgency === 'critical' ? 'border-destructive/30 bg-destructive/5' :
+          item.urgency === 'high' ? 'border-warning/20 bg-card' : 'border-border bg-card'
+        }`}>
+          <div className="flex items-center gap-2.5 p-2.5">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-display font-bold text-xs ${
+              item.urgency === 'critical' ? 'bg-destructive/10 text-destructive' :
+              item.urgency === 'high' ? 'bg-warning/10 text-warning' : 'bg-info/10 text-info'
+            }`}>{item.table}</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold">{item.title}</p>
+              <p className="text-[9px] text-muted-foreground">{item.detail}</p>
+            </div>
           </div>
-          <div className="grid grid-cols-3 gap-1">
-            {[
-              { label: 'Add item', color: 'text-primary' },
-              { label: 'Conta', color: 'text-warning' },
-              { label: 'Dividir', color: 'text-secondary' },
-              { label: 'Gerente', color: 'text-destructive' },
-              { label: 'Cortesia', color: 'text-accent-foreground' },
-              { label: 'Cancelar', color: 'text-destructive' },
-            ].map(action => (
-              <button key={action.label} className="p-1.5 rounded-lg hover:bg-muted/30 text-left">
-                <span className={`text-[10px] font-medium ${action.color}`}>{action.label}</span>
-              </button>
-            ))}
-          </div>
+          <button className={`w-full py-2 text-[10px] font-bold border-t ${
+            item.urgency === 'critical' ? 'border-destructive/20 bg-destructive text-destructive-foreground' :
+            item.urgency === 'high' ? 'border-warning/20 bg-warning/10 text-warning' :
+            'border-border bg-muted/20 text-primary'
+          }`}>{item.action} →</button>
         </div>
       ))}
     </div>
