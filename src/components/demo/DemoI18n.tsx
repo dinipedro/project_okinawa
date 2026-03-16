@@ -1196,7 +1196,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Mesa 7 · Fine Dining': 'Table 7 · Fine Dining',
     'Mesa 7 · Tab #TH-284': 'Table 7 · Tab #TH-284',
     'Mesa 8 · Dirija-se à recepção': 'Table 8 · Head to reception',
-    'Mesa do Chef Noowe': "Chef's Table Noowe",
+    
     'Meu Bowl de Sempre': 'My Go-To Bowl',
     'Miyazaki, Japão · Brasa de binchotan': 'Miyazaki, Japan · Binchotan charcoal',
     'Modo Família ativo — Kids Menu em destaque': 'Family Mode active — Kids Menu highlighted',
