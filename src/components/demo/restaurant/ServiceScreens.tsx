@@ -7,7 +7,7 @@ import {
   UserPlus, ChefHat, Wine, UtensilsCrossed, Shield, Briefcase,
   MoreHorizontal, Edit3, Trash2, Save, X, Hash, DollarSign,
   MessageSquare, AlertCircle, ArrowRight, Smartphone, MapPin,
-  Coffee, HandPlatter,
+  Coffee, HandPlatter, ChevronLeft, BookOpen,
 } from 'lucide-react';
 import { useDemoContext, type DemoReservation } from '@/contexts/DemoContext';
 import { PhoneShell, GuidedHint } from '@/components/demo/DemoShared';
