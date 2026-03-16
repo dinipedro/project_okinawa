@@ -130,8 +130,8 @@ const DemoPayment: React.FC<PaymentConfig> = ({
               <Award className="w-5 h-5 text-accent" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-foreground">{loyalty.title}</p>
-              <p className="text-xs text-muted-foreground">{loyalty.subtitle}</p>
+              <p className="text-sm font-semibold text-foreground">{translateText(loyalty.title)}</p>
+              <p className="text-xs text-muted-foreground">{translateText(loyalty.subtitle)}</p>
             </div>
             {loyalty.actionLabel && (
               <button
@@ -142,7 +142,7 @@ const DemoPayment: React.FC<PaymentConfig> = ({
                     : 'bg-accent/20 text-accent'
                 }`}
               >
-                {usedPoints ? '✓ Usado' : loyalty.actionLabel}
+                {usedPoints ? `✓ ${translateText('Usado')}` : translateText(loyalty.actionLabel)}
               </button>
             )}
           </div>
