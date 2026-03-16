@@ -22,7 +22,7 @@ import {
 
 type Screen =
   | 'home' | 'restaurant' | 'menu' | 'item' | 'comanda'
-  | 'fechar-conta' | 'order-status' | 'loyalty' | 'reservations'
+  | 'fechar-conta' | 'payment' | 'order-status' | 'loyalty' | 'reservations'
   | 'qr-scan' | 'call-waiter' | 'profile' | 'virtual-queue' | 'my-orders'
   | 'payment-success' | 'notifications' | 'ai-harmonization';
 
