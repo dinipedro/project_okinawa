@@ -4146,8 +4146,16 @@ export function DemoAutoTranslate({ children }: { children: ReactNode }) {
       for (const attr of TRANSLATABLE_ATTRS) {
         const current = element.getAttribute(attr);
         if (!current || !current.trim()) continue;
-        if (!(attr in originals)) originals[attr] = current;
-        const translated = translateDemoText(originals[attr], lang);
+
+        const storedOriginal = originals[attr];
+        const storedTranslated = storedOriginal ? translateDemoText(storedOriginal, lang) : null;
+        const nextOriginal = !storedOriginal || (current !== storedOriginal && current !== storedTranslated)
+          ? current
+          : storedOriginal;
+
+        originals[attr] = nextOriginal;
+
+        const translated = translateDemoText(nextOriginal, lang);
         if (current !== translated) {
           element.setAttribute(attr, translated);
         }
@@ -4161,9 +4169,16 @@ export function DemoAutoTranslate({ children }: { children: ReactNode }) {
         const textNode = node as Text;
         const currentText = textNode.nodeValue ?? '';
         if (!currentText.trim()) return;
-        if (!textMapRef.current.has(textNode)) textMapRef.current.set(textNode, currentText);
-        const original = textMapRef.current.get(textNode) ?? currentText;
-        const translated = translateDemoText(original, lang);
+
+        const storedOriginal = textMapRef.current.get(textNode);
+        const storedTranslated = storedOriginal ? translateDemoText(storedOriginal, lang) : null;
+        const nextOriginal = !storedOriginal || (currentText !== storedOriginal && currentText !== storedTranslated)
+          ? currentText
+          : storedOriginal;
+
+        textMapRef.current.set(textNode, nextOriginal);
+
+        const translated = translateDemoText(nextOriginal, lang);
         if (textNode.nodeValue !== translated) {
           textNode.nodeValue = translated;
         }
