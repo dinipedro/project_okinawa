@@ -948,7 +948,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Reserva com convite de amigos, compartilhamento de link e código de confirmação.': 'Reservation with friend invites, link sharing and confirmation code.',
     'QR Code': 'QR Code',
     'Escaneamento do QR Code da mesa para associação automática.': 'Table QR Code scanning for automatic association.',
-    'Chamar Equipe': 'Call Staff',
+    
     'Chamada discreta: garçom, sommelier ou ajuda geral.': 'Discreet call: waiter, sommelier or general help.',
     'Perfil': 'Profile',
     'Perfil do cliente com histórico, favoritos, nível de fidelidade e configurações.': 'Customer profile with history, favorites, loyalty level and settings.',
