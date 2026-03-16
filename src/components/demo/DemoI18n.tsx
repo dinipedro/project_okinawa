@@ -993,7 +993,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Avaliação': 'Review',
     'Avalie comida, serviço e ambiente.': 'Rate food, service and ambiance.',
     // Chef's Table
-    'Experiências': 'Experiences',
+    
     'Descubra experiências gastronômicas exclusivas.': 'Discover exclusive dining experiences.',
     'Mesa do Chef': 'Chef\'s Table',
     'Jantar exclusivo para 8 com Chef Ricardo Oliveira.': 'Exclusive dinner for 8 with Chef Ricardo Oliveira.',
