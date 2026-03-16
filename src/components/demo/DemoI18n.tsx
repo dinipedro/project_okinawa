@@ -1555,6 +1555,20 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Chá & Companhia': 'Tea & Co.',
     'Pequeno': 'Small',
     '8 de 10 cafés — mais 2 e o próximo é GRÁTIS!': '8 of 10 coffees — 2 more and the next is FREE!',
+    'CafeNoowe_Clientes': 'CafeNoowe_Guests',
+    'Copiar': 'Copy',
+    'Pedir pelo App': 'Order via App',
+    'Ver Minha Comanda': 'View My Tab',
+    'Voltar ao Modo Trabalho': 'Back to Work Mode',
+    'Obrigado pela visita': 'Thank you for visiting',
+    'Cartão Fidelidade Café · 8/10 selos': 'Coffee Loyalty Card · 8/10 stamps',
+    // 'Café & Padaria · R$$ · 200m' — already exists above
+    '2 disponíveis nesta mesa': '2 available at this table',
+    'Morno': 'Warm',
+    'Gelado': 'Iced',
+    'Shot extra de espresso': 'Extra espresso shot',
+    'Custom': 'Custom',
+    'Adicionar à Comanda': 'Add to Tab',
 
     // ── Casual Dining Missing Items ──
     'Pizza Pepperoni': 'Pepperoni Pizza',
@@ -2995,6 +3009,20 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
     'Chá & Companhia': 'Té y Compañía',
     'Pequeno': 'Pequeño',
     '8 de 10 cafés — mais 2 e o próximo é GRÁTIS!': '¡8 de 10 cafés — 2 más y el próximo es GRATIS!',
+    'CafeNoowe_Clientes': 'CafeNoowe_Clientes',
+    'Copiar': 'Copiar',
+    'Pedir pelo App': 'Pedir por la App',
+    'Ver Minha Comanda': 'Ver mi cuenta',
+    'Voltar ao Modo Trabalho': 'Volver al modo trabajo',
+    'Obrigado pela visita': 'Gracias por tu visita',
+    'Cartão Fidelidade Café · 8/10 selos': 'Tarjeta fidelidad Café · 8/10 sellos',
+    // 'Café & Padaria · R$$ · 200m' — already exists above
+    '2 disponíveis nesta mesa': '2 disponibles en esta mesa',
+    'Morno': 'Tibio',
+    'Gelado': 'Helado',
+    'Shot extra de espresso': 'Shot extra de espresso',
+    'Custom': 'Custom',
+    'Adicionar à Comanda': 'Agregar a la cuenta',
 
     // ── Casual Dining Missing Items ──
     'Pizza Pepperoni': 'Pizza de Pepperoni',
