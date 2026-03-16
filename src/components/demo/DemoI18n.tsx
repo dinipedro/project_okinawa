@@ -912,7 +912,7 @@ const EXACT_TEXT_TRANSLATIONS: Record<Exclude<DemoLang, 'pt'>, Record<string, st
 
     // ── Loyalty ──
     'Fidelidade': 'Loyalty',
-    'Programa de fidelidade': 'Loyalty program',
+    
     'Você tem 340 pontos': 'You have 340 points',
     'Use 200 pts = R$ 10 de desconto': 'Use 200 pts = R$ 10 discount',
     'Usar': 'Use',
