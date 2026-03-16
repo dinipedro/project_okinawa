@@ -7,8 +7,6 @@ import { GuidedHint, ItemIcon } from '../DemoShared';
 import DemoPayment from '../DemoPayment';
 import DemoPaymentSuccess from '../DemoPaymentSuccess';
 import { FoodImg } from '../FoodImages';
-import DemoPayment from '../DemoPayment';
-import DemoPaymentSuccess from '../DemoPaymentSuccess';
 import {
   ArrowLeft, Check, Star, Clock, Plus, CreditCard, Gift, QrCode,
   Search, MapPin, Scale, ArrowRight, Utensils, Droplets, Users,
