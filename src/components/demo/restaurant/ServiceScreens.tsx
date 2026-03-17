@@ -158,11 +158,11 @@ export const MaitreScreen: React.FC<{ onNavigate: (screen: string) => void }> = 
 
 // ============ WAITER VIEW (Phone Shell) — Command Center Redesign ============
 
-type GuestOrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'served' | 'cancelled';
-type GuestOrder = { id: string; item: string; qty: number; price: number; status: GuestOrderStatus; sentAt: string };
-type TableGuest = { id: string; name: string; hasApp: boolean; paid: boolean; method?: string; orders: GuestOrder[] };
+export type GuestOrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'served' | 'cancelled';
+export type GuestOrder = { id: string; item: string; qty: number; price: number; status: GuestOrderStatus; sentAt: string };
+export type TableGuest = { id: string; name: string; hasApp: boolean; paid: boolean; method?: string; orders: GuestOrder[] };
 
-const KITCHEN_PIPELINE = [
+export const KITCHEN_PIPELINE = [
   { id: 'k1', dish: 'Filé ao Molho de Vinho', qty: 2, table: 5, chef: 'Chef Felipe', status: 'ready' as const, readyAgo: 3, sla: 20, elapsed: 22 },
   { id: 'k2', dish: 'Petit Gâteau', qty: 1, table: 10, chef: 'Cozinheiro Thiago', status: 'ready' as const, readyAgo: 1, sla: 12, elapsed: 11 },
   { id: 'k3', dish: 'Risotto de Cogumelos', qty: 1, table: 3, chef: 'Chef Felipe', status: 'preparing' as const, readyAgo: 0, sla: 25, elapsed: 18 },
@@ -170,7 +170,7 @@ const KITCHEN_PIPELINE = [
   { id: 'k5', dish: 'Tiramisu', qty: 2, table: 1, chef: 'Cozinheiro Thiago', status: 'preparing' as const, readyAgo: 0, sla: 15, elapsed: 5 },
 ];
 
-const LIVE_FEED = [
+export const LIVE_FEED = [
   { id: 'lf1', time: 'agora', table: 5, event: 'Prato pronto para retirar', detail: '2x Filé ao Molho de Vinho — Chef Felipe', type: 'kitchen_ready' as const, urgency: 'critical' as const },
   { id: 'lf2', time: '1min', table: 10, event: 'Sobremesa pronta', detail: '1x Petit Gâteau — Cozinheiro Thiago', type: 'kitchen_ready' as const, urgency: 'critical' as const },
   { id: 'lf3', time: '2min', table: 3, event: 'Cliente chamou o garçom', detail: 'Convidado 3 sem app quer fazer pedido', type: 'call' as const, urgency: 'high' as const },
@@ -181,7 +181,7 @@ const LIVE_FEED = [
 ];
 
 // Richer guest data with individual orders
-const TABLE_GUESTS_DATA: Record<number, TableGuest[]> = {
+export const TABLE_GUESTS_DATA: Record<number, TableGuest[]> = {
   1: [
     { id: 'g1-1', name: 'Maria S.', hasApp: true, paid: false, orders: [
       { id: 'oi1', item: 'Tartare de Atum', qty: 1, price: 58, status: 'served', sentAt: '18:32' },
@@ -236,10 +236,10 @@ const TABLE_GUESTS_DATA: Record<number, TableGuest[]> = {
   ],
 };
 
-const getTableGuests = (tableNum: number): TableGuest[] => TABLE_GUESTS_DATA[tableNum] || [];
+export const getTableGuests = (tableNum: number): TableGuest[] => TABLE_GUESTS_DATA[tableNum] || [];
 
 // Simple menu categories for ordering flow
-const WAITER_MENU = [
+export const WAITER_MENU = [
   { cat: 'Entradas', items: [
     { id: 'm1', name: 'Tartare de Atum', price: 58, time: '8min' },
     { id: 'm2', name: 'Burrata com Presunto', price: 52, time: '5min' },
