@@ -16,6 +16,8 @@ export default {
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         display: ['Space Grotesk', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+        noowe: ['DM Sans', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -79,12 +81,35 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // NOOWE site colors
+        noowe: {
+          bg: "hsl(var(--noowe-bg))",
+          bg2: "hsl(var(--noowe-bg2))",
+          bg3: "hsl(var(--noowe-bg3))",
+          bg4: "hsl(var(--noowe-bg4))",
+          bg5: "hsl(var(--noowe-bg5))",
+          t1: "hsl(var(--noowe-t1))",
+          t2: "hsl(var(--noowe-t2))",
+          t3: "hsl(var(--noowe-t3))",
+          t4: "hsl(var(--noowe-t4))",
+          blue: "hsl(var(--noowe-blue))",
+          cyan: "hsl(var(--noowe-cyan))",
+          purple: "hsl(var(--noowe-purple))",
+          green: "hsl(var(--noowe-green))",
+          orange: "hsl(var(--noowe-orange))",
+          red: "hsl(var(--noowe-red))",
+          pink: "hsl(var(--noowe-pink))",
+          yellow: "hsl(var(--noowe-yellow))",
+          border: "hsl(var(--noowe-border))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
         xl: "var(--radius-xl)",
+        "2xl": "1.25rem",
+        "3xl": "1.75rem",
       },
       boxShadow: {
         'sm': 'var(--shadow-sm)',
@@ -139,6 +164,10 @@ export default {
           "0%": { boxShadow: "0 0 0 0 hsl(var(--primary) / 0.7)" },
           "70%": { boxShadow: "0 0 0 10px hsl(var(--primary) / 0)" },
           "100%": { boxShadow: "0 0 0 0 hsl(var(--primary) / 0)" },
+        },
+        "counter": {
+          from: { "--num": "0" },
+          to: { "--num": "var(--target)" },
         },
       },
       animation: {
