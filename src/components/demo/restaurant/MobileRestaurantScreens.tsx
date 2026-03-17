@@ -27,6 +27,10 @@ import {
   X,
   XCircle,
 } from 'lucide-react';
+import {
+  ConfigHub, ConfigProfile, ConfigServiceTypes, ConfigExperience,
+  ConfigFloor, ConfigMenu, ConfigTeam, ConfigKitchen, ConfigPayments, ConfigFeatures,
+} from './ConfigHubScreens';
 import { useDemoContext, type OrderStatus, type TableStatus } from '@/contexts/DemoContext';
 import { useDemoI18n } from '@/components/demo/DemoI18n';
 import {
