@@ -583,7 +583,7 @@ export const ConfigTeam: React.FC<{ onNavigate: (screen: string) => void }> = ({
   const roles = [
     { role: translateText('Dono'), count: 1, permissions: translateText('Acesso total'), icon: <Crown className="h-4 w-4" />, color: 'text-primary' },
     { role: translateText('Gerente'), count: 1, permissions: translateText('Operação e aprovações'), icon: <Shield className="h-4 w-4" />, color: 'text-secondary' },
-    { role: 'Maitre', count: 1, permissions: translateText('Reservas e salão'), icon: <CalendarDays className="h-4 w-4" />, color: 'text-info' },
+    { role: 'Maitre', count: 1, permissions: translateText('Reservas e salão'), icon: <Calendar className="h-4 w-4" />, color: 'text-info' },
     { role: 'Chef', count: 1, permissions: translateText('KDS e cardápio'), icon: <ChefHat className="h-4 w-4" />, color: 'text-warning' },
     { role: 'Barman', count: 1, permissions: translateText('Bar e drinks'), icon: <Wine className="h-4 w-4" />, color: 'text-accent-foreground' },
     { role: translateText('Cozinheiro'), count: 2, permissions: translateText('Estação de preparo'), icon: <Flame className="h-4 w-4" />, color: 'text-destructive' },
