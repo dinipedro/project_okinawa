@@ -264,27 +264,42 @@ const translations: Record<string, Record<Lang, string>> = {
   'free.banner_cta': { pt: 'Iniciar simulação', en: 'Start simulation', es: 'Iniciar simulación' },
 
   // Platform
-  'platform.overline': { pt: 'COMO FUNCIONA', en: 'HOW IT WORKS', es: 'CÓMO FUNCIONA' },
-  'platform.title': { pt: 'Uma plataforma. Todo tipo de restaurante.', en: 'One platform. Every type of restaurant.', es: 'Una plataforma. Todo tipo de restaurante.' },
+  'platform.overline': { pt: 'A PLATAFORMA', en: 'THE PLATFORM', es: 'LA PLATAFORMA' },
+  'platform.title': { pt: 'Um sistema.\nTodos os fluxos do seu restaurante.', en: 'One system.\nEvery flow in your restaurant.', es: 'Un sistema.\nTodos los flujos de tu restaurante.' },
   'platform.sub': {
-    pt: 'Não importa se você tem um bistrô, um fast casual ou uma rede. O NOOWE se adapta ao seu jeito de operar.',
-    en: 'Whether you run a bistro, fast casual or a chain. NOOWE adapts to how you operate.',
-    es: 'No importa si tienes un bistró, un fast casual o una cadena. NOOWE se adapta a cómo operas.',
+    pt: 'Do primeiro pedido ao fechamento do dia, tudo acontece dentro de uma única lógica.',
+    en: 'From the first order to closing time, everything runs within a single logic.',
+    es: 'Desde el primer pedido hasta el cierre del día, todo ocurre dentro de una única lógica.',
   },
-  'platform.client_title': { pt: 'O QUE SEU CLIENTE VAI SENTIR', en: 'WHAT YOUR GUEST WILL FEEL', es: 'LO QUE TU CLIENTE VA A SENTIR' },
-  'platform.ops_title': { pt: 'O QUE SUA EQUIPE VAI GANHAR', en: 'WHAT YOUR TEAM WILL GAIN', es: 'LO QUE TU EQUIPO VA A GANAR' },
+  'platform.client_title': { pt: 'O QUE SEU CLIENTE SENTE', en: 'WHAT YOUR GUEST FEELS', es: 'LO QUE TU CLIENTE SIENTE' },
+  'platform.client_body': {
+    pt: 'Ele não vê sistema.\nEle sente fluidez.\n\nPede sem esforço.\nAcompanha sem ansiedade.\nPaga sem fricção.\n\nE sai com a sensação de que tudo simplesmente funcionou.',
+    en: 'They don\'t see a system.\nThey feel fluidity.\n\nOrdering is effortless.\nTracking is anxiety-free.\nPaying is frictionless.\n\nThey leave feeling like everything simply worked.',
+    es: 'No ve un sistema.\nSiente fluidez.\n\nPide sin esfuerzo.\nSigue sin ansiedad.\nPaga sin fricción.\n\nY se va con la sensación de que todo simplemente funcionó.',
+  },
+  'platform.ops_title': { pt: 'O QUE SUA EQUIPE GANHA', en: 'WHAT YOUR TEAM GAINS', es: 'LO QUE TU EQUIPO GANA' },
+  'platform.ops_sub_title': { pt: 'Menos dúvida. Mais execução.', en: 'Less doubt. More execution.', es: 'Menos dudas. Más ejecución.' },
   'platform.ops_sub': {
-    pt: 'Cada pessoa da sua equipe entra e vê só o que importa pra ela. Sem confusão, sem treinamento de semanas.',
-    en: 'Each person on your team logs in and sees only what matters to them. No confusion, no weeks of training.',
-    es: 'Cada persona de tu equipo entra y ve solo lo que le importa. Sin confusión, sin semanas de entrenamiento.',
+    pt: 'Cada pessoa entra e entende exatamente o que fazer. Sem ruído. Sem retrabalho. Sem depender de alguém explicando tudo o tempo todo.',
+    en: 'Each person logs in and knows exactly what to do. No noise. No rework. No depending on someone explaining everything all the time.',
+    es: 'Cada persona entra y entiende exactamente qué hacer. Sin ruido. Sin retrabajo. Sin depender de alguien explicando todo el tiempo.',
   },
-  'platform.cross_title': { pt: 'O QUE MUDA NA PRÁTICA', en: 'WHAT CHANGES IN PRACTICE', es: 'LO QUE CAMBIA EN LA PRÁCTICA' },
-  'platform.cta_title': { pt: 'Melhor do que ler, é ver.', en: 'Better than reading, is seeing.', es: 'Mejor que leer, es ver.' },
+  'platform.cross_overline': { pt: 'NA PRÁTICA', en: 'IN PRACTICE', es: 'EN LA PRÁCTICA' },
+  'platform.cross_title': { pt: 'O que muda no dia a dia', en: 'What changes day to day', es: 'Lo que cambia en el día a día' },
+  'platform.system_title_1': { pt: 'Não são as funcionalidades.', en: 'It\'s not about the features.', es: 'No son las funcionalidades.' },
+  'platform.system_title_2': { pt: 'É como tudo funciona junto.', en: 'It\'s how everything works together.', es: 'Es cómo todo funciona junto.' },
+  'platform.system_body': {
+    pt: 'Um pedido não para no caixa.\nEle passa pela cozinha, impacta o estoque, atualiza seus números e melhora sua próxima decisão.\n\nTudo conectado. Sem esforço.',
+    en: 'An order doesn\'t stop at the register.\nIt flows through the kitchen, impacts inventory, updates your numbers and improves your next decision.\n\nAll connected. Effortlessly.',
+    es: 'Un pedido no se detiene en la caja.\nPasa por la cocina, impacta el inventario, actualiza tus números y mejora tu próxima decisión.\n\nTodo conectado. Sin esfuerzo.',
+  },
+  'platform.cta_title': { pt: 'Melhor do que entender, é ver.', en: 'Better than understanding is seeing.', es: 'Mejor que entender, es ver.' },
   'platform.cta_body': {
-    pt: 'Isso aqui não é um PDF bonito. É a plataforma rodando de verdade. Peça seu acesso e veja com seus próprios olhos.',
-    en: 'This isn\'t a fancy PDF. It\'s the platform running for real. Request access and see it with your own eyes.',
-    es: 'Esto no es un PDF bonito. Es la plataforma corriendo de verdad. Pide tu acceso y míralo con tus propios ojos.',
+    pt: 'Acesse o NOOWE e veja a operação acontecendo de verdade.',
+    en: 'Access NOOWE and see operations happening for real.',
+    es: 'Accede a NOOWE y ve la operación sucediendo de verdad.',
   },
+  'platform.cta_button': { pt: 'Solicitar acesso', en: 'Request access', es: 'Solicitar acceso' },
 };
 
 export function t(key: string, lang: Lang): string {
