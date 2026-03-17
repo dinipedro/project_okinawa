@@ -162,7 +162,7 @@ export type GuestOrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' |
 export type GuestOrder = { id: string; item: string; qty: number; price: number; status: GuestOrderStatus; sentAt: string };
 export type TableGuest = { id: string; name: string; hasApp: boolean; paid: boolean; method?: string; orders: GuestOrder[] };
 
-const KITCHEN_PIPELINE = [
+export const KITCHEN_PIPELINE = [
   { id: 'k1', dish: 'Filé ao Molho de Vinho', qty: 2, table: 5, chef: 'Chef Felipe', status: 'ready' as const, readyAgo: 3, sla: 20, elapsed: 22 },
   { id: 'k2', dish: 'Petit Gâteau', qty: 1, table: 10, chef: 'Cozinheiro Thiago', status: 'ready' as const, readyAgo: 1, sla: 12, elapsed: 11 },
   { id: 'k3', dish: 'Risotto de Cogumelos', qty: 1, table: 3, chef: 'Chef Felipe', status: 'preparing' as const, readyAgo: 0, sla: 25, elapsed: 18 },
