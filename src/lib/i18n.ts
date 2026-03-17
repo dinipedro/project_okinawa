@@ -10,8 +10,8 @@ const translations: Record<string, Record<Lang, string>> = {
 
   // Hero
   'hero.overline': { pt: 'O SISTEMA QUE SEU RESTAURANTE PRECISA', en: 'THE SYSTEM YOUR RESTAURANT NEEDS', es: 'EL SISTEMA QUE TU RESTAURANTE NECESITA' },
-  'hero.h1_1': { pt: 'Chega de gambiarras.', en: 'No more workarounds.', es: 'Basta de improvisar.' },
-  'hero.h1_2': { pt: 'Seu restaurante merece mais.', en: 'Your restaurant deserves more.', es: 'Tu restaurante merece más.' },
+  'hero.h1_1': { pt: 'Você criou o restaurante.', en: 'You built the restaurant.', es: 'Tú creaste el restaurante.' },
+  'hero.h1_2': { pt: 'Nós criamos o sistema que ele precisa.', en: 'We built the system it needs.', es: 'Nosotros creamos el sistema que necesita.' },
   'hero.sub': {
     pt: 'Você não precisa de mais um app. Precisa de uma plataforma que conecta pedidos, cozinha, equipe e clientes — tudo no mesmo ritmo da sua operação.',
     en: 'You don\'t need another app. You need a platform that connects orders, kitchen, staff and guests — all moving at the pace of your operation.',
