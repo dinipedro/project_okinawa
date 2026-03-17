@@ -236,15 +236,51 @@ const SitePlatform: React.FC = () => {
                 <div className="p-6 rounded-2xl border border-border bg-background hover:border-primary/20 transition-all duration-300 hover:shadow-md h-full">
                   <h3 className="text-foreground font-bold text-lg mb-2">{t(group.titleKey)}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed mb-5">{t(group.descKey)}</p>
-                  <div className="space-y-3">
-                    {group.items.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-primary/8 text-primary flex items-center justify-center flex-shrink-0">
-                          <item.icon size={16} />
-                        </div>
-                        <span className="text-foreground font-medium text-sm">{item.name}</span>
-                      </div>
-                    ))}
+                  <div className="space-y-2">
+                    {group.items.map((itemName, i) => {
+                      const detail = serviceDetails[itemName];
+                      if (!detail) return null;
+                      const Icon = detail.icon;
+                      return (
+                        <HoverCard key={i} openDelay={150} closeDelay={100}>
+                          <HoverCardTrigger asChild>
+                            <div className="flex items-center gap-3 cursor-pointer rounded-lg px-2 py-2 -mx-2 hover:bg-primary/5 transition-colors">
+                              <div className="w-8 h-8 rounded-lg bg-primary/8 text-primary flex items-center justify-center flex-shrink-0">
+                                <Icon size={16} />
+                              </div>
+                              <span className="text-foreground font-medium text-sm">{detail.name}</span>
+                            </div>
+                          </HoverCardTrigger>
+                          <HoverCardContent side="right" align="start" className="w-80 p-0 overflow-hidden" sideOffset={12}>
+                            <div className="p-4 border-b border-border bg-muted/30">
+                              <div className="flex items-center gap-3 mb-1.5">
+                                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                                  <Icon size={16} />
+                                </div>
+                                <h4 className="text-foreground font-bold text-sm">{detail.name}</h4>
+                              </div>
+                              <p className="text-muted-foreground text-xs leading-relaxed">{detail.tagline[lang]}</p>
+                            </div>
+                            <div className="p-4">
+                              <ul className="space-y-1.5 mb-3">
+                                {detail.features.map((f) => (
+                                  <li key={f} className="text-muted-foreground text-xs flex items-start gap-2">
+                                    <Check size={12} className="text-primary flex-shrink-0 mt-0.5" />
+                                    {f}
+                                  </li>
+                                ))}
+                              </ul>
+                              <div className="bg-primary/5 border border-primary/10 rounded-lg p-3">
+                                <p className="text-[10px] uppercase tracking-wider mb-1 font-semibold text-primary">
+                                  {lang === 'pt' ? 'Diferencial' : lang === 'es' ? 'Diferencial' : 'Differentiator'}
+                                </p>
+                                <p className="text-foreground text-xs leading-relaxed">{detail.diff[lang]}</p>
+                              </div>
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
+                      );
+                    })}
                   </div>
                 </div>
               </Reveal>
