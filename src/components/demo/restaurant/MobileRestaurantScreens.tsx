@@ -41,6 +41,14 @@ import {
   type RestaurantScreen,
   type StaffRole,
 } from './RestaurantDemoShared';
+import {
+  type TableGuest,
+  KITCHEN_PIPELINE,
+  LIVE_FEED,
+  TABLE_GUESTS_DATA,
+  getTableGuests,
+  WAITER_MENU,
+} from './ServiceScreens';
 
 const statusBadgeMap: Record<OrderStatus, string> = {
   pending: 'bg-muted text-muted-foreground',
