@@ -191,6 +191,16 @@ export const DEMO_TRANSLATIONS = {
     'waiter-table-detail': { pt: 'Detalhes completos da mesa, pedidos e status dos clientes', en: 'Complete table details, orders and guest status', es: 'Detalles completos de la mesa, pedidos y estado de los clientes' },
     'floor-flow': { pt: 'Fila virtual, tempos de espera e rotação', en: 'Virtual queue, wait times and rotation', es: 'Cola virtual, tiempos de espera y rotación' },
     'daily-report': { pt: 'Fechamento, métricas e comparativos', en: 'Closing, metrics and comparisons', es: 'Cierre, métricas y comparativos' },
+    'config-hub': { pt: 'Hub completo para configurar todos os aspectos do seu estabelecimento', en: 'Complete hub to configure every aspect of your venue', es: 'Hub completo para configurar todos los aspectos de tu establecimiento' },
+    'config-profile': { pt: 'Nome, logo, fotos, endereço e contato', en: 'Name, logo, photos, address and contact', es: 'Nombre, logo, fotos, dirección y contacto' },
+    'config-service-types': { pt: 'Selecione os 11 modelos de operação', en: 'Select from 11 operation models', es: 'Seleccione los 11 modelos de operación' },
+    'config-experience': { pt: 'Reservas, fila, QR Code, atendimento', en: 'Reservations, queue, QR Code, service', es: 'Reservas, cola, QR Code, servicio' },
+    'config-floor': { pt: 'Mesas, zonas, áreas VIP e planta visual', en: 'Tables, zones, VIP areas and visual layout', es: 'Mesas, zonas, áreas VIP y plano visual' },
+    'config-menu': { pt: 'Categorias, itens, preços e disponibilidade', en: 'Categories, items, prices and availability', es: 'Categorías, ítems, precios y disponibilidad' },
+    'config-team': { pt: 'Cargos, escalas, acessos e membros', en: 'Roles, schedules, access and members', es: 'Cargos, horarios, accesos y miembros' },
+    'config-kitchen': { pt: 'Estações de preparo, KDS e receitas', en: 'Prep stations, KDS and recipes', es: 'Estaciones de preparación, KDS y recetas' },
+    'config-payments': { pt: 'Taxa de serviço, gorjeta, split e métodos', en: 'Service charge, tips, split and methods', es: 'Tasa de servicio, propina, split y métodos' },
+    'config-features': { pt: 'Ative módulos avançados: fidelidade, IA, eventos', en: 'Activate advanced modules: loyalty, AI, events', es: 'Active módulos avanzados: fidelidad, IA, eventos' },
   },
 } as const;
 
