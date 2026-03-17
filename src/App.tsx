@@ -16,7 +16,10 @@ const SiteHome = lazy(() => import("./pages/SiteHome"));
 const SitePlatform = lazy(() => import("./pages/SitePlatform"));
 const SiteRequestDemo = lazy(() => import("./pages/SiteRequestDemo"));
 const SiteAccess = lazy(() => import("./pages/SiteAccess"));
+const SiteIntentCapture = lazy(() => import("./pages/SiteIntentCapture"));
 const SiteDemoHub = lazy(() => import("./pages/SiteDemoHub"));
+const GuidedSimulation = lazy(() => import("./pages/GuidedSimulation"));
+const SiteImpact = lazy(() => import("./pages/SiteImpact"));
 const MobilePreview = lazy(() => import("./pages/MobilePreview"));
 const MobilePreviewV2 = lazy(() => import("./pages/MobilePreviewV2"));
 const PitchDeck = lazy(() => import("./pages/PitchDeck"));
@@ -62,7 +65,10 @@ const App = () => (
                       <Route path="/platform" element={<SitePlatform />} />
                       <Route path="/request-demo" element={<SiteRequestDemo />} />
                       <Route path="/access" element={<SiteAccess />} />
+                      <Route path="/demo/intent" element={<SiteIntentCapture />} />
                       <Route path="/demo" element={<SiteDemoHub />} />
+                      <Route path="/demo/guided" element={<GuidedSimulation />} />
+                      <Route path="/demo/impact" element={<SiteImpact />} />
 
                       {/* Existing demo & internal pages */}
                       <Route path="/demo/client" element={<DemoClient />} />
