@@ -80,6 +80,7 @@ export const ROLE_JOURNEYS: Record<StaffRole, RoleJourneyStage[]> = {
     { screen: 'team', label: 'Equipe Hoje', icon: Users, desc: 'Quem está em serviço' },
     { screen: 'daily-report', label: 'Relatório do Dia', icon: ClipboardList, desc: 'Fechamento e métricas do dia' },
     { screen: 'stock', label: 'Estoque', icon: Package, desc: 'Alertas de estoque baixo' },
+    { screen: 'config-hub', label: 'Central de Config', icon: Settings, desc: 'Hub de configuração completo' },
   ],
   maitre: [
     { screen: 'maitre', label: 'Reservas', icon: CalendarDays, desc: 'Reservas e check-in do dia' },
