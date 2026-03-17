@@ -9,13 +9,13 @@ const translations: Record<string, Record<Lang, string>> = {
   'nav.request_demo': { pt: 'Solicitar Demo', en: 'Request Demo', es: 'Solicitar Demo' },
 
   // Hero
-  'hero.overline': { pt: 'O SISTEMA QUE SEU RESTAURANTE PRECISA', en: 'THE SYSTEM YOUR RESTAURANT NEEDS', es: 'EL SISTEMA QUE TU RESTAURANTE NECESITA' },
-  'hero.h1_1': { pt: 'Você criou o restaurante.', en: 'You built the restaurant.', es: 'Tú creaste el restaurante.' },
-  'hero.h1_2': { pt: 'Nós criamos o sistema que ele precisa.', en: 'We built the system it needs.', es: 'Nosotros creamos el sistema que necesita.' },
+  'hero.overline': { pt: 'A SOLUÇÃO COMPLETA PARA SEU NEGÓCIO', en: 'THE COMPLETE SOLUTION FOR YOUR BUSINESS', es: 'LA SOLUCIÓN COMPLETA PARA TU NEGOCIO' },
+  'hero.h1_1': { pt: 'Você criou o negócio.', en: 'You built the business.', es: 'Tú creaste el negocio.' },
+  'hero.h1_2': { pt: 'Nós criamos a solução completa que ele precisa.', en: 'We built the complete solution it needs.', es: 'Nosotros creamos la solución completa que necesita.' },
   'hero.sub': {
-    pt: 'Você não precisa de mais um app. Precisa de uma plataforma que conecta pedidos, cozinha, equipe e clientes — tudo no mesmo ritmo da sua operação.',
-    en: 'You don\'t need another app. You need a platform that connects orders, kitchen, staff and guests — all moving at the pace of your operation.',
-    es: 'No necesitas otra app. Necesitas una plataforma que conecte pedidos, cocina, equipo y clientes — todo al ritmo de tu operación.',
+    pt: 'Você não precisa de mais um sistema. Precisa de uma plataforma que conecta toda a jornada da experiência — tudo no mesmo ritmo da sua operação.',
+    en: 'You don\'t need another system. You need a platform that connects the entire experience journey — all moving at the pace of your operation.',
+    es: 'No necesitas otro sistema. Necesitas una plataforma que conecte todo el recorrido de la experiencia — todo al ritmo de tu operación.',
   },
   'hero.cta1': { pt: 'Quero ver funcionando', en: 'I want to see it working', es: 'Quiero verlo funcionando' },
   'hero.cta2': { pt: 'Como funciona', en: 'How it works', es: 'Cómo funciona' },
