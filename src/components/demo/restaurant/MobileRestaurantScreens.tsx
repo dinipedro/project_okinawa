@@ -1226,6 +1226,179 @@ const MobileWaiter: React.FC<{ initialTab?: 'live' | 'tables' | 'kitchen' | 'cha
   );
 };
 
+const MobileMenu: React.FC = () => {
+  const { menu } = useDemoContext();
+  const categories = useMemo(() => [...new Set(menu.map(item => item.category))], [menu]);
+  const [category, setCategory] = useState(categories[0] ?? '');
+  const items = menu.filter(item => item.category === category);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {categories.map(item => (
+          <button key={item} onClick={() => setCategory(item)} className={`whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-semibold ${category === item ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+            {item}
+          </button>
+        ))}
+      </div>
+      <div className="space-y-2">
+        {items.map(item => (
+          <div key={item.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
+            <img src={item.image} alt={item.name} className="h-14 w-14 rounded-xl object-cover" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold">{item.name}</p>
+              <p className="line-clamp-2 text-[11px] text-muted-foreground">{item.description}</p>
+            </div>
+            <span className="text-xs font-semibold text-primary">R$ {item.price}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const MobileTeam: React.FC = () => (
+  <div className="space-y-2">
+    {TEAM_MEMBERS.map(member => (
+      <div key={member.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
+        <img src={member.avatar} alt={member.name} className="h-10 w-10 rounded-full object-cover" />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold">{member.name}</p>
+          <p className="text-[11px] text-muted-foreground">{member.role} · {member.shift}</p>
+        </div>
+        <span className={`text-[10px] font-semibold ${member.status === 'online' ? 'text-success' : 'text-muted-foreground'}`}>{member.status === 'online' ? 'Ativo' : 'Folga'}</span>
+      </div>
+    ))}
+  </div>
+);
+
+const MobileAnalytics: React.FC = () => {
+  const { analytics } = useDemoContext();
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <CompactStat label="Receita" value="R$ 77.5k" tone="success" />
+        <CompactStat label="Pedidos" value="312" tone="primary" />
+        <CompactStat label="Satisfação" value={String(analytics.customerSatisfaction)} tone="warning" />
+        <CompactStat label="Recorrência" value={`${analytics.returningCustomers}%`} tone="info" />
+      </div>
+      <MobileSection title="Top vendidos">
+        <div className="space-y-2">
+          {analytics.topItems.map((item, index) => (
+            <div key={item.name} className="flex items-center justify-between rounded-2xl border border-border bg-card p-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-xs font-bold text-primary">#{index + 1}</div>
+                <div>
+                  <p className="text-sm font-semibold">{item.name}</p>
+                  <p className="text-[11px] text-muted-foreground">{item.quantity} vendidos</p>
+                </div>
+              </div>
+              <TrendingUp className="h-4 w-4 text-success" />
+            </div>
+          ))}
+        </div>
+      </MobileSection>
+    </div>
+  );
+};
+
+const MobileManager: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
+  const { analytics, orders } = useDemoContext();
+  const lateOrders = orders.filter(order => !['delivered', 'paid'].includes(order.status) && getElapsedMinutes(order.createdAt) > 15);
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <CompactStat label="Pedidos ativos" value={String(orders.filter(o => !['delivered', 'paid'].includes(o.status)).length)} tone="primary" />
+        <CompactStat label="Aprovações" value={String(PENDING_APPROVALS.length)} tone="warning" />
+        <CompactStat label="Equipe ativa" value={String(TEAM_MEMBERS.filter(t => t.status === 'online').length)} tone="info" />
+        <CompactStat label="Receita" value={`R$ ${analytics.todayRevenue.toLocaleString()}`} tone="success" />
+      </div>
+      {lateOrders.length ? (
+        <button onClick={() => onNavigate('orders')} className="flex w-full items-center gap-2 rounded-2xl border border-destructive/20 bg-destructive/5 px-3 py-3 text-left text-xs font-semibold text-destructive">
+          <AlertCircle className="h-4 w-4" />
+          {lateOrders.length} pedidos com atraso
+        </button>
+      ) : null}
+      <button onClick={() => onNavigate('approvals')} className="flex w-full items-center justify-between rounded-2xl border border-border bg-card px-3 py-3 text-left">
+        <div>
+          <p className="text-xs font-semibold">Central de aprovações</p>
+          <p className="text-[11px] text-muted-foreground">Cancelamentos, cortesias e estornos</p>
+        </div>
+        <ArrowRight className="h-4 w-4 text-muted-foreground" />
+      </button>
+      <MobileTeam />
+    </div>
+  );
+};
+
+const MobileApprovals: React.FC = () => {
+  const [handled, setHandled] = useState<string[]>([]);
+  return (
+    <div className="space-y-2">
+      {PENDING_APPROVALS.map(item => {
+        const done = handled.includes(item.id);
+        return (
+          <div key={item.id} className={`rounded-2xl border p-3 ${done ? 'border-success/20 bg-success/5' : 'border-border bg-card'}`}>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="text-sm font-semibold">{item.item}</p>
+                <p className="text-[11px] text-muted-foreground">Mesa {item.table} · {item.requestedBy}</p>
+                <p className="mt-1 text-[11px] text-muted-foreground">{item.reason}</p>
+              </div>
+              <span className="text-xs font-semibold text-destructive">R$ {item.amount}</span>
+            </div>
+            {!done ? (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <button onClick={() => setHandled(prev => [...prev, item.id])} className="rounded-2xl bg-success px-3 py-2.5 text-xs font-semibold text-success-foreground">Aprovar</button>
+                <button onClick={() => setHandled(prev => [...prev, item.id])} className="rounded-2xl bg-destructive/10 px-3 py-2.5 text-xs font-semibold text-destructive">Recusar</button>
+              </div>
+            ) : <div className="mt-3 flex items-center gap-2 text-[11px] font-semibold text-success"><CheckCircle2 className="h-4 w-4" /> Processado</div>}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const MobileBarman: React.FC = () => <MobileKDS view="bar" />;
+const MobileCook: React.FC = () => <MobileKDS view="kitchen" />;
+
+const MobileRecipes: React.FC = () => (
+  <div className="space-y-2">
+    {DRINK_RECIPES.map(recipe => (
+      <div key={recipe.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
+        <img src={recipe.image} alt={recipe.name} className="h-14 w-14 rounded-xl object-cover" />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold">{recipe.name}</p>
+          <p className="text-[11px] text-muted-foreground">{recipe.glass} · {recipe.prepTime}min</p>
+        </div>
+        <span className="text-xs font-semibold text-primary">R$ {recipe.price}</span>
+      </div>
+    ))}
+  </div>
+);
+
+const MobileStock: React.FC = () => (
+  <div className="space-y-2">
+    {STOCK_ITEMS.map(item => (
+      <div key={item.id} className="rounded-2xl border border-border bg-card p-3">
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <p className="text-sm font-semibold">{item.name}</p>
+            <p className="text-[11px] text-muted-foreground">{item.category}</p>
+          </div>
+          <span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${item.status === 'critical' ? 'bg-destructive/10 text-destructive' : item.status === 'low' ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success'}`}>{item.current} {item.unit}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const MobileCalls: React.FC = () => <MobileWaiter initialTab="live" />;
+const MobilePayment: React.FC = () => <MobileWaiter initialTab="charge" />;
+const MobileActions: React.FC = () => <MobileWaiter initialTab="live" />;
+
 const MobileTips: React.FC = () => (
   <div className="space-y-4">
     <CompactStat label="Gorjetas do dia" value="R$ 410" tone="success" />
