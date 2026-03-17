@@ -640,7 +640,7 @@ export const ConfigTeam: React.FC<{ onNavigate: (screen: string) => void }> = ({
         ))}
         <div className="p-3">
           <button className="flex items-center gap-2 text-xs font-medium text-primary">
-            <UserPlus className="h-3.5 w-3.5" /> {translateText('Adicionar membro')}
+            <Plus className="h-3.5 w-3.5" /> {translateText('Adicionar membro')}
           </button>
         </div>
       </SectionCard>
