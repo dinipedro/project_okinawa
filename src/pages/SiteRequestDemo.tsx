@@ -16,6 +16,7 @@ const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: 
 };
 
 const SiteRequestDemo: React.FC = () => {
+  const navigate = useNavigate();
   const { lang, t } = useLang();
   const [form, setForm] = useState({ name: '', restaurant: '', email: '', phone: '' });
   const [submitted, setSubmitted] = useState(false);
