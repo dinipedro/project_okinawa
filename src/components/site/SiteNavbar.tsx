@@ -20,7 +20,7 @@ const SiteNavbar: React.FC = () => {
 
   const links = [
     { to: '/platform', label: t('nav.platform') },
-    { to: '/demo', label: t('nav.demo') },
+    { to: '/request-demo', label: t('nav.demo') },
   ];
 
   return (
