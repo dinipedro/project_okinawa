@@ -181,7 +181,7 @@ export const LIVE_FEED = [
 ];
 
 // Richer guest data with individual orders
-const TABLE_GUESTS_DATA: Record<number, TableGuest[]> = {
+export const TABLE_GUESTS_DATA: Record<number, TableGuest[]> = {
   1: [
     { id: 'g1-1', name: 'Maria S.', hasApp: true, paid: false, orders: [
       { id: 'oi1', item: 'Tartare de Atum', qty: 1, price: 58, status: 'served', sentAt: '18:32' },
