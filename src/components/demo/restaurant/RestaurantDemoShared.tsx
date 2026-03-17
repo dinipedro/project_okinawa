@@ -139,6 +139,16 @@ export const SCREEN_INFO: Record<RestaurantScreen, { title: string; desc: string
   'waiter-actions': { title: 'Ações na Mesa', desc: 'Executar ações pelo cliente: adicionar itens, solicitar conta, chamar gerente' },
   'floor-flow': { title: 'Fluxo do Salão', desc: 'Fila virtual, tempos de espera e rotação' },
   'daily-report': { title: 'Relatório do Dia', desc: 'Fechamento, métricas e comparativos' },
+  'config-hub': { title: 'Central de Configuração', desc: 'Hub completo para configurar todos os aspectos do seu estabelecimento' },
+  'config-profile': { title: 'Perfil do Restaurante', desc: 'Nome, logo, fotos, endereço e contato' },
+  'config-service-types': { title: 'Tipos de Serviço', desc: 'Selecione os 11 modelos de operação' },
+  'config-experience': { title: 'Experiência do Cliente', desc: 'Reservas, fila, QR Code, atendimento' },
+  'config-floor': { title: 'Mapa do Salão', desc: 'Mesas, zonas, áreas VIP e planta visual' },
+  'config-menu': { title: 'Gestão do Cardápio', desc: 'Categorias, itens, preços e disponibilidade' },
+  'config-team': { title: 'Equipe & Permissões', desc: 'Cargos, escalas, acessos e membros' },
+  'config-kitchen': { title: 'Cozinha & Bar', desc: 'Estações de preparo, KDS e receitas' },
+  'config-payments': { title: 'Pagamentos', desc: 'Taxa de serviço, gorjeta, split e métodos' },
+  'config-features': { title: 'Marketplace de Features', desc: 'Ative módulos avançados: fidelidade, IA, eventos' },
 };
 
 // ============ MOCK TEAM DATA ============
