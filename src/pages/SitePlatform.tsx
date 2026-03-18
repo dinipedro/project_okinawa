@@ -7,7 +7,8 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 import {
   ArrowRight, Star, Zap, Salad, Coffee, UtensilsCrossed, Truck,
   ChefHat, Utensils, Wine, Music, Crown, BarChart3, ConciergeBell,
-  GlassWater, Flame, UserCheck, Check,
+  GlassWater, Flame, UserCheck, Check, Workflow, Users,
+  CreditCard, Shield, Globe, Clock,
 } from 'lucide-react';
 import {
   HoverCard,
