@@ -66,6 +66,7 @@ const App = () => (
                       <Route path="/platform" element={<SitePlatform />} />
                       <Route path="/request-demo" element={<SiteRequestDemo />} />
                       <Route path="/access" element={<SiteAccess />} />
+                      <Route path="/para-voce" element={<SiteForYou />} />
                       <Route path="/demo/intent" element={<SiteIntentCapture />} />
                       <Route path="/demo" element={<SiteDemoHub />} />
                       <Route path="/demo/guided" element={<GuidedSimulation />} />
