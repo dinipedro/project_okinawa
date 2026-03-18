@@ -124,7 +124,7 @@ const translations: Record<string, Record<Lang, string>> = {
   },
 
   // Footer
-  'footer.platform': { pt: 'Plataforma', en: 'Platform', es: 'Plataforma' },
+  'footer.platform': { pt: 'Para seu Negócio', en: 'For Business', es: 'Para tu Negocio' },
   'footer.company': { pt: 'Empresa', en: 'Company', es: 'Empresa' },
   'footer.legal': { pt: 'Legal', en: 'Legal', es: 'Legal' },
   'footer.rights': { pt: 'Todos os direitos reservados.', en: 'All rights reserved.', es: 'Todos los derechos reservados.' },
