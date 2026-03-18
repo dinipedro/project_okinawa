@@ -7,7 +7,8 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 import {
   ArrowRight, Star, Zap, Salad, Coffee, UtensilsCrossed, Truck,
   ChefHat, Utensils, Wine, Music, Crown, BarChart3, ConciergeBell,
-  GlassWater, Flame, UserCheck, Check,
+  GlassWater, Flame, UserCheck, Check, Workflow, Users,
+  CreditCard, Shield, Globe, Clock,
 } from 'lucide-react';
 import {
   HoverCard,
@@ -166,19 +167,94 @@ const SitePlatform: React.FC = () => {
       <SiteNavbar />
 
       {/* Hero */}
-      <section className="pt-32 pb-20">
+      <section className="relative pt-32 pb-24 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-[0.04]" style={{ background: 'radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)' }} />
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="max-w-[720px]">
+            <Reveal>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 mb-8">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-primary font-medium text-sm">{t('platform.overline')}</span>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <h1 className="font-display font-bold text-foreground" style={{ fontSize: 'clamp(42px, 7vw, 76px)', letterSpacing: '-0.04em', lineHeight: 1.05 }}>
+                {t('hero.h1_1')}
+                <br />
+                <span className="text-primary">{t('hero.h1_2')}</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={160}>
+              <p className="text-muted-foreground mt-7 max-w-lg" style={{ fontSize: 'clamp(17px, 1.4vw, 21px)', lineHeight: 1.65 }}>
+                {t('hero.sub')}
+              </p>
+            </Reveal>
+            <Reveal delay={240}>
+              <div className="flex flex-col sm:flex-row items-start gap-4 mt-10">
+                <Link
+                  to="/request-demo"
+                  className="group flex items-center gap-2.5 bg-primary text-primary-foreground font-semibold px-8 py-4 rounded-xl hover:bg-primary-dark transition-all shadow-glow"
+                  style={{ fontSize: 'clamp(15px, 1vw, 17px)' }}
+                >
+                  {t('hero.cta1')}
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Problem / Why NOOWE */}
+      <section className="py-24 bg-muted/30">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <Reveal>
+                <p className="text-primary font-semibold text-sm tracking-wide uppercase mb-4">{t('problem.overline')}</p>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="font-display font-bold text-foreground" style={{ fontSize: 'clamp(30px, 3.5vw, 48px)', letterSpacing: '-0.03em', lineHeight: 1.15 }}>
+                  {t('problem.title')}
+                </h2>
+              </Reveal>
+              <Reveal delay={160}>
+                <p className="text-muted-foreground mt-6 leading-relaxed text-lg whitespace-pre-line">
+                  {t('problem.body')}
+                </p>
+              </Reveal>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { icon: Workflow, key: 'ops', color: 'bg-primary/8 text-primary' },
+                { icon: ChefHat, key: 'kitchen', color: 'bg-secondary/8 text-secondary' },
+                { icon: Users, key: 'guest', color: 'bg-primary/8 text-primary' },
+                { icon: BarChart3, key: 'bi', color: 'bg-secondary/8 text-secondary' },
+              ].map((v, i) => (
+                <Reveal key={v.key} delay={i * 80}>
+                  <div className="p-6 rounded-2xl bg-background border border-border hover:border-primary/20 transition-all duration-300 hover:shadow-md h-full">
+                    <div className={`w-11 h-11 rounded-xl ${v.color} flex items-center justify-center mb-4`}>
+                      <v.icon size={22} />
+                    </div>
+                    <h3 className="text-foreground font-semibold text-base mb-2">{t(`value.${v.key}.title`)}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{t(`value.${v.key}.desc`)}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Subtitle */}
+      <section className="py-20">
         <div className="max-w-[800px] mx-auto px-6 text-center">
           <Reveal>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 mb-6">
-              <span className="text-primary font-medium text-sm">{t('platform.overline')}</span>
-            </div>
+            <h2 className="font-display font-bold text-foreground whitespace-pre-line" style={{ fontSize: 'clamp(30px, 4vw, 48px)', letterSpacing: '-0.035em', lineHeight: 1.1 }}>
+              {t('platform.title')}
+            </h2>
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="font-display font-bold text-foreground whitespace-pre-line" style={{ fontSize: 'clamp(34px, 5vw, 56px)', letterSpacing: '-0.035em', lineHeight: 1.1 }}>
-              {t('platform.title')}
-            </h1>
-          </Reveal>
-          <Reveal delay={160}>
             <p className="text-muted-foreground mt-6 max-w-xl mx-auto text-lg leading-relaxed">
               {t('platform.sub')}
             </p>

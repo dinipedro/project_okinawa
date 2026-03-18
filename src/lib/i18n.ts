@@ -4,7 +4,7 @@ export type Lang = 'pt' | 'en' | 'es';
 
 const translations: Record<string, Record<Lang, string>> = {
   // Navbar
-  'nav.platform': { pt: 'Plataforma', en: 'Platform', es: 'Plataforma' },
+  'nav.platform': { pt: 'Para seu Negócio', en: 'For Business', es: 'Para tu Negocio' },
   'nav.demo': { pt: 'Demo', en: 'Demo', es: 'Demo' },
   'nav.request_demo': { pt: 'Solicitar Demo', en: 'Request Demo', es: 'Solicitar Demo' },
 
@@ -19,6 +19,32 @@ const translations: Record<string, Record<Lang, string>> = {
   },
   'hero.cta1': { pt: 'Quero ver funcionando', en: 'I want to see it working', es: 'Quiero verlo funcionando' },
   'hero.cta2': { pt: 'Como funciona', en: 'How it works', es: 'Cómo funciona' },
+
+  // Home (neutral)
+  'home.hero_overline': { pt: 'O FUTURO DA HOSPITALIDADE', en: 'THE FUTURE OF HOSPITALITY', es: 'EL FUTURO DE LA HOSPITALIDAD' },
+  'home.hero_h1_1': { pt: 'Uma plataforma.', en: 'One platform.', es: 'Una plataforma.' },
+  'home.hero_h1_2': { pt: 'Toda a experiência conectada.', en: 'Every experience connected.', es: 'Toda la experiencia conectada.' },
+  'home.hero_sub': {
+    pt: 'A NOOWE conecta restaurantes e clientes em uma única plataforma inteligente. Do pedido ao pagamento, da cozinha à mesa — tudo em um fluxo contínuo.',
+    en: 'NOOWE connects restaurants and guests in a single intelligent platform. From order to payment, kitchen to table — everything in one continuous flow.',
+    es: 'NOOWE conecta restaurantes y clientes en una única plataforma inteligente. Del pedido al pago, de la cocina a la mesa — todo en un flujo continuo.',
+  },
+  'home.pillars_overline': { pt: 'POR QUE NOOWE', en: 'WHY NOOWE', es: 'POR QUÉ NOOWE' },
+  'home.pillars_title': { pt: 'Construído sobre 4 pilares.', en: 'Built on 4 pillars.', es: 'Construido sobre 4 pilares.' },
+  'home.pillar_integration_title': { pt: 'Integração total', en: 'Total integration', es: 'Integración total' },
+  'home.pillar_integration_desc': { pt: 'Um único sistema que substitui múltiplas ferramentas desconectadas. Pedidos, cozinha, pagamentos e equipe — tudo no mesmo lugar.', en: 'A single system replacing multiple disconnected tools. Orders, kitchen, payments and staff — all in one place.', es: 'Un único sistema que reemplaza múltiples herramientas desconectadas. Pedidos, cocina, pagos y equipo — todo en un solo lugar.' },
+  'home.pillar_realtime_title': { pt: 'Tempo real', en: 'Real-time', es: 'Tiempo real' },
+  'home.pillar_realtime_desc': { pt: 'Cada ação reflete instantaneamente em toda a operação. Sem delay, sem surpresas.', en: 'Every action reflects instantly across the entire operation. No delay, no surprises.', es: 'Cada acción se refleja instantáneamente en toda la operación. Sin delay, sin sorpresas.' },
+  'home.pillar_multilingual_title': { pt: 'Multilíngue nativo', en: 'Natively multilingual', es: 'Multilingüe nativo' },
+  'home.pillar_multilingual_desc': { pt: 'Português, Inglês e Espanhol com detecção automática. Para restaurantes e clientes do mundo inteiro.', en: 'Portuguese, English and Spanish with auto detection. For restaurants and guests worldwide.', es: 'Portugués, Inglés y Español con detección automática. Para restaurantes y clientes de todo el mundo.' },
+  'home.pillar_security_title': { pt: 'Segurança de ponta', en: 'Enterprise security', es: 'Seguridad empresarial' },
+  'home.pillar_security_desc': { pt: 'Criptografia end-to-end, QR codes anti-fraude e controle de acesso por função.', en: 'End-to-end encryption, anti-fraud QR codes and role-based access control.', es: 'Cifrado end-to-end, QR anti-fraude y control de acceso por rol.' },
+  'home.audience_sub': { pt: 'Cada lado da experiência tem seu próprio caminho.', en: 'Each side of the experience has its own path.', es: 'Cada lado de la experiencia tiene su propio camino.' },
+  'home.quote': {
+    pt: '"Conectar quem serve com quem vive a experiência. Esse é o nosso propósito."',
+    en: '"Connecting those who serve with those who live the experience. That\'s our purpose."',
+    es: '"Conectar a quienes sirven con quienes viven la experiencia. Ese es nuestro propósito."',
+  },
 
   // Value Props
   'value.ops.title': { pt: 'Operação sem retrabalho', en: 'Operations without rework', es: 'Operación sin retrabajo' },
@@ -98,7 +124,7 @@ const translations: Record<string, Record<Lang, string>> = {
   },
 
   // Footer
-  'footer.platform': { pt: 'Plataforma', en: 'Platform', es: 'Plataforma' },
+  'footer.platform': { pt: 'Para seu Negócio', en: 'For Business', es: 'Para tu Negocio' },
   'footer.company': { pt: 'Empresa', en: 'Company', es: 'Empresa' },
   'footer.legal': { pt: 'Legal', en: 'Legal', es: 'Legal' },
   'footer.rights': { pt: 'Todos os direitos reservados.', en: 'All rights reserved.', es: 'Todos los derechos reservados.' },
@@ -264,7 +290,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'free.banner_cta': { pt: 'Iniciar simulação', en: 'Start simulation', es: 'Iniciar simulación' },
 
   // Platform
-  'platform.overline': { pt: 'A PLATAFORMA', en: 'THE PLATFORM', es: 'LA PLATAFORMA' },
+  'platform.overline': { pt: 'PARA SEU NEGÓCIO', en: 'FOR YOUR BUSINESS', es: 'PARA TU NEGOCIO' },
   'platform.title': { pt: 'Um sistema.\nTodos os fluxos do seu restaurante.', en: 'One system.\nEvery flow in your restaurant.', es: 'Un sistema.\nTodos los flujos de tu restaurante.' },
   'platform.sub': {
     pt: 'Do primeiro pedido ao fechamento do dia, tudo acontece dentro de uma única lógica — contínua, integrada e em tempo real.',
