@@ -228,7 +228,13 @@ export default function TableDetailScreen() {
       <View style={styles.emptyContainer}>
         <IconButton icon="alert-circle" size={48} iconColor={colors.mutedForeground} />
         <Text variant="headlineSmall" style={{ color: colors.foreground }}>{t('tables.tableNotFound')}</Text>
-        <Button mode="contained" onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Button
+          mode="contained"
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
           {t('common.back')}
         </Button>
       </View>
@@ -276,7 +282,13 @@ export default function TableDetailScreen() {
               <IconButton icon="receipt-text" size={24} style={styles.smallIcon} iconColor={colors.mutedForeground} />
               <Text variant="bodyLarge" style={styles.orderText}>#{table.current_order_id.slice(0, 8)}</Text>
             </View>
-            <Button mode="outlined" onPress={() => {/* Navigate to order detail */}} style={styles.actionButton}>
+            <Button
+              mode="outlined"
+              onPress={() => {/* Navigate to order detail */}}
+              style={styles.actionButton}
+              accessibilityRole="button"
+              accessibilityLabel="View current order details"
+            >
               {t('tables.seeOrderDetails')}
             </Button>
           </Card.Content>
@@ -293,7 +305,13 @@ export default function TableDetailScreen() {
               <IconButton icon="calendar-check" size={24} style={styles.smallIcon} iconColor={colors.mutedForeground} />
               <Text variant="bodyLarge" style={styles.orderText}>#{table.current_reservation_id.slice(0, 8)}</Text>
             </View>
-            <Button mode="outlined" onPress={() => {/* Navigate to reservation detail */}} style={styles.actionButton}>
+            <Button
+              mode="outlined"
+              onPress={() => {/* Navigate to reservation detail */}}
+              style={styles.actionButton}
+              accessibilityRole="button"
+              accessibilityLabel="View current reservation details"
+            >
               {t('tables.seeReservationDetails')}
             </Button>
           </Card.Content>
@@ -310,6 +328,8 @@ export default function TableDetailScreen() {
                 size={20}
                 onPress={() => setEditingNotes(true)}
                 iconColor={colors.info}
+                accessibilityRole="button"
+                accessibilityLabel="Edit table notes"
               />
             )}
           </View>
@@ -323,15 +343,26 @@ export default function TableDetailScreen() {
                 onChangeText={setNotes}
                 placeholder={t('tables.addNotes')}
                 style={styles.notesInput}
+                accessibilityLabel="Table notes"
               />
               <View style={styles.notesActions}>
-                <Button mode="outlined" onPress={() => {
-                  setNotes(table.notes || '');
-                  setEditingNotes(false);
-                }}>
+                <Button
+                  mode="outlined"
+                  onPress={() => {
+                    setNotes(table.notes || '');
+                    setEditingNotes(false);
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cancel editing notes"
+                >
                   {t('common.cancel')}
                 </Button>
-                <Button mode="contained" onPress={handleSaveNotes}>
+                <Button
+                  mode="contained"
+                  onPress={handleSaveNotes}
+                  accessibilityRole="button"
+                  accessibilityLabel="Save table notes"
+                >
                   {t('common.save')}
                 </Button>
               </View>
@@ -357,6 +388,8 @@ export default function TableDetailScreen() {
                   onPress={() => handleStatusChange('occupied')}
                   style={[styles.actionButton, styles.occupyButton]}
                   icon="account-group"
+                  accessibilityRole="button"
+                  accessibilityLabel="Mark table as occupied"
                 >
                   {t('tables.markOccupied')}
                 </Button>
@@ -365,6 +398,8 @@ export default function TableDetailScreen() {
                   onPress={() => handleStatusChange('reserved')}
                   style={styles.actionButton}
                   icon="calendar-check"
+                  accessibilityRole="button"
+                  accessibilityLabel="Mark table as reserved"
                 >
                   {t('tables.markReserved')}
                 </Button>
@@ -377,6 +412,8 @@ export default function TableDetailScreen() {
                   onPress={() => handleStatusChange('cleaning')}
                   style={[styles.actionButton, styles.cleaningButton]}
                   icon="broom"
+                  accessibilityRole="button"
+                  accessibilityLabel="Mark table as cleaning"
                 >
                   {t('tables.markCleaning')}
                 </Button>
@@ -386,6 +423,8 @@ export default function TableDetailScreen() {
                   style={styles.actionButton}
                   textColor={colors.success}
                   icon="check-circle"
+                  accessibilityRole="button"
+                  accessibilityLabel="Release table and mark as available"
                 >
                   {t('tables.releaseTable')}
                 </Button>
@@ -397,6 +436,8 @@ export default function TableDetailScreen() {
                 onPress={() => handleStatusChange('available')}
                 style={[styles.actionButton, styles.availableButton]}
                 icon="check-circle"
+                accessibilityRole="button"
+                accessibilityLabel="Finish cleaning and mark table as available"
               >
                 {t('tables.finishCleaning')}
               </Button>
@@ -408,6 +449,8 @@ export default function TableDetailScreen() {
                   onPress={() => handleStatusChange('occupied')}
                   style={[styles.actionButton, styles.occupyButton]}
                   icon="account-check"
+                  accessibilityRole="button"
+                  accessibilityLabel="Customer arrived, mark table as occupied"
                 >
                   {t('tables.customerArrived')}
                 </Button>
@@ -417,6 +460,8 @@ export default function TableDetailScreen() {
                   style={styles.actionButton}
                   textColor={colors.destructive}
                   icon="close-circle"
+                  accessibilityRole="button"
+                  accessibilityLabel="Cancel reservation and release table"
                 >
                   {t('reservations.cancelReservation')}
                 </Button>

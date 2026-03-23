@@ -154,6 +154,8 @@ function QrCodeDisplay({
         {/* Done button: gradient */}
         <Pressable
           onPress={onDone}
+          accessibilityRole="button"
+          accessibilityLabel="Done"
           style={({ pressed }) => [{
             marginTop: 12,
             opacity: pressed ? 0.9 : 1,
@@ -355,7 +357,9 @@ export default function TicketPurchaseScreen({ route }: TicketPurchaseScreenProp
                   alignItems: 'center',
                   gap: 8,
                 }}
+                accessibilityRole="button"
                 accessibilityLabel={getTicketLabel(tt.value)}
+                accessibilityState={{ selected: isSelected }}
               >
                 <View style={{
                   width: 40,
@@ -467,6 +471,9 @@ export default function TicketPurchaseScreen({ route }: TicketPurchaseScreenProp
       <Pressable
         onPress={handlePurchase}
         disabled={purchaseMutation.isPending}
+        accessibilityRole="button"
+        accessibilityLabel="Purchase tickets"
+        accessibilityState={{ disabled: purchaseMutation.isPending }}
         style={({ pressed }) => [{
           marginTop: 4,
           opacity: purchaseMutation.isPending ? 0.5 : pressed ? 0.9 : 1,

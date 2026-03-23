@@ -258,7 +258,7 @@ export default function ConfigKitchenScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>{t('config.kitchen.stations')}</Text>
-            <TouchableOpacity style={styles.addButton} onPress={openAddStation} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.addButton} onPress={openAddStation} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={t('config.kitchen.addStation')}>
               <Text style={styles.addButtonText}>{t('config.kitchen.addStation')}</Text>
             </TouchableOpacity>
           </View>
@@ -275,10 +275,10 @@ export default function ConfigKitchenScreen() {
                   </Text>
                 </View>
                 <View style={styles.actionsRow}>
-                  <TouchableOpacity onPress={() => openEditStation(station)}>
+                  <TouchableOpacity onPress={() => openEditStation(station)} accessibilityRole="button" accessibilityLabel={t('common.edit')}>
                     <Text style={styles.actionText}>{t('common.edit')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => deleteStation(station.id)}>
+                  <TouchableOpacity onPress={() => deleteStation(station.id)} accessibilityRole="button" accessibilityLabel={t('common.delete')}>
                     <Text style={styles.deleteText}>{t('common.delete')}</Text>
                   </TouchableOpacity>
                 </View>
@@ -297,6 +297,7 @@ export default function ConfigKitchenScreen() {
             onChangeText={(val) => { setRoutingKitchenInput(val); setIsDirty(true); }}
             placeholder={t('config.kitchen.routingKitchen')}
             placeholderTextColor={colors.inputPlaceholder}
+            accessibilityLabel={t('config.kitchen.routingKitchen')}
           />
           <Text style={styles.fieldLabel}>{t('config.kitchen.routingBar')}</Text>
           <RNTextInput
@@ -305,6 +306,7 @@ export default function ConfigKitchenScreen() {
             onChangeText={(val) => { setRoutingBarInput(val); setIsDirty(true); }}
             placeholder={t('config.kitchen.routingBar')}
             placeholderTextColor={colors.inputPlaceholder}
+            accessibilityLabel={t('config.kitchen.routingBar')}
           />
         </View>
 
@@ -314,6 +316,8 @@ export default function ConfigKitchenScreen() {
           onPress={handleSave}
           disabled={!isDirty || isSaving}
           activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={t('config.save')}
         >
           <Text style={styles.saveButtonText}>
             {isSaving ? t('config.saving') : t('config.save')}
@@ -335,6 +339,7 @@ export default function ConfigKitchenScreen() {
               onChangeText={setStationName}
               placeholder={t('config.kitchen.stationName')}
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('config.kitchen.stationName')}
             />
             <Text style={styles.modalFieldLabel}>{t('config.kitchen.displayName')}</Text>
             <RNTextInput
@@ -343,6 +348,7 @@ export default function ConfigKitchenScreen() {
               onChangeText={setStationDisplayName}
               placeholder={t('config.kitchen.displayName')}
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('config.kitchen.displayName')}
             />
             <Text style={styles.modalFieldLabel}>{t('config.kitchen.keywords')}</Text>
             <RNTextInput
@@ -351,12 +357,13 @@ export default function ConfigKitchenScreen() {
               onChangeText={setStationKeywords}
               placeholder={t('config.kitchen.keywords')}
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('config.kitchen.keywords')}
             />
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.modalButton} onPress={() => setShowModal(false)}>
+              <TouchableOpacity style={styles.modalButton} onPress={() => setShowModal(false)} accessibilityRole="button" accessibilityLabel={t('common.cancel')}>
                 <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalButton, styles.modalButtonPrimary]} onPress={saveStation}>
+              <TouchableOpacity style={[styles.modalButton, styles.modalButtonPrimary]} onPress={saveStation} accessibilityRole="button" accessibilityLabel={t('common.save')}>
                 <Text style={styles.modalButtonPrimaryText}>{t('common.save')}</Text>
               </TouchableOpacity>
             </View>

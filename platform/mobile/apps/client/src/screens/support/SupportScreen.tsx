@@ -88,6 +88,7 @@ export default function SupportScreen() {
             numberOfLines={8}
             style={styles.messageInput}
             placeholder="Descreva detalhadamente sua dúvida ou problema..."
+            accessibilityLabel="Your support message"
           />
 
           <Button mode="contained" onPress={handleContactSubmit} style={styles.submitButton} contentStyle={styles.submitButtonContent}>

@@ -332,6 +332,7 @@ export default function ConfigProfileScreen() {
                     multiline={field === 'description'}
                     numberOfLines={field === 'description' ? 3 : 1}
                     keyboardType={field === 'capacity' ? 'numeric' : 'default'}
+                    accessibilityLabel={t(`config.profile.${field}`)}
                   />
                 )}
               />
@@ -359,6 +360,7 @@ export default function ConfigProfileScreen() {
                   placeholder={t(`config.profile.${field}`)}
                   placeholderTextColor={colors.inputPlaceholder}
                   keyboardType={field === 'email' ? 'email-address' : field === 'phone' ? 'phone-pad' : 'default'}
+                  accessibilityLabel={t(`config.profile.${field}`)}
                 />
               )}
             />
@@ -384,6 +386,7 @@ export default function ConfigProfileScreen() {
                     onBlur={onBlur}
                     placeholder={t(`config.profile.${field}`)}
                     placeholderTextColor={colors.inputPlaceholder}
+                    accessibilityLabel={t(`config.profile.${field}`)}
                   />
                 )}
               />
@@ -414,6 +417,7 @@ export default function ConfigProfileScreen() {
                     onChangeText={(val) => updateDayHours(day, 'open', val)}
                     placeholder="08:00"
                     placeholderTextColor={colors.inputPlaceholder}
+                    accessibilityLabel={`${dayLabels[day]} ${t('config.profile.openTime') || 'open time'}`}
                   />
                   <Text style={{ color: colors.foregroundSecondary }}>-</Text>
                   <RNTextInput
@@ -422,6 +426,7 @@ export default function ConfigProfileScreen() {
                     onChangeText={(val) => updateDayHours(day, 'close', val)}
                     placeholder="22:00"
                     placeholderTextColor={colors.inputPlaceholder}
+                    accessibilityLabel={`${dayLabels[day]} ${t('config.profile.closeTime') || 'close time'}`}
                   />
                 </View>
               ) : (

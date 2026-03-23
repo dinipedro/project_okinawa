@@ -98,6 +98,7 @@ export default function RegisterScreen({ navigation }: any) {
         }}
         style={styles.input}
         error={!!fieldErrors.fullName}
+        accessibilityLabel="Full name"
       />
       {fieldErrors.fullName ? <HelperText type="error">{fieldErrors.fullName}</HelperText> : null}
 
@@ -112,6 +113,7 @@ export default function RegisterScreen({ navigation }: any) {
         autoCapitalize="none"
         style={styles.input}
         error={!!fieldErrors.email}
+        accessibilityLabel="Email address"
       />
       {fieldErrors.email ? <HelperText type="error">{fieldErrors.email}</HelperText> : null}
 
@@ -125,6 +127,7 @@ export default function RegisterScreen({ navigation }: any) {
         secureTextEntry
         style={styles.input}
         error={!!fieldErrors.password}
+        accessibilityLabel="Password"
       />
       {fieldErrors.password ? <HelperText type="error">{fieldErrors.password}</HelperText> : null}
 
@@ -138,6 +141,7 @@ export default function RegisterScreen({ navigation }: any) {
         secureTextEntry
         style={styles.input}
         error={!!fieldErrors.confirmPassword}
+        accessibilityLabel="Confirm password"
       />
       {fieldErrors.confirmPassword ? <HelperText type="error">{fieldErrors.confirmPassword}</HelperText> : null}
 

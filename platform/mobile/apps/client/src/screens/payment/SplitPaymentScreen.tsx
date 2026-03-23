@@ -947,6 +947,7 @@ export default function SplitPaymentScreen() {
                       mode="outlined"
                       left={<TextInput.Affix text="R$" />}
                       style={styles.amountInput}
+                      accessibilityLabel={`Fixed payment amount for ${guest.guest_name}`}
                     />
                   </View>
                 )}

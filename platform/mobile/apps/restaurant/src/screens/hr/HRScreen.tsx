@@ -249,6 +249,8 @@ export default function HRScreen({ navigation }: any) {
             <Button
               onPress={() => navigation.navigate('AllLeaveRequests')}
               mode="text"
+              accessibilityRole="button"
+              accessibilityLabel="View all leave requests"
             >
               View All
             </Button>
@@ -288,6 +290,8 @@ export default function HRScreen({ navigation }: any) {
                     mode="contained"
                     onPress={() => handleLeaveRequest(request.id, 'approved')}
                     style={styles.approveButton}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Approve leave request for ${request.staff_member.name}`}
                   >
                     Approve
                   </Button>
@@ -295,6 +299,8 @@ export default function HRScreen({ navigation }: any) {
                     mode="outlined"
                     onPress={() => handleLeaveRequest(request.id, 'rejected')}
                     style={styles.rejectButton}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Reject leave request for ${request.staff_member.name}`}
                   >
                     Reject
                   </Button>

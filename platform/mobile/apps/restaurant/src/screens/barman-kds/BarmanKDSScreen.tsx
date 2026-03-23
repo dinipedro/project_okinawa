@@ -466,6 +466,8 @@ export default function BarmanKDSScreen() {
                               size={20}
                               iconColor={colors.error}
                               onPress={() => handleCancelItem(order.id, item.id)}
+                              accessibilityRole="button"
+                              accessibilityLabel={`Cancel item ${item.name}`}
                             />
                           )}
                         </View>
@@ -501,6 +503,8 @@ export default function BarmanKDSScreen() {
                       onPress={() => handleStartOrder(order.id)}
                       style={styles.startButton}
                       icon="play"
+                      accessibilityRole="button"
+                      accessibilityLabel={`Start preparing order ${order.order_number}`}
                     >
                       Iniciar Preparo
                     </Button>
@@ -512,6 +516,8 @@ export default function BarmanKDSScreen() {
                       onPress={() => handleCompleteOrder(order.id)}
                       style={styles.completeButton}
                       icon="check"
+                      accessibilityRole="button"
+                      accessibilityLabel={`Mark order ${order.order_number} as ready`}
                     >
                       Marcar como Pronto
                     </Button>

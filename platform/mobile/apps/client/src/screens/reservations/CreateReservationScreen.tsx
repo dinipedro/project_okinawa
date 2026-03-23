@@ -410,6 +410,8 @@ export default function CreateReservationScreen() {
                 onPress={decrementPartySize}
                 disabled={partySize <= 1}
                 iconColor={partySize <= 1 ? colors.textMuted : colors.primary}
+                accessibilityLabel="Decrease party size"
+                accessibilityRole="button"
               />
               <Text variant="headlineMedium" style={styles.partySizeNumber}>
                 {partySize}
@@ -420,6 +422,8 @@ export default function CreateReservationScreen() {
                 onPress={incrementPartySize}
                 disabled={partySize >= 20}
                 iconColor={partySize >= 20 ? colors.textMuted : colors.primary}
+                accessibilityLabel="Increase party size"
+                accessibilityRole="button"
               />
             </View>
           </View>
@@ -439,6 +443,7 @@ export default function CreateReservationScreen() {
               style={styles.textArea}
               textColor={colors.foreground}
               placeholderTextColor={colors.textMuted}
+              accessibilityLabel="Special requests for the reservation"
             />
           </View>
         </Card.Content>

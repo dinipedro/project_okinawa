@@ -214,18 +214,22 @@ export default function PromoterDashboardScreen({ route }: PromoterDashboardScre
         icon="plus" label={t('club.promoter.addGuest')}
         onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setModalVisible(true); }}
         style={[styles.fab, { backgroundColor: colors.primary }]} color="#fff"
+        accessibilityRole="button"
+        accessibilityLabel="Add new guest to list"
       />
       <Portal>
         <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)} contentContainerStyle={[styles.modal, { backgroundColor: colors.card }]}>
           <Text variant="titleLarge" style={{ color: colors.foreground, fontWeight: '700', marginBottom: 16 }}>
             {t('club.promoter.addGuest')}
           </Text>
-          <TextInput mode="outlined" label={t('club.promoter.search')} value={newGuestName} onChangeText={setNewGuestName} autoFocus style={{ marginBottom: 16 }} />
+          <TextInput mode="outlined" label={t('club.promoter.search')} value={newGuestName} onChangeText={setNewGuestName} autoFocus style={{ marginBottom: 16 }} accessibilityLabel="Guest name" />
           <View style={styles.modalActions}>
-            <Button mode="outlined" onPress={() => setModalVisible(false)} style={styles.modalBtn}>{t('common.cancel')}</Button>
+            <Button mode="outlined" onPress={() => setModalVisible(false)} style={styles.modalBtn} accessibilityRole="button" accessibilityLabel="Cancel adding guest">{t('common.cancel')}</Button>
             <Button mode="contained" onPress={handleAddGuest} loading={addGuestMutation.isPending}
               disabled={!newGuestName.trim() || addGuestMutation.isPending}
-              style={[styles.modalBtn, { backgroundColor: colors.primary }]}>{t('common.confirm')}</Button>
+              style={[styles.modalBtn, { backgroundColor: colors.primary }]}
+              accessibilityRole="button"
+              accessibilityLabel="Confirm add guest">{t('common.confirm')}</Button>
           </View>
         </Modal>
       </Portal>

@@ -184,12 +184,16 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
               iconColor={colors.foregroundSecondary}
               size={20}
               onPress={() => setEditing(!editing)}
+              accessibilityRole="button"
+              accessibilityLabel={editing ? t('common.cancel') : t('common.edit')}
             />
             <IconButton
               icon="delete-outline"
               iconColor={colors.error}
               size={20}
               onPress={handleDelete}
+              accessibilityRole="button"
+              accessibilityLabel={t('stock.deleteItem')}
             />
           </View>
         </View>
@@ -293,6 +297,8 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
             setRestockNotes('');
             setRestockModalVisible(true);
           }}
+          accessibilityRole="button"
+          accessibilityLabel={t('stock.restockButton')}
         >
           <Text style={[styles.restockButtonText, { color: colors.primaryForeground }]}>
             {t('stock.restockButton')}
@@ -336,6 +342,7 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
               onChangeText={setRestockLevel}
               placeholder="0"
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('stock.newQuantity')}
             />
 
             <Text style={[styles.modalRef, { color: colors.foregroundMuted }]}>
@@ -372,12 +379,15 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
               onChangeText={setRestockNotes}
               placeholder={t('stock.notesPlaceholder')}
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('stock.notesLabel')}
             />
 
             <View style={styles.modalActions}>
               <TouchableOpacity
                 style={[styles.modalButtonSecondary, { borderColor: colors.border }]}
                 onPress={() => setRestockModalVisible(false)}
+                accessibilityRole="button"
+                accessibilityLabel={t('stock.cancelButton')}
               >
                 <Text style={{ color: colors.foreground }}>{t('stock.cancelButton')}</Text>
               </TouchableOpacity>
@@ -388,6 +398,8 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
                 ]}
                 onPress={handleRestock}
                 disabled={restocking}
+                accessibilityRole="button"
+                accessibilityLabel={t('stock.saveButton')}
               >
                 {restocking ? (
                   <ActivityIndicator size="small" color={colors.primaryForeground} />

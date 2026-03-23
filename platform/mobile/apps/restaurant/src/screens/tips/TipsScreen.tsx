@@ -305,6 +305,8 @@ export default function TipsScreen() {
               onPress={distributeTips}
               style={styles.distributeButton}
               icon="share"
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.tipDistribution')}
             >
               {t('tips.tipDistribution')}
             </Button>

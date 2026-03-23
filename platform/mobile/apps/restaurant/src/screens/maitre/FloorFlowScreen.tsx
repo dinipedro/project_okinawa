@@ -149,7 +149,7 @@ function TableDetailModal({
             <Text variant="headlineSmall" style={[modalStyles.title, { color: colors.foreground }]}>
               {t('floorFlow.tableNumber', { number: table.number })}
             </Text>
-            <IconButton icon="close" size={20} onPress={onClose} iconColor={colors.foregroundMuted} />
+            <IconButton icon="close" size={20} onPress={onClose} iconColor={colors.foregroundMuted} accessibilityRole="button" accessibilityLabel="Close table details" />
           </View>
 
           <Divider style={{ backgroundColor: colors.border }} />
@@ -360,7 +360,13 @@ export default function FloorFlowScreen() {
         <Text variant="bodyLarge" style={styles.errorText}>
           {t('floorFlow.errorLoading')}
         </Text>
-        <Button mode="contained" onPress={() => refetch()} style={styles.retryButton}>
+        <Button
+          mode="contained"
+          onPress={() => refetch()}
+          style={styles.retryButton}
+          accessibilityRole="button"
+          accessibilityLabel="Retry loading floor plan"
+        >
           {t('common.retry')}
         </Button>
       </View>
@@ -431,6 +437,8 @@ export default function FloorFlowScreen() {
                 ]}
                 onPress={() => handleTablePress(table)}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={`Table ${table.number}, ${table.status}, capacity ${table.capacity}`}
               >
                 <Text variant="titleLarge" style={[styles.tableNum, { color: statusColor }]}>
                   {table.number}

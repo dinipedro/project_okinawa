@@ -493,7 +493,7 @@ export default function RoleDashboardScreen() {
         <Text variant="bodyLarge" style={{ color: colors.foregroundSecondary, marginBottom: 16, textAlign: 'center' }}>
           {t('common.error')}
         </Text>
-        <TouchableOpacity onPress={loadData} accessibilityLabel={t('common.retry')}>
+        <TouchableOpacity onPress={loadData} accessibilityRole="button" accessibilityLabel={t('common.retry')}>
           <Text variant="labelLarge" style={{ color: colors.primary, fontWeight: '600' }}>
             {t('common.retry')}
           </Text>
@@ -556,6 +556,7 @@ export default function RoleDashboardScreen() {
                 navigation.navigate(card.navigateTo);
               }
             }}
+            accessibilityRole="button"
             accessibilityLabel={`${card.label}: ${card.value}`}
           >
             <View

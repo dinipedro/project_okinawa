@@ -160,7 +160,11 @@ const OrderCard = memo<OrderCardProps>(({
   }), [colors]);
 
   return (
-    <TouchableOpacity onPress={() => onPress(order)}>
+    <TouchableOpacity
+      onPress={() => onPress(order)}
+      accessibilityRole="button"
+      accessibilityLabel={`View order from ${order.restaurant?.name || 'Restaurant'}, status: ${statusLabel}`}
+    >
       <Card style={styles.orderCard}>
         <Card.Content>
           {/* Header */}
@@ -264,6 +268,8 @@ const OrderCard = memo<OrderCardProps>(({
                   <TouchableOpacity
                     style={styles.actionButton}
                     onPress={() => onTrack(order)}
+                    accessibilityRole="button"
+                    accessibilityLabel="Track order"
                   >
                     <IconButton icon="map-marker-path" size={20} iconColor={colors.primary} />
                     <Text variant="bodySmall" style={{ color: colors.foreground }}>Rastrear</Text>
@@ -273,6 +279,8 @@ const OrderCard = memo<OrderCardProps>(({
                   <TouchableOpacity
                     style={[styles.actionButton, styles.cancelButton]}
                     onPress={() => onCancel(order)}
+                    accessibilityRole="button"
+                    accessibilityLabel="Cancel order"
                   >
                     <IconButton icon="close-circle-outline" size={20} iconColor={colors.destructive} />
                     <Text variant="bodySmall" style={{ color: colors.foreground }}>Cancelar</Text>

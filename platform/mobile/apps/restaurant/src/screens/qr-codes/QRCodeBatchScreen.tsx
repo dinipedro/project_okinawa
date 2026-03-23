@@ -226,6 +226,9 @@ export default function QRCodeBatchScreen() {
                 { borderColor: selectedStyle === config.id ? config.color : colors.border },
               ]}
               onPress={() => setSelectedStyle(config.id as QRStyle)}
+              accessibilityRole="button"
+              accessibilityLabel={`Select ${config.name} style`}
+              accessibilityState={{ selected: selectedStyle === config.id }}
             >
               <View
                 style={[styles.styleChipDot, { backgroundColor: config.color }]}
@@ -247,10 +250,10 @@ export default function QRCodeBatchScreen() {
       <View style={styles.selectionActions}>
         <Text style={styles.sectionTitle}>Mesas</Text>
         <View style={styles.selectionButtons}>
-          <Button mode="text" onPress={selectAll} compact textColor={colors.primary}>
+          <Button mode="text" onPress={selectAll} compact textColor={colors.primary} accessibilityRole="button" accessibilityLabel="Select all tables">
             Selecionar Todas
           </Button>
-          <Button mode="text" onPress={deselectAll} compact textColor={colors.foregroundMuted}>
+          <Button mode="text" onPress={deselectAll} compact textColor={colors.foregroundMuted} accessibilityRole="button" accessibilityLabel="Deselect all tables">
             Limpar
           </Button>
         </View>
@@ -276,6 +279,9 @@ export default function QRCodeBatchScreen() {
               ]}
               onPress={() => toggleTableSelection(item.id)}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`Table ${item.table_number}, ${item.seats} seats`}
+              accessibilityState={{ selected: isSelected }}
             >
               <Checkbox
                 status={isSelected ? 'checked' : 'unchecked'}
@@ -319,6 +325,8 @@ export default function QRCodeBatchScreen() {
             buttonColor={colors.primary}
             textColor={colors.primaryForeground}
             icon="download"
+            accessibilityRole="button"
+            accessibilityLabel={`Export all ${generatedQRs.length} QR codes`}
           >
             Exportar Todos ({generatedQRs.length})
           </Button>
@@ -333,6 +341,8 @@ export default function QRCodeBatchScreen() {
             buttonColor={colors.primary}
             textColor={colors.primaryForeground}
             icon="qrcode-plus"
+            accessibilityRole="button"
+            accessibilityLabel={`Generate QR codes for ${selectedTables.size} tables`}
           >
             Gerar {selectedTables.size} QR Codes
           </Button>

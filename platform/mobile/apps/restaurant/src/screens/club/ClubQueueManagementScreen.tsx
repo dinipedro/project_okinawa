@@ -185,6 +185,8 @@ function QueueEntryCard({
               disabled={isActioning}
               style={[styles.actionBtn, { backgroundColor: colors.success }]}
               labelStyle={{ color: '#fff', fontSize: 11 }}
+              accessibilityRole="button"
+              accessibilityLabel={`Admit ${entry.customerName}`}
             >
               {t('club.queueSection.admitted')}
             </Button>
@@ -196,6 +198,8 @@ function QueueEntryCard({
               style={styles.actionBtn}
               labelStyle={{ fontSize: 11 }}
               textColor={colors.error}
+              accessibilityRole="button"
+              accessibilityLabel={`Mark ${entry.customerName} as no-show`}
             >
               {t('club.queueSection.noShow')}
             </Button>
@@ -447,6 +451,8 @@ export default function ClubQueueManagementScreen({ route }: ClubQueueManagement
         contentStyle={styles.callNextBtnContent}
         labelStyle={styles.callNextBtnLabel}
         icon="bullhorn"
+        accessibilityRole="button"
+        accessibilityLabel="Call next guest in queue"
       >
         {t('club.queueSection.callNext')}
       </Button>

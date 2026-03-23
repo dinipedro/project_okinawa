@@ -277,7 +277,12 @@ export default function OrdersScreen() {
   }), [colors]);
 
   const renderOrderCard = ({ item }: { item: Order }) => (
-    <TouchableOpacity onPress={() => handleOrderPress(item)}>
+    <TouchableOpacity
+      onPress={() => handleOrderPress(item)}
+      accessibilityRole="button"
+      accessibilityLabel={`Order ${item.order_number || item.id.slice(0, 8)}, ${item.customer?.full_name || 'Customer'}, status ${item.status}`}
+      accessibilityHint="Opens order actions menu"
+    >
       <Card style={styles.orderCard}>
         <Card.Content>
           <View style={styles.orderHeader}>

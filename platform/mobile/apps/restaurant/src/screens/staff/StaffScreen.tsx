@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { Text, Card, Button, FAB, Chip, Searchbar, Avatar, IconButton } from 'react-native-paper';
 import ApiService from '@/shared/services/api';
+import { useI18n } from '@/shared/hooks/useI18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 
 interface StaffMember {
@@ -24,6 +25,7 @@ interface StaffMember {
 }
 
 export default function StaffScreen({ navigation }: any) {
+  const { t } = useI18n();
   const colors = useColors();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [loading, setLoading] = useState(false);
@@ -198,13 +200,13 @@ export default function StaffScreen({ navigation }: any) {
               style={{ backgroundColor: getRoleColor(item.role) }}
               textStyle={{ color: colors.primaryForeground, fontSize: 11 }}
             >
-              {item.role.toUpperCase()}
+              {(t(`staff.roles.${item.role}`) || item.role).toUpperCase()}
             </Chip>
             <Chip
               style={{ backgroundColor: getStatusColor(item.status) }}
               textStyle={{ color: colors.primaryForeground, fontSize: 11 }}
             >
-              {item.status.replace('_', ' ').toUpperCase()}
+              {(t(`staff.status.${item.status}`) || item.status.replace('_', ' ')).toUpperCase()}
             </Chip>
           </View>
         </View>
@@ -212,7 +214,7 @@ export default function StaffScreen({ navigation }: any) {
         {item.current_shift && (
           <View style={styles.shiftInfo}>
             <Text variant="bodySmall" style={styles.shiftText}>
-              Currently on shift since{' '}
+              {t('staff.currentlyOnShift')}{' '}
               {new Date(item.current_shift.clock_in).toLocaleTimeString()}
             </Text>
           </View>
@@ -221,7 +223,7 @@ export default function StaffScreen({ navigation }: any) {
         {item.shift_start && item.shift_end && !item.current_shift && (
           <View style={styles.shiftInfo}>
             <Text variant="bodySmall" style={styles.shiftText}>
-              Scheduled: {item.shift_start} - {item.shift_end}
+              {t('staff.scheduled')}: {item.shift_start} - {item.shift_end}
             </Text>
           </View>
         )}
@@ -233,8 +235,10 @@ export default function StaffScreen({ navigation }: any) {
             mode="outlined"
             onPress={() => updateStatus(item.id, 'on_break')}
             compact
+            accessibilityRole="button"
+            accessibilityLabel={`${t('staff.startBreak')} ${item.profile.full_name}`}
           >
-            Start Break
+            {t('staff.startBreak')}
           </Button>
         )}
         {item.status === 'on_break' && (
@@ -243,19 +247,25 @@ export default function StaffScreen({ navigation }: any) {
             onPress={() => updateStatus(item.id, 'active')}
             compact
             buttonColor={colors.primary}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('staff.endBreak')} ${item.profile.full_name}`}
           >
-            End Break
+            {t('staff.endBreak')}
           </Button>
         )}
         <IconButton
           icon="account-details"
           onPress={() => navigation.navigate('StaffDetails', { staffId: item.id })}
           iconColor={colors.foregroundSecondary}
+          accessibilityRole="button"
+          accessibilityLabel={`View details for ${item.profile.full_name}`}
         />
         <IconButton
           icon="clock"
           onPress={() => navigation.navigate('StaffSchedule', { staffId: item.id })}
           iconColor={colors.foregroundSecondary}
+          accessibilityRole="button"
+          accessibilityLabel={`View schedule for ${item.profile.full_name}`}
         />
       </Card.Actions>
     </Card>
@@ -264,7 +274,7 @@ export default function StaffScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <Searchbar
-        placeholder="Search staff members"
+        placeholder={t('staff.searchStaff')}
         onChangeText={setSearchQuery}
         value={searchQuery}
         style={styles.searchbar}
@@ -281,7 +291,7 @@ export default function StaffScreen({ navigation }: any) {
               style={styles.filterChip}
               selectedColor={colors.primary}
             >
-              {item.charAt(0).toUpperCase() + item.slice(1)}
+              {item === 'all' ? t('common.all') : (t(`staff.roles.${item}`) || item.charAt(0).toUpperCase() + item.slice(1))}
             </Chip>
           )}
           keyExtractor={(item) => item}
@@ -305,7 +315,7 @@ export default function StaffScreen({ navigation }: any) {
         }
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text variant="bodyLarge" style={styles.emptyText}>No staff members found</Text>
+            <Text variant="bodyLarge" style={styles.emptyText}>{t('staff.noStaffFound')}</Text>
           </View>
         }
       />
@@ -314,6 +324,8 @@ export default function StaffScreen({ navigation }: any) {
         icon="account-plus"
         style={styles.fab}
         onPress={() => navigation.navigate('AddStaff')}
+        accessibilityRole="button"
+        accessibilityLabel="Add new staff member"
       />
     </View>
   );

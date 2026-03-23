@@ -328,6 +328,9 @@ export default function NotificationsScreen() {
         ]}
         onPress={() => handleNotificationPress(notification)}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={`${notification.title}: ${notification.body}`}
+        accessibilityState={{ selected: !notification.is_read }}
       >
         <View style={[styles.iconContainer, { backgroundColor: `${iconColor}15` }]}>
           <IconButton

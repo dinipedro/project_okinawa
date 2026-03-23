@@ -324,12 +324,14 @@ describe('AiService', () => {
       expect(result.churn_probability).toBeGreaterThan(60);
     });
 
-    it('should throw error if loyalty program not found', async () => {
+    it('should return low risk when loyalty program not found', async () => {
       mockLoyaltyRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.predictChurnRisk('user-1', 'restaurant-1')).rejects.toThrow(
-        'Loyalty program not found',
-      );
+      const result = await service.predictChurnRisk('user-1', 'restaurant-1');
+
+      expect(result).toBeDefined();
+      expect(result.risk_level).toBe('low');
+      expect(result.churn_probability).toBe(0);
     });
   });
 

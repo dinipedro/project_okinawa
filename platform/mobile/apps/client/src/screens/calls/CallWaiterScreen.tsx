@@ -240,7 +240,9 @@ export default function CallWaiterScreen({ route }: CallWaiterScreenProps) {
                   Haptics.selectionAsync();
                   setSelectedType(ct.type);
                 }}
+                accessibilityRole="button"
                 accessibilityLabel={t(ct.labelKey)}
+                accessibilityState={{ selected: isSelected }}
               >
                 {/* Icon container with semantic background */}
                 <View style={{
@@ -287,6 +289,7 @@ export default function CallWaiterScreen({ route }: CallWaiterScreenProps) {
             maxLength={MAX_MESSAGE_LENGTH}
             right={<TextInput.Affix text={`${message.length}/${MAX_MESSAGE_LENGTH}`} />}
             style={{ backgroundColor: colors.card }}
+            accessibilityLabel="Optional message for the waiter"
           />
         </View>
 
@@ -294,6 +297,9 @@ export default function CallWaiterScreen({ route }: CallWaiterScreenProps) {
         <Pressable
           onPress={handleSubmit}
           disabled={callMutation.isPending || !selectedType}
+          accessibilityRole="button"
+          accessibilityLabel="Call for service"
+          accessibilityState={{ disabled: callMutation.isPending || !selectedType }}
           style={({ pressed }) => [{
             marginTop: 24,
             opacity: (callMutation.isPending || !selectedType) ? 0.5 : pressed ? 0.9 : 1,

@@ -133,12 +133,12 @@ export default function RestaurantScreen() {
   return (
     <ScrollView style={styles.container}>
       {restaurant.banner_url && (
-        <Image source={{ uri: restaurant.banner_url }} style={styles.banner} />
+        <Image source={{ uri: restaurant.banner_url }} style={styles.banner} accessibilityLabel={`${restaurant.name} banner`} />
       )}
 
       <View style={styles.header}>
         {restaurant.logo_url && (
-          <Image source={{ uri: restaurant.logo_url }} style={styles.logo} />
+          <Image source={{ uri: restaurant.logo_url }} style={styles.logo} accessibilityLabel={`${restaurant.name} logo`} />
         )}
         <View style={styles.headerInfo}>
           <Text variant="headlineMedium" style={{ color: colors.foreground }}>{restaurant.name}</Text>
@@ -188,7 +188,7 @@ export default function RestaurantScreen() {
             descriptionStyle={{ color: colors.foregroundMuted }}
             left={(props) => <List.Icon {...props} icon="phone" color={colors.foregroundMuted} />}
             right={(props) => (
-              <IconButton {...props} icon="phone-outgoing" onPress={handleCall} />
+              <IconButton {...props} icon="phone-outgoing" onPress={handleCall} accessibilityLabel="Call restaurant" accessibilityRole="button" />
             )}
           />
 
@@ -199,7 +199,7 @@ export default function RestaurantScreen() {
             descriptionStyle={{ color: colors.foregroundMuted }}
             left={(props) => <List.Icon {...props} icon="email" color={colors.foregroundMuted} />}
             right={(props) => (
-              <IconButton {...props} icon="email-send" onPress={handleEmail} />
+              <IconButton {...props} icon="email-send" onPress={handleEmail} accessibilityLabel="Send email to restaurant" accessibilityRole="button" />
             )}
           />
 
@@ -212,7 +212,7 @@ export default function RestaurantScreen() {
             descriptionStyle={{ color: colors.foregroundMuted }}
             left={(props) => <List.Icon {...props} icon="map-marker" color={colors.foregroundMuted} />}
             right={(props) => (
-              <IconButton {...props} icon="directions" onPress={handleDirections} />
+              <IconButton {...props} icon="directions" onPress={handleDirections} accessibilityLabel="Get directions to restaurant" accessibilityRole="button" />
             )}
           />
         </Card.Content>

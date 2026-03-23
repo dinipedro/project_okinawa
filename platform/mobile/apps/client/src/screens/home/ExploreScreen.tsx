@@ -379,7 +379,7 @@ export default function ExploreScreen() {
               </View>
             </View>
           </View>
-          <IconButton icon="heart-outline" iconColor={colors.mutedForeground} size={24} />
+          <IconButton icon="heart-outline" iconColor={colors.mutedForeground} size={24} accessibilityLabel="Add to favorites" />
         </View>
 
         {item.description && (
@@ -468,6 +468,8 @@ export default function ExploreScreen() {
         mode="contained"
         style={styles.centerButton}
         onPress={centerOnUser}
+        accessibilityLabel="Center map on my location"
+        accessibilityRole="button"
       />
 
       {selectedRestaurant && (

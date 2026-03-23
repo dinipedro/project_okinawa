@@ -149,6 +149,8 @@ export default function ReservationDetailScreen() {
             onPress={() => handleStatusChange('confirmed')}
             style={styles.actionButton}
             icon="check"
+            accessibilityRole="button"
+            accessibilityLabel={t('reservations.confirmReserve')}
           >
             {t('reservations.confirmReserve')}
           </Button>
@@ -159,6 +161,8 @@ export default function ReservationDetailScreen() {
             onPress={() => handleStatusChange('seated')}
             style={[styles.actionButton, styles.seatedButton]}
             icon="chair-rolling"
+            accessibilityRole="button"
+            accessibilityLabel={t('reservations.markSeated')}
           >
             {t('reservations.markSeated')}
           </Button>
@@ -169,6 +173,8 @@ export default function ReservationDetailScreen() {
             onPress={() => handleStatusChange('completed')}
             style={[styles.actionButton, styles.completedButton]}
             icon="check-circle"
+            accessibilityRole="button"
+            accessibilityLabel={t('reservations.finishReservation')}
           >
             {t('reservations.finishReservation')}
           </Button>
@@ -181,6 +187,8 @@ export default function ReservationDetailScreen() {
               style={styles.actionButton}
               textColor="#9E9E9E"
               icon="account-off"
+              accessibilityRole="button"
+              accessibilityLabel={t('reservations.markNoShow')}
             >
               {t('reservations.markNoShow')}
             </Button>
@@ -190,6 +198,8 @@ export default function ReservationDetailScreen() {
               style={styles.cancelButton}
               textColor="#d32f2f"
               icon="close-circle"
+              accessibilityRole="button"
+              accessibilityLabel={t('reservations.cancelReservation')}
             >
               {t('reservations.cancelReservation')}
             </Button>

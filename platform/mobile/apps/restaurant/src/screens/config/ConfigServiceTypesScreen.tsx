@@ -197,6 +197,9 @@ export default function ConfigServiceTypesScreen() {
               style={[styles.chip, primary === opt.value && styles.chipPrimary]}
               onPress={() => handlePrimaryChange(opt.value)}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={t(opt.labelKey)}
+              accessibilityState={{ selected: primary === opt.value }}
             >
               <Text style={[styles.chipText, primary === opt.value && styles.chipTextSelected]}>
                 {t(opt.labelKey)}
@@ -220,6 +223,9 @@ export default function ConfigServiceTypesScreen() {
                 onPress={() => toggleSupported(opt.value)}
                 activeOpacity={0.7}
                 disabled={isPrimaryType}
+                accessibilityRole="button"
+                accessibilityLabel={t(opt.labelKey)}
+                accessibilityState={{ selected: isSelected || isPrimaryType }}
               >
                 <Text
                   style={[
@@ -241,6 +247,8 @@ export default function ConfigServiceTypesScreen() {
         onPress={handleSave}
         disabled={!isDirty || isSaving}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={t('config.save')}
       >
         <Text style={styles.saveButtonText}>
           {isSaving ? t('config.saving') : t('config.save')}

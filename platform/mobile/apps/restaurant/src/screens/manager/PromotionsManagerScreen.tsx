@@ -701,6 +701,7 @@ export default function PromotionsManagerScreen() {
               icon="close"
               size={24}
               onPress={() => setShowCreateModal(false)}
+              accessibilityRole="button"
               accessibilityLabel={t('common.close')}
             />
           </View>
@@ -889,6 +890,7 @@ export default function PromotionsManagerScreen() {
             <Button
               mode="outlined"
               onPress={() => setShowCreateModal(false)}
+              accessibilityRole="button"
               accessibilityLabel={t('common.cancel')}
             >
               {t('common.cancel')}
@@ -898,6 +900,7 @@ export default function PromotionsManagerScreen() {
               onPress={handleCreate}
               loading={creating}
               disabled={creating || !formCode.trim() || !formTitle.trim()}
+              accessibilityRole="button"
               accessibilityLabel={t('promotions.create')}
             >
               {t('promotions.create')}
@@ -921,6 +924,9 @@ export default function PromotionsManagerScreen() {
           selected={filter === 'all'}
           onPress={() => setFilter('all')}
           style={styles.filterChip}
+          accessibilityRole="button"
+          accessibilityLabel={t('promotions.filterAll')}
+          accessibilityState={{ selected: filter === 'all' }}
         >
           {t('promotions.filterAll')}
         </Chip>
@@ -928,6 +934,9 @@ export default function PromotionsManagerScreen() {
           selected={filter === 'active'}
           onPress={() => setFilter('active')}
           style={styles.filterChip}
+          accessibilityRole="button"
+          accessibilityLabel={t('promotions.filterActive')}
+          accessibilityState={{ selected: filter === 'active' }}
         >
           {t('promotions.filterActive')}
         </Chip>
@@ -935,6 +944,9 @@ export default function PromotionsManagerScreen() {
           selected={filter === 'expired'}
           onPress={() => setFilter('expired')}
           style={styles.filterChip}
+          accessibilityRole="button"
+          accessibilityLabel={t('promotions.filterExpired')}
+          accessibilityState={{ selected: filter === 'expired' }}
         >
           {t('promotions.filterExpired')}
         </Chip>
@@ -978,6 +990,7 @@ export default function PromotionsManagerScreen() {
           setShowCreateModal(true);
         }}
         color="#FFFFFF"
+        accessibilityRole="button"
         accessibilityLabel={t('promotions.create')}
       />
 

@@ -180,6 +180,9 @@ export default function ConfigTeamScreen() {
               style={[styles.policyChip, tipPolicy === policy.value && styles.policyChipSelected]}
               onPress={() => handlePolicyChange(policy.value)}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={t(policy.labelKey)}
+              accessibilityState={{ selected: tipPolicy === policy.value }}
             >
               <Text
                 style={[
@@ -221,6 +224,8 @@ export default function ConfigTeamScreen() {
         onPress={handleSave}
         disabled={!isDirty || isSaving}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={t('config.save')}
       >
         <Text style={styles.saveButtonText}>
           {isSaving ? t('config.saving') : t('config.save')}

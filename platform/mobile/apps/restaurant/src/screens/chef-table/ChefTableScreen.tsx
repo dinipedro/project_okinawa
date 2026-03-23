@@ -332,6 +332,8 @@ export default function ChefTableScreen() {
             onPress={handleNextCourse}
             style={[styles.nextCourseButton, { backgroundColor: elegantAccent }]}
             labelStyle={[typography.buttonLarge, { color: colorPalette.neutral[900] }]}
+            accessibilityRole="button"
+            accessibilityLabel="Advance to next course"
           >
             {t('chefTable.nextCourse')}
           </Button>

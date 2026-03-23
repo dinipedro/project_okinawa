@@ -449,7 +449,12 @@ export const GeolocationTrackingScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
           <Ionicons name="arrow-back" size={24} color={colors.foreground} />
         </TouchableOpacity>
         <View style={styles.headerTitle}>
@@ -550,17 +555,32 @@ export const GeolocationTrackingScreen: React.FC = () => {
       {/* Actions */}
       <View style={styles.actions}>
         {!isTracking ? (
-          <TouchableOpacity style={styles.primaryButton} onPress={startTracking}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={startTracking}
+            accessibilityRole="button"
+            accessibilityLabel="Start location tracking"
+          >
             <Ionicons name="locate" size={24} color="#FFF" />
             <Text style={styles.primaryButtonText}>Iniciar Rastreamento</Text>
           </TouchableOpacity>
         ) : hasArrived ? (
-          <TouchableOpacity style={styles.arrivalButton} onPress={notifyArrival}>
+          <TouchableOpacity
+            style={styles.arrivalButton}
+            onPress={notifyArrival}
+            accessibilityRole="button"
+            accessibilityLabel="Confirm arrival"
+          >
             <Ionicons name="checkmark-circle" size={24} color="#FFF" />
             <Text style={styles.primaryButtonText}>Confirmar Chegada</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.secondaryButton} onPress={stopTracking}>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={stopTracking}
+            accessibilityRole="button"
+            accessibilityLabel="Stop location tracking"
+          >
             <Ionicons name="stop-circle" size={24} color={colors.primary} />
             <Text style={styles.secondaryButtonText}>Parar Rastreamento</Text>
           </TouchableOpacity>

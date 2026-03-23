@@ -239,6 +239,9 @@ function TabSelector({
             },
           ]}
           onPress={() => onTabChange(tab.id)}
+          accessibilityRole="tab"
+          accessibilityLabel={tab.label}
+          accessibilityState={{ selected: activeTab === tab.id }}
         >
           <Text
             style={{
@@ -593,6 +596,8 @@ export default function CallsManagementScreen() {
           onPress={() => refetch()}
           style={{ marginTop: 16, borderRadius: 16 }}
           buttonColor={colors.primary}
+          accessibilityRole="button"
+          accessibilityLabel="Retry loading calls"
         >
           {t('common.retry')}
         </Button>
@@ -764,6 +769,8 @@ function TouchableButton({
     <Pressable
       onPress={onPress}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={label}
       style={{
         flexDirection: 'row',
         alignItems: 'center',

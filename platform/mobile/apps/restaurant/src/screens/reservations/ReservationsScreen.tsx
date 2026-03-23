@@ -245,6 +245,8 @@ export default function ReservationsScreen({ navigation }: any) {
               onPress={() => updateStatus(item.id, 'confirmed')}
               style={styles.actionButton}
               buttonColor={colors.primary}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('common.confirm')} ${item.customer_name}`}
             >
               {t('common.confirm')}
             </Button>
@@ -252,6 +254,8 @@ export default function ReservationsScreen({ navigation }: any) {
               mode="outlined"
               onPress={() => updateStatus(item.id, 'cancelled')}
               style={styles.actionButton}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('common.cancel')} ${item.customer_name}`}
             >
               {t('common.cancel')}
             </Button>
@@ -265,6 +269,8 @@ export default function ReservationsScreen({ navigation }: any) {
               onPress={() => updateStatus(item.id, 'seated')}
               style={styles.actionButton}
               buttonColor={colors.primary}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('reservations.status.seated')} ${item.customer_name}`}
             >
               {t('reservations.status.seated')}
             </Button>
@@ -278,6 +284,8 @@ export default function ReservationsScreen({ navigation }: any) {
               onPress={() => updateStatus(item.id, 'completed')}
               style={styles.actionButton}
               buttonColor={colors.success}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('reservations.status.completed')} ${item.customer_name}`}
             >
               {t('reservations.status.completed')}
             </Button>
@@ -294,6 +302,7 @@ export default function ReservationsScreen({ navigation }: any) {
         onChangeText={setSearchQuery}
         value={searchQuery}
         style={styles.searchbar}
+        accessibilityLabel={t('common.search')}
       />
 
       <View style={styles.filters}>
@@ -302,6 +311,9 @@ export default function ReservationsScreen({ navigation }: any) {
           onPress={() => setFilter('all')}
           style={styles.filterChip}
           selectedColor={colors.primary}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.viewAll')}
+          accessibilityState={{ selected: filter === 'all' }}
         >
           {t('common.viewAll')}
         </Chip>
@@ -310,6 +322,9 @@ export default function ReservationsScreen({ navigation }: any) {
           onPress={() => setFilter('today')}
           style={styles.filterChip}
           selectedColor={colors.primary}
+          accessibilityRole="button"
+          accessibilityLabel={t('time.today')}
+          accessibilityState={{ selected: filter === 'today' }}
         >
           {t('time.today')}
         </Chip>
@@ -318,6 +333,9 @@ export default function ReservationsScreen({ navigation }: any) {
           onPress={() => setFilter('pending')}
           style={styles.filterChip}
           selectedColor={colors.primary}
+          accessibilityRole="button"
+          accessibilityLabel={t('reservations.status.pending')}
+          accessibilityState={{ selected: filter === 'pending' }}
         >
           {t('reservations.status.pending')}
         </Chip>
@@ -326,6 +344,9 @@ export default function ReservationsScreen({ navigation }: any) {
           onPress={() => setFilter('confirmed')}
           style={styles.filterChip}
           selectedColor={colors.primary}
+          accessibilityRole="button"
+          accessibilityLabel={t('reservations.status.confirmed')}
+          accessibilityState={{ selected: filter === 'confirmed' }}
         >
           {t('reservations.status.confirmed')}
         </Chip>
@@ -335,6 +356,9 @@ export default function ReservationsScreen({ navigation }: any) {
           style={styles.filterChip}
           selectedColor={colors.info}
           icon="account-group"
+          accessibilityRole="button"
+          accessibilityLabel={t('groupBooking.badge')}
+          accessibilityState={{ selected: filter === 'group' }}
         >
           {t('groupBooking.badge')}
         </Chip>
@@ -364,6 +388,8 @@ export default function ReservationsScreen({ navigation }: any) {
         icon="plus"
         style={styles.fab}
         onPress={() => navigation.navigate('CreateReservation')}
+        accessibilityRole="button"
+        accessibilityLabel={t('reservations.createReservation')}
       />
     </View>
   );

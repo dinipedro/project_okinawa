@@ -225,6 +225,9 @@ export default function FloorPlanScreen({ navigation }: any) {
       <Pressable
         key={table.id}
         onPress={() => handleTablePress(table)}
+        accessibilityRole="button"
+        accessibilityLabel={`Table ${table.table_number}, ${table.seats} seats, status ${table.status}`}
+        accessibilityHint="Opens table detail and status options"
         style={[
           styles.table,
           {
@@ -431,6 +434,8 @@ export default function FloorPlanScreen({ navigation }: any) {
         onPress={loadTables}
         label={t('common.refresh')}
         color={colors.primaryForeground}
+        accessibilityRole="button"
+        accessibilityLabel="Refresh floor plan"
       />
     </View>
   );

@@ -274,6 +274,8 @@ export default function ConfigPaymentsScreen() {
               style={styles.tipChip}
               onPress={() => removeTipOption(tip)}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`${tip}%, ${t('config.payments.removeTipOption') || t('common.delete')}`}
             >
               <Text style={styles.tipChipText}>{tip}%</Text>
               <Text style={styles.tipRemove}>x</Text>
@@ -288,8 +290,9 @@ export default function ConfigPaymentsScreen() {
             keyboardType="numeric"
             placeholder="%"
             placeholderTextColor={colors.inputPlaceholder}
+            accessibilityLabel={t('config.payments.addTipOption')}
           />
-          <TouchableOpacity style={styles.addTipButton} onPress={addTipOption} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.addTipButton} onPress={addTipOption} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={t('config.payments.addTipOption')}>
             <Text style={styles.addTipButtonText}>{t('config.payments.addTipOption')}</Text>
           </TouchableOpacity>
         </View>
@@ -304,6 +307,9 @@ export default function ConfigPaymentsScreen() {
             style={styles.checkRow}
             onPress={() => toggleSplitMode(mode.value)}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={t(mode.labelKey)}
+            accessibilityState={{ selected: splitModes.includes(mode.value) }}
           >
             <View style={[styles.checkbox, splitModes.includes(mode.value) && styles.checkboxChecked]}>
               {splitModes.includes(mode.value) && <Text style={styles.checkmark}>{'✓'}</Text>}
@@ -319,6 +325,8 @@ export default function ConfigPaymentsScreen() {
         onPress={handleSave}
         disabled={!isDirty || isSaving}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={t('config.save')}
       >
         <Text style={styles.saveButtonText}>
           {isSaving ? t('config.saving') : t('config.save')}

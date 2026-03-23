@@ -608,6 +608,8 @@ export default function VirtualQueueScreen() {
                 mode="contained"
                 onPress={() => setPartySize(Math.max(1, partySize - 1))}
                 disabled={partySize <= 1}
+                accessibilityLabel="Decrease party size"
+                accessibilityRole="button"
               />
               <Text variant="headlineSmall" style={styles.partySizeNumber}>
                 {partySize}
@@ -617,6 +619,8 @@ export default function VirtualQueueScreen() {
                 mode="contained"
                 onPress={() => setPartySize(Math.min(20, partySize + 1))}
                 disabled={partySize >= 20}
+                accessibilityLabel="Increase party size"
+                accessibilityRole="button"
               />
             </View>
           </View>

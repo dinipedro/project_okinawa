@@ -641,6 +641,8 @@ export default function CookStationScreen() {
                   onPress={() => updateOrderStatus(item.id, 'preparing')}
                   activeOpacity={0.8}
                   testID="start-preparing-button"
+                  accessibilityRole="button"
+                  accessibilityLabel={`Start preparing order ${item.order_number || item.id.slice(0, 8)}`}
                 >
                   <Text style={styles.actionButtonText}>
                     {t('cook.action.startPreparing')}
@@ -653,6 +655,8 @@ export default function CookStationScreen() {
                   onPress={() => updateOrderStatus(item.id, 'ready')}
                   activeOpacity={0.8}
                   testID="mark-ready-button"
+                  accessibilityRole="button"
+                  accessibilityLabel={`Mark order ${item.order_number || item.id.slice(0, 8)} as ready`}
                 >
                   <Text style={styles.actionButtonText}>
                     {t('cook.action.ready')}

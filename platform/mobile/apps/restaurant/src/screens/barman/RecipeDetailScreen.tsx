@@ -302,6 +302,7 @@ export default function RecipeDetailScreen({ route }: { route: any }) {
               style={styles.image}
               resizeMode="cover"
               onError={() => setImageError(true)}
+              accessibilityLabel={`Photo of ${recipe.name}`}
             />
           ) : (
             <View style={styles.imagePlaceholder}>

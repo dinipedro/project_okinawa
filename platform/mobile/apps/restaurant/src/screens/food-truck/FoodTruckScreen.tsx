@@ -133,6 +133,9 @@ export default function FoodTruckScreen() {
         style={[styles.readyBadge, { backgroundColor: colors.success }]}
         onPress={() => handleAnnounce(item.orderNumber)}
         onLongPress={() => handleConfirmPickup(item.id)}
+        accessibilityRole="button"
+        accessibilityLabel={`Announce order ${item.orderNumber} ready`}
+        accessibilityHint="Long press to confirm pickup"
       >
         <Text style={[typography.displayMedium, { color: colors.foregroundInverse }]}>
           {item.orderNumber}
@@ -198,6 +201,8 @@ export default function FoodTruckScreen() {
                 compact
                 style={{ backgroundColor: colors.success }}
                 labelStyle={{ color: colors.foregroundInverse }}
+                accessibilityRole="button"
+                accessibilityLabel={`Mark order ${item.orderNumber} as ready`}
               >
                 {t('foodTruck.orderReady')}
               </Button>
@@ -255,6 +260,8 @@ export default function FoodTruckScreen() {
           onPress={() => {
             readyOrders.forEach((o) => handleAnnounce(o.orderNumber));
           }}
+          accessibilityRole="button"
+          accessibilityLabel="Announce all ready orders"
         >
           <Text style={[typography.buttonLarge, { color: colors.primaryForeground }]}>
             {t('foodTruck.announce')}

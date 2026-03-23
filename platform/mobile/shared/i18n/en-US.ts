@@ -37,6 +37,7 @@ export const enUS = {
     comingSoon: 'Coming soon',
     featureInDevelopment: 'Feature in development',
     all: 'All',
+    permissionRequired: 'Permission required',
   },
 
   // Auth
@@ -218,6 +219,7 @@ export const enUS = {
     ingredients: 'Ingredients',
     allergens: 'Allergens',
     preparationTime: 'Preparation time',
+    each: 'each',
     available: 'Available',
     unavailable: 'Unavailable',
     outOfStock: 'Out of stock',
@@ -495,6 +497,7 @@ export const enUS = {
     distance: '{{distance}} km',
     deliveryTime: '{{time}} min',
     minimumOrder: 'Minimum order',
+    minOrder: 'Minimum order',
     deliveryFee: 'Delivery fee',
     about: 'About',
     photos: 'Photos',
@@ -2172,6 +2175,62 @@ export const enUS = {
       discount: 'Discount (%)',
       saved: 'Saved',
     },
+  },
+
+  // Cuisine Types (Client App)
+  cuisine: {
+    japanese: 'Japanese',
+    italian: 'Italian',
+    brazilian: 'Brazilian',
+    mexican: 'Mexican',
+    chinese: 'Chinese',
+    indian: 'Indian',
+    sushi: 'Sushi',
+    vegan: 'Vegan',
+    fastFood: 'Fast Food',
+  },
+
+  // Explore Screen (Client App)
+  explore: {
+    searchPlaceholder: 'Search restaurants...',
+    list: 'List',
+    map: 'Map',
+    noRestaurants: 'No restaurants found',
+  },
+
+  // Location (Client App)
+  location: {
+    permissionMessage: 'We need access to your location to show nearby restaurants.',
+  },
+
+  // Loyalty Screen — restaurant-based loyalty programs (Client App)
+  loyaltyScreen: {
+    loadingPrograms: 'Loading loyalty programs...',
+    errorLoad: 'Failed to load loyalty programs',
+    emptyTitle: 'No Loyalty Programs',
+    emptyMessage: 'Start ordering from restaurants to join their loyalty programs and earn rewards!',
+    insufficientPoints: 'Insufficient Points',
+    insufficientPointsMessage: 'You do not have enough points to redeem this reward',
+    redeemTitle: 'Redeem Reward',
+    redeemConfirm: 'Redeem {{name}} for {{points}} points?',
+    redeemSuccess: 'Reward redeemed successfully!',
+    redeemAction: 'Redeem',
+    lockedAction: 'Locked',
+    restaurantFallback: 'Restaurant',
+    pointsAvailable: 'Points Available',
+    tierLabel: '{{name}} Tier',
+    tierBenefits: '{{name}} Tier Benefits',
+    progressTo: 'Progress to {{tier}}',
+    earnPoints: 'Earn {{multiplier}}x points per dollar',
+    exclusiveRewards: 'Exclusive {{tier}} member rewards',
+    priorityBooking: 'Priority reservation booking',
+    availableRewards: 'Available Rewards',
+    pointsRequired: '{{count}} points',
+    statistics: 'Statistics',
+    totalEarned: 'Total Earned',
+    totalRedeemed: 'Total Redeemed',
+    available: 'Available',
+    recentActivity: 'Recent Activity',
   },
 
   // Service Calls

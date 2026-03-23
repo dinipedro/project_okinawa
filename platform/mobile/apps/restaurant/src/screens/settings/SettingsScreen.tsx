@@ -96,6 +96,8 @@ export default function SettingsScreen() {
           left={(props) => <List.Icon {...props} icon="translate" color={colors.foregroundSecondary} />}
           right={(props) => <List.Icon {...props} icon="chevron-right" color={colors.foregroundSecondary} />}
           onPress={() => setLanguageDialogVisible(true)}
+          accessibilityRole="button"
+          accessibilityLabel={`${t('settings.language')}: ${getLanguageLabel(language)}`}
         />
       </List.Section>
 
@@ -111,6 +113,8 @@ export default function SettingsScreen() {
           style={styles.listItem}
           left={(props) => <List.Icon {...props} icon="logout" color={colors.foregroundSecondary} />}
           onPress={handleLogout}
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.disconnect')}
         />
       </List.Section>
 
@@ -140,7 +144,11 @@ export default function SettingsScreen() {
             </RadioButton.Group>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setLanguageDialogVisible(false)}>
+            <Button
+              onPress={() => setLanguageDialogVisible(false)}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.cancel')}
+            >
               {t('common.cancel')}
             </Button>
           </Dialog.Actions>

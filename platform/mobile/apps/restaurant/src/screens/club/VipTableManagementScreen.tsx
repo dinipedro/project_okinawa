@@ -123,7 +123,9 @@ function TableCard({
     <TouchableOpacity
       onPress={() => onPress(table)}
       activeOpacity={0.7}
-      accessibilityLabel={`${t('club.vip.table')} ${table.tableNumber}`}
+      accessibilityRole="button"
+      accessibilityLabel={`${t('club.vip.table')} ${table.tableNumber}, status ${table.status}`}
+      accessibilityHint="Opens table detail and management options"
     >
       <Card
         style={[
@@ -296,6 +298,8 @@ function TableDetailModal({
                 disabled={isActioning}
                 style={[styles.modalBtn, { backgroundColor: colors.success }]}
                 labelStyle={{ color: '#fff' }}
+                accessibilityRole="button"
+                accessibilityLabel={`Open tab for table ${table.tableNumber}`}
               >
                 {t('club.vip.openTab')}
               </Button>
@@ -305,6 +309,8 @@ function TableDetailModal({
                 disabled={isActioning}
                 style={styles.modalBtn}
                 textColor={colors.error}
+                accessibilityRole="button"
+                accessibilityLabel={`Mark table ${table.tableNumber} reservation as no-show`}
               >
                 {t('club.queueSection.noShow')}
               </Button>
@@ -317,12 +323,14 @@ function TableDetailModal({
               onPress={() => onCloseTab(table.tabId!)}
               disabled={isActioning}
               style={styles.modalBtn}
+              accessibilityRole="button"
+              accessibilityLabel={`Close tab for table ${table.tableNumber}`}
             >
               {t('club.vip.closeTab')}
             </Button>
           )}
 
-          <Button mode="text" onPress={onDismiss} style={styles.modalBtn}>
+          <Button mode="text" onPress={onDismiss} style={styles.modalBtn} accessibilityRole="button" accessibilityLabel="Close table details">
             {t('common.close')}
           </Button>
         </View>

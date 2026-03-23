@@ -649,6 +649,7 @@ export default function PaymentScreen() {
                 mode="outlined"
                 style={styles.input}
                 left={<TextInput.Icon icon="credit-card" />}
+                accessibilityLabel="Card number"
               />
 
               <TextInput
@@ -658,6 +659,7 @@ export default function PaymentScreen() {
                 mode="outlined"
                 style={styles.input}
                 autoCapitalize="words"
+                accessibilityLabel="Cardholder name"
               />
 
               <View style={styles.row}>
@@ -670,6 +672,7 @@ export default function PaymentScreen() {
                   mode="outlined"
                   style={[styles.input, styles.halfInput]}
                   placeholder="MM/YY"
+                  accessibilityLabel="Card expiry date"
                 />
 
                 <TextInput
@@ -681,6 +684,7 @@ export default function PaymentScreen() {
                   secureTextEntry
                   mode="outlined"
                   style={[styles.input, styles.halfInput]}
+                  accessibilityLabel="Card CVV security code"
                 />
               </View>
             </Card.Content>
@@ -702,6 +706,7 @@ export default function PaymentScreen() {
                 mode="outlined"
                 style={styles.input}
                 autoCapitalize="none"
+                accessibilityLabel="PIX key"
               />
 
               <Text variant="bodySmall" style={styles.pixNote}>
@@ -773,6 +778,7 @@ export default function PaymentScreen() {
                 maxLength={19}
                 mode="outlined"
                 style={styles.input}
+                accessibilityLabel="Card number"
               />
 
               <TextInput
@@ -782,6 +788,7 @@ export default function PaymentScreen() {
                 mode="outlined"
                 style={styles.input}
                 autoCapitalize="words"
+                accessibilityLabel="Cardholder name"
               />
 
               <View style={styles.row}>
@@ -793,6 +800,7 @@ export default function PaymentScreen() {
                   maxLength={5}
                   mode="outlined"
                   style={[styles.input, styles.halfInput]}
+                  accessibilityLabel="Card expiry date"
                 />
 
                 <TextInput
@@ -804,6 +812,7 @@ export default function PaymentScreen() {
                   secureTextEntry
                   mode="outlined"
                   style={[styles.input, styles.halfInput]}
+                  accessibilityLabel="Card CVV security code"
                 />
               </View>
             </Card.Content>

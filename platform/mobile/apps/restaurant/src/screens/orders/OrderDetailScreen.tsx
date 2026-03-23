@@ -230,7 +230,13 @@ export default function OrderDetailScreen() {
       <View style={styles.emptyContainer}>
         <IconButton icon="alert-circle" size={48} iconColor={colors.mutedForeground} />
         <Text variant="headlineSmall" style={{ color: colors.foreground }}>{t('errors.notFound')}</Text>
-        <Button mode="contained" onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Button
+          mode="contained"
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
           {t('common.back')}
         </Button>
       </View>
@@ -398,6 +404,8 @@ export default function OrderDetailScreen() {
                 ? 'bell'
                 : 'truck-delivery'
             }
+            accessibilityRole="button"
+            accessibilityLabel={`Mark order as ${nextStatus}`}
           >
             {getStatusLabel(nextStatus)}
           </Button>
@@ -412,6 +420,8 @@ export default function OrderDetailScreen() {
             style={styles.cancelButton}
             textColor={colors.destructive}
             icon="close-circle"
+            accessibilityRole="button"
+            accessibilityLabel="Cancel this order"
           >
             {t('orders.cancelOrder')}
           </Button>

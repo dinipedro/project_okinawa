@@ -263,6 +263,8 @@ export default function DrinkRecipesScreen({ navigation }: { navigation: any }) 
     <TouchableOpacity
       style={styles.recipeCard}
       onPress={() => navigation.navigate('RecipeDetail', { recipe: item })}
+      accessibilityRole="button"
+      accessibilityLabel={`${item.name}, ${item.preparation_time_minutes} min`}
     >
       <View style={styles.recipeCardContent}>
         {item.image_url ? (
@@ -270,6 +272,7 @@ export default function DrinkRecipesScreen({ navigation }: { navigation: any }) 
             source={{ uri: item.image_url }}
             style={styles.recipeImage}
             resizeMode="cover"
+            accessibilityLabel={item.name}
           />
         ) : (
           <View style={styles.recipeImagePlaceholder}>
@@ -307,6 +310,7 @@ export default function DrinkRecipesScreen({ navigation }: { navigation: any }) 
           value={searchQuery}
           onChangeText={setSearchQuery}
           style={{ backgroundColor: colors.card }}
+          accessibilityLabel={t('recipes.search')}
         />
       </View>
 
@@ -323,6 +327,9 @@ export default function DrinkRecipesScreen({ navigation }: { navigation: any }) 
             onPress={() => setSelectedCategory(cat)}
             style={styles.categoryChip}
             mode={selectedCategory === cat ? 'flat' : 'outlined'}
+            accessibilityRole="button"
+            accessibilityLabel={cat === 'All' ? t('common.all') : cat}
+            accessibilityState={{ selected: selectedCategory === cat }}
           >
             {cat === 'All' ? t('common.all') : cat}
           </Chip>

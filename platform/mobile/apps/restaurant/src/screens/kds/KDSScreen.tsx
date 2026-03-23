@@ -249,23 +249,27 @@ export default function KDSScreen() {
 
             <View style={styles.orderActions}>
               {item.status === 'confirmed' && (
-                <Button 
-                  mode="contained" 
-                  onPress={() => updateOrderStatus(item.id, 'preparing')} 
+                <Button
+                  mode="contained"
+                  onPress={() => updateOrderStatus(item.id, 'preparing')}
                   compact
                   buttonColor={colors.primary}
                   textColor={colors.primaryForeground}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Start preparing order ${item.order_number || item.id.slice(0, 8)}`}
                 >
                   {t('kds.startPreparing')}
                 </Button>
               )}
               {item.status === 'preparing' && (
-                <Button 
-                  mode="contained" 
-                  onPress={() => updateOrderStatus(item.id, 'ready')} 
-                  compact 
+                <Button
+                  mode="contained"
+                  onPress={() => updateOrderStatus(item.id, 'ready')}
+                  compact
                   style={styles.readyButton}
                   textColor={colors.primaryForeground}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Mark order ${item.order_number || item.id.slice(0, 8)} as ready`}
                 >
                   {t('kds.ready')}
                 </Button>
@@ -284,24 +288,33 @@ export default function KDSScreen() {
       <View style={styles.header}>
         <Text variant="headlineLarge" style={styles.headerTitle}>{t('kds.title')}</Text>
         <View style={styles.filterButtons}>
-          <Chip 
-            selected={selectedStatus === 'all'} 
+          <Chip
+            selected={selectedStatus === 'all'}
             onPress={() => setSelectedStatus('all')}
             selectedColor={colors.primary}
+            accessibilityRole="button"
+            accessibilityLabel={`View all orders, ${activeOrders.length} total`}
+            accessibilityState={{ selected: selectedStatus === 'all' }}
           >
             {t('common.viewAll')} ({activeOrders.length})
           </Chip>
-          <Chip 
-            selected={selectedStatus === 'pending'} 
+          <Chip
+            selected={selectedStatus === 'pending'}
             onPress={() => setSelectedStatus('pending')}
             selectedColor={colors.primary}
+            accessibilityRole="button"
+            accessibilityLabel="Filter new orders"
+            accessibilityState={{ selected: selectedStatus === 'pending' }}
           >
             {t('kds.newOrders')}
           </Chip>
-          <Chip 
-            selected={selectedStatus === 'preparing'} 
+          <Chip
+            selected={selectedStatus === 'preparing'}
             onPress={() => setSelectedStatus('preparing')}
             selectedColor={colors.primary}
+            accessibilityRole="button"
+            accessibilityLabel="Filter orders in preparation"
+            accessibilityState={{ selected: selectedStatus === 'preparing' }}
           >
             {t('kds.preparing')}
           </Chip>

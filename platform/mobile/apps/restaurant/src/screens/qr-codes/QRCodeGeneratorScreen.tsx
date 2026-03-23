@@ -245,6 +245,7 @@ export default function QRCodeGeneratorScreen() {
                 source={{ uri: qrCodeImage }}
                 style={styles.qrImage}
                 resizeMode="contain"
+                accessibilityLabel={`QR code for table ${table?.table_number || ''}`}
               />
               <View style={styles.qrActions}>
                 <IconButton
@@ -253,6 +254,8 @@ export default function QRCodeGeneratorScreen() {
                   onPress={handleShare}
                   iconColor={colors.primary}
                   style={styles.qrActionButton}
+                  accessibilityRole="button"
+                  accessibilityLabel="Share QR code"
                 />
                 <IconButton
                   icon="download"
@@ -260,6 +263,8 @@ export default function QRCodeGeneratorScreen() {
                   onPress={handleDownload}
                   iconColor={colors.primary}
                   style={styles.qrActionButton}
+                  accessibilityRole="button"
+                  accessibilityLabel="Download QR code"
                 />
               </View>
             </>
@@ -296,6 +301,9 @@ export default function QRCodeGeneratorScreen() {
               Haptics.selectionAsync();
             }}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={`Select ${config.name} style: ${config.description}`}
+            accessibilityState={{ selected: selectedStyle === config.id }}
           >
             <View
               style={[
@@ -347,6 +355,8 @@ export default function QRCodeGeneratorScreen() {
         buttonColor={colors.primary}
         textColor={colors.primaryForeground}
         icon="qrcode-plus"
+        accessibilityRole="button"
+        accessibilityLabel={qrCodeImage ? 'Regenerate QR code' : 'Generate QR code'}
       >
         {qrCodeImage ? 'Regenerar QR Code' : 'Gerar QR Code'}
       </Button>
@@ -358,6 +368,8 @@ export default function QRCodeGeneratorScreen() {
         style={styles.batchButton}
         textColor={colors.primary}
         icon="layers"
+        accessibilityRole="button"
+        accessibilityLabel="Generate QR codes in batch for all tables"
       >
         Gerar em Lote para Todas as Mesas
       </Button>

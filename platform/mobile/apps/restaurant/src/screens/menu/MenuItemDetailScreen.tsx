@@ -314,7 +314,13 @@ export default function MenuItemDetailScreen() {
       <View style={styles.emptyContainer}>
         <IconButton icon="alert-circle" size={48} iconColor={colors.mutedForeground} />
         <Text variant="headlineSmall" style={{ color: colors.foreground }}>{t('menu.itemNotFound')}</Text>
-        <Button mode="contained" onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Button
+          mode="contained"
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
           {t('common.back')}
         </Button>
       </View>
@@ -324,7 +330,7 @@ export default function MenuItemDetailScreen() {
   return (
     <ScrollView style={styles.container}>
       {item.image_url && !editing && (
-        <Image source={{ uri: item.image_url }} style={styles.image} />
+        <Image source={{ uri: item.image_url }} style={styles.image} accessibilityLabel={`Photo of ${item.name}`} />
       )}
 
       <Card style={styles.card}>
@@ -339,12 +345,16 @@ export default function MenuItemDetailScreen() {
                     size={24}
                     iconColor={colors.info}
                     onPress={() => setEditing(true)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Edit ${item.name}`}
                   />
                   <IconButton
                     icon="delete"
                     size={24}
                     iconColor={colors.destructive}
                     onPress={handleDelete}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Delete ${item.name}`}
                   />
                 </View>
               </View>
@@ -424,6 +434,7 @@ export default function MenuItemDetailScreen() {
                 value={name}
                 onChangeText={setName}
                 style={styles.input}
+                accessibilityLabel="Item name"
               />
 
               <TextInput
@@ -434,6 +445,7 @@ export default function MenuItemDetailScreen() {
                 multiline
                 numberOfLines={3}
                 style={styles.input}
+                accessibilityLabel="Item description"
               />
 
               <TextInput
@@ -443,6 +455,7 @@ export default function MenuItemDetailScreen() {
                 onChangeText={setPrice}
                 keyboardType="decimal-pad"
                 style={styles.input}
+                accessibilityLabel="Item price"
               />
 
               <View style={styles.row}>
@@ -497,6 +510,8 @@ export default function MenuItemDetailScreen() {
                   }}
                   style={styles.actionButton}
                   disabled={saving}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cancel editing item"
                 >
                   {t('common.cancel')}
                 </Button>
@@ -506,6 +521,8 @@ export default function MenuItemDetailScreen() {
                   style={styles.actionButton}
                   loading={saving}
                   disabled={saving}
+                  accessibilityRole="button"
+                  accessibilityLabel="Save item changes"
                 >
                   {t('common.save')}
                 </Button>

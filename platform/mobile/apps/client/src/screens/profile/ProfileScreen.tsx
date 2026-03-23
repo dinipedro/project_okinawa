@@ -196,7 +196,11 @@ export default function ProfileScreen() {
     <ScrollView style={styles.container}>
       {/* Profile Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.avatarContainer}>
+        <TouchableOpacity
+          style={styles.avatarContainer}
+          accessibilityRole="button"
+          accessibilityLabel="Change profile photo"
+        >
           <Avatar.Text
             size={80}
             label={user?.full_name?.charAt(0) || 'U'}
@@ -358,7 +362,12 @@ export default function ProfileScreen() {
       <Divider style={styles.divider} />
 
       {/* Logout Button */}
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={handleLogout}
+        accessibilityRole="button"
+        accessibilityLabel="Log out"
+      >
         <IconButton icon="logout" size={24} iconColor={colors.error} />
         <Text variant="titleMedium" style={styles.logoutText}>
           {t('auth.logout')}

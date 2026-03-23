@@ -132,6 +132,8 @@ export default function TableListScreen() {
       <TouchableOpacity
         onPress={() => navigation.navigate('TableDetail' as never, { tableId: item.id } as never)}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={`Mesa ${item.table_number}, ${item.seats} lugares, ${config.label}`}
       >
         <Card style={styles.tableCard}>
           <View style={styles.cardContent}>
@@ -174,6 +176,8 @@ export default function TableListScreen() {
                   navigation.navigate('QRCodeGenerator' as never, { tableId: item.id } as never)
                 }
                 iconColor={colors.primary}
+                accessibilityRole="button"
+                accessibilityLabel={`Gerar QR Code para mesa ${item.table_number}`}
               />
               <IconButton
                 icon="pencil"
@@ -182,12 +186,16 @@ export default function TableListScreen() {
                   navigation.navigate('TableForm' as never, { tableId: item.id } as never)
                 }
                 iconColor={colors.foregroundMuted}
+                accessibilityRole="button"
+                accessibilityLabel={`Editar mesa ${item.table_number}`}
               />
               <IconButton
                 icon="delete"
                 size={20}
                 onPress={() => confirmDelete(item)}
                 iconColor={colors.destructive}
+                accessibilityRole="button"
+                accessibilityLabel={`Excluir mesa ${item.table_number}`}
               />
             </View>
           </View>
@@ -216,6 +224,7 @@ export default function TableListScreen() {
           style={styles.searchbar}
           inputStyle={styles.searchInput}
           iconColor={colors.foregroundMuted}
+          accessibilityLabel="Buscar mesas"
         />
       </View>
 
@@ -244,6 +253,9 @@ export default function TableListScreen() {
                 styles.filterChipText,
                 statusFilter === item.key && styles.filterChipTextSelected,
               ]}
+              accessibilityRole="button"
+              accessibilityLabel={item.label}
+              accessibilityState={{ selected: statusFilter === item.key }}
             >
               {item.label}
             </Chip>
@@ -284,6 +296,8 @@ export default function TableListScreen() {
         style={[styles.fab, { backgroundColor: colors.primary }]}
         color={colors.primaryForeground}
         onPress={() => navigation.navigate('TableForm' as never)}
+        accessibilityRole="button"
+        accessibilityLabel="Adicionar nova mesa"
       />
 
       {/* Delete Confirmation Dialog */}
@@ -297,8 +311,19 @@ export default function TableListScreen() {
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setDeleteDialogVisible(false)}>Cancelar</Button>
-            <Button onPress={handleDeleteTable} textColor={colors.destructive}>
+            <Button
+              onPress={() => setDeleteDialogVisible(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Cancelar exclusão"
+            >
+              Cancelar
+            </Button>
+            <Button
+              onPress={handleDeleteTable}
+              textColor={colors.destructive}
+              accessibilityRole="button"
+              accessibilityLabel={`Confirmar exclusão da mesa ${tableToDelete?.table_number}`}
+            >
               Excluir
             </Button>
           </Dialog.Actions>

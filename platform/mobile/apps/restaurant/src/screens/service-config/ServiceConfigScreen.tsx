@@ -352,6 +352,8 @@ export default function ServiceConfigScreen() {
                     onPress={() =>
                       Alert.alert(t('common.comingSoon'), t('common.featureInDevelopment'))
                     }
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.edit')}
                   >
                     {t('common.edit')}
                   </Chip>
@@ -650,6 +652,8 @@ export default function ServiceConfigScreen() {
           style={styles.saveButton}
           contentStyle={styles.saveButtonContent}
           icon="content-save"
+          accessibilityRole="button"
+          accessibilityLabel={t('serviceConfig.saveConfig')}
         >
           {t('serviceConfig.saveConfig')}
         </Button>

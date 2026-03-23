@@ -445,6 +445,8 @@ export default function SetupHubScreen() {
                   iconColor={getCheckIconColor(step.completed)}
                   size={24}
                   onPress={() => toggleStepComplete(step.id)}
+                  accessibilityRole="button"
+                  accessibilityLabel={step.completed ? `Mark ${step.title} as incomplete` : `Mark ${step.title} as complete`}
                 />
               </View>
             </Card.Content>
@@ -508,6 +510,8 @@ export default function SetupHubScreen() {
                   iconColor={getCheckIconColor(step.completed)}
                   size={24}
                   onPress={() => toggleStepComplete(step.id)}
+                  accessibilityRole="button"
+                  accessibilityLabel={step.completed ? `Mark ${step.title} as incomplete` : `Mark ${step.title} as complete`}
                 />
               </View>
             </Card.Content>
@@ -532,6 +536,8 @@ export default function SetupHubScreen() {
                 icon="rocket"
                 onPress={() => navigation.navigate('Dashboard' as never)}
                 style={styles.quickActionButton}
+                accessibilityRole="button"
+                accessibilityLabel="Ir para Dashboard"
               >
                 Ir para Dashboard
               </Button>
@@ -541,6 +547,8 @@ export default function SetupHubScreen() {
                 icon="qrcode"
                 onPress={() => navigation.navigate('FloorPlan' as never)}
                 style={styles.quickActionButton}
+                accessibilityRole="button"
+                accessibilityLabel="Gerar QR Codes"
               >
                 Gerar QR Codes
               </Button>
@@ -550,6 +558,8 @@ export default function SetupHubScreen() {
                 icon="account-plus"
                 onPress={() => navigation.navigate('HR' as never)}
                 style={styles.quickActionButton}
+                accessibilityRole="button"
+                accessibilityLabel="Adicionar Equipe"
               >
                 Adicionar Equipe
               </Button>
@@ -562,7 +572,12 @@ export default function SetupHubScreen() {
         <Text variant="bodySmall" style={styles.footerText}>
           Precisa de ajuda? Entre em contato com o suporte
         </Text>
-        <Button mode="text" onPress={() => Alert.alert('Suporte', 'suporte@okinawa.app')}>
+        <Button
+          mode="text"
+          onPress={() => Alert.alert('Suporte', 'suporte@okinawa.app')}
+          accessibilityRole="button"
+          accessibilityLabel="Falar com Suporte"
+        >
           Falar com Suporte
         </Button>
       </View>

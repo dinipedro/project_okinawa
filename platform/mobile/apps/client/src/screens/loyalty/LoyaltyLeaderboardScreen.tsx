@@ -440,7 +440,7 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       <View style={styles.podium}>
         {/* 2nd Place */}
         <View style={styles.podiumPlace}>
-          <Image source={{ uri: leaderboard[1].avatar }} style={styles.podiumAvatar} />
+          <Image source={{ uri: leaderboard[1].avatar }} style={styles.podiumAvatar} accessibilityLabel={`${leaderboard[1].name} avatar`} />
           <View style={[styles.podiumBadge, { backgroundColor: getTierColor('silver') }]}>
             <Text style={styles.podiumRank}>2</Text>
           </View>
@@ -458,7 +458,7 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
           <View style={styles.crownContainer}>
             <Ionicons name="trophy" size={24} color={getTierColor('gold')} />
           </View>
-          <Image source={{ uri: leaderboard[0].avatar }} style={[styles.podiumAvatar, styles.podiumAvatar1]} />
+          <Image source={{ uri: leaderboard[0].avatar }} style={[styles.podiumAvatar, styles.podiumAvatar1]} accessibilityLabel={`${leaderboard[0].name} avatar`} />
           <View style={[styles.podiumBadge, styles.podiumBadge1, { backgroundColor: getTierColor('gold') }]}>
             <Text style={[styles.podiumRank, styles.podiumRank1]}>1</Text>
           </View>
@@ -473,7 +473,7 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
 
         {/* 3rd Place */}
         <View style={styles.podiumPlace}>
-          <Image source={{ uri: leaderboard[2].avatar }} style={styles.podiumAvatar} />
+          <Image source={{ uri: leaderboard[2].avatar }} style={styles.podiumAvatar} accessibilityLabel={`${leaderboard[2].name} avatar`} />
           <View style={[styles.podiumBadge, { backgroundColor: getTierColor('bronze') }]}>
             <Text style={styles.podiumRank}>3</Text>
           </View>
@@ -500,7 +500,7 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
             <Text style={styles.userRank}>
               #{user.rank}
             </Text>
-            <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
+            <Image source={{ uri: user.avatar }} style={styles.userAvatar} accessibilityLabel={`${user.name} avatar`} />
             <View style={styles.userInfo}>
               <Text style={styles.userName}>
                 {user.name}
@@ -533,6 +533,9 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
               !canRedeem && styles.rewardDisabled,
             ]}
             disabled={!canRedeem}
+            accessibilityRole="button"
+            accessibilityLabel={`${reward.name}: ${reward.pointsCost.toLocaleString()} points`}
+            accessibilityState={{ disabled: !canRedeem }}
           >
             <Text style={styles.rewardEmoji}>{reward.image}</Text>
             <Text style={styles.rewardName}>
@@ -562,11 +565,18 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
           <Ionicons name="arrow-back" size={24} color={colors.foreground} />
         </TouchableOpacity>
         <Text style={styles.title}>Fidelidade</Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Loyalty program information"
+        >
           <Ionicons name="information-circle-outline" size={24} color={colors.mutedForeground} />
         </TouchableOpacity>
       </View>
@@ -620,6 +630,9 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
           <TouchableOpacity
             style={[styles.tab, activeTab === 'leaderboard' && { backgroundColor: colors.card }]}
             onPress={() => setActiveTab('leaderboard')}
+            accessibilityRole="button"
+            accessibilityLabel="Leaderboard tab"
+            accessibilityState={{ selected: activeTab === 'leaderboard' }}
           >
             <Ionicons
               name="podium"
@@ -633,6 +646,9 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
           <TouchableOpacity
             style={[styles.tab, activeTab === 'rewards' && { backgroundColor: colors.card }]}
             onPress={() => setActiveTab('rewards')}
+            accessibilityRole="button"
+            accessibilityLabel="Rewards tab"
+            accessibilityState={{ selected: activeTab === 'rewards' }}
           >
             <Ionicons
               name="gift"

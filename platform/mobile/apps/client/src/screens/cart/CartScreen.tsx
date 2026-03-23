@@ -92,7 +92,7 @@ export default function CartScreen() {
 
       Alert.alert(
         t('common.success'),
-        t('orders.orderPlaced') || 'Seu pedido foi realizado!',
+        t('orders.orderPlaced'),
         [
           {
             text: t('common.ok'),
@@ -270,7 +270,7 @@ export default function CartScreen() {
           <View style={styles.itemInfo}>
             <Text variant="titleMedium" style={styles.itemName}>{item.name}</Text>
             <Text variant="bodyMedium" style={styles.price}>
-              R$ {item.price.toFixed(2)} {t('menu.each') || 'cada'}
+              R$ {item.price.toFixed(2)} {t('menu.each')}
             </Text>
           </View>
           <IconButton
@@ -278,6 +278,8 @@ export default function CartScreen() {
             size={20}
             onPress={() => cart.removeItem(item.id)}
             iconColor={colors.error}
+            accessibilityLabel={`Remove ${item.name} from cart`}
+            accessibilityRole="button"
           />
         </View>
 
@@ -287,6 +289,8 @@ export default function CartScreen() {
             size={20}
             onPress={() => cart.updateQuantity(item.id, item.quantity - 1)}
             mode="contained"
+            accessibilityLabel={`Decrease quantity of ${item.name}`}
+            accessibilityRole="button"
           />
           <Text variant="titleMedium" style={styles.quantity}>
             {item.quantity}
@@ -296,6 +300,8 @@ export default function CartScreen() {
             size={20}
             onPress={() => cart.updateQuantity(item.id, item.quantity + 1)}
             mode="contained"
+            accessibilityLabel={`Increase quantity of ${item.name}`}
+            accessibilityRole="button"
           />
           <Text variant="titleMedium" style={styles.itemTotal}>
             R$ {(item.price * item.quantity).toFixed(2)}
@@ -310,6 +316,7 @@ export default function CartScreen() {
           multiline
           numberOfLines={2}
           style={styles.instructionsInput}
+          accessibilityLabel={`Special instructions for ${item.name}`}
         />
       </Card.Content>
     </Card>
@@ -337,6 +344,7 @@ export default function CartScreen() {
               multiline
               numberOfLines={3}
               style={styles.orderInstructions}
+              accessibilityLabel="Special instructions for the order"
             />
 
             <Card style={styles.tipCard}>
@@ -379,6 +387,7 @@ export default function CartScreen() {
                   keyboardType="decimal-pad"
                   left={<TextInput.Affix text="R$" />}
                   style={styles.customTipInput}
+                  accessibilityLabel="Custom tip amount"
                 />
               </Card.Content>
             </Card>
@@ -386,7 +395,7 @@ export default function CartScreen() {
             <Card style={styles.summaryCard}>
               <Card.Content>
                 <Text variant="titleMedium" style={styles.summaryTitle}>
-                  {t('orders.orderSummary') || 'Resumo do Pedido'}
+                  {t('orders.orderSummary')}
                 </Text>
 
                 <View style={styles.summaryRow}>

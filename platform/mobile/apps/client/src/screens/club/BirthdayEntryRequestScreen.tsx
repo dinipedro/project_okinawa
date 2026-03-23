@@ -258,6 +258,7 @@ export default function BirthdayEntryRequestScreen({ route }: BirthdayEntryReque
           onChangeText={setBirthdayName}
           mode="outlined"
           style={styles.input}
+          accessibilityLabel="Birthday person name"
         />
 
         <TextInput
@@ -268,6 +269,7 @@ export default function BirthdayEntryRequestScreen({ route }: BirthdayEntryReque
           mode="outlined"
           style={styles.input}
           keyboardType="number-pad"
+          accessibilityLabel="Date of birth"
         />
 
         <TextInput
@@ -277,6 +279,7 @@ export default function BirthdayEntryRequestScreen({ route }: BirthdayEntryReque
           keyboardType="number-pad"
           mode="outlined"
           style={styles.input}
+          accessibilityLabel="Party size"
         />
 
         <TextInput
@@ -286,6 +289,7 @@ export default function BirthdayEntryRequestScreen({ route }: BirthdayEntryReque
           keyboardType="phone-pad"
           mode="outlined"
           style={styles.input}
+          accessibilityLabel="Contact phone number"
         />
 
         {/* Celebration Type */}
@@ -311,6 +315,7 @@ export default function BirthdayEntryRequestScreen({ route }: BirthdayEntryReque
           numberOfLines={3}
           mode="outlined"
           style={styles.input}
+          accessibilityLabel="Special requests"
         />
 
         {/* Submit */}

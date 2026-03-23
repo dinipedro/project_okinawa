@@ -220,6 +220,8 @@ export default function WaiterDashboardScreen() {
           icon="plus"
           onPress={() => navigation.navigate('Orders' as never)}
           style={styles.quickActionButton}
+          accessibilityRole="button"
+          accessibilityLabel="Novo Pedido"
         >
           Novo Pedido
         </Button>
@@ -229,6 +231,8 @@ export default function WaiterDashboardScreen() {
           icon="qrcode-scan"
           onPress={() => navigation.navigate('QRScanner' as never)}
           style={styles.quickActionButton}
+          accessibilityRole="button"
+          accessibilityLabel="Escanear Mesa"
         >
           Escanear Mesa
         </Button>
@@ -266,6 +270,8 @@ export default function WaiterDashboardScreen() {
                     key={table.id}
                     onPress={() => handleTablePress(table)}
                     activeOpacity={0.7}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Mesa ${table.number}, ${table.guests} pessoas, ${getSeatedTime(table.seated_at)}`}
                   >
                     <Card style={styles.tableCard}>
                       <Card.Content>
@@ -331,6 +337,8 @@ export default function WaiterDashboardScreen() {
                                     orderId: table.order_id,
                                   } as never)
                                 }
+                                accessibilityRole="button"
+                                accessibilityLabel={`Ver Pedido mesa ${table.number}`}
                               >
                                 Ver Pedido
                               </Button>
@@ -342,6 +350,8 @@ export default function WaiterDashboardScreen() {
                                     orderId: table.order_id,
                                   } as never)
                                 }
+                                accessibilityRole="button"
+                                accessibilityLabel={`Fechar Conta mesa ${table.number}`}
                               >
                                 Fechar Conta
                               </Button>
@@ -368,6 +378,8 @@ export default function WaiterDashboardScreen() {
                       key={table.id}
                       onPress={() => handleTablePress(table)}
                       activeOpacity={0.7}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Mesa ${table.number}, ${getTableStatusLabel(table.status)}`}
                     >
                       <Card style={styles.tableCardCompact}>
                         <Card.Content style={styles.compactContent}>
@@ -412,6 +424,8 @@ export default function WaiterDashboardScreen() {
         label="Novo Pedido"
         style={styles.fab}
         onPress={() => navigation.navigate('Orders' as never)}
+        accessibilityRole="button"
+        accessibilityLabel="Novo Pedido"
       />
     </View>
   );

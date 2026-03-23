@@ -285,6 +285,7 @@ export default function CouponsScreen() {
             textColor={colors.foreground}
             outlineColor={colors.border}
             activeOutlineColor={colors.primary}
+            accessibilityLabel="Coupon code"
             right={
               <TextInput.Icon
                 icon="check"

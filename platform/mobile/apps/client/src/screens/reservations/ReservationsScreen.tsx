@@ -213,7 +213,11 @@ export default function ReservationsScreen() {
           </View>
         }
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('ReservationDetail', { reservationId: item.id })}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ReservationDetail', { reservationId: item.id })}
+            accessibilityRole="button"
+            accessibilityLabel={`View reservation at ${item.restaurant?.name || 'restaurant'}`}
+          >
             <Card style={styles.card}>
               <Card.Content>
                 <View style={styles.header}>
@@ -247,7 +251,12 @@ export default function ReservationsScreen() {
                   </Text>
                 )}
                 {['pending', 'confirmed'].includes(item.status) && (
-                  <TouchableOpacity style={styles.cancelButton} onPress={() => handleCancel(item)}>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => handleCancel(item)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Cancel reservation at ${item.restaurant?.name || 'restaurant'}`}
+                  >
                     <Text variant="bodySmall" style={styles.cancelText}>
                       {t('reservations.cancelReservation')}
                     </Text>

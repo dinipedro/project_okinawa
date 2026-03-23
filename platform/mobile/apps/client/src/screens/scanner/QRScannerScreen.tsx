@@ -428,6 +428,7 @@ export default function QRScannerScreen() {
             iconColor="#fff"
             size={24}
             onPress={() => navigation.goBack()}
+            accessibilityLabel="Close scanner"
           />
           <Text style={styles.headerTitle}>{t('scanner.scanQR')}</Text>
           <IconButton
@@ -435,6 +436,7 @@ export default function QRScannerScreen() {
             iconColor="#fff"
             size={24}
             onPress={() => setFlashOn(!flashOn)}
+            accessibilityLabel={flashOn ? 'Turn off flash' : 'Turn on flash'}
           />
         </View>
 

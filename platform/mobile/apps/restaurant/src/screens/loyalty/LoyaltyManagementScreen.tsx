@@ -276,7 +276,7 @@ export default function LoyaltyManagementScreen() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 }}>
         <Text variant="bodyLarge" style={{ color: colors.foregroundSecondary, marginBottom: 16, textAlign: 'center' }}>{t('common.error')}</Text>
-        <TouchableOpacity onPress={loadData} accessibilityLabel={t('common.retry')}>
+        <TouchableOpacity onPress={loadData} accessibilityRole="button" accessibilityLabel={t('common.retry')}>
           <Text variant="labelLarge" style={{ color: colors.primary, fontWeight: '600' }}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
@@ -360,6 +360,7 @@ export default function LoyaltyManagementScreen() {
       {!showStampForm && (
         <TouchableOpacity
           onPress={() => setShowStampForm(true)}
+          accessibilityRole="button"
           accessibilityLabel={t('loyaltyMgmt.giveStamp')}
           style={{ marginHorizontal: 16, marginBottom: 12, borderRadius: 16, overflow: 'hidden' }}
         >
@@ -413,6 +414,7 @@ export default function LoyaltyManagementScreen() {
             onChangeText={setSearchQuery}
             autoCapitalize="none"
             editable={!stampSubmitting}
+            accessibilityLabel="Customer name or identifier"
           />
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }}>
             <TouchableOpacity
@@ -422,6 +424,8 @@ export default function LoyaltyManagementScreen() {
               }}
               disabled={stampSubmitting}
               style={{ paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12, backgroundColor: colors.backgroundTertiary }}
+              accessibilityRole="button"
+              accessibilityLabel="Cancel giving stamp"
             >
               <Text style={{ fontSize: 12, fontWeight: '600', color: colors.foregroundSecondary }}>
                 {t('common.cancel')}
@@ -430,6 +434,7 @@ export default function LoyaltyManagementScreen() {
             <TouchableOpacity
               onPress={handleGiveStamp}
               disabled={stampSubmitting || !searchQuery.trim()}
+              accessibilityRole="button"
               accessibilityLabel={t('loyaltyMgmt.giveStamp')}
               style={{ borderRadius: 12, overflow: 'hidden', opacity: stampSubmitting || !searchQuery.trim() ? 0.5 : 1 }}
             >

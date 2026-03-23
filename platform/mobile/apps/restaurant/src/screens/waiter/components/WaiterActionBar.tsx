@@ -471,6 +471,7 @@ export default function WaiterActionBar({
               style={styles.cancelButton}
               onPress={() => setTransferModalVisible(false)}
               accessibilityRole="button"
+              accessibilityLabel={t('common.cancel')}
             >
               <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
             </TouchableOpacity>

@@ -131,7 +131,7 @@ export default function OrdersScreen() {
   const handleCancelOrder = useCallback(async (order: Order) => {
     Alert.alert(
       t('orders.cancelOrder'),
-      t('orders.cancelOrderConfirm') || 'Tem certeza que deseja cancelar este pedido?',
+      t('orders.cancelOrderConfirm'),
       [
         { text: t('common.no'), style: 'cancel' },
         {
@@ -186,8 +186,8 @@ export default function OrdersScreen() {
           value={filter}
           onValueChange={(value) => setFilter(value as FilterType)}
           buttons={[
-            { value: 'all', label: t('common.viewAll') || 'Todos', icon: 'format-list-bulleted' },
-            { value: 'active', label: t('orders.active') || 'Ativos', icon: 'clock-outline', showSelectedCheck: true },
+            { value: 'all', label: t('common.viewAll'), icon: 'format-list-bulleted' },
+            { value: 'active', label: t('orders.active'), icon: 'clock-outline', showSelectedCheck: true },
             { value: 'completed', label: t('orders.status.completed'), icon: 'check-circle-outline' },
           ]}
         />
@@ -218,9 +218,9 @@ export default function OrdersScreen() {
               <Text variant="headlineSmall" style={{ color: colors.foreground }}>{t('empty.orders')}</Text>
               <Text variant="bodyMedium" style={[styles.emptyText, { color: colors.foregroundSecondary }]}>
                 {filter === 'active'
-                  ? t('orders.noActiveOrders') || 'Você não tem pedidos ativos no momento'
+                  ? t('orders.noActiveOrders')
                   : filter === 'completed'
-                  ? t('orders.noCompletedOrders') || 'Você ainda não concluiu nenhum pedido'
+                  ? t('orders.noCompletedOrders')
                   : t('orders.noOrders')}
               </Text>
             </View>

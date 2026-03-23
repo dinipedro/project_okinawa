@@ -96,6 +96,7 @@ function TableCell({
       ]}
       onPress={() => onPress(table)}
       activeOpacity={0.7}
+      accessibilityRole="button"
       accessibilityLabel={`${t('club.vip.table')} ${table.tableNumber} - ${statusLabel}`}
     >
       <Text
@@ -200,6 +201,7 @@ function ReservationForm({
             keyboardType="number-pad"
             mode="outlined"
             style={styles.input}
+            accessibilityLabel="Party size"
           />
 
           <TextInput
@@ -209,6 +211,7 @@ function ReservationForm({
             keyboardType="phone-pad"
             mode="outlined"
             style={styles.input}
+            accessibilityLabel="Contact phone number"
           />
 
           <TextInput
@@ -219,6 +222,7 @@ function ReservationForm({
             numberOfLines={3}
             mode="outlined"
             style={styles.input}
+            accessibilityLabel="Special requests"
           />
 
           {/* Actions */}

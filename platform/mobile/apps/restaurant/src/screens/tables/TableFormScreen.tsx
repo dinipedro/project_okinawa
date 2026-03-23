@@ -174,6 +174,7 @@ export default function TableFormScreen() {
             outlineColor={colors.border}
             activeOutlineColor={colors.primary}
             textColor={colors.foreground}
+            accessibilityLabel="Número ou nome da mesa"
           />
           {errors.tableNumber && (
             <Text style={styles.errorText}>{errors.tableNumber}</Text>
@@ -189,6 +190,8 @@ export default function TableFormScreen() {
               onPress={decrementCapacity}
               style={styles.capacityButton}
               disabled={parseInt(capacity, 10) <= 1}
+              accessibilityRole="button"
+              accessibilityLabel="Diminuir capacidade"
             >
               <Icon name="minus" size={24} color={colors.foreground} />
             </Button>
@@ -202,6 +205,8 @@ export default function TableFormScreen() {
               onPress={incrementCapacity}
               style={styles.capacityButton}
               disabled={parseInt(capacity, 10) >= 50}
+              accessibilityRole="button"
+              accessibilityLabel="Aumentar capacidade"
             >
               <Icon name="plus" size={24} color={colors.foreground} />
             </Button>
@@ -240,6 +245,7 @@ export default function TableFormScreen() {
             outlineColor={colors.border}
             activeOutlineColor={colors.primary}
             textColor={colors.foreground}
+            accessibilityLabel="Notas opcionais sobre a mesa"
           />
         </Card>
 
@@ -253,6 +259,8 @@ export default function TableFormScreen() {
           contentStyle={styles.saveButtonContent}
           buttonColor={colors.primary}
           textColor={colors.primaryForeground}
+          accessibilityRole="button"
+          accessibilityLabel={isEditing ? 'Salvar Alterações' : 'Criar Mesa'}
         >
           {isEditing ? 'Salvar Alterações' : 'Criar Mesa'}
         </Button>

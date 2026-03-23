@@ -298,6 +298,9 @@ export default function AddressesScreen() {
               style={[styles.addressCard, address.is_default && styles.addressCardDefault]}
               onLongPress={() => handleLongPress(address)}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`${t(`addresses.labels.${address.label}`)} address: ${address.street}, ${address.number}${address.is_default ? ', default' : ''}`}
+              accessibilityHint="Long press for options"
             >
               <View style={styles.addressTop}>
                 <View style={styles.addressLabelRow}>
@@ -382,6 +385,7 @@ export default function AddressesScreen() {
                   textColor={colors.foreground}
                   outlineColor={colors.border}
                   activeOutlineColor={colors.primary}
+                  accessibilityLabel="Street name"
                 />
 
                 <View style={styles.formRow}>
@@ -395,6 +399,7 @@ export default function AddressesScreen() {
                     textColor={colors.foreground}
                     outlineColor={colors.border}
                     activeOutlineColor={colors.primary}
+                    accessibilityLabel="Street number"
                   />
                   <TextInput
                     label={t('addresses.form.complement')}
@@ -405,6 +410,7 @@ export default function AddressesScreen() {
                     textColor={colors.foreground}
                     outlineColor={colors.border}
                     activeOutlineColor={colors.primary}
+                    accessibilityLabel="Address complement"
                   />
                 </View>
 
@@ -417,6 +423,7 @@ export default function AddressesScreen() {
                   textColor={colors.foreground}
                   outlineColor={colors.border}
                   activeOutlineColor={colors.primary}
+                  accessibilityLabel="Neighborhood"
                 />
 
                 <View style={styles.formRow}>
@@ -429,6 +436,7 @@ export default function AddressesScreen() {
                     textColor={colors.foreground}
                     outlineColor={colors.border}
                     activeOutlineColor={colors.primary}
+                    accessibilityLabel="City"
                   />
                   <TextInput
                     label={t('addresses.form.state')}
@@ -441,6 +449,7 @@ export default function AddressesScreen() {
                     textColor={colors.foreground}
                     outlineColor={colors.border}
                     activeOutlineColor={colors.primary}
+                    accessibilityLabel="State"
                   />
                 </View>
 
@@ -455,6 +464,7 @@ export default function AddressesScreen() {
                   textColor={colors.foreground}
                   outlineColor={colors.border}
                   activeOutlineColor={colors.primary}
+                  accessibilityLabel="ZIP code"
                 />
               </ScrollView>
             </KeyboardAvoidingView>

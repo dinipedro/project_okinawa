@@ -441,13 +441,21 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Close receipt"
+        >
           <Ionicons name="close" size={24} color={colors.foreground} />
         </TouchableOpacity>
         <Text style={styles.title}>
           Comprovante Digital
         </Text>
-        <TouchableOpacity onPress={shareReceipt}>
+        <TouchableOpacity
+          onPress={shareReceipt}
+          accessibilityRole="button"
+          accessibilityLabel="Share receipt"
+        >
           <Ionicons name="share-outline" size={24} color={colors.primary} />
         </TouchableOpacity>
       </View>
@@ -618,16 +626,20 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
           <TouchableOpacity
             style={styles.actionButton}
             onPress={downloadReceipt}
+            accessibilityRole="button"
+            accessibilityLabel="Download receipt as PDF"
           >
             <Ionicons name="download-outline" size={20} color={colors.foreground} />
             <Text style={styles.actionButtonText}>
               Baixar PDF
             </Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={styles.actionButton}
             onPress={shareReceipt}
+            accessibilityRole="button"
+            accessibilityLabel="Send receipt by email"
           >
             <Ionicons name="mail-outline" size={20} color={colors.foreground} />
             <Text style={styles.actionButtonText}>
@@ -644,6 +656,8 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
         <TouchableOpacity
           style={styles.doneButton}
           onPress={() => navigation.navigate('Home')}
+          accessibilityRole="button"
+          accessibilityLabel="Go back to home"
         >
           <Text style={styles.doneButtonText}>Voltar ao Início</Text>
         </TouchableOpacity>

@@ -205,7 +205,13 @@ export default function StaffDetailScreen() {
       <View style={styles.emptyContainer}>
         <IconButton icon="alert-circle" size={48} iconColor={colors.mutedForeground} />
         <Text variant="headlineSmall" style={{ color: colors.foreground }}>{t('staff.notFound')}</Text>
-        <Button mode="contained" onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Button
+          mode="contained"
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.back')}
+        >
           {t('common.back')}
         </Button>
       </View>
@@ -308,6 +314,8 @@ export default function StaffDetailScreen() {
             style={styles.removeButton}
             textColor={colors.destructive}
             icon="account-remove"
+            accessibilityRole="button"
+            accessibilityLabel={`${t('staff.removeFromTeam')} ${staff.full_name}`}
           >
             {t('staff.removeFromTeam')}
           </Button>

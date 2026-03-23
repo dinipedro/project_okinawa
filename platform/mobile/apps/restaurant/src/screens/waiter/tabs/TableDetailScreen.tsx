@@ -770,6 +770,7 @@ export default function TableDetailScreen({
             onPress={() => setActiveSubTab(tab.id)}
             accessibilityRole="tab"
             accessibilityState={{ selected: activeSubTab === tab.id }}
+            accessibilityLabel={t(tab.labelKey)}
           >
             <Text
               style={[
@@ -962,7 +963,11 @@ export default function TableDetailScreen({
                   <Text style={styles.orderingForName}>
                     {guests.find((g) => g.id === orderingForGuest)?.name || 'Convidado'}
                   </Text>
-                  <TouchableOpacity onPress={() => setOrderingForGuest(null)}>
+                  <TouchableOpacity
+                    onPress={() => setOrderingForGuest(null)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('waiter.menu.ordering_for_change')}
+                  >
                     <Text style={styles.orderingForChange}>
                       {t('waiter.menu.ordering_for_change')}
                     </Text>
@@ -1020,6 +1025,7 @@ export default function TableDetailScreen({
                   onPress={() => setMenuCategory(c.cat)}
                   accessibilityRole="tab"
                   accessibilityState={{ selected: menuCategory === c.cat }}
+                  accessibilityLabel={c.cat}
                 >
                   <Text
                     style={[

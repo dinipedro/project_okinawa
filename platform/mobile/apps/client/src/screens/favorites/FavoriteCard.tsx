@@ -59,6 +59,8 @@ const FavoriteCard = memo<FavoriteCardProps>(({
             iconColor={colors.error}
             size={24}
             onPress={() => onRemove(favorite.restaurant.id, favorite.restaurant.name)}
+            accessibilityLabel={`Remove ${favorite.restaurant.name} from favorites`}
+            accessibilityRole="button"
           />
         </View>
 

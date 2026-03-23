@@ -474,6 +474,7 @@ export default function DailyReportScreen() {
       <TouchableOpacity
         onPress={handleExport}
         disabled={exporting}
+        accessibilityRole="button"
         accessibilityLabel={t('dailyReport.exportButton')}
         style={{
           marginHorizontal: 16,

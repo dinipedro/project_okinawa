@@ -4,6 +4,7 @@ import { Text, Card, ProgressBar, IconButton, ActivityIndicator, Chip, Button, D
 import ApiService from '@/shared/services/api';
 import { format } from 'date-fns';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
 import logger from '@okinawa/shared/utils/logger';
 
 interface LoyaltyProgram {
@@ -75,7 +76,7 @@ export default function LoyaltyScreen() {
       }
     } catch (error) {
       logger.error('Failed to load loyalty programs:', error);
-      Alert.alert('Error', 'Failed to load loyalty programs');
+      Alert.alert(t('common.error'), t('loyaltyScreen.errorLoad'));
     } finally {
       setLoading(false);
     }
@@ -126,17 +127,17 @@ export default function LoyaltyScreen() {
     if (!selectedProgram) return;
 
     if (selectedProgram.points_balance < reward.points_required) {
-      Alert.alert('Insufficient Points', 'You do not have enough points to redeem this reward');
+      Alert.alert(t('loyaltyScreen.insufficientPoints'), t('loyaltyScreen.insufficientPointsMessage'));
       return;
     }
 
     Alert.alert(
-      'Redeem Reward',
-      `Redeem ${reward.name} for ${reward.points_required} points?`,
+      t('loyaltyScreen.redeemTitle'),
+      t('loyaltyScreen.redeemConfirm', { name: reward.name, points: reward.points_required }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Redeem',
+          text: t('loyaltyScreen.redeemAction'),
           onPress: async () => {
             try {
               setRedeemingReward(reward.id);
@@ -147,10 +148,10 @@ export default function LoyaltyScreen() {
                 total_points_redeemed: selectedProgram.total_points_redeemed + reward.points_required,
               });
 
-              Alert.alert('Success', 'Reward redeemed successfully!');
+              Alert.alert(t('common.success'), t('loyaltyScreen.redeemSuccess'));
               await loadPrograms();
             } catch (error: any) {
-              Alert.alert('Error', error.response?.data?.message || 'Failed to redeem reward');
+              Alert.alert(t('common.error'), error.response?.data?.message || t('errors.generic'));
             } finally {
               setRedeemingReward(null);
             }
@@ -166,7 +167,7 @@ export default function LoyaltyScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading loyalty programs...</Text>
+        <Text style={styles.loadingText}>{t('loyaltyScreen.loadingPrograms')}</Text>
       </View>
     );
   }
@@ -176,10 +177,10 @@ export default function LoyaltyScreen() {
       <View style={styles.emptyContainer}>
         <IconButton icon="star-outline" size={80} iconColor={colors.foregroundMuted} />
         <Text variant="headlineSmall" style={styles.emptyTitle}>
-          No Loyalty Programs
+          {t('loyaltyScreen.emptyTitle')}
         </Text>
         <Text variant="bodyMedium" style={styles.emptyText}>
-          Start ordering from restaurants to join their loyalty programs and earn rewards!
+          {t('loyaltyScreen.emptyMessage')}
         </Text>
       </View>
     );
@@ -207,7 +208,7 @@ export default function LoyaltyScreen() {
                 onPress={() => setSelectedProgram(program)}
                 style={styles.programChip}
               >
-                {program.restaurant?.name || 'Restaurant'}
+                {program.restaurant?.name || t('loyaltyScreen.restaurantFallback')}
               </Chip>
             ))}
           </ScrollView>
@@ -217,7 +218,7 @@ export default function LoyaltyScreen() {
       <Card style={styles.headerCard}>
         <Card.Content>
           <Text variant="titleLarge" style={styles.restaurantName}>
-            {selectedProgram.restaurant?.name || 'Restaurant'}
+            {selectedProgram.restaurant?.name || t('loyaltyScreen.restaurantFallback')}
           </Text>
 
           <View style={styles.pointsContainer}>
@@ -226,7 +227,7 @@ export default function LoyaltyScreen() {
                 {selectedProgram.points_balance}
               </Text>
               <Text variant="bodyLarge" style={styles.pointsLabel}>
-                Points Available
+                {t('loyaltyScreen.pointsAvailable')}
               </Text>
             </View>
           </View>
@@ -237,7 +238,7 @@ export default function LoyaltyScreen() {
               style={[styles.tierChip, { backgroundColor: tierInfo.color }]}
               textStyle={styles.tierText}
             >
-              {tierInfo.name} Tier
+              {t('loyaltyScreen.tierLabel', { name: tierInfo.name })}
             </Chip>
           </View>
 
@@ -245,7 +246,7 @@ export default function LoyaltyScreen() {
             <View style={styles.progressContainer}>
               <View style={styles.progressHeader}>
                 <Text variant="bodyMedium" style={{ color: colors.foreground }}>
-                  Progress to {tierInfo.nextTier}
+                  {t('loyaltyScreen.progressTo', { tier: tierInfo.nextTier || '' })}
                 </Text>
                 <Text variant="bodyMedium" style={styles.progressPoints}>
                   {selectedProgram.total_points_earned} / {tierInfo.pointsRequired}
@@ -264,21 +265,21 @@ export default function LoyaltyScreen() {
       <Card style={styles.card}>
         <Card.Content>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            {tierInfo.name} Tier Benefits
+            {t('loyaltyScreen.tierBenefits', { name: tierInfo.name })}
           </Text>
           <View style={styles.benefitsList}>
             <View style={styles.benefitItem}>
               <IconButton icon="check-circle" size={20} iconColor={colors.success} style={styles.benefitIcon} />
-              <Text variant="bodyMedium" style={{ color: colors.foreground }}>Earn {tierInfo.name === 'Bronze' ? '1' : tierInfo.name === 'Silver' ? '1.5' : tierInfo.name === 'Gold' ? '2' : '3'}x points per dollar</Text>
+              <Text variant="bodyMedium" style={{ color: colors.foreground }}>{t('loyaltyScreen.earnPoints', { multiplier: tierInfo.name === 'Bronze' ? '1' : tierInfo.name === 'Silver' ? '1.5' : tierInfo.name === 'Gold' ? '2' : '3' })}</Text>
             </View>
             <View style={styles.benefitItem}>
               <IconButton icon="check-circle" size={20} iconColor={colors.success} style={styles.benefitIcon} />
-              <Text variant="bodyMedium" style={{ color: colors.foreground }}>Exclusive {tierInfo.name.toLowerCase()} member rewards</Text>
+              <Text variant="bodyMedium" style={{ color: colors.foreground }}>{t('loyaltyScreen.exclusiveRewards', { tier: tierInfo.name.toLowerCase() })}</Text>
             </View>
             {tierInfo.name !== 'Bronze' && (
               <View style={styles.benefitItem}>
                 <IconButton icon="check-circle" size={20} iconColor={colors.success} style={styles.benefitIcon} />
-                <Text variant="bodyMedium" style={{ color: colors.foreground }}>Priority reservation booking</Text>
+                <Text variant="bodyMedium" style={{ color: colors.foreground }}>{t('loyaltyScreen.priorityBooking')}</Text>
               </View>
             )}
           </View>
@@ -288,7 +289,7 @@ export default function LoyaltyScreen() {
       <Card style={styles.card}>
         <Card.Content>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Available Rewards
+            {t('loyaltyScreen.availableRewards')}
           </Text>
           {rewards.filter(r => r.is_available).map((reward) => (
             <View key={reward.id} style={styles.rewardItem}>
@@ -300,7 +301,7 @@ export default function LoyaltyScreen() {
                 <View style={styles.rewardPoints}>
                   <IconButton icon="star" size={16} iconColor={colors.warning} style={styles.rewardIcon} />
                   <Text variant="bodyMedium" style={styles.pointsText}>
-                    {reward.points_required} points
+                    {t('loyaltyScreen.pointsRequired', { count: reward.points_required })}
                   </Text>
                 </View>
               </View>
@@ -311,7 +312,7 @@ export default function LoyaltyScreen() {
                 loading={redeemingReward === reward.id}
                 style={styles.redeemButton}
               >
-                {selectedProgram.points_balance >= reward.points_required ? 'Redeem' : 'Locked'}
+                {selectedProgram.points_balance >= reward.points_required ? t('loyaltyScreen.redeemAction') : t('loyaltyScreen.lockedAction')}
               </Button>
             </View>
           ))}
@@ -321,7 +322,7 @@ export default function LoyaltyScreen() {
       <Card style={styles.card}>
         <Card.Content>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Statistics
+            {t('loyaltyScreen.statistics')}
           </Text>
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
@@ -329,7 +330,7 @@ export default function LoyaltyScreen() {
                 {selectedProgram.total_points_earned}
               </Text>
               <Text variant="bodySmall" style={styles.statLabel}>
-                Total Earned
+                {t('loyaltyScreen.totalEarned')}
               </Text>
             </View>
             <Divider style={styles.statDivider} />
@@ -338,7 +339,7 @@ export default function LoyaltyScreen() {
                 {selectedProgram.total_points_redeemed}
               </Text>
               <Text variant="bodySmall" style={styles.statLabel}>
-                Total Redeemed
+                {t('loyaltyScreen.totalRedeemed')}
               </Text>
             </View>
             <Divider style={styles.statDivider} />
@@ -347,7 +348,7 @@ export default function LoyaltyScreen() {
                 {selectedProgram.points_balance}
               </Text>
               <Text variant="bodySmall" style={styles.statLabel}>
-                Available
+                {t('loyaltyScreen.available')}
               </Text>
             </View>
           </View>
@@ -357,7 +358,7 @@ export default function LoyaltyScreen() {
       <Card style={styles.card}>
         <Card.Content>
           <Text variant="titleMedium" style={styles.sectionTitle}>
-            Recent Activity
+            {t('loyaltyScreen.recentActivity')}
           </Text>
           {transactions.slice(0, 5).map((transaction) => (
             <View key={transaction.id} style={styles.transactionItem}>

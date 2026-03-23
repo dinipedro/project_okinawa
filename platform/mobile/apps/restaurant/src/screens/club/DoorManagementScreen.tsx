@@ -190,6 +190,8 @@ function QueueEntryCard({
             }}
             onPress={() => onAdmit(entry.id)}
             activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel={`Admit ${entry.customerName}`}
           >
             <IconButton
               icon="check-circle"
@@ -213,6 +215,8 @@ function QueueEntryCard({
             }}
             onPress={() => onDeny(entry.id)}
             activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel={`Deny entry for ${entry.customerName}`}
           >
             <IconButton
               icon="close-circle"
@@ -476,6 +480,8 @@ export default function DoorManagementScreen({ route }: DoorManagementScreenProp
         <TouchableOpacity
           onPress={handleScanQr}
           activeOpacity={0.8}
+          accessibilityRole="button"
+          accessibilityLabel="Scan QR code"
           style={{
             flexDirection: 'row',
             alignItems: 'center',

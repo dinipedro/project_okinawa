@@ -199,6 +199,8 @@ function ScanResultDisplay({
               disabled={isCheckingIn}
               style={[styles.checkInBtn, { backgroundColor: colors.success }]}
               labelStyle={{ color: '#fff', fontWeight: '700' }}
+              accessibilityRole="button"
+              accessibilityLabel="Confirm guest check-in"
             >
               {t('club.door.admitted')}
             </Button>
@@ -407,6 +409,8 @@ export default function DoorControlScreen({ route }: DoorControlScreenProps) {
         contentStyle={styles.scanBtnContent}
         labelStyle={styles.scanBtnLabel}
         icon="qrcode-scan"
+        accessibilityRole="button"
+        accessibilityLabel="Scan QR code for entry validation"
       >
         {t('club.door.scan')}
       </Button>
@@ -424,6 +428,8 @@ export default function DoorControlScreen({ route }: DoorControlScreenProps) {
             mode="text"
             onPress={handleClearResult}
             style={styles.clearBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Clear scan result"
           >
             {t('common.clear')}
           </Button>
@@ -447,6 +453,7 @@ export default function DoorControlScreen({ route }: DoorControlScreenProps) {
               mode="outlined"
               style={styles.searchInput}
               dense
+              accessibilityLabel="Search guest by name or ticket"
             />
             <Button
               mode="contained-tonal"
@@ -454,6 +461,8 @@ export default function DoorControlScreen({ route }: DoorControlScreenProps) {
               loading={isSearching}
               disabled={isSearching || !searchQuery.trim()}
               compact
+              accessibilityRole="button"
+              accessibilityLabel="Search for guest manually"
             >
               {t('common.search')}
             </Button>

@@ -121,6 +121,9 @@ export default function TipsDistributionScreen() {
               selected={distributionMethod === 'equal'}
               onPress={() => setDistributionMethod('equal')}
               style={styles.methodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.equal')}
+              accessibilityState={{ selected: distributionMethod === 'equal' }}
             >
               {t('tips.equal')}
             </Chip>
@@ -128,6 +131,9 @@ export default function TipsDistributionScreen() {
               selected={distributionMethod === 'role'}
               onPress={() => setDistributionMethod('role')}
               style={styles.methodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.byRole')}
+              accessibilityState={{ selected: distributionMethod === 'role' }}
             >
               {t('tips.byRole')}
             </Chip>
@@ -135,12 +141,21 @@ export default function TipsDistributionScreen() {
               selected={distributionMethod === 'manual'}
               onPress={() => setDistributionMethod('manual')}
               style={styles.methodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.manual')}
+              accessibilityState={{ selected: distributionMethod === 'manual' }}
             >
               {t('tips.manual')}
             </Chip>
           </View>
           {distributionMethod !== 'manual' && (
-            <Button mode="outlined" onPress={calculateDistribution} style={styles.calculateButton}>
+            <Button
+              mode="outlined"
+              onPress={calculateDistribution}
+              style={styles.calculateButton}
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.calculateDistribution')}
+            >
               {t('tips.calculateDistribution')}
             </Button>
           )}
@@ -170,6 +185,7 @@ export default function TipsDistributionScreen() {
                     keyboardType="decimal-pad"
                     style={styles.manualInput}
                     dense
+                    accessibilityLabel={`${t('tips.totalTips')} ${person.staff_name}`}
                   />
                 ) : (
                   <View style={styles.amountContainer}>
@@ -218,6 +234,8 @@ export default function TipsDistributionScreen() {
           disabled={distributing || Math.abs(remaining) > 0.01}
           style={styles.distributeButton}
           icon="cash-multiple"
+          accessibilityRole="button"
+          accessibilityLabel={t('tips.confirmDistribution')}
         >
           {t('tips.confirmDistribution')}
         </Button>

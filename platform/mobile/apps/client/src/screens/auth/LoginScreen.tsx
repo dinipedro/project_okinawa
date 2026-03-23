@@ -178,6 +178,7 @@ export default function LoginScreen({ navigation }: any) {
         autoCapitalize="none"
         style={styles.input}
         error={!!fieldErrors.email}
+        accessibilityLabel="Email address"
       />
       {fieldErrors.email ? <HelperText type="error">{fieldErrors.email}</HelperText> : null}
 
@@ -193,6 +194,7 @@ export default function LoginScreen({ navigation }: any) {
         secureTextEntry
         style={styles.input}
         error={!!fieldErrors.password}
+        accessibilityLabel="Password"
       />
       {fieldErrors.password ? <HelperText type="error">{fieldErrors.password}</HelperText> : null}
 

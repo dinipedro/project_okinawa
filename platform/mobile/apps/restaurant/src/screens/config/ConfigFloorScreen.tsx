@@ -331,7 +331,7 @@ export default function ConfigFloorScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>{t('config.floor.sections')}</Text>
-            <TouchableOpacity style={styles.addButton} onPress={openAddSection} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.addButton} onPress={openAddSection} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={t('config.floor.addSection')}>
               <Text style={styles.addButtonText}>{t('config.floor.addSection')}</Text>
             </TouchableOpacity>
           </View>
@@ -349,10 +349,10 @@ export default function ConfigFloorScreen() {
                     {sec.name} {sec.capacity ? `(${sec.capacity})` : ''}
                   </Text>
                   <View style={styles.sectionCardActions}>
-                    <TouchableOpacity onPress={() => openEditSection(sec)}>
+                    <TouchableOpacity onPress={() => openEditSection(sec)} accessibilityRole="button" accessibilityLabel={t('common.edit')}>
                       <Text style={styles.actionText}>{t('common.edit')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => deleteSection(sec.id)}>
+                    <TouchableOpacity onPress={() => deleteSection(sec.id)} accessibilityRole="button" accessibilityLabel={t('common.delete')}>
                       <Text style={styles.deleteText}>{t('common.delete')}</Text>
                     </TouchableOpacity>
                   </View>
@@ -366,6 +366,8 @@ export default function ConfigFloorScreen() {
                       style={styles.tableChip}
                       onPress={() => openEditTable(tbl)}
                       onLongPress={() => deleteTable(tbl.id)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${t('config.floor.tableNumber')} ${tbl.tableNumber}, ${tbl.seats} ${t('config.floor.tableSeats')}`}
                     >
                       <Text style={styles.tableChipText}>
                         #{tbl.tableNumber} ({tbl.seats})
@@ -374,7 +376,7 @@ export default function ConfigFloorScreen() {
                   ))}
                 </View>
 
-                <TouchableOpacity onPress={() => openAddTable(sec.id)} style={{ marginTop: spacing[2] }}>
+                <TouchableOpacity onPress={() => openAddTable(sec.id)} style={{ marginTop: spacing[2] }} accessibilityRole="button" accessibilityLabel={t('config.floor.addTable')}>
                   <Text style={styles.actionText}>+ {t('config.floor.addTable')}</Text>
                 </TouchableOpacity>
               </View>
@@ -388,6 +390,8 @@ export default function ConfigFloorScreen() {
           onPress={handleSave}
           disabled={!isDirty || isSaving}
           activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={t('config.save')}
         >
           <Text style={styles.saveButtonText}>
             {isSaving ? t('config.saving') : t('config.save')}
@@ -409,6 +413,7 @@ export default function ConfigFloorScreen() {
               onChangeText={setSectionName}
               placeholder={t('config.floor.sectionName')}
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('config.floor.sectionName')}
             />
             <Text style={styles.fieldLabel}>{t('config.floor.sectionCapacity')}</Text>
             <RNTextInput
@@ -418,12 +423,13 @@ export default function ConfigFloorScreen() {
               keyboardType="numeric"
               placeholder="0"
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('config.floor.sectionCapacity')}
             />
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.modalButton} onPress={() => setShowSectionModal(false)}>
+              <TouchableOpacity style={styles.modalButton} onPress={() => setShowSectionModal(false)} accessibilityRole="button" accessibilityLabel={t('common.cancel')}>
                 <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalButton, styles.modalButtonPrimary]} onPress={saveSection}>
+              <TouchableOpacity style={[styles.modalButton, styles.modalButtonPrimary]} onPress={saveSection} accessibilityRole="button" accessibilityLabel={t('common.save')}>
                 <Text style={styles.modalButtonPrimaryText}>{t('common.save')}</Text>
               </TouchableOpacity>
             </View>
@@ -445,6 +451,7 @@ export default function ConfigFloorScreen() {
               onChangeText={setTableNumber}
               placeholder="1"
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('config.floor.tableNumber')}
             />
             <Text style={styles.fieldLabel}>{t('config.floor.tableSeats')}</Text>
             <RNTextInput
@@ -454,6 +461,7 @@ export default function ConfigFloorScreen() {
               keyboardType="numeric"
               placeholder="4"
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('config.floor.tableSeats')}
             />
             <Text style={styles.fieldLabel}>{t('config.floor.tableShape')}</Text>
             <View style={styles.shapeRow}>
@@ -462,6 +470,9 @@ export default function ConfigFloorScreen() {
                   key={shape}
                   style={[styles.shapeChip, tableShape === shape && styles.shapeChipSelected]}
                   onPress={() => setTableShape(shape)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(`config.floor.shape${shape.charAt(0).toUpperCase() + shape.slice(1)}`)}
+                  accessibilityState={{ selected: tableShape === shape }}
                 >
                   <Text style={[styles.shapeChipText, tableShape === shape && styles.shapeChipTextSelected]}>
                     {t(`config.floor.shape${shape.charAt(0).toUpperCase() + shape.slice(1)}`)}
@@ -470,10 +481,10 @@ export default function ConfigFloorScreen() {
               ))}
             </View>
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.modalButton} onPress={() => setShowTableModal(false)}>
+              <TouchableOpacity style={styles.modalButton} onPress={() => setShowTableModal(false)} accessibilityRole="button" accessibilityLabel={t('common.cancel')}>
                 <Text style={styles.modalButtonText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalButton, styles.modalButtonPrimary]} onPress={saveTable}>
+              <TouchableOpacity style={[styles.modalButton, styles.modalButtonPrimary]} onPress={saveTable} accessibilityRole="button" accessibilityLabel={t('common.save')}>
                 <Text style={styles.modalButtonPrimaryText}>{t('common.save')}</Text>
               </TouchableOpacity>
             </View>

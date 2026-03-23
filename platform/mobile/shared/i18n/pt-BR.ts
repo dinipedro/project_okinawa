@@ -37,6 +37,7 @@ export const ptBR = {
     comingSoon: 'Em breve',
     featureInDevelopment: 'Funcionalidade em desenvolvimento',
     all: 'Todos',
+    permissionRequired: 'Permissão necessária',
   },
 
   // Auth
@@ -213,6 +214,7 @@ export const ptBR = {
     ingredients: 'Ingredientes',
     allergens: 'Alérgenos',
     preparationTime: 'Tempo de preparo',
+    each: 'cada',
     available: 'Disponível',
     unavailable: 'Indisponível',
     outOfStock: 'Esgotado',
@@ -490,6 +492,7 @@ export const ptBR = {
     distance: '{{distance}} km',
     deliveryTime: '{{time}} min',
     minimumOrder: 'Pedido mínimo',
+    minOrder: 'Pedido mínimo',
     deliveryFee: 'Taxa de entrega',
     about: 'Sobre',
     photos: 'Fotos',
@@ -2167,6 +2170,62 @@ export const ptBR = {
       discount: 'Desconto (%)',
       saved: 'Salvo',
     },
+  },
+
+  // Cuisine Types (Client App)
+  cuisine: {
+    japanese: 'Japonesa',
+    italian: 'Italiana',
+    brazilian: 'Brasileira',
+    mexican: 'Mexicana',
+    chinese: 'Chinesa',
+    indian: 'Indiana',
+    sushi: 'Sushi',
+    vegan: 'Vegana',
+    fastFood: 'Fast Food',
+  },
+
+  // Explore Screen (Client App)
+  explore: {
+    searchPlaceholder: 'Buscar restaurantes...',
+    list: 'Lista',
+    map: 'Mapa',
+    noRestaurants: 'Nenhum restaurante encontrado',
+  },
+
+  // Location (Client App)
+  location: {
+    permissionMessage: 'Precisamos de acesso à sua localização para mostrar restaurantes próximos.',
+  },
+
+  // Loyalty Screen — restaurant-based loyalty programs (Client App)
+  loyaltyScreen: {
+    loadingPrograms: 'Carregando programas de fidelidade...',
+    errorLoad: 'Falha ao carregar programas de fidelidade',
+    emptyTitle: 'Nenhum Programa de Fidelidade',
+    emptyMessage: 'Comece a pedir em restaurantes para participar de programas de fidelidade e ganhar recompensas!',
+    insufficientPoints: 'Pontos Insuficientes',
+    insufficientPointsMessage: 'Você não tem pontos suficientes para resgatar esta recompensa',
+    redeemTitle: 'Resgatar Recompensa',
+    redeemConfirm: 'Resgatar {{name}} por {{points}} pontos?',
+    redeemSuccess: 'Recompensa resgatada com sucesso!',
+    redeemAction: 'Resgatar',
+    lockedAction: 'Bloqueado',
+    restaurantFallback: 'Restaurante',
+    pointsAvailable: 'Pontos Disponíveis',
+    tierLabel: 'Nível {{name}}',
+    tierBenefits: 'Benefícios do Nível {{name}}',
+    progressTo: 'Progresso para {{tier}}',
+    earnPoints: 'Ganhe {{multiplier}}x pontos por real gasto',
+    exclusiveRewards: 'Recompensas exclusivas para membros {{tier}}',
+    priorityBooking: 'Reserva prioritária',
+    availableRewards: 'Recompensas Disponíveis',
+    pointsRequired: '{{count}} pontos',
+    statistics: 'Estatísticas',
+    totalEarned: 'Total Ganho',
+    totalRedeemed: 'Total Resgatado',
+    available: 'Disponível',
+    recentActivity: 'Atividade Recente',
   },
 
   // Service Calls

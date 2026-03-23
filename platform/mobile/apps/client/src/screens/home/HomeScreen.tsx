@@ -76,12 +76,12 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const cuisineTypes = [
-    { id: 'japanese', label: 'Japonesa', icon: '🍣' },
-    { id: 'italian', label: 'Italiana', icon: '🍕' },
-    { id: 'brazilian', label: 'Brasileira', icon: '🍖' },
-    { id: 'mexican', label: 'Mexicana', icon: '🌮' },
-    { id: 'chinese', label: 'Chinesa', icon: '🥡' },
-    { id: 'indian', label: 'Indiana', icon: '🍛' },
+    { id: 'japanese', label: t('cuisine.japanese'), icon: '🍣' },
+    { id: 'italian', label: t('cuisine.italian'), icon: '🍕' },
+    { id: 'brazilian', label: t('cuisine.brazilian'), icon: '🍖' },
+    { id: 'mexican', label: t('cuisine.mexican'), icon: '🌮' },
+    { id: 'chinese', label: t('cuisine.chinese'), icon: '🥡' },
+    { id: 'indian', label: t('cuisine.indian'), icon: '🍛' },
   ];
 
   const fetchData = useCallback(async () => {
@@ -343,11 +343,14 @@ export default function HomeScreen() {
       style={[styles.restaurantCard, { width: CARD_WIDTH, marginLeft: index === 0 ? 16 : 8 }]}
       onPress={() => handleRestaurantPress(restaurant.id)}
       activeOpacity={0.8}
+      accessibilityRole="button"
+      accessibilityLabel={`View ${restaurant.name} restaurant`}
     >
       <Image
         source={{ uri: restaurant.cover_image_url || 'https://via.placeholder.com/300x150' }}
         style={styles.restaurantImage}
         resizeMode="cover"
+        accessibilityLabel={`${restaurant.name} cover photo`}
       />
       <View style={styles.restaurantInfo}>
         <Text variant="titleMedium" numberOfLines={1} style={styles.restaurantName}>
@@ -379,6 +382,8 @@ export default function HomeScreen() {
       style={styles.orderCard}
       onPress={() => handleOrderPress(order.id)}
       activeOpacity={0.8}
+      accessibilityRole="button"
+      accessibilityLabel={`View order from ${order.restaurant?.name}`}
     >
       <View style={styles.orderHeader}>
         <Text variant="titleSmall" style={styles.orderNumber}>
@@ -432,13 +437,17 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View>
           <Text variant="bodyMedium" style={styles.greeting}>
-            {user ? `${t('common.greeting') || 'Olá'}, ${user.full_name?.split(' ')[0] || ''}!` : t('navigation.home')}
+            {user ? `${t('common.greeting')}, ${user.full_name?.split(' ')[0] || ''}!` : t('navigation.home')}
           </Text>
           <Text variant="headlineSmall" style={styles.headerTitle}>
             {t('restaurant.searchRestaurants')}
           </Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('Notifications' as never)}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Notifications' as never)}
+          accessibilityRole="button"
+          accessibilityLabel="View notifications"
+        >
           <IconButton icon="bell-outline" size={24} iconColor={colors.foreground} />
         </TouchableOpacity>
       </View>
@@ -468,6 +477,8 @@ export default function HomeScreen() {
             style={styles.cuisineChip}
             onPress={() => handleCuisinePress(cuisine.id)}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={`Filter by ${cuisine.label} cuisine`}
           >
             <Text style={styles.cuisineIcon}>{cuisine.icon}</Text>
             <Text variant="bodySmall" style={styles.cuisineLabel}>
@@ -484,7 +495,11 @@ export default function HomeScreen() {
             <Text variant="titleLarge" style={styles.sectionTitle}>
               {t('orders.myOrders')}
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Orders' as never)}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Orders' as never)}
+              accessibilityRole="link"
+              accessibilityLabel="View all orders"
+            >
               <Text style={styles.seeAllText}>{t('common.viewAll')}</Text>
             </TouchableOpacity>
           </View>
@@ -500,7 +515,11 @@ export default function HomeScreen() {
           <Text variant="titleLarge" style={styles.sectionTitle}>
             {t('restaurant.nearbyRestaurants')}
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Explore' as never, { filter: 'nearby' } as never)}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Explore' as never, { filter: 'nearby' } as never)}
+            accessibilityRole="link"
+            accessibilityLabel="View all nearby restaurants"
+          >
             <Text style={styles.seeAllText}>{t('common.viewAll')}</Text>
           </TouchableOpacity>
         </View>
@@ -510,7 +529,7 @@ export default function HomeScreen() {
           </ScrollView>
         ) : (
           <View style={styles.emptySection}>
-            <Text style={styles.emptyText}>{t('empty.restaurants') || 'Nenhum restaurante encontrado'}</Text>
+            <Text style={styles.emptyText}>{t('empty.restaurants')}</Text>
           </View>
         )}
       </View>
@@ -519,9 +538,13 @@ export default function HomeScreen() {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text variant="titleLarge" style={styles.sectionTitle}>
-            {t('menu.popular') || 'Populares'}
+            {t('menu.popular')}
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Explore' as never, { filter: 'popular' } as never)}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Explore' as never, { filter: 'popular' } as never)}
+            accessibilityRole="link"
+            accessibilityLabel="View all popular restaurants"
+          >
             <Text style={styles.seeAllText}>{t('common.viewAll')}</Text>
           </TouchableOpacity>
         </View>
@@ -531,7 +554,7 @@ export default function HomeScreen() {
           </ScrollView>
         ) : (
           <View style={styles.emptySection}>
-            <Text style={styles.emptyText}>{t('empty.restaurants') || 'Nenhum restaurante encontrado'}</Text>
+            <Text style={styles.emptyText}>{t('empty.restaurants')}</Text>
           </View>
         )}
       </View>

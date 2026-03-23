@@ -113,6 +113,9 @@ export default function BuffetCheckinScreen({
                   ]}
                   onPress={handleDecrement}
                   disabled={covers <= 1}
+                  accessibilityRole="button"
+                  accessibilityLabel="Decrease number of covers"
+                  accessibilityState={{ disabled: covers <= 1 }}
                 >
                   <Text style={[typography.h2, { color: colors.foreground }]}>-</Text>
                 </TouchableOpacity>
@@ -131,6 +134,9 @@ export default function BuffetCheckinScreen({
                   ]}
                   onPress={handleIncrement}
                   disabled={covers >= 20}
+                  accessibilityRole="button"
+                  accessibilityLabel="Increase number of covers"
+                  accessibilityState={{ disabled: covers >= 20 }}
                 >
                   <Text style={[typography.h2, { color: colors.foreground }]}>+</Text>
                 </TouchableOpacity>

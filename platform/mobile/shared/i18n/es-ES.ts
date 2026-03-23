@@ -37,6 +37,7 @@ export const esES = {
     comingSoon: 'Próximamente',
     featureInDevelopment: 'Función en desarrollo',
     all: 'Todos',
+    permissionRequired: 'Permiso requerido',
   },
 
   // Auth
@@ -218,6 +219,7 @@ export const esES = {
     ingredients: 'Ingredientes',
     allergens: 'Alérgenos',
     preparationTime: 'Tiempo de preparación',
+    each: 'cada uno',
     available: 'Disponible',
     unavailable: 'No disponible',
     outOfStock: 'Agotado',
@@ -495,6 +497,7 @@ export const esES = {
     distance: '{{distance}} km',
     deliveryTime: '{{time}} min',
     minimumOrder: 'Pedido mínimo',
+    minOrder: 'Pedido mínimo',
     deliveryFee: 'Costo de entrega',
     about: 'Acerca de',
     photos: 'Fotos',
@@ -2172,6 +2175,62 @@ export const esES = {
       discount: 'Descuento (%)',
       saved: 'Guardado',
     },
+  },
+
+  // Cuisine Types (Client App)
+  cuisine: {
+    japanese: 'Japonesa',
+    italian: 'Italiana',
+    brazilian: 'Brasileña',
+    mexican: 'Mexicana',
+    chinese: 'China',
+    indian: 'India',
+    sushi: 'Sushi',
+    vegan: 'Vegana',
+    fastFood: 'Comida Rápida',
+  },
+
+  // Explore Screen (Client App)
+  explore: {
+    searchPlaceholder: 'Buscar restaurantes...',
+    list: 'Lista',
+    map: 'Mapa',
+    noRestaurants: 'No se encontraron restaurantes',
+  },
+
+  // Location (Client App)
+  location: {
+    permissionMessage: 'Necesitamos acceso a tu ubicación para mostrar restaurantes cercanos.',
+  },
+
+  // Loyalty Screen — restaurant-based loyalty programs (Client App)
+  loyaltyScreen: {
+    loadingPrograms: 'Cargando programas de fidelidad...',
+    errorLoad: 'Error al cargar programas de fidelidad',
+    emptyTitle: 'Sin Programas de Fidelidad',
+    emptyMessage: '¡Empieza a pedir en restaurantes para unirte a sus programas de fidelidad y ganar recompensas!',
+    insufficientPoints: 'Puntos Insuficientes',
+    insufficientPointsMessage: 'No tienes suficientes puntos para canjear esta recompensa',
+    redeemTitle: 'Canjear Recompensa',
+    redeemConfirm: '¿Canjear {{name}} por {{points}} puntos?',
+    redeemSuccess: '¡Recompensa canjeada con éxito!',
+    redeemAction: 'Canjear',
+    lockedAction: 'Bloqueado',
+    restaurantFallback: 'Restaurante',
+    pointsAvailable: 'Puntos Disponibles',
+    tierLabel: 'Nivel {{name}}',
+    tierBenefits: 'Beneficios del Nivel {{name}}',
+    progressTo: 'Progreso hacia {{tier}}',
+    earnPoints: 'Gana {{multiplier}}x puntos por peso gastado',
+    exclusiveRewards: 'Recompensas exclusivas para miembros {{tier}}',
+    priorityBooking: 'Reserva prioritaria',
+    availableRewards: 'Recompensas Disponibles',
+    pointsRequired: '{{count}} puntos',
+    statistics: 'Estadísticas',
+    totalEarned: 'Total Ganado',
+    totalRedeemed: 'Total Canjeado',
+    available: 'Disponible',
+    recentActivity: 'Actividad Reciente',
   },
 
   // Service Calls

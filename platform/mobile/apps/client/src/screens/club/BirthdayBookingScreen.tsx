@@ -215,6 +215,9 @@ function PackageCard({
         onSelect(pkg);
       }}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={`${pkg.name}: R$ ${pkg.price.toFixed(2)} per person`}
+      accessibilityState={{ selected: isSelected }}
     >
       <Card
         style={[
@@ -459,6 +462,9 @@ export default function BirthdayBookingScreen({ route }: BirthdayBookingScreenPr
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setSelectedDate(d.value);
               }}
+              accessibilityRole="button"
+              accessibilityLabel={d.label}
+              accessibilityState={{ selected: selectedDate === d.value }}
               style={[
                 styles.dateChip,
                 {
@@ -552,6 +558,7 @@ export default function BirthdayBookingScreen({ route }: BirthdayBookingScreenPr
           onChangeText={setCelebrantName}
           mode="outlined"
           style={styles.input}
+          accessibilityLabel="Celebrant name"
         />
       </View>
 
@@ -565,6 +572,7 @@ export default function BirthdayBookingScreen({ route }: BirthdayBookingScreenPr
           multiline
           numberOfLines={3}
           style={styles.input}
+          accessibilityLabel="Birthday message"
         />
       </View>
 

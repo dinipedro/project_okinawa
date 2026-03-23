@@ -166,6 +166,9 @@ export default function FinancialReportScreen() {
               selected={period === 'week'}
               onPress={() => setPeriod('week')}
               style={styles.periodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('financial.week')}
+              accessibilityState={{ selected: period === 'week' }}
             >
               {t('financial.week')}
             </Chip>
@@ -173,6 +176,9 @@ export default function FinancialReportScreen() {
               selected={period === 'month'}
               onPress={() => setPeriod('month')}
               style={styles.periodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('financial.month')}
+              accessibilityState={{ selected: period === 'month' }}
             >
               {t('financial.month')}
             </Chip>
@@ -180,6 +186,9 @@ export default function FinancialReportScreen() {
               selected={period === 'year'}
               onPress={() => setPeriod('year')}
               style={styles.periodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('financial.year')}
+              accessibilityState={{ selected: period === 'year' }}
             >
               {t('financial.year')}
             </Chip>
@@ -284,13 +293,15 @@ export default function FinancialReportScreen() {
 
       {/* Export Actions */}
       <View style={styles.actions}>
-        <Button 
-          mode="contained" 
-          onPress={showExportOptions} 
-          icon="download" 
+        <Button
+          mode="contained"
+          onPress={showExportOptions}
+          icon="download"
           style={styles.exportButton}
           loading={exporting}
           disabled={exporting}
+          accessibilityRole="button"
+          accessibilityLabel={t('financial.exportPdf')}
         >
           {exporting ? 'Exportando...' : t('financial.exportPdf')}
         </Button>

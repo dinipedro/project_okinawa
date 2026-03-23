@@ -51,6 +51,8 @@ export default function StockAlertBanner({ restaurantId, onPress }: StockAlertBa
       ]}
       onPress={onPress}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={t('stock.alertBannerTitle')}
     >
       <View style={styles.content}>
         <Text style={[styles.title, { color: colors.foreground }]}>

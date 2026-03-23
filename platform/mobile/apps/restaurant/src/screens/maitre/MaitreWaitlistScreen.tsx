@@ -512,6 +512,7 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
                   <TouchableOpacity
                     style={styles.kidsBadge}
                     onPress={() => toggleExpand(item.id)}
+                    accessibilityRole="button"
                     accessibilityLabel={t('waitlistMgmt.kidsLabel')}
                   >
                     <IconButton
@@ -590,7 +591,8 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
                 onPress={() => handleOpenCallModal(item)}
                 style={styles.callButton}
                 compact
-                accessibilityLabel={t('waitlistMgmt.call')}
+                accessibilityRole="button"
+                accessibilityLabel={`${t('waitlistMgmt.call')} ${item.customer_name}`}
               >
                 {t('waitlistMgmt.call')}
               </Button>
@@ -602,7 +604,8 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
                 onPress={() => handleSeatGuest(item)}
                 style={styles.seatButton}
                 compact
-                accessibilityLabel={t('waitlistMgmt.seated')}
+                accessibilityRole="button"
+                accessibilityLabel={`${t('waitlistMgmt.seated')} ${item.customer_name}`}
               >
                 {t('waitlistMgmt.seated')}
               </Button>
@@ -614,7 +617,8 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
               style={styles.noShowButton}
               labelStyle={styles.noShowLabel}
               compact
-              accessibilityLabel={t('waitlistMgmt.noShow')}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('waitlistMgmt.noShow')} ${item.customer_name}`}
             >
               {t('waitlistMgmt.noShow')}
             </Button>
@@ -738,6 +742,7 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
                 mode="outlined"
                 onPress={() => setCallModalVisible(false)}
                 style={styles.modalButton}
+                accessibilityRole="button"
                 accessibilityLabel={t('common.cancel')}
               >
                 {t('common.cancel')}
@@ -748,6 +753,7 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
                 loading={actionLoading}
                 disabled={actionLoading}
                 style={styles.modalConfirmButton}
+                accessibilityRole="button"
                 accessibilityLabel={t('waitlistMgmt.confirmCall')}
               >
                 {t('waitlistMgmt.confirmCall')}

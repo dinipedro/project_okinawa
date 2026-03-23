@@ -486,6 +486,8 @@ export default function GuestInvitationScreen() {
                   size={20}
                   onPress={() => handleCancelInvite(guest.id)}
                   iconColor={colors.textMuted}
+                  accessibilityLabel={`Cancel invite for ${guest.guest_user?.full_name || guest.guest_name}`}
+                  accessibilityRole="button"
                 />
               )}
             </View>
@@ -514,6 +516,7 @@ export default function GuestInvitationScreen() {
             style={styles.searchInput}
             textColor={colors.foreground}
             placeholderTextColor={colors.textMuted}
+            accessibilityLabel="Search contacts"
           />
 
           {/* Contact List */}
@@ -523,6 +526,8 @@ export default function GuestInvitationScreen() {
               style={styles.contactItem}
               onPress={() => handleInviteContact(contact)}
               disabled={inviting}
+              accessibilityRole="button"
+              accessibilityLabel={`Invite ${contact.name}`}
             >
               <Avatar.Text
                 size={40}
@@ -564,6 +569,7 @@ export default function GuestInvitationScreen() {
                 label="Nome *"
                 style={styles.input}
                 textColor={colors.foreground}
+                accessibilityLabel="Guest name"
               />
               <TextInput
                 value={manualPhone}
@@ -573,6 +579,7 @@ export default function GuestInvitationScreen() {
                 keyboardType="phone-pad"
                 style={styles.input}
                 textColor={colors.foreground}
+                accessibilityLabel="Guest phone number"
               />
               <TextInput
                 value={manualEmail}
@@ -583,6 +590,7 @@ export default function GuestInvitationScreen() {
                 autoCapitalize="none"
                 style={styles.input}
                 textColor={colors.foreground}
+                accessibilityLabel="Guest email address"
               />
               <View style={styles.manualButtons}>
                 <Button

@@ -330,7 +330,11 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
           <Ionicons name="arrow-back" size={24} color={colors.foreground} />
         </TouchableOpacity>
         <Text style={styles.title}>
@@ -346,6 +350,9 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
             key={step}
             style={styles.stepWrapper}
             onPress={() => setCurrentStep(index)}
+            accessibilityRole="button"
+            accessibilityLabel={`Go to ${categoryLabels[step]} step`}
+            accessibilityState={{ selected: index === currentStep }}
           >
             <View
               style={[
@@ -397,6 +404,9 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
                   ingredient.id,
                   ['base', 'protein', 'sauce'].includes(currentCategory) ? 1 : undefined
                 )}
+                accessibilityRole="button"
+                accessibilityLabel={`${ingredient.name}, ${ingredient.calories} kcal${ingredient.price > 0 ? `, +R$ ${ingredient.price.toFixed(2)}` : ''}`}
+                accessibilityState={{ selected: isSelected }}
               >
                 <Text style={styles.ingredientEmoji}>{ingredient.image}</Text>
                 <Text style={styles.ingredientName}>
@@ -444,6 +454,8 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => setCurrentStep(prev => prev - 1)}
+              accessibilityRole="button"
+              accessibilityLabel="Previous step"
             >
               <Text style={styles.backButtonText}>
                 Voltar
@@ -455,6 +467,8 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
             <TouchableOpacity
               style={styles.nextButton}
               onPress={() => setCurrentStep(prev => prev + 1)}
+              accessibilityRole="button"
+              accessibilityLabel="Next step"
             >
               <Text style={styles.nextButtonText}>Próximo</Text>
               <Ionicons name="arrow-forward" size={18} color={colors.primaryForeground} />
@@ -467,6 +481,9 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
               ]}
               onPress={addToOrder}
               disabled={getSelectedCount() === 0}
+              accessibilityRole="button"
+              accessibilityLabel="Add custom dish to order"
+              accessibilityState={{ disabled: getSelectedCount() === 0 }}
             >
               <Text style={styles.nextButtonText}>Adicionar ao Pedido</Text>
             </TouchableOpacity>

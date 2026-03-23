@@ -128,6 +128,9 @@ export default function ReviewsScreen() {
             key={star}
             onPress={() => interactive && onPress && onPress(star)}
             disabled={!interactive}
+            accessibilityRole={interactive ? 'button' : undefined}
+            accessibilityLabel={interactive ? `Rate ${star} star${star !== 1 ? 's' : ''}` : undefined}
+            accessibilityState={interactive ? { selected: star <= rating } : undefined}
           >
             <IconButton
               icon={star <= rating ? 'star' : 'star-outline'}
@@ -186,12 +189,14 @@ export default function ReviewsScreen() {
                     size={20}
                     onPress={() => handleEditReview(item)}
                     iconColor={colors.primary}
+                    accessibilityLabel={`Edit review for ${item.restaurant?.name || 'restaurant'}`}
                   />
                   <IconButton
                     icon="delete"
                     size={20}
                     onPress={() => handleDeleteReview(item)}
                     iconColor={colors.error}
+                    accessibilityLabel={`Delete review for ${item.restaurant?.name || 'restaurant'}`}
                   />
                 </View>
               </View>
@@ -257,6 +262,7 @@ export default function ReviewsScreen() {
                 numberOfLines={4}
                 placeholder="Share your experience..."
                 style={styles.commentInput}
+                accessibilityLabel="Your review comment"
               />
             </Card.Content>
             <Card.Actions>

@@ -314,7 +314,7 @@ export default function ReportsScreen() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 }}>
         <Text variant="bodyLarge" style={{ color: colors.foregroundSecondary, marginBottom: 16, textAlign: 'center' }}>{t('common.error')}</Text>
-        <TouchableOpacity onPress={loadData} accessibilityLabel={t('common.retry')}>
+        <TouchableOpacity onPress={loadData} accessibilityRole="button" accessibilityLabel={t('common.retry')}>
           <Text variant="labelLarge" style={{ color: colors.primary, fontWeight: '600' }}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
@@ -381,6 +381,7 @@ export default function ReportsScreen() {
               {/* Export button */}
               <TouchableOpacity
                 onPress={handleExport}
+                accessibilityRole="button"
                 accessibilityLabel={t('reports.export')}
                 style={{
                   flexDirection: 'row',
@@ -407,6 +408,9 @@ export default function ReportsScreen() {
             <TouchableOpacity
               key={r}
               onPress={() => setDateRange(r)}
+              accessibilityRole="button"
+              accessibilityLabel={t(`reports.dateRange.${r}`)}
+              accessibilityState={{ selected: dateRange === r }}
               style={{
                 flex: 1,
                 alignItems: 'center',

@@ -173,6 +173,8 @@ export default function DriveThruScreen() {
               onPress={() => handleConfirmPickup(item.id)}
               style={[styles.pickupButton, { backgroundColor: colors.success }]}
               labelStyle={{ color: colors.foregroundInverse }}
+              accessibilityRole="button"
+              accessibilityLabel={`Confirm pickup for order ${item.orderNumber}`}
             >
               {t('driveThru.confirmPickup')}
             </Button>
@@ -200,6 +202,8 @@ export default function DriveThruScreen() {
         <TouchableOpacity
           style={[styles.confirmBannerButton, { backgroundColor: colors.foregroundInverse }]}
           onPress={() => handleConfirmPickup(item.id)}
+          accessibilityRole="button"
+          accessibilityLabel={`Confirm pickup for order ${item.orderNumber}`}
         >
           <Text style={[typography.buttonLarge, { color: colors.success }]}>
             {t('driveThru.confirmPickup')}

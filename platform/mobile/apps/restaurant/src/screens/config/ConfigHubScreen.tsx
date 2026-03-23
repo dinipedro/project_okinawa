@@ -348,6 +348,8 @@ export default function ConfigHubScreen() {
           key={section.id}
           activeOpacity={0.7}
           onPress={() => navigation.navigate(section.screen)}
+          accessibilityRole="button"
+          accessibilityLabel={t(section.titleKey)}
           style={{
             flexDirection: 'row',
             alignItems: 'center',

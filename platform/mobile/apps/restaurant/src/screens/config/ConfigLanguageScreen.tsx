@@ -169,6 +169,9 @@ export default function ConfigLanguageScreen() {
             style={styles.optionRow}
             onPress={() => handleLanguageChange(option.code)}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={option.name}
+            accessibilityState={{ selected: selectedLang === option.code }}
           >
             <View style={styles.optionInfo}>
               <Text style={styles.optionFlag}>{option.flag}</Text>
@@ -191,6 +194,9 @@ export default function ConfigLanguageScreen() {
               style={[styles.chip, selectedCurrency === opt.value && styles.chipSelected]}
               onPress={() => { setSelectedCurrency(opt.value); setIsDirty(true); }}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={t(opt.labelKey)}
+              accessibilityState={{ selected: selectedCurrency === opt.value }}
             >
               <Text style={[styles.chipText, selectedCurrency === opt.value && styles.chipTextSelected]}>
                 {t(opt.labelKey)}
@@ -210,6 +216,9 @@ export default function ConfigLanguageScreen() {
               style={[styles.chip, selectedDateFormat === opt.value && styles.chipSelected]}
               onPress={() => { setSelectedDateFormat(opt.value); setIsDirty(true); }}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={t(opt.labelKey)}
+              accessibilityState={{ selected: selectedDateFormat === opt.value }}
             >
               <Text style={[styles.chipText, selectedDateFormat === opt.value && styles.chipTextSelected]}>
                 {t(opt.labelKey)}
@@ -225,6 +234,8 @@ export default function ConfigLanguageScreen() {
         onPress={handleSave}
         disabled={!isDirty || isSaving}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={t('config.save')}
       >
         <Text style={styles.saveButtonText}>
           {isSaving ? t('config.saving') : t('config.save')}

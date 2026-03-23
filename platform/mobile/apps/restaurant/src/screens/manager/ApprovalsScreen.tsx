@@ -582,6 +582,9 @@ export default function ApprovalsScreen() {
                     style={styles.approveButton}
                     onPress={() => handleResolve(approval.id, 'approved')}
                     activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${t('approvals.approveButton')} ${approval.item_name}`}
+                    accessibilityHint={t('approvals.approveButton')}
                   >
                     <IconButton
                       icon="check-circle"
@@ -595,6 +598,9 @@ export default function ApprovalsScreen() {
                     style={styles.rejectButton}
                     onPress={() => showRejectDialog(approval.id)}
                     activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${t('approvals.rejectButton')} ${approval.item_name}`}
+                    accessibilityHint={t('approvals.rejectButton')}
                   >
                     <IconButton
                       icon="close-circle"

@@ -529,6 +529,7 @@ export default function GroupBookingScreen() {
         style={styles.input}
         outlineColor={colors.cardBorder}
         activeOutlineColor={colors.primary}
+        accessibilityLabel="Coordinator name"
       />
 
       <TextInput
@@ -540,6 +541,7 @@ export default function GroupBookingScreen() {
         style={styles.input}
         outlineColor={colors.cardBorder}
         activeOutlineColor={colors.primary}
+        accessibilityLabel="Coordinator phone number"
       />
 
       <TextInput
@@ -552,6 +554,7 @@ export default function GroupBookingScreen() {
         style={styles.input}
         outlineColor={colors.cardBorder}
         activeOutlineColor={colors.primary}
+        accessibilityLabel="Coordinator email address"
       />
     </View>
   );
@@ -605,6 +608,7 @@ export default function GroupBookingScreen() {
         style={styles.input}
         outlineColor={colors.cardBorder}
         activeOutlineColor={colors.primary}
+        accessibilityLabel="Additional notes for the group booking"
       />
 
       {/* Deposit summary */}

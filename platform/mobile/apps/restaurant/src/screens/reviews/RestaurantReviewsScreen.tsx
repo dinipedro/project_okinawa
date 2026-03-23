@@ -251,7 +251,7 @@ export default function RestaurantReviewsScreen() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 }}>
         <Text variant="bodyLarge" style={{ color: colors.foregroundSecondary, marginBottom: 16, textAlign: 'center' }}>{t('common.error')}</Text>
-        <TouchableOpacity onPress={loadData} accessibilityLabel={t('common.retry')}>
+        <TouchableOpacity onPress={loadData} accessibilityRole="button" accessibilityLabel={t('common.retry')}>
           <Text variant="labelLarge" style={{ color: colors.primary, fontWeight: '600' }}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
@@ -365,6 +365,9 @@ export default function RestaurantReviewsScreen() {
               <TouchableOpacity
                 key={f.value}
                 onPress={() => setFilter(f.value)}
+                accessibilityRole="button"
+                accessibilityLabel={f.label}
+                accessibilityState={{ selected: filter === f.value }}
                 style={{
                   paddingHorizontal: 12,
                   paddingVertical: 7,
@@ -457,6 +460,7 @@ export default function RestaurantReviewsScreen() {
               {!review.owner_response && respondingTo !== review.id && (
                 <TouchableOpacity
                   onPress={() => setRespondingTo(review.id)}
+                  accessibilityRole="button"
                   accessibilityLabel={t('reviews.respond')}
                   style={{
                     flexDirection: 'row',
@@ -498,6 +502,7 @@ export default function RestaurantReviewsScreen() {
                     onChangeText={setResponseText}
                     multiline
                     editable={!submitting}
+                    accessibilityLabel={t('reviews.responsePlaceholder')}
                   />
                   <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }}>
                     <TouchableOpacity
@@ -506,6 +511,8 @@ export default function RestaurantReviewsScreen() {
                         setResponseText('');
                       }}
                       disabled={submitting}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('common.cancel')}
                       style={{ paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12, backgroundColor: colors.backgroundTertiary }}
                     >
                       <Text style={{ fontSize: 12, fontWeight: '600', color: colors.foregroundSecondary }}>
@@ -515,6 +522,7 @@ export default function RestaurantReviewsScreen() {
                     <TouchableOpacity
                       onPress={handleSendResponse}
                       disabled={submitting || !responseText.trim()}
+                      accessibilityRole="button"
                       accessibilityLabel={t('reviews.sendResponse')}
                       style={{ overflow: 'hidden', borderRadius: 12, opacity: submitting || !responseText.trim() ? 0.5 : 1 }}
                     >

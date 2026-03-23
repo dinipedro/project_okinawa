@@ -839,6 +839,9 @@ export default function UnifiedPaymentScreen() {
                     onPress={() => !isDisabled && handleSelectMethod(method.type)}
                     activeOpacity={0.7}
                     disabled={isDisabled}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${getMethodLabel(method.type)} payment method`}
+                    accessibilityState={{ selected: isSelected, disabled: isDisabled }}
                   >
                     <IconButton
                       icon={method.icon}
@@ -1031,6 +1034,9 @@ export default function UnifiedPaymentScreen() {
                     ]}
                     onPress={() => setTipPercent(tip)}
                     activeOpacity={0.7}
+                    accessibilityRole="button"
+                    accessibilityLabel={tip === 0 ? 'No tip' : `Tip ${tip} percent`}
+                    accessibilityState={{ selected: isSelected }}
                   >
                     <Text
                       style={[

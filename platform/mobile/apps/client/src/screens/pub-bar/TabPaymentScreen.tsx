@@ -529,7 +529,9 @@ export default function TabPaymentScreen() {
                 Haptics.selectionAsync();
                 setSelectedMethod(method.type);
               }}
+              accessibilityRole="button"
               accessibilityLabel={method.label}
+              accessibilityState={{ selected: selectedMethod === method.type }}
             >
               <Icon
                 name={method.icon}

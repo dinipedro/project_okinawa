@@ -222,6 +222,8 @@ export default function WaiterCallsScreen() {
                   disabled={acknowledgeMutation.isPending}
                   style={styles.acknowledgeBtn}
                   textColor={colors.info}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('waiterCalls.acknowledge') + ` ${t('waiterCalls.table', { number: call.table_number })}`}
                 >
                   {t('waiterCalls.acknowledge')}
                 </Button>
@@ -234,6 +236,8 @@ export default function WaiterCallsScreen() {
                 disabled={resolveMutation.isPending}
                 style={styles.resolveBtn}
                 buttonColor={colors.success}
+                accessibilityRole="button"
+                accessibilityLabel={t('waiterCalls.attended') + ` ${t('waiterCalls.table', { number: call.table_number })}`}
               >
                 {t('waiterCalls.attended')}
               </Button>
@@ -274,7 +278,13 @@ export default function WaiterCallsScreen() {
         <Text variant="bodyLarge" style={styles.errorText}>
           {t('waiterCalls.errorLoading')}
         </Text>
-        <Button mode="contained" onPress={() => refetch()} style={styles.retryButton}>
+        <Button
+          mode="contained"
+          onPress={() => refetch()}
+          style={styles.retryButton}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.retry')}
+        >
           {t('common.retry')}
         </Button>
       </View>

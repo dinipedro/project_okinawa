@@ -156,7 +156,11 @@ export const AIPairingAssistantScreen: React.FC<AIPairingAssistantScreenProps> =
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
           <Ionicons name="arrow-back" size={24} color={colors.foreground} />
         </TouchableOpacity>
         <Text style={styles.title}>
@@ -195,8 +199,15 @@ export const AIPairingAssistantScreen: React.FC<AIPairingAssistantScreenProps> =
                 selectedPairings.includes(pairing.id) && styles.pairingCardSelected,
               ]}
               onPress={() => togglePairing(pairing.id)}
+              accessibilityRole="button"
+              accessibilityLabel={`${pairing.item.name}: ${getTypeLabel(pairing.type)}, ${pairing.matchScore}% match, R$ ${pairing.item.price.toFixed(2)}`}
+              accessibilityState={{ selected: selectedPairings.includes(pairing.id) }}
             >
-              <Image source={{ uri: pairing.item.image }} style={styles.itemImage} />
+              <Image
+                source={{ uri: pairing.item.image }}
+                style={styles.itemImage}
+                accessibilityLabel={pairing.item.name}
+              />
               
               <View style={styles.pairingContent}>
                 <View style={styles.pairingHeader}>
@@ -253,6 +264,8 @@ export const AIPairingAssistantScreen: React.FC<AIPairingAssistantScreenProps> =
           <TouchableOpacity
             style={styles.addButton}
             onPress={addSelectedToOrder}
+            accessibilityRole="button"
+            accessibilityLabel={`Add ${selectedPairings.length} item${selectedPairings.length !== 1 ? 's' : ''} to order`}
           >
             <Text style={styles.addButtonText}>
               Adicionar {selectedPairings.length} item(s) ao pedido

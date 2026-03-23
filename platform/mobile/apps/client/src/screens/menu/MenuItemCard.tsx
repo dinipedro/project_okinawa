@@ -93,6 +93,8 @@ const MenuItemCard = memo<MenuItemCardProps>(({
               size={20}
               onPress={() => onRemoveFromCart(item.id)}
               mode="contained"
+              accessibilityLabel={`Decrease quantity of ${item.name}`}
+              accessibilityRole="button"
             />
             <Text variant="titleMedium" style={[styles.quantity, { color: colors.foreground }]}>
               {quantityInCart}
@@ -102,6 +104,8 @@ const MenuItemCard = memo<MenuItemCardProps>(({
               size={20}
               onPress={() => onAddToCart(item)}
               mode="contained"
+              accessibilityLabel={`Increase quantity of ${item.name}`}
+              accessibilityRole="button"
             />
           </View>
         )}

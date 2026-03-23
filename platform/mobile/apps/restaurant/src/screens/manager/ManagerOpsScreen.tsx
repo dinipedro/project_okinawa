@@ -349,6 +349,8 @@ export default function ManagerOpsScreen({ navigation }: any) {
         <TouchableOpacity
           onPress={() => navigation.navigate('ManagerApprovals')}
           style={[styles.alertBanner, styles.alertBannerOrange]}
+          accessibilityRole="button"
+          accessibilityLabel={t('manager.ops.alertPendingApprovals', { count: pendingApprovals.length })}
         >
           <IconButton icon="clock-alert-outline" size={20} iconColor={colors.warning} />
           <Text style={[styles.alertText, { color: colors.warning }]}>
@@ -442,7 +444,11 @@ export default function ManagerOpsScreen({ navigation }: any) {
             </View>
           )}
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('ManagerApprovals')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ManagerApprovals')}
+          accessibilityRole="button"
+          accessibilityLabel="View all pending approvals"
+        >
           <Text style={styles.viewAllText}>{t('manager.ops.viewAll')}</Text>
         </TouchableOpacity>
       </View>

@@ -225,6 +225,9 @@ function EventCard({
           <Pressable
             onPress={() => onBuyTicket(event)}
             disabled={isSoldOut || isCancelled}
+            accessibilityRole="button"
+            accessibilityLabel={`Buy ticket for ${event.name}`}
+            accessibilityState={{ disabled: isSoldOut || isCancelled }}
             style={({ pressed }) => [{
               flex: 2,
               opacity: (isSoldOut || isCancelled) ? 0.5 : pressed ? 0.9 : 1,

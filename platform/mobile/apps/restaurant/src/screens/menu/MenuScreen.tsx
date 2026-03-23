@@ -235,12 +235,16 @@ export default function MenuScreen({ navigation }: any) {
         <Button
           mode={item.is_available ? 'outlined' : 'contained'}
           onPress={() => toggleAvailability(item.id, item.is_available)}
+          accessibilityRole="button"
+          accessibilityLabel={item.is_available ? `Mark ${item.name} as unavailable` : `Mark ${item.name} as available`}
         >
           {item.is_available ? t('menu.unavailable') : t('menu.available')}
         </Button>
         <IconButton
           icon="pencil"
           onPress={() => navigation.navigate('EditMenuItem', { itemId: item.id })}
+          accessibilityRole="button"
+          accessibilityLabel={`Edit ${item.name}`}
         />
         <IconButton
           icon="delete"
@@ -251,6 +255,8 @@ export default function MenuScreen({ navigation }: any) {
               { text: t('common.yes'), onPress: () => deleteItem(item.id) },
             ]);
           }}
+          accessibilityRole="button"
+          accessibilityLabel={`Delete ${item.name}`}
         />
       </Card.Actions>
     </Card>
@@ -309,6 +315,8 @@ export default function MenuScreen({ navigation }: any) {
         icon="plus"
         style={styles.fab}
         onPress={() => navigation.navigate('CreateMenuItem')}
+        accessibilityRole="button"
+        accessibilityLabel={t('menu.editItem')}
       />
     </View>
   );

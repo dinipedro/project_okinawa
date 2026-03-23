@@ -499,6 +499,8 @@ export default function SharedOrderScreen() {
                 size={28}
                 onPress={() => navigation.navigate('QRScanner', { orderId })}
                 iconColor={colors.foreground}
+                accessibilityLabel="Scan QR code for order"
+                accessibilityRole="button"
               />
             </View>
           </Card.Content>
@@ -556,6 +558,8 @@ export default function SharedOrderScreen() {
                       size={20}
                       onPress={() => handleRemoveGuest(guest.id)}
                       iconColor={colors.mutedForeground}
+                      accessibilityLabel={`Remove ${guest.guest_name} from order`}
+                      accessibilityRole="button"
                     />
                   )}
                 </View>
@@ -678,6 +682,7 @@ export default function SharedOrderScreen() {
             onChangeText={setNewGuestName}
             mode="outlined"
             style={styles.guestInput}
+            accessibilityLabel="Guest name"
           />
           <View style={styles.modalActions}>
             <Button

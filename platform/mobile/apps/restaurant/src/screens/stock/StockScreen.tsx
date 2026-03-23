@@ -247,6 +247,9 @@ export default function StockScreen({ navigation }: { navigation: any }) {
                 },
               ]}
               onPress={() => setFilter(tab.key)}
+              accessibilityRole="button"
+              accessibilityLabel={tab.label}
+              accessibilityState={{ selected: isActive }}
             >
               <Text
                 style={[
@@ -273,6 +276,7 @@ export default function StockScreen({ navigation }: { navigation: any }) {
         placeholderTextColor={colors.inputPlaceholder}
         value={searchQuery}
         onChangeText={setSearchQuery}
+        accessibilityLabel={t('stock.searchPlaceholder')}
       />
     </View>
   );
@@ -297,6 +301,9 @@ export default function StockScreen({ navigation }: { navigation: any }) {
                 },
               ]}
               onPress={() => setSelectedCategory(cat)}
+              accessibilityRole="button"
+              accessibilityLabel={cat ? t(CATEGORY_LABEL_KEYS[cat]) : t('stock.categoryAll')}
+              accessibilityState={{ selected: isActive }}
             >
               <Text
                 style={[
@@ -323,7 +330,12 @@ export default function StockScreen({ navigation }: { navigation: any }) {
     const progressWidth = Math.min(item.level_pct, 100);
 
     return (
-      <TouchableOpacity onPress={() => handleItemPress(item)} activeOpacity={0.7}>
+      <TouchableOpacity
+        onPress={() => handleItemPress(item)}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={`${item.name}, ${item.current_level} ${item.unit}, status ${item.status}`}
+      >
         <Card
           style={[
             styles.itemCard,
@@ -389,6 +401,8 @@ export default function StockScreen({ navigation }: { navigation: any }) {
             <TouchableOpacity
               style={[styles.restockButton, { borderColor: colors.primary }]}
               onPress={() => handleUpdateLevel(item)}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('stock.restockButton')} ${item.name}`}
             >
               <Text style={[styles.restockButtonText, { color: colors.primary }]}>
                 {t('stock.restockButton')}
@@ -474,6 +488,7 @@ export default function StockScreen({ navigation }: { navigation: any }) {
               onChangeText={setNewLevel}
               placeholder="0"
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('stock.newLevelLabel')}
             />
 
             <Text style={[styles.modalRef, { color: colors.foregroundMuted }]}>
@@ -513,12 +528,15 @@ export default function StockScreen({ navigation }: { navigation: any }) {
               onChangeText={setLevelNotes}
               placeholder={t('stock.notesPlaceholder')}
               placeholderTextColor={colors.inputPlaceholder}
+              accessibilityLabel={t('stock.notesLabel')}
             />
 
             <View style={styles.modalActions}>
               <TouchableOpacity
                 style={[styles.modalButton, { borderColor: colors.border }]}
                 onPress={() => setSelectedItem(null)}
+                accessibilityRole="button"
+                accessibilityLabel={t('stock.cancelButton')}
               >
                 <Text style={{ color: colors.foreground }}>{t('stock.cancelButton')}</Text>
               </TouchableOpacity>
@@ -532,6 +550,8 @@ export default function StockScreen({ navigation }: { navigation: any }) {
                 ]}
                 onPress={handleSaveLevel}
                 disabled={!isValid || saving}
+                accessibilityRole="button"
+                accessibilityLabel={t('stock.saveButton')}
               >
                 {saving ? (
                   <ActivityIndicator size="small" color={colors.primaryForeground} />
@@ -576,6 +596,8 @@ export default function StockScreen({ navigation }: { navigation: any }) {
         color={colors.primaryForeground}
         onPress={() => navigation.navigate('StockItemDetail', { itemId: null })}
         label={t('stock.addItem')}
+        accessibilityRole="button"
+        accessibilityLabel={t('stock.addItem')}
       />
 
       {renderUpdateModal()}
