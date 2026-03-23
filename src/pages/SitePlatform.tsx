@@ -3,18 +3,14 @@ import { Link } from 'react-router-dom';
 import { useLang, Lang } from '@/lib/i18n';
 import SiteNavbar from '@/components/site/SiteNavbar';
 import SiteFooter from '@/components/site/SiteFooter';
+import SEOHead from '@/components/seo/SEOHead';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import {
   ArrowRight, Star, Zap, Salad, Coffee, UtensilsCrossed, Truck,
   ChefHat, Utensils, Wine, Music, Crown, BarChart3, ConciergeBell,
   GlassWater, Flame, UserCheck, Check, Workflow, Users,
-  CreditCard, Shield, Globe, Clock,
+  CreditCard, Shield, Globe, Clock, MessageCircle, ChevronDown,
 } from 'lucide-react';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
 
 const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({ children, delay = 0, className = '' }) => {
   const [ref, visible] = useScrollReveal<HTMLDivElement>();
@@ -27,77 +23,132 @@ const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: 
 
 type ServiceItem = {
   icon: any;
-  name: string;
+  name: Record<Lang, string>;
   tagline: Record<Lang, string>;
-  features: string[];
+  features: Record<Lang, string[]>;
   diff: Record<Lang, string>;
 };
 
 const serviceDetails: Record<string, ServiceItem> = {
   'Fine Dining': {
-    icon: Star, name: 'Fine Dining',
+    icon: Star,
+    name: { en: 'Fine Dining', pt: 'Alta Gastronomia', es: 'Alta Gastronomía' },
     tagline: { en: 'Premium gastronomy meets intelligent technology', pt: 'Gastronomia premium encontra tecnologia inteligente', es: 'Gastronomía premium conoce la tecnología inteligente' },
-    features: ['AI wine & food harmonization', 'Digital sommelier call', '4-mode split bill', 'Multi-guest proxy ordering', 'Course-by-course tracking', 'Tier loyalty progression'],
+    features: {
+      en: ['AI wine & food harmonization', 'Digital sommelier call', '4-mode split bill', 'Multi-guest proxy ordering', 'Course-by-course tracking', 'Tier loyalty progression'],
+      pt: ['Harmonização IA de vinhos e pratos', 'Chamada digital do sommelier', 'Divisão de conta em 4 modos', 'Pedido por procuração multi-convidados', 'Rastreamento por etapa', 'Fidelidade progressiva por nível'],
+      es: ['Armonización IA de vinos y platos', 'Llamada digital al sommelier', 'División de cuenta en 4 modos', 'Pedido por representación multi-invitados', 'Seguimiento por etapa', 'Fidelización progresiva por nivel'],
+    },
     diff: { en: 'AI recommends the perfect pairing across 430+ combinations.', pt: 'IA recomenda a harmonização perfeita entre 430+ combinações.', es: 'La IA recomienda el maridaje perfecto entre 430+ combinaciones.' },
   },
   "Chef's Table": {
-    icon: ChefHat, name: "Chef's Table",
+    icon: ChefHat,
+    name: { en: "Chef's Table", pt: 'Mesa do Chef', es: 'Mesa del Chef' },
     tagline: { en: 'A tasting journey, not just a meal.', pt: 'Uma jornada degustativa.', es: 'Un viaje de degustación.' },
-    features: ['Course-by-course tasting menu', 'Wine pairing notes', 'Chef interaction moments', 'Dietary adaptation per guest'],
+    features: {
+      en: ['Course-by-course tasting menu', 'Wine pairing notes', 'Chef interaction moments', 'Dietary adaptation per guest'],
+      pt: ['Menu degustação por etapas', 'Notas de harmonização', 'Momentos de interação com o chef', 'Adaptação dietética por convidado'],
+      es: ['Menú degustación por etapas', 'Notas de maridaje', 'Momentos de interacción con el chef', 'Adaptación dietética por invitado'],
+    },
     diff: { en: 'Each course arrives with sommelier notes and chef\'s story.', pt: 'Cada prato chega com notas do sommelier e história do chef.', es: 'Cada plato llega con notas del sommelier y la historia del chef.' },
   },
   'Casual Dining': {
-    icon: Utensils, name: 'Casual Dining',
+    icon: Utensils,
+    name: { en: 'Casual Dining', pt: 'Restaurante Casual', es: 'Restaurante Casual' },
     tagline: { en: 'Families welcome, chaos not included.', pt: 'Famílias bem-vindas, caos não.', es: 'Familias bienvenidas, caos no.' },
-    features: ['Smart waitlist with pre-ordering', 'Family Mode', 'Multi-table party management', 'Birthday detection'],
+    features: {
+      en: ['Smart waitlist with pre-ordering', 'Family Mode', 'Multi-table party management', 'Birthday detection'],
+      pt: ['Lista de espera inteligente com pré-pedido', 'Modo Família', 'Gestão de festas multi-mesa', 'Detecção de aniversário'],
+      es: ['Lista de espera inteligente con pre-pedido', 'Modo Familia', 'Gestión de fiestas multi-mesa', 'Detección de cumpleaños'],
+    },
     diff: { en: 'Guests can pre-order while waiting — food arrives faster once seated.', pt: 'Clientes podem pré-pedir enquanto esperam — comida chega mais rápido.', es: 'Los clientes pueden pedir mientras esperan.' },
   },
   'Quick Service': {
-    icon: Zap, name: 'Quick Service',
+    icon: Zap,
+    name: { en: 'Quick Service', pt: 'Serviço Rápido', es: 'Servicio Rápido' },
     tagline: { en: 'Order ahead. Skip the line.', pt: 'Peça antes. Pule a fila.', es: 'Pide antes. Salta la fila.' },
-    features: ['Skip the Line pre-ordering', '3-tier combo builder', 'Item customization', '4-stage prep tracking', 'Pickup code system', 'Stamp card loyalty'],
-    diff: { en: 'Quality Check stage ensures every order is verified before handoff.', pt: 'Etapa de Quality Check garante que cada pedido é verificado antes da entrega.', es: 'La etapa Quality Check verifica cada pedido antes de la entrega.' },
+    features: {
+      en: ['Skip the Line pre-ordering', '3-tier combo builder', 'Item customization', '4-stage prep tracking', 'Pickup code system', 'Stamp card loyalty'],
+      pt: ['Pré-pedido para pular a fila', 'Montador de combos em 3 níveis', 'Personalização de itens', 'Rastreamento de preparo em 4 etapas', 'Sistema de código de retirada', 'Fidelidade por cartão de selos'],
+      es: ['Pre-pedido para saltar la fila', 'Constructor de combos en 3 niveles', 'Personalización de ítems', 'Seguimiento de preparación en 4 etapas', 'Sistema de código de retiro', 'Fidelización por tarjeta de sellos'],
+    },
+    diff: { en: 'Quality Check stage ensures every order is verified before handoff.', pt: 'Etapa de verificação garante que cada pedido é conferido antes da entrega.', es: 'La etapa de verificación confirma cada pedido antes de la entrega.' },
   },
   'Fast Casual': {
-    icon: Salad, name: 'Fast Casual',
+    icon: Salad,
+    name: { en: 'Fast Casual', pt: 'Fast Casual', es: 'Fast Casual' },
     tagline: { en: 'Build your perfect meal in 4 steps.', pt: 'Monte sua refeição perfeita em 4 etapas.', es: 'Arma tu comida perfecta en 4 pasos.' },
-    features: ['4-step dish builder', 'Real-time calorie tracking', 'Allergen alerts', 'Saved favorites', 'Nutritional summary'],
+    features: {
+      en: ['4-step dish builder', 'Real-time calorie tracking', 'Allergen alerts', 'Saved favorites', 'Nutritional summary'],
+      pt: ['Montador de pratos em 4 etapas', 'Contagem de calorias em tempo real', 'Alertas de alérgenos', 'Favoritos salvos', 'Resumo nutricional'],
+      es: ['Constructor de platos en 4 pasos', 'Conteo de calorías en tiempo real', 'Alertas de alérgenos', 'Favoritos guardados', 'Resumen nutricional'],
+    },
     diff: { en: 'Every ingredient shows calories, protein, carbs, and fiber in real time.', pt: 'Cada ingrediente mostra calorias, proteínas, carboidratos e fibras em tempo real.', es: 'Cada ingrediente muestra calorías, proteínas, carbohidratos y fibra en tiempo real.' },
   },
   'Drive-Thru': {
-    icon: Truck, name: 'Drive-Thru',
+    icon: Truck,
+    name: { en: 'Drive-Thru', pt: 'Drive-Thru', es: 'Drive-Thru' },
     tagline: { en: 'Your order starts before you arrive.', pt: 'Seu pedido começa antes de você chegar.', es: 'Tu pedido empieza antes de que llegues.' },
-    features: ['GPS geofencing prep trigger', 'Pre-order & pre-pay', 'Real-time ETA', 'Lane assignment'],
+    features: {
+      en: ['GPS geofencing prep trigger', 'Pre-order & pre-pay', 'Real-time ETA', 'Lane assignment'],
+      pt: ['Acionamento por geofencing GPS', 'Pré-pedido e pré-pagamento', 'Tempo estimado em tempo real', 'Atribuição de pista'],
+      es: ['Activación por geofencing GPS', 'Pre-pedido y pre-pago', 'Tiempo estimado en tiempo real', 'Asignación de carril'],
+    },
     diff: { en: 'GPS geofencing triggers kitchen prep 500m away.', pt: 'Geofencing GPS aciona a cozinha a 500m de distância.', es: 'Geofencing GPS activa la cocina a 500m.' },
   },
   'Café & Bakery': {
-    icon: Coffee, name: 'Café & Bakery',
+    icon: Coffee,
+    name: { en: 'Café & Bakery', pt: 'Café & Padaria', es: 'Café & Panadería' },
     tagline: { en: 'Stay longer. Work better.', pt: 'Fique mais. Trabalhe melhor.', es: 'Quédate más. Trabaja mejor.' },
-    features: ['Work Mode (Wi-Fi, outlets, noise)', 'Smart refill with discounts', 'Stay timer', 'Loyalty stamp card'],
-    diff: { en: 'Work Mode shows real-time Wi-Fi speed, outlets, and ambient noise level.', pt: 'Work Mode mostra velocidade de Wi-Fi, tomadas e nível de ruído em tempo real.', es: 'Work Mode muestra velocidad Wi-Fi, enchufes y nivel de ruido en tiempo real.' },
+    features: {
+      en: ['Work Mode (Wi-Fi, outlets, noise)', 'Smart refill with discounts', 'Stay timer', 'Loyalty stamp card'],
+      pt: ['Modo Trabalho (Wi-Fi, tomadas, ruído)', 'Refill inteligente com desconto', 'Timer de permanência', 'Cartão de fidelidade por selos'],
+      es: ['Modo Trabajo (Wi-Fi, enchufes, ruido)', 'Refill inteligente con descuento', 'Timer de permanencia', 'Tarjeta de fidelización por sellos'],
+    },
+    diff: { en: 'Work Mode shows real-time Wi-Fi speed, outlets, and ambient noise level.', pt: 'Modo Trabalho mostra velocidade de Wi-Fi, tomadas e nível de ruído em tempo real.', es: 'Modo Trabajo muestra velocidad Wi-Fi, enchufes y nivel de ruido en tiempo real.' },
   },
   'Pub & Bar': {
-    icon: Wine, name: 'Pub & Bar',
+    icon: Wine,
+    name: { en: 'Pub & Bar', pt: 'Pub & Bar', es: 'Pub & Bar' },
     tagline: { en: 'Tabs, rounds, no confusion.', pt: 'Comandas, rodadas, sem confusão.', es: 'Cuentas, rondas, sin confusión.' },
-    features: ['Digital tab with pre-auth', 'Round builder', 'Group command system', 'Happy hour auto-detection', 'Recipe book'],
+    features: {
+      en: ['Digital tab with pre-auth', 'Round builder', 'Group command system', 'Happy hour auto-detection', 'Recipe book'],
+      pt: ['Comanda digital pré-autorizada', 'Montador de rodadas', 'Sistema de comanda em grupo', 'Detecção automática de happy hour', 'Livro de receitas'],
+      es: ['Cuenta digital pre-autorizada', 'Constructor de rondas', 'Sistema de cuenta en grupo', 'Detección automática de happy hour', 'Libro de recetas'],
+    },
     diff: { en: 'Pre-authorized digital tabs — no card holding, no lost tabs.', pt: 'Comandas digitais pré-autorizadas — sem confusão.', es: 'Cuentas digitales pre-autorizadas.' },
   },
   'Club & Nightlife': {
-    icon: Music, name: 'Club & Nightlife',
+    icon: Music,
+    name: { en: 'Club & Nightlife', pt: 'Club & Vida Noturna', es: 'Club & Vida Nocturna' },
     tagline: { en: 'Tickets, tables, bottles — one app.', pt: 'Ingressos, mesas, garrafas — um app.', es: 'Boletos, mesas, botellas — una app.' },
-    features: ['3-tier ticket system', 'Anti-fraud rotating QR', 'VIP zone selection', 'Bottle service menu', 'Min. spend tracker', 'Dance floor ordering'],
+    features: {
+      en: ['3-tier ticket system', 'Anti-fraud rotating QR', 'VIP zone selection', 'Bottle service menu', 'Min. spend tracker', 'Dance floor ordering'],
+      pt: ['Sistema de ingressos em 3 níveis', 'QR anti-fraude rotativo', 'Seleção de área VIP', 'Menu de serviço de garrafas', 'Rastreador de consumo mínimo', 'Pedidos na pista de dança'],
+      es: ['Sistema de boletos en 3 niveles', 'QR anti-fraude rotativo', 'Selección de zona VIP', 'Menú de servicio de botellas', 'Rastreador de consumo mínimo', 'Pedidos en la pista de baile'],
+    },
     diff: { en: 'Anti-fraud QR codes rotate every 30 seconds — impossible to clone.', pt: 'QR codes anti-fraude rotacionam a cada 30 segundos.', es: 'QR anti-fraude rotan cada 30 segundos.' },
   },
   'Food Truck': {
-    icon: Truck, name: 'Food Truck',
+    icon: Truck,
+    name: { en: 'Food Truck', pt: 'Food Truck', es: 'Food Truck' },
     tagline: { en: 'Find us anywhere. Order from everywhere.', pt: 'Nos encontre em qualquer lugar.', es: 'Encuéntranos donde sea.' },
-    features: ['Real-time truck map', 'Virtual queue', 'Push notifications', 'Schedule & route viewer'],
+    features: {
+      en: ['Real-time truck map', 'Virtual queue', 'Push notifications', 'Schedule & route viewer'],
+      pt: ['Mapa do truck em tempo real', 'Fila virtual', 'Notificações push', 'Visualizador de agenda e rota'],
+      es: ['Mapa del truck en tiempo real', 'Fila virtual', 'Notificaciones push', 'Visualizador de agenda y ruta'],
+    },
     diff: { en: 'Real-time map shows truck location with virtual queue.', pt: 'Mapa em tempo real mostra localização do truck com fila virtual.', es: 'Mapa en tiempo real muestra la ubicación con fila virtual.' },
   },
   'Buffet': {
-    icon: UtensilsCrossed, name: 'Buffet',
+    icon: UtensilsCrossed,
+    name: { en: 'Buffet', pt: 'Buffet', es: 'Buffet' },
     tagline: { en: 'Eat what you want. Pay what\'s fair.', pt: 'Coma o que quiser. Pague o que é justo.', es: 'Come lo que quieras. Paga lo justo.' },
-    features: ['NFC smart scale', 'Weight-to-price auto calc', 'Live station tracking', 'Plate history'],
+    features: {
+      en: ['NFC smart scale', 'Weight-to-price auto calc', 'Live station tracking', 'Plate history'],
+      pt: ['Balança inteligente NFC', 'Cálculo automático peso-preço', 'Rastreamento de estações ao vivo', 'Histórico de pratos'],
+      es: ['Balanza inteligente NFC', 'Cálculo automático peso-precio', 'Seguimiento de estaciones en vivo', 'Historial de platos'],
+    },
     diff: { en: 'NFC-enabled smart scale converts plate weight to price instantly.', pt: 'Balança inteligente NFC converte peso do prato em preço instantaneamente.', es: 'Balanza inteligente NFC convierte peso en precio al instante.' },
   },
 };
@@ -123,6 +174,45 @@ const serviceGroups = {
     descKey: 'platform.group_mobile_desc',
     items: ['Food Truck', 'Buffet'],
   },
+};
+
+const ServiceAccordion: React.FC<{ detail: ServiceItem; lang: Lang; Icon: any }> = ({ detail, lang, Icon }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-lg border border-transparent hover:border-border transition-all">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-3 w-full text-left rounded-lg px-2 py-2 -mx-2 hover:bg-primary/5 transition-colors"
+        aria-expanded={open}
+      >
+        <div className="w-8 h-8 rounded-lg bg-primary/8 text-primary flex items-center justify-center flex-shrink-0">
+          <Icon size={16} />
+        </div>
+        <span className="text-foreground font-medium text-sm flex-1">{detail.name[lang]}</span>
+        <ChevronDown size={14} className={`text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div className="pl-12 pr-2 pb-3 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
+          <p className="text-muted-foreground text-xs leading-relaxed">{detail.tagline[lang]}</p>
+          <ul className="space-y-1">
+            {detail.features[lang].map((f) => (
+              <li key={f} className="text-muted-foreground text-xs flex items-start gap-2">
+                <Check size={12} className="text-primary flex-shrink-0 mt-0.5" />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <div className="bg-primary/5 border border-primary/10 rounded-lg p-2.5 mt-1">
+            <p className="text-[10px] uppercase tracking-wider mb-0.5 font-semibold text-primary">
+              {lang === 'pt' ? 'Diferencial' : lang === 'es' ? 'Diferencial' : 'Differentiator'}
+            </p>
+            <p className="text-foreground text-xs leading-relaxed">{detail.diff[lang]}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 const rolesData = [
@@ -164,6 +254,53 @@ const SitePlatform: React.FC = () => {
 
   return (
     <div className="bg-background text-foreground min-h-screen">
+      <SEOHead
+        title={t('seo.platform_title')}
+        description={t('seo.platform_desc')}
+        canonical="/platform"
+        jsonLd={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: 'NOOWE',
+            applicationCategory: 'BusinessApplication',
+            description: t('seo.platform_desc'),
+            operatingSystem: 'Web',
+            url: 'https://noowebr.com/platform',
+            offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: lang === 'pt' ? 'Quais tipos de restaurante a NOOWE atende?' : lang === 'es' ? '¿Qué tipos de restaurante atiende NOOWE?' : 'What restaurant types does NOOWE support?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: lang === 'pt' ? 'A NOOWE atende 11 modelos de operação: Fine Dining, Chef\'s Table, Casual Dining, Quick Service, Fast Casual, Drive-Thru, Café & Bakery, Pub & Bar, Club & Nightlife, Food Truck e Buffet.' : lang === 'es' ? 'NOOWE atiende 11 modelos de operación: Fine Dining, Chef\'s Table, Casual Dining, Quick Service, Fast Casual, Drive-Thru, Café & Bakery, Pub & Bar, Club & Nightlife, Food Truck y Buffet.' : 'NOOWE supports 11 operation models: Fine Dining, Chef\'s Table, Casual Dining, Quick Service, Fast Casual, Drive-Thru, Café & Bakery, Pub & Bar, Club & Nightlife, Food Truck and Buffet.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: lang === 'pt' ? 'A NOOWE funciona em tempo real?' : lang === 'es' ? '¿NOOWE funciona en tiempo real?' : 'Does NOOWE work in real time?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: lang === 'pt' ? 'Sim. Pedidos, cozinha, pagamentos e equipe operam em tempo real com sincronização instantânea entre todos os dispositivos.' : lang === 'es' ? 'Sí. Pedidos, cocina, pagos y equipo operan en tiempo real con sincronización instantánea.' : 'Yes. Orders, kitchen, payments and staff operate in real time with instant sync across all devices.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: lang === 'pt' ? 'Preciso de hardware especial?' : lang === 'es' ? '¿Necesito hardware especial?' : 'Do I need special hardware?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: lang === 'pt' ? 'Não. A NOOWE é 100% baseada na web e funciona em qualquer smartphone, tablet ou computador com navegador moderno.' : lang === 'es' ? 'No. NOOWE es 100% web y funciona en cualquier smartphone, tablet o computador.' : 'No. NOOWE is 100% web-based and works on any smartphone, tablet or computer with a modern browser.',
+                },
+              },
+            ],
+          },
+        ]}
+      />
       <SiteNavbar />
 
       {/* Hero */}
@@ -286,7 +423,7 @@ const SitePlatform: React.FC = () => {
         </div>
       </section>
 
-      {/* Operation Models — Grouped */}
+      {/* Operation Models */}
       <section className="py-20" id="services">
         <div className="max-w-[960px] mx-auto px-6">
           <Reveal>
@@ -312,50 +449,12 @@ const SitePlatform: React.FC = () => {
                 <div className="p-6 rounded-2xl border border-border bg-background hover:border-primary/20 transition-all duration-300 hover:shadow-md h-full">
                   <h3 className="text-foreground font-bold text-lg mb-2">{t(group.titleKey)}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed mb-5">{t(group.descKey)}</p>
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {group.items.map((itemName, i) => {
                       const detail = serviceDetails[itemName];
                       if (!detail) return null;
                       const Icon = detail.icon;
-                      return (
-                        <HoverCard key={i} openDelay={150} closeDelay={100}>
-                          <HoverCardTrigger asChild>
-                            <div className="flex items-center gap-3 cursor-pointer rounded-lg px-2 py-2 -mx-2 hover:bg-primary/5 transition-colors">
-                              <div className="w-8 h-8 rounded-lg bg-primary/8 text-primary flex items-center justify-center flex-shrink-0">
-                                <Icon size={16} />
-                              </div>
-                              <span className="text-foreground font-medium text-sm">{detail.name}</span>
-                            </div>
-                          </HoverCardTrigger>
-                          <HoverCardContent side="top" align="center" className="w-80 p-0 overflow-hidden z-50" sideOffset={8} collisionPadding={16}>
-                            <div className="p-4 border-b border-border bg-muted/30">
-                              <div className="flex items-center gap-3 mb-1.5">
-                                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-                                  <Icon size={16} />
-                                </div>
-                                <h4 className="text-foreground font-bold text-sm">{detail.name}</h4>
-                              </div>
-                              <p className="text-muted-foreground text-xs leading-relaxed">{detail.tagline[lang]}</p>
-                            </div>
-                            <div className="p-4">
-                              <ul className="space-y-1.5 mb-3">
-                                {detail.features.map((f) => (
-                                  <li key={f} className="text-muted-foreground text-xs flex items-start gap-2">
-                                    <Check size={12} className="text-primary flex-shrink-0 mt-0.5" />
-                                    {f}
-                                  </li>
-                                ))}
-                              </ul>
-                              <div className="bg-primary/5 border border-primary/10 rounded-lg p-3">
-                                <p className="text-[10px] uppercase tracking-wider mb-1 font-semibold text-primary">
-                                  {lang === 'pt' ? 'Diferencial' : lang === 'es' ? 'Diferencial' : 'Differentiator'}
-                                </p>
-                                <p className="text-foreground text-xs leading-relaxed">{detail.diff[lang]}</p>
-                              </div>
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                      );
+                      return <ServiceAccordion key={i} detail={detail} lang={lang} Icon={Icon} />;
                     })}
                   </div>
                 </div>
@@ -466,13 +565,24 @@ const SitePlatform: React.FC = () => {
             </p>
           </Reveal>
           <Reveal delay={160}>
-            <Link
-              to="/request-demo"
-              className="group inline-flex items-center gap-2.5 mt-10 bg-primary text-primary-foreground font-semibold px-10 py-4 rounded-xl hover:bg-primary-dark transition-all shadow-glow"
-            >
-              {t('platform.cta_button')}
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+              <Link
+                to="/request-demo"
+                className="group inline-flex items-center gap-2.5 bg-primary text-primary-foreground font-semibold px-10 py-4 rounded-xl hover:bg-primary-dark transition-all shadow-glow"
+              >
+                {t('platform.cta_button')}
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <a
+                href="https://wa.me/5511999999999?text=Olá! Gostaria de saber mais sobre a NOOWE."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2.5 border-2 border-border text-foreground font-semibold px-8 py-4 rounded-xl hover:border-primary/40 hover:bg-primary/5 transition-all"
+              >
+                <MessageCircle size={18} style={{ color: 'hsl(142, 71%, 45%)' }} />
+                {t('platform.whatsapp_cta')}
+              </a>
+            </div>
           </Reveal>
         </div>
       </section>

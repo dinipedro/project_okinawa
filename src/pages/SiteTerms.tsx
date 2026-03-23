@@ -5,15 +5,43 @@ export default function SiteTerms() {
   return (
     <LegalPageLayout
       pageType="terms"
-      title={{ pt: 'Termos e Condições Gerais de Uso', en: 'Terms and Conditions of Use', es: 'Términos y Condiciones Generales de Uso' }}
-      subtitle={{ pt: 'Plataforma NOOWE — Aplicativos, Site e Demonstrações', en: 'NOOWE Platform — Apps, Website and Demos', es: 'Plataforma NOOWE — Aplicaciones, Sitio Web y Demostraciones' }}
+      title={{
+        pt: 'Termos e Condições Gerais de Uso',
+        en: 'Terms and Conditions of Use',
+        es: 'Términos y Condiciones Generales de Uso',
+      }}
+      subtitle={{
+        pt: 'Plataforma NOOWE — Aplicativos, Site e Demonstrações',
+        en: 'NOOWE Platform — Apps, Website and Demos',
+        es: 'Plataforma NOOWE — Aplicaciones, Sitio Web y Demostraciones',
+      }}
       effectiveDate="22/03/2026"
       version="1.0"
       sections={termsSections}
       pdfPath="/docs/NOOWE_Termos_de_Uso.pdf"
-      seoTitle={{ pt: 'Termos de Uso | NOOWE', en: 'Terms of Use | NOOWE', es: 'Términos de Uso | NOOWE' }}
-      seoDescription={{ pt: 'Termos e Condições Gerais de Uso da plataforma NOOWE.', en: 'Terms and Conditions of Use for the NOOWE platform.', es: 'Términos y Condiciones de Uso de la plataforma NOOWE.' }}
-      jsonLd={[{ '@context': 'https://schema.org', '@type': 'WebPage', name: 'Termos de Uso — NOOWE', url: 'https://noowebr.com/terms' }]}
+      seoTitle={{
+        pt: 'Termos de Uso | NOOWE',
+        en: 'Terms of Use | NOOWE',
+        es: 'Términos de Uso | NOOWE',
+      }}
+      seoDescription={{
+        pt: 'Termos e Condições Gerais de Uso da plataforma NOOWE. DINI & CIA. TECNOLOGIA LTDA — CNPJ 64.159.447/0001-90.',
+        en: 'Terms and Conditions of Use for the NOOWE platform. DINI & CIA. TECNOLOGIA LTDA.',
+        es: 'Términos y Condiciones de Uso de la plataforma NOOWE. DINI & CIA. TECNOLOGIA LTDA.',
+      }}
+      jsonLd={[
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Termos de Uso — NOOWE',
+          url: 'https://noowebr.com/terms',
+          description: 'Termos e Condições Gerais de Uso da plataforma NOOWE.',
+          publisher: { '@type': 'Organization', name: 'NOOWE', url: 'https://noowebr.com' },
+          inLanguage: ['pt-BR', 'en', 'es'],
+          datePublished: '2026-03-22',
+          dateModified: '2026-03-22',
+        },
+      ]}
     />
   );
 }

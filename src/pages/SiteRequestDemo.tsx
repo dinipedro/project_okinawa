@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useLang } from '@/lib/i18n';
 import SiteNavbar from '@/components/site/SiteNavbar';
 import SiteFooter from '@/components/site/SiteFooter';
+import SEOHead from '@/components/seo/SEOHead';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { Check, Loader2, ArrowRight, Shield, Clock, Users } from 'lucide-react';
+import { Check, Loader2, ArrowRight, Shield, Zap, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import PhoneInput from '@/components/ui/phone-input';
 
 const Reveal: React.FC<{ children: React.ReactNode; delay?: number; className?: string }> = ({ children, delay = 0, className = '' }) => {
   const [ref, visible] = useScrollReveal<HTMLDivElement>();
@@ -21,6 +23,7 @@ const SiteRequestDemo: React.FC = () => {
   const navigate = useNavigate();
   const { lang, t } = useLang();
   const [form, setForm] = useState({ name: '', restaurant: '', email: '', phone: '' });
+  const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
@@ -30,6 +33,7 @@ const SiteRequestDemo: React.FC = () => {
     if (!form.name.trim()) e.name = true;
     if (!form.restaurant.trim()) e.restaurant = true;
     if (!form.email.trim() || !form.email.includes('@')) e.email = true;
+    if (!consent) e.consent = true;
     return e;
   };
 
@@ -71,13 +75,18 @@ const SiteRequestDemo: React.FC = () => {
     }`;
 
   const benefits = [
-    { icon: Clock, text: lang === 'pt' ? 'Acesso em menos de 24h' : lang === 'es' ? 'Acceso en menos de 24h' : 'Access in less than 24h' },
-    { icon: Shield, text: lang === 'pt' ? 'Sem cartão de crédito' : lang === 'es' ? 'Sin tarjeta de crédito' : 'No credit card required' },
+    { icon: Zap, text: lang === 'pt' ? 'Acesso instantâneo' : lang === 'es' ? 'Acceso instantáneo' : 'Instant access' },
+    { icon: Shield, text: lang === 'pt' ? 'Sem burocracias' : lang === 'es' ? 'Sin burocracia' : 'No red tape' },
     { icon: Users, text: lang === 'pt' ? 'Plataforma completa' : lang === 'es' ? 'Plataforma completa' : 'Full platform access' },
   ];
 
   return (
     <div className="bg-background text-foreground min-h-screen">
+      <SEOHead
+        title={t('seo.request_title')}
+        description={t('seo.request_desc')}
+        canonical="/request-demo"
+      />
       <SiteNavbar />
 
       <section className="pt-32 pb-20 min-h-screen flex items-center">
@@ -95,9 +104,7 @@ const SiteRequestDemo: React.FC = () => {
                 </h1>
               </Reveal>
               <Reveal delay={160}>
-                <p className="text-muted-foreground mt-6 max-w-md text-lg leading-relaxed">
-                  {t('rdemo.sub')}
-                </p>
+                <p className="text-muted-foreground mt-6 max-w-md text-lg leading-relaxed">{t('rdemo.sub')}</p>
               </Reveal>
               <Reveal delay={240}>
                 <div className="mt-10 space-y-4">
@@ -127,9 +134,28 @@ const SiteRequestDemo: React.FC = () => {
                       <input type="email" placeholder={t('rdemo.email')} value={form.email}
                         onChange={(e) => { setForm({ ...form, email: e.target.value }); setErrors({ ...errors, email: false }); }}
                         className={inputClass('email')} />
-                      <input type="tel" placeholder={t('rdemo.phone')} value={form.phone}
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        className={inputClass('phone')} />
+                      <PhoneInput
+                        value={form.phone}
+                        onChange={(phone) => setForm({ ...form, phone })}
+                        hasError={!!errors.phone}
+                      />
+                      <label className={`flex items-start gap-3 cursor-pointer text-sm ${errors.consent ? 'text-destructive' : 'text-muted-foreground'}`}>
+                        <input
+                          type="checkbox"
+                          checked={consent}
+                          onChange={(e) => { setConsent(e.target.checked); setErrors({ ...errors, consent: false }); }}
+                          className="mt-0.5 w-4 h-4 rounded border-border accent-primary"
+                        />
+                        <span>
+                          {lang === 'pt' ? (
+                            <>Concordo em receber comunicações da NOOWE e com o tratamento dos meus dados conforme os <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primary-dark">Termos de Uso</a> e a <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primary-dark">Política de Privacidade</a>.</>
+                          ) : lang === 'es' ? (
+                            <>Acepto recibir comunicaciones de NOOWE y el tratamiento de mis datos conforme los <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primary-dark">Términos de Uso</a> y la <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primary-dark">Política de Privacidad</a>.</>
+                          ) : (
+                            <>I agree to receive communications from NOOWE and to the processing of my data per the <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primary-dark">Terms of Use</a> and <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primary-dark">Privacy Policy</a>.</>
+                          )}
+                        </span>
+                      </label>
                       <button type="submit" disabled={loading}
                         className="group w-full py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary-dark transition-all disabled:opacity-60 flex items-center justify-center gap-2 shadow-glow">
                         {loading ? <Loader2 size={18} className="animate-spin" /> : null}

@@ -80,7 +80,7 @@ const translations: Record<string, Record<Lang, string>> = {
     es: 'Tu restaurante opera con varias herramientas. Pero ninguna opera en conjunto.',
   },
   'problem.body': {
-    pt: 'Um sistema para pedidos. Outro para a cozinha. Planilhas para controle. Mensagens para organizar equipe. Tudo funciona — isoladamente.\n\nMas o seu restaurante não funciona em partes.\n\nO NOOWE conecta tudo em um único sistema, com uma única lógica, em um único fluxo.',
+    pt: 'Um sistema para pedidos. Outro para a cozinha. Planilhas para controle. Mensagens para organizar equipe. Tudo funciona — isoladamente.\n\nMas o seu restaurante não funciona em partes.\n\nA NOOWE conecta tudo em um único sistema, com uma única lógica, em um único fluxo.',
     en: 'One system for orders. Another for the kitchen. Spreadsheets for control. Messages to organize the team. Everything works — in isolation.\n\nBut your restaurant doesn\'t work in parts.\n\nNOOWE connects everything into one system, with one logic, in one flow.',
     es: 'Un sistema para pedidos. Otro para cocina. Planillas para control. Mensajes para organizar el equipo. Todo funciona — de forma aislada.\n\nPero tu restaurante no funciona por partes.\n\nNOOWE conecta todo en un único sistema, con una única lógica, en un único flujo.',
   },
@@ -113,7 +113,7 @@ const translations: Record<string, Record<Lang, string>> = {
     es: '¿Cansado de juntar piezas que no encajan?',
   },
   'cta.sub': {
-    pt: 'Veja o NOOWE funcionando com o seu tipo de restaurante. É rápido, sem compromisso e sem cartão.',
+    pt: 'Veja a NOOWE funcionando com o seu tipo de restaurante. É rápido, sem compromisso e sem cartão.',
     en: 'See NOOWE working with your type of restaurant. Quick, no commitment, no card.',
     es: 'Mira NOOWE funcionando con tu tipo de restaurante. Rápido, sin compromiso y sin tarjeta.',
   },
@@ -138,7 +138,7 @@ const translations: Record<string, Record<Lang, string>> = {
 
   // Request Demo
   'rdemo.overline': { pt: 'VEJA COM SEUS OLHOS', en: 'SEE IT FOR YOURSELF', es: 'MÍRALO CON TUS OJOS' },
-  'rdemo.title': { pt: 'Experimente o NOOWE.', en: 'Try NOOWE yourself.', es: 'Prueba NOOWE.' },
+  'rdemo.title': { pt: 'Experimente a NOOWE.', en: 'Try NOOWE yourself.', es: 'Prueba NOOWE.' },
   'rdemo.sub': {
     pt: 'Preencha seus dados e receba um código de acesso exclusivo no seu email. Em segundos você estará dentro da plataforma.',
     en: 'Fill in your details and receive an exclusive access code in your email. In seconds you\'ll be inside the platform.',
@@ -190,7 +190,7 @@ const translations: Record<string, Record<Lang, string>> = {
 
   // Demo hub
   'hub.title': { pt: 'Você está dentro.', en: 'You\'re in.', es: 'Ya estás dentro.' },
-  'hub.sub': { pt: 'Escolha como quer explorar o NOOWE.', en: 'Choose how you want to explore NOOWE.', es: 'Elige cómo quieres explorar NOOWE.' },
+  'hub.sub': { pt: 'Escolha como quer explorar a NOOWE.', en: 'Choose how you want to explore NOOWE.', es: 'Elige cómo quieres explorar NOOWE.' },
   'hub.guided_title': { pt: 'Ver simulação guiada', en: 'See guided simulation', es: 'Ver simulación guiada' },
   'hub.guided_tag': { pt: 'recomendado', en: 'recommended', es: 'recomendado' },
   'hub.guided_desc': {
@@ -349,7 +349,7 @@ const translations: Record<string, Record<Lang, string>> = {
   },
   'platform.cta_title': { pt: 'Melhor do que entender, é ver.', en: 'Better than understanding is seeing.', es: 'Mejor que entender, es ver.' },
   'platform.cta_body': {
-    pt: 'Acesse o NOOWE e veja a operação acontecendo de verdade — do começo ao fim.',
+    pt: 'Acesse a NOOWE e veja a operação acontecendo de verdade — do começo ao fim.',
     en: 'Access NOOWE and see operations happening for real — from start to finish.',
     es: 'Accede a NOOWE y ve la operación sucediendo de verdad — de principio a fin.',
   },
@@ -360,20 +360,20 @@ const translations: Record<string, Record<Lang, string>> = {
 
   // Waitlist
   'waitlist.title': { pt: 'Entre na lista de espera', en: 'Join the waitlist', es: 'Únete a la lista de espera' },
-  'waitlist.sub': { pt: 'Seja um dos primeiros a experimentar o NOOWE quando o app for lançado.', en: 'Be one of the first to experience NOOWE when the app launches.', es: 'Sé de los primeros en experimentar NOOWE cuando la app sea lanzada.' },
+  'waitlist.sub': { pt: 'Seja um dos primeiros a experimentar a NOOWE quando o app for lançado.', en: 'Be one of the first to experience NOOWE when the app launches.', es: 'Sé de los primeros en experimentar NOOWE cuando la app sea lanzada.' },
   'waitlist.name_placeholder': { pt: 'Seu nome', en: 'Your name', es: 'Tu nombre' },
   'waitlist.email_placeholder': { pt: 'Seu email', en: 'Your email', es: 'Tu email' },
   'waitlist.city_placeholder': { pt: 'Sua cidade (opcional)', en: 'Your city (optional)', es: 'Tu ciudad (opcional)' },
   'waitlist.cta': { pt: 'Quero fazer parte', en: 'I want in', es: 'Quiero ser parte' },
   'waitlist.success_title': { pt: 'Você está na lista!', en: "You're on the list!", es: '¡Estás en la lista!' },
-  'waitlist.success_body': { pt: 'Vamos te avisar assim que o NOOWE estiver disponível na sua região.', en: "We'll let you know as soon as NOOWE is available in your area.", es: 'Te avisaremos cuando NOOWE esté disponible en tu región.' },
+  'waitlist.success_body': { pt: 'Vamos te avisar assim que a NOOWE estiver disponível na sua região.', en: "We'll let you know as soon as NOOWE is available in your area.", es: 'Te avisaremos cuando NOOWE esté disponible en tu región.' },
   'waitlist.already': { pt: 'Este email já está na lista.', en: 'This email is already on the list.', es: 'Este email ya está en la lista.' },
   'waitlist.error': { pt: 'Algo deu errado. Tente novamente.', en: 'Something went wrong. Try again.', es: 'Algo salió mal. Inténtalo de nuevo.' },
 
   // For You (B2C page)
   'foryou.overline': { pt: 'PARA VOCÊ', en: 'FOR YOU', es: 'PARA TI' },
   'foryou.h1': { pt: 'A melhor experiência em restaurantes começa no seu celular.', en: 'The best restaurant experience starts on your phone.', es: 'La mejor experiencia en restaurantes empieza en tu celular.' },
-  'foryou.sub': { pt: 'Chega de esperar garçom, disputar atenção ou ficar na dúvida sobre o pedido. Com o NOOWE, tudo flui — do primeiro prato ao pagamento.', en: "No more waiting for the waiter, competing for attention, or wondering about your order. With NOOWE, everything flows — from the first dish to payment.", es: 'Basta de esperar al mesero, competir por atención o quedarse con dudas sobre el pedido. Con NOOWE, todo fluye — del primer plato al pago.' },
+  'foryou.sub': { pt: 'Chega de esperar garçom, disputar atenção ou ficar na dúvida sobre o pedido. Com a NOOWE, tudo flui — do primeiro prato ao pagamento.', en: "No more waiting for the waiter, competing for attention, or wondering about your order. With NOOWE, everything flows — from the first dish to payment.", es: 'Basta de esperar al mesero, competir por atención o quedarse con dudas sobre el pedido. Con NOOWE, todo fluye — del primer plato al pago.' },
 
   'foryou.features_title': { pt: 'O que muda na sua experiência', en: 'What changes in your experience', es: 'Lo que cambia en tu experiencia' },
   'foryou.features_sub': { pt: 'Funcionalidades que transformam sua ida ao restaurante.', en: 'Features that transform your restaurant visit.', es: 'Funcionalidades que transforman tu visita al restaurante.' },
@@ -393,7 +393,7 @@ const translations: Record<string, Record<Lang, string>> = {
 
   'foryou.how_title': { pt: 'Como funciona', en: 'How it works', es: 'Cómo funciona' },
   'foryou.step1_title': { pt: 'Escaneie o QR code', en: 'Scan the QR code', es: 'Escanea el código QR' },
-  'foryou.step1_desc': { pt: 'Na mesa, no balcão ou na fila. O NOOWE abre instantaneamente.', en: 'At the table, counter or queue. NOOWE opens instantly.', es: 'En la mesa, mostrador o fila. NOOWE se abre al instante.' },
+  'foryou.step1_desc': { pt: 'Na mesa, no balcão ou na fila. A NOOWE abre instantaneamente.', en: 'At the table, counter or queue. NOOWE opens instantly.', es: 'En la mesa, mostrador o fila. NOOWE se abre al instante.' },
   'foryou.step2_title': { pt: 'Peça e acompanhe', en: 'Order and track', es: 'Pide y sigue' },
   'foryou.step2_desc': { pt: 'Navegue pelo cardápio, faça seu pedido e acompanhe tudo em tempo real.', en: 'Browse the menu, place your order and track everything in real time.', es: 'Navega por el menú, haz tu pedido y sigue todo en tiempo real.' },
   'foryou.step3_title': { pt: 'Pague e vá', en: 'Pay and go', es: 'Paga y vete' },

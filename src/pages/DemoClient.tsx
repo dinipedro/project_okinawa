@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { DemoProvider, useDemoContext } from '@/contexts/DemoContext';
 import { PhoneShell, BottomNav, SERVICE_TYPES, ItemIcon, type NavTab } from '@/components/demo/DemoShared';
+import DemoFeedbackWidget, { trackDemoAction } from '@/components/demo/DemoFeedbackWidget';
 import { DemoAutoTranslate, DemoI18nProvider, DemoLangSelector, useDemoI18n } from '@/components/demo/DemoI18n';
 import {
   ArrowLeft, Check, ChevronRight, Search, QrCode, Gift, User,
@@ -85,7 +86,12 @@ const DemoClientInner = () => {
   // Reset screen when service type changes
   useEffect(() => {
     if (config) setCurrentScreen(config.defaultScreen);
+    trackDemoAction(`serviceType:${serviceType}`);
   }, [serviceType]);
+
+  useEffect(() => {
+    trackDemoAction(`clientScreen:${currentScreen}`);
+  }, [currentScreen]);
 
   const activeServiceType = SERVICE_TYPES.find(s => s.id === serviceType);
   const rawInfo = config?.info[currentScreen] || { title: 'Demo', desc: '' };
@@ -94,6 +100,13 @@ const DemoClientInner = () => {
     desc: translateText(rawInfo.desc),
   };
   const currentStepIdx = config?.steps.findIndex(s => s.screens.includes(currentScreen)) ?? -1;
+
+  const feedbackContext = useMemo(() => ({
+    viewportMode: 'mobile',
+    activeRole: serviceType,
+    journeyStep: config?.steps[currentStepIdx]?.label || currentScreen,
+    currentScreen,
+  }), [serviceType, currentStepIdx, config, currentScreen]);
 
   const handleTabChange = (tab: NavTab) => {
     const screen = FD_TAB_SCREENS[tab];
@@ -252,6 +265,8 @@ const DemoClientInner = () => {
           </div>
         </div>
       </DemoAutoTranslate>
+
+      <DemoFeedbackWidget context={feedbackContext} />
     </>
   );
 };

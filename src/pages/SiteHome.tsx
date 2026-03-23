@@ -4,8 +4,9 @@ import { useLang } from '@/lib/i18n';
 import SiteNavbar from '@/components/site/SiteNavbar';
 import SiteFooter from '@/components/site/SiteFooter';
 import WaitlistCard from '@/components/site/WaitlistCard';
+import SEOHead from '@/components/seo/SEOHead';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { ArrowRight, Building2, Smartphone, Layers, Zap, Globe, Shield } from 'lucide-react';
+import { ArrowRight, Building2, Smartphone, Layers, Zap, Globe, Shield, Play } from 'lucide-react';
 
 const Reveal: React.FC<{
   children: React.ReactNode; delay?: number; className?: string;
@@ -30,9 +31,36 @@ const SiteHome: React.FC = () => {
 
   return (
     <div className="bg-background text-foreground min-h-screen">
+      <SEOHead
+        title={t('seo.home_title')}
+        description={t('seo.home_desc')}
+        canonical="/"
+        jsonLd={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'NOOWE',
+            url: 'https://noowebr.com',
+            description: t('seo.home_desc'),
+            logo: 'https://noowebr.com/favicon.png',
+            sameAs: [],
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'NOOWE',
+            url: 'https://noowebr.com',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: 'https://noowebr.com/platform?q={search_term_string}',
+              'query-input': 'required name=search_term_string',
+            },
+          },
+        ]}
+      />
       <SiteNavbar />
 
-      {/* ═══ HERO — Purpose-driven, neutral ═══ */}
+      {/* ═══ HERO ═══ */}
       <section className="relative pt-36 pb-28 overflow-hidden">
         <div className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full opacity-[0.04]" style={{ background: 'radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)' }} />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-[0.03]" style={{ background: 'radial-gradient(circle, hsl(var(--secondary)) 0%, transparent 70%)' }} />
@@ -64,10 +92,30 @@ const SiteHome: React.FC = () => {
               {t('home.hero_sub')}
             </p>
           </Reveal>
+
+          <Reveal delay={240}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+              <Link
+                to="/request-demo"
+                className="group inline-flex items-center gap-2.5 bg-primary text-primary-foreground font-semibold px-8 py-4 rounded-xl hover:bg-primary-dark transition-all shadow-glow"
+                style={{ fontSize: 'clamp(15px, 1vw, 17px)' }}
+              >
+                <Play size={16} />
+                {t('home.hero_cta_sim')}
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/platform"
+                className="inline-flex items-center gap-2 text-muted-foreground font-medium text-sm hover:text-foreground transition-colors"
+              >
+                {t('home.hero_cta_platform')} <ArrowRight size={14} />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ═══ PILLARS — What makes NOOWE different ═══ */}
+      {/* ═══ PILLARS ═══ */}
       <section className="py-20 bg-muted/30">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
@@ -95,7 +143,7 @@ const SiteHome: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══ AUDIENCE BIFURCATION ═══ */}
+      {/* ═══ AUDIENCE ═══ */}
       <section className="py-24">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
@@ -110,7 +158,6 @@ const SiteHome: React.FC = () => {
           </Reveal>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* B2B Card */}
             <Reveal delay={100}>
               <Link to="/platform" className="group block p-10 rounded-2xl border-2 border-border bg-background hover:border-primary/40 transition-all duration-300 hover:shadow-lg h-full">
                 <div className="w-14 h-14 rounded-xl bg-primary/8 text-primary flex items-center justify-center mb-6">
@@ -124,7 +171,6 @@ const SiteHome: React.FC = () => {
               </Link>
             </Reveal>
 
-            {/* B2C Card */}
             <Reveal delay={180}>
               <Link to="/para-voce" className="group block p-10 rounded-2xl border-2 border-border bg-background hover:border-secondary/40 transition-all duration-300 hover:shadow-lg h-full">
                 <div className="w-14 h-14 rounded-xl bg-secondary/8 text-secondary flex items-center justify-center mb-6">
