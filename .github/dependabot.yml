@@ -1,8 +1,8 @@
 version: 2
 updates:
-  # Frontend (root)
+  # Frontend (site)
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/site"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -18,7 +18,7 @@ updates:
 
   # Backend
   - package-ecosystem: "npm"
-    directory: "/backend"
+    directory: "/platform/backend"
     schedule:
       interval: "weekly"
       day: "monday"
