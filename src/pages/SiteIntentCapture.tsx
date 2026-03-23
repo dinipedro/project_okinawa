@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '@/lib/i18n';
 import SiteNavbar from '@/components/site/SiteNavbar';
+import SEOHead from '@/components/seo/SEOHead';
 import NooweLogo from '@/components/site/NooweLogo';
 import { UtensilsCrossed, Zap, Truck, Wine, ArrowRight } from 'lucide-react';
 
@@ -26,6 +27,7 @@ const SiteIntentCapture: React.FC = () => {
 
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col">
+      <SEOHead title={t('intent.title')} noIndex />
       <SiteNavbar />
 
       <div className="flex-1 flex items-center justify-center px-6">

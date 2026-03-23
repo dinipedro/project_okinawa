@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLang } from '@/lib/i18n';
 import SiteNavbar from '@/components/site/SiteNavbar';

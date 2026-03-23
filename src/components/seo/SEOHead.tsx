@@ -6,14 +6,14 @@ interface SEOHeadProps {
   canonical?: string;
   ogType?: string;
   ogImage?: string;
-  jsonLd?: Record<string, unknown>;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   noIndex?: boolean;
 }
 
-const SITE_NAME = "Okinawa";
-const DEFAULT_DESCRIPTION = "Descubra momentos incríveis perto de você. Reservas, pedidos e experiências gastronômicas em um só app.";
+const SITE_NAME = "NOOWE";
+const DEFAULT_DESCRIPTION = "NOOWE conecta restaurantes e clientes numa única plataforma. Pedidos, cozinha, pagamentos e equipe — tudo em tempo real.";
 const DEFAULT_OG_IMAGE = "https://lovable.dev/opengraph-image-p98pqg.png";
-const BASE_URL = "https://okinawa.app";
+const BASE_URL = "https://noowebr.com";
 
 const SEOHead = ({
   title,

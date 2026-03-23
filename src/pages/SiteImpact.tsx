@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLang } from '@/lib/i18n';
+import SEOHead from '@/components/seo/SEOHead';
 import { CheckCircle2, ArrowRight, Compass, Zap } from 'lucide-react';
 
 const SiteImpact: React.FC = () => {
@@ -20,7 +21,7 @@ const SiteImpact: React.FC = () => {
 
   return (
     <div className="bg-foreground text-white min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Ambient glow */}
+      <SEOHead title={t('impact.title')} noIndex />
       <div className="absolute inset-0 pointer-events-none">
         <div
           className="absolute w-[600px] h-[600px] rounded-full blur-[180px] opacity-60"
@@ -34,7 +35,6 @@ const SiteImpact: React.FC = () => {
       </div>
 
       <div className={`relative z-10 text-center max-w-lg px-6 transition-all duration-1000 ${entered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        {/* Success pulse */}
         <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-10 animate-scale-in">
           <Zap size={28} className="text-success" />
         </div>
@@ -46,7 +46,6 @@ const SiteImpact: React.FC = () => {
           {t('impact.subtitle')}
         </p>
 
-        {/* Bullets */}
         <div className="flex flex-col gap-4 items-start max-w-xs mx-auto mb-14">
           {bullets.map((b, i) => (
             <div
@@ -62,7 +61,6 @@ const SiteImpact: React.FC = () => {
           ))}
         </div>
 
-        {/* CTA */}
         <div className={`transition-all duration-700 ${entered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           style={{ transitionDelay: '1200ms' }}
         >
@@ -83,7 +81,6 @@ const SiteImpact: React.FC = () => {
           </div>
         </div>
 
-        {/* Tagline */}
         <p className={`mt-20 text-white/15 text-xs tracking-[0.2em] uppercase transition-all duration-1000 ${entered ? 'opacity-100' : 'opacity-0'}`}
           style={{ transitionDelay: '1600ms' }}
         >

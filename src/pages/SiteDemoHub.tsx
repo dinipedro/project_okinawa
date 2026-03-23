@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLang } from '@/lib/i18n';
 import SiteNavbar from '@/components/site/SiteNavbar';
 import SiteFooter from '@/components/site/SiteFooter';
+import SEOHead from '@/components/seo/SEOHead';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { ArrowRight, Smartphone, Monitor, Play, Compass, Timer } from 'lucide-react';
 
@@ -20,6 +21,11 @@ const SiteDemoHub: React.FC = () => {
 
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col">
+      <SEOHead
+        title={t('seo.demo_title')}
+        description={t('seo.demo_desc')}
+        canonical="/demo"
+      />
       <SiteNavbar />
 
       <div className="flex-1 flex items-center justify-center px-6 py-28">
@@ -35,7 +41,6 @@ const SiteDemoHub: React.FC = () => {
             </p>
           </Reveal>
 
-          {/* Guided Simulation — Primary CTA */}
           <Reveal delay={120}>
             <Link to="/demo/guided" className="group block max-w-xl mx-auto mb-4">
               <div className="relative text-left rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-primary/[0.02] p-8 transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-[var(--shadow-glow)]">
@@ -59,7 +64,6 @@ const SiteDemoHub: React.FC = () => {
             </Link>
           </Reveal>
 
-          {/* Divider */}
           <Reveal delay={160}>
             <div className="flex items-center gap-4 max-w-xl mx-auto my-6">
               <div className="flex-1 h-px bg-border" />
@@ -68,7 +72,6 @@ const SiteDemoHub: React.FC = () => {
             </div>
           </Reveal>
 
-          {/* Free Explore */}
           <Reveal delay={200}>
             <div className="max-w-xl mx-auto mb-10">
               <div className="flex items-center gap-3 mb-2">
@@ -79,7 +82,6 @@ const SiteDemoHub: React.FC = () => {
             </div>
           </Reveal>
 
-          {/* Client + Restaurant cards */}
           <div className="grid md:grid-cols-2 gap-4 max-w-xl mx-auto">
             <Reveal delay={240}>
               <Link to="/demo/client" className="group block">
