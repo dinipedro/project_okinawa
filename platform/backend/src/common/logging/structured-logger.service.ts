@@ -22,6 +22,93 @@ export interface StructuredLog {
   stack?: string;
 }
 
+// ============================================================
+// PII SANITIZATION PATTERNS (LGPD Compliance)
+// ============================================================
+
+/**
+ * Regex patterns for detecting and masking PII in log output.
+ * These run on serialized log data to prevent accidental PII leakage.
+ */
+const PII_PATTERNS: Array<{ pattern: RegExp; replacement: string | ((match: string, ...groups: string[]) => string); label: string }> = [
+  {
+    // Email addresses: john.doe@example.com → j***@example.com
+    pattern: /([a-zA-Z0-9._%+-])([a-zA-Z0-9._%+-]*)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    replacement: (_match: string, first: string, _rest: string, domain: string) =>
+      `${first}***@${domain}`,
+    label: 'email',
+  },
+  {
+    // Brazilian CPF: 123.456.789-01 → ***.***.***-01
+    pattern: /\d{3}\.\d{3}\.\d{3}-(\d{2})/g,
+    replacement: (_match: string, lastTwo: string) => `***.***.***-${lastTwo}`,
+    label: 'cpf_formatted',
+  },
+  {
+    // CPF without formatting: 12345678901 (11 consecutive digits, not part of longer number)
+    // Only match standalone 11-digit sequences that look like CPFs
+    pattern: /(?<!\d)\d{9}(\d{2})(?!\d)/g,
+    replacement: (_match: string, lastTwo: string) => `*********${lastTwo}`,
+    label: 'cpf_unformatted',
+  },
+  {
+    // Brazilian phone: +5511999991234 → +55***1234
+    pattern: /(\+55)\d{6,7}(\d{4})/g,
+    replacement: (_match: string, prefix: string, lastFour: string) =>
+      `${prefix}***${lastFour}`,
+    label: 'phone_br',
+  },
+  {
+    // International phone with +: +1234567890 → +1***7890
+    pattern: /(\+\d{1,3})\d{4,8}(\d{4})/g,
+    replacement: (_match: string, prefix: string, lastFour: string) =>
+      `${prefix}***${lastFour}`,
+    label: 'phone_intl',
+  },
+];
+
+/**
+ * Sanitize a string value by masking PII patterns.
+ * Applied to log messages and serialized data before output.
+ */
+function sanitizePII(value: string): string {
+  let result = value;
+  for (const { pattern, replacement } of PII_PATTERNS) {
+    // Reset lastIndex for global regex
+    pattern.lastIndex = 0;
+    result = result.replace(pattern, replacement as any);
+  }
+  return result;
+}
+
+/**
+ * Deep-sanitize an object by masking PII in all string values.
+ */
+function sanitizeObjectPII(obj: Record<string, unknown>): Record<string, unknown> {
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === 'string') {
+      sanitized[key] = sanitizePII(value);
+    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+      sanitized[key] = sanitizeObjectPII(value as Record<string, unknown>);
+    } else if (Array.isArray(value)) {
+      sanitized[key] = value.map((item) =>
+        typeof item === 'string'
+          ? sanitizePII(item)
+          : item && typeof item === 'object'
+            ? sanitizeObjectPII(item as Record<string, unknown>)
+            : item,
+      );
+    } else {
+      sanitized[key] = value;
+    }
+  }
+  return sanitized;
+}
+
+// Export for testing
+export { sanitizePII, sanitizeObjectPII, PII_PATTERNS };
+
 @Injectable({ scope: Scope.TRANSIENT })
 export class StructuredLoggerService implements LoggerService {
   private context?: string;
@@ -66,19 +153,29 @@ export class StructuredLoggerService implements LoggerService {
     contextOrData?: string | LogContext,
     stack?: string,
   ): void {
+    // Sanitize the message for PII before logging
+    const sanitizedMessage = sanitizePII(message);
+
+    const rawData = {
+      ...StructuredLoggerService.globalContext,
+      ...(typeof contextOrData === 'object' ? contextOrData : {}),
+    };
+
+    // Deep-sanitize all data values for PII
+    const sanitizedData = Object.keys(rawData).length > 0
+      ? sanitizeObjectPII(rawData) as LogContext
+      : rawData;
+
     const log: StructuredLog = {
       timestamp: new Date().toISOString(),
       level,
-      message,
+      message: sanitizedMessage,
       context: typeof contextOrData === 'string' ? contextOrData : this.context,
-      data: {
-        ...StructuredLoggerService.globalContext,
-        ...(typeof contextOrData === 'object' ? contextOrData : {}),
-      },
+      data: sanitizedData,
     };
 
     if (stack) {
-      log.stack = stack;
+      log.stack = sanitizePII(stack);
     }
 
     // Remove empty data object
@@ -94,10 +191,10 @@ export class StructuredLoggerService implements LoggerService {
       const contextStr = log.context ? `[${log.context}]` : '';
       const dataStr = log.data ? ` ${JSON.stringify(log.data)}` : '';
       console.log(
-        `${color}${log.timestamp} ${level.toUpperCase()} ${contextStr} ${message}${dataStr}\x1b[0m`,
+        `${color}${log.timestamp} ${level.toUpperCase()} ${contextStr} ${sanitizedMessage}${dataStr}\x1b[0m`,
       );
       if (stack) {
-        console.log(`${color}${stack}\x1b[0m`);
+        console.log(`${color}${sanitizePII(stack)}\x1b[0m`);
       }
     }
   }
@@ -209,6 +306,7 @@ export class LoggingInterceptor implements NestInterceptor {
       }
     }
 
-    return sanitized;
+    // Apply PII masking to remaining string values (email, phone, CPF)
+    return sanitizeObjectPII(sanitized);
   }
 }

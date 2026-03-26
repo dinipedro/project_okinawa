@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as crypto from 'crypto';
 import { Profile } from './entities/profile.entity';
 import { UserRole as UserRoleEntity } from '@/modules/user-roles/entities/user-role.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -17,6 +18,8 @@ export interface FindUsersParams {
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
@@ -91,10 +94,25 @@ export class UsersService {
 
   async deleteAccount(id: string) {
     const profile = await this.findOne(id);
-    // Soft delete - just mark as inactive and clear personal data
+
+    // LGPD Art. 12 — Immediate PII anonymization ("right to be forgotten")
+    const anonId = crypto.randomUUID().replace(/-/g, '').substring(0, 16);
+    profile.email = `deleted_${anonId}@anonymized.local`;
+    profile.full_name = null;
+    profile.phone = null;
+    profile.avatar_url = null;
+    profile.default_address = null;
+    profile.dietary_restrictions = null;
+    profile.favorite_cuisines = null;
+    profile.preferences = null;
+    profile.marketing_consent = false;
     profile.is_active = false;
     profile.deleted_at = new Date();
-    return this.profileRepository.save(profile);
+
+    await this.profileRepository.save(profile);
+    this.logger.log(`Account ${id} anonymized per LGPD deletion request`);
+
+    return { message: 'Account deleted and personal data anonymized.' };
   }
 
   async findByEmail(email: string) {

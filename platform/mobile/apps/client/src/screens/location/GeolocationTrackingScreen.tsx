@@ -14,9 +14,9 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
-import { useColors } from '../../../../shared/theme';
-import { typography } from '../../../../shared/theme/typography';
-import { spacing } from '../../../../shared/theme/spacing';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { typography } from '@okinawa/shared/theme/typography';
+import { spacing } from '@okinawa/shared/theme/spacing';
 import logger from '@okinawa/shared/utils/logger';
 
 type RootStackParamList = {
@@ -87,12 +87,12 @@ export const GeolocationTrackingScreen: React.FC = () => {
       alignItems: 'center',
     },
     title: {
-      ...typography.headings.h3,
+      ...typography.h3,
       color: colors.foreground,
     },
     subtitle: {
-      ...typography.body.small,
-      color: colors.textMuted,
+      ...typography.bodySmall,
+      color: colors.foregroundMuted,
       marginTop: 2,
     },
     placeholder: {
@@ -112,13 +112,13 @@ export const GeolocationTrackingScreen: React.FC = () => {
       justifyContent: 'center',
     },
     mapPlaceholderText: {
-      ...typography.body.medium,
-      color: colors.textMuted,
+      ...typography.bodyMedium,
+      color: colors.foregroundMuted,
       marginTop: spacing.sm,
     },
     coordsText: {
-      ...typography.body.small,
-      color: colors.textMuted,
+      ...typography.bodySmall,
+      color: colors.foregroundMuted,
       marginTop: spacing.xs,
     },
     trackingIndicator: {
@@ -153,7 +153,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
       gap: spacing.xs,
     },
     statusBadgeText: {
-      ...typography.body.medium,
+      ...typography.bodyMedium,
       color: '#FFF',
       fontWeight: '600',
     },
@@ -167,12 +167,12 @@ export const GeolocationTrackingScreen: React.FC = () => {
       alignItems: 'center',
     },
     statValue: {
-      ...typography.headings.h2,
+      ...typography.h2,
       color: colors.foreground,
     },
     statLabel: {
-      ...typography.body.small,
-      color: colors.textMuted,
+      ...typography.bodySmall,
+      color: colors.foregroundMuted,
       marginTop: spacing.xs,
     },
     statDivider: {
@@ -202,8 +202,8 @@ export const GeolocationTrackingScreen: React.FC = () => {
       gap: spacing.sm,
     },
     instructionsText: {
-      ...typography.body.small,
-      color: colors.textMuted,
+      ...typography.bodySmall,
+      color: colors.foregroundMuted,
       flex: 1,
     },
     actions: {
@@ -221,7 +221,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
       gap: spacing.sm,
     },
     primaryButtonText: {
-      ...typography.body.large,
+      ...typography.bodyLarge,
       color: '#FFF',
       fontWeight: '600',
     },
@@ -244,7 +244,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
       gap: spacing.sm,
     },
     secondaryButtonText: {
-      ...typography.body.large,
+      ...typography.bodyLarge,
       color: colors.primary,
       fontWeight: '600',
     },
@@ -256,8 +256,8 @@ export const GeolocationTrackingScreen: React.FC = () => {
       gap: spacing.xs,
     },
     orderButtonText: {
-      ...typography.body.medium,
-      color: colors.textMuted,
+      ...typography.bodyMedium,
+      color: colors.foregroundMuted,
     },
   }), [colors]);
 
@@ -415,7 +415,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
       case 'approaching':
         return colors.primaryLight;
       default:
-        return colors.textMuted;
+        return colors.foregroundMuted;
     }
   };
 
@@ -588,7 +588,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
 
         {orderId && (
           <TouchableOpacity style={styles.orderButton}>
-            <Ionicons name="receipt" size={20} color={colors.textMuted} />
+            <Ionicons name="receipt" size={20} color={colors.foregroundMuted} />
             <Text style={styles.orderButtonText}>Ver Pedido #{orderId.slice(-6)}</Text>
           </TouchableOpacity>
         )}

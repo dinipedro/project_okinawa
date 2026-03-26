@@ -43,7 +43,8 @@ export const validationSchema = Joi.object({
   JWT_EXPIRES_IN: Joi.string().default('15m'),
   JWT_REFRESH_SECRET: Joi.string().min(32).required().description('JWT refresh secret (min 32 chars)'),
   JWT_REFRESH_EXPIRES_IN: Joi.string().default('7d'),
-  CSRF_SECRET: Joi.string().min(32).optional().description('CSRF signing secret (falls back to JWT_SECRET)'),
+  CSRF_SECRET: Joi.string().min(32).required().description('CSRF signing secret (must be separate from JWT_SECRET)'),
+  FIELD_ENCRYPTION_KEY: Joi.string().min(32).required().description('AES-256 encryption key for PII fields (min 32 chars)'),
 
   // Rate Limiting
   THROTTLE_TTL: Joi.number().min(1000).default(60000),

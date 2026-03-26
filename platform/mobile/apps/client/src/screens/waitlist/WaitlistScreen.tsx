@@ -20,7 +20,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { t } from '@okinawa/shared/i18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
-import { useAuth } from '@okinawa/shared/contexts/AuthContext';
+import { useAuth } from '@okinawa/shared/hooks/useAuth';
 import { ApiService } from '@okinawa/shared/services/api';
 
 interface WaitlistEntry {
@@ -46,12 +46,12 @@ interface WaitlistScreenProps {
 
 export default function WaitlistScreen({ route }: WaitlistScreenProps) {
   const colors = useColors();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const { user } = useAuth();
   const restaurantId = route?.params?.restaurantId || '';
 
   // Form state
-  const [guestName, setGuestName] = useState(user?.name || '');
+  const [guestName, setGuestName] = useState(user?.full_name || '');
   const [partySize, setPartySize] = useState('2');
   const [preference, setPreference] = useState('qualquer');
   const [hasKids, setHasKids] = useState(false);

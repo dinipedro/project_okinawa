@@ -7,7 +7,7 @@ import { ptBR as dateFnsPtBR } from 'date-fns/locale';
 import ApiService from '@/shared/services/api';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useI18n } from '@/shared/hooks/useI18n';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 
 interface Guest {
   id: string;
@@ -98,7 +98,7 @@ export default function ReservationDetailScreen() {
     },
     loadingText: {
       marginTop: 15,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     statusCard: {
       margin: 15,
@@ -148,7 +148,7 @@ export default function ReservationDetailScreen() {
       marginRight: -5,
     },
     infoText: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       flex: 1,
     },
     sectionTitle: {
@@ -164,7 +164,7 @@ export default function ReservationDetailScreen() {
       alignItems: 'center',
     },
     detailLabel: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 4,
     },
     detailValue: {
@@ -187,7 +187,7 @@ export default function ReservationDetailScreen() {
       borderRadius: 8,
     },
     requestsText: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 5,
     },
     restrictions: {
@@ -249,11 +249,11 @@ export default function ReservationDetailScreen() {
       backgroundColor: colors.border,
     },
     pendingLabel: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginBottom: 10,
     },
     guestContact: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     pendingChip: {
       backgroundColor: '#FFF3E0',
@@ -261,7 +261,7 @@ export default function ReservationDetailScreen() {
     },
     emptyGuests: {
       textAlign: 'center',
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       paddingVertical: 15,
     },
     actions: {
@@ -352,7 +352,7 @@ export default function ReservationDetailScreen() {
 
   const handleStartService = async () => {
     try {
-      await ApiService.startReservationService(reservationId);
+      await ApiService.updateReservationStatus(reservationId, 'seated');
       await analytics.logEvent('service_started', {
         reservation_id: reservationId,
       });
@@ -446,7 +446,7 @@ export default function ReservationDetailScreen() {
           </Text>
           {reservation.restaurant?.address && (
             <View style={styles.infoRow}>
-              <IconButton icon="map-marker" size={16} style={styles.infoIcon} iconColor={colors.textMuted} />
+              <IconButton icon="map-marker" size={16} style={styles.infoIcon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={styles.infoText}>
                 {reservation.restaurant.address}
               </Text>
@@ -454,7 +454,7 @@ export default function ReservationDetailScreen() {
           )}
           {reservation.restaurant?.phone && (
             <View style={styles.infoRow}>
-              <IconButton icon="phone" size={16} style={styles.infoIcon} iconColor={colors.textMuted} />
+              <IconButton icon="phone" size={16} style={styles.infoIcon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={styles.infoText}>
                 {reservation.restaurant.phone}
               </Text>

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, MoreThan, In } from 'typeorm';
 import { Wallet } from './entities/wallet.entity';
 import { WalletTransaction } from './entities/wallet-transaction.entity';
 import { PaymentMethod } from './entities/payment-method.entity';
@@ -28,6 +28,81 @@ export class PaymentsService {
     private dataSource: DataSource,
   ) {}
 
+  /**
+   * Calculate total wallet transaction volume for a given period.
+   * Used for daily/monthly limit enforcement.
+   */
+  private async getTransactionVolume(
+    walletId: string,
+    since: Date,
+    types: TransactionType[],
+  ): Promise<number> {
+    const transactions = await this.transactionRepository.find({
+      where: {
+        wallet_id: walletId,
+        created_at: MoreThan(since),
+        transaction_type: In(types),
+      },
+    });
+
+    return (transactions || [])
+      .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
+  }
+
+  /**
+   * Validate wallet compliance limits before a transaction.
+   * Checks max_balance, daily_limit, and monthly_limit.
+   */
+  private async validateWalletLimits(
+    wallet: Wallet,
+    amount: number,
+    transactionType: 'recharge' | 'withdrawal',
+  ): Promise<void> {
+    if (transactionType === 'recharge') {
+      // Check max balance
+      const projectedBalance = Number(wallet.balance) + amount;
+      if (projectedBalance > Number(wallet.max_balance)) {
+        throw new BadRequestException(
+          `Recharge would exceed maximum wallet balance of R$ ${Number(wallet.max_balance).toFixed(2)}. ` +
+            `Current balance: R$ ${Number(wallet.balance).toFixed(2)}, recharge: R$ ${amount.toFixed(2)}`,
+        );
+      }
+    }
+
+    // Check daily limit
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const dailyVolume = await this.getTransactionVolume(
+      wallet.id,
+      startOfDay,
+      [TransactionType.RECHARGE, TransactionType.WITHDRAWAL, TransactionType.PAYMENT],
+    );
+
+    if (dailyVolume + amount > Number(wallet.daily_limit)) {
+      throw new BadRequestException(
+        `Transaction would exceed daily limit of R$ ${Number(wallet.daily_limit).toFixed(2)}. ` +
+          `Today's volume: R$ ${dailyVolume.toFixed(2)}, this transaction: R$ ${amount.toFixed(2)}`,
+      );
+    }
+
+    // Check monthly limit
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+    const monthlyVolume = await this.getTransactionVolume(
+      wallet.id,
+      startOfMonth,
+      [TransactionType.RECHARGE, TransactionType.WITHDRAWAL, TransactionType.PAYMENT],
+    );
+
+    if (monthlyVolume + amount > Number(wallet.monthly_limit)) {
+      throw new BadRequestException(
+        `Transaction would exceed monthly limit of R$ ${Number(wallet.monthly_limit).toFixed(2)}. ` +
+          `This month's volume: R$ ${monthlyVolume.toFixed(2)}, this transaction: R$ ${amount.toFixed(2)}`,
+      );
+    }
+  }
+
   async getWallet(userId: string, walletType: WalletType = WalletType.CLIENT) {
     let wallet = await this.walletRepository.findOne({
       where: { user_id: userId, wallet_type: walletType },
@@ -52,6 +127,10 @@ export class PaymentsService {
 
     try {
       const wallet = await this.getWallet(userId);
+
+      // Validate compliance limits before proceeding
+      await this.validateWalletLimits(wallet, rechargeDto.amount, 'recharge');
+
       const balanceBefore = Number(wallet.balance);
       const balanceAfter = balanceBefore + rechargeDto.amount;
 
@@ -92,6 +171,9 @@ export class PaymentsService {
       if (balanceBefore < withdrawDto.amount) {
         throw new BadRequestException('Insufficient balance');
       }
+
+      // Validate compliance limits before proceeding
+      await this.validateWalletLimits(wallet, withdrawDto.amount, 'withdrawal');
 
       const balanceAfter = balanceBefore - withdrawDto.amount;
 
@@ -277,22 +359,13 @@ export class PaymentsService {
         case 'debit_card':
           // In production, integrate with payment gateway (Stripe, etc)
           // For now, simulate successful payment using tokenized card
-          this.logger.log(`Processing ${processDto.payment_method} payment: ${processDto.amount}`);
-          if (processDto.tokenized_card) {
-            this.logger.log(`Card ending in: ${processDto.tokenized_card.last_four || 'XXXX'}`);
-            this.logger.log(`Payment token: ${processDto.tokenized_card.payment_token.substring(0, 8)}...`);
-          } else if (processDto.saved_payment_method) {
-            this.logger.log(`Using saved payment method: ${processDto.saved_payment_method.payment_method_id}`);
-          }
+          this.logger.log(`Processing ${processDto.payment_method} payment for order ${order.id.substring(0, 8)}`);
           break;
 
         case 'pix':
           // In production, generate PIX QR code and await payment
           // For now, simulate successful payment
-          this.logger.log(`Processing PIX payment: ${processDto.amount}`);
-          if (processDto.pix_key) {
-            this.logger.log(`PIX key: ${processDto.pix_key}`);
-          }
+          this.logger.log(`Processing PIX payment for order ${order.id.substring(0, 8)}`);
           break;
 
         case 'cash':

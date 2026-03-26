@@ -17,7 +17,7 @@ import {
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
-import { useRestaurant } from '@/contexts/RestaurantContext';
+import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import ApiService from '@/shared/services/api';
 import { Card } from '@okinawa/shared/components';
 

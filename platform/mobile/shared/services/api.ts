@@ -13,9 +13,9 @@ declare const __DEV__: boolean;
  * SECURITY: Never use HTTP in production. iOS App Transport Security and
  * Android Network Security Config enforce HTTPS by default.
  */
-const API_URL = __DEV__
-  ? 'http://localhost:3000'
-  : 'https://api.okinawa.com';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { ENV } = require('../config/env');
+const API_URL = ENV.API_BASE_URL;
 
 // Security validation: Ensure HTTPS in production
 if (!__DEV__ && !API_URL.startsWith('https://')) {
@@ -26,6 +26,29 @@ if (!__DEV__ && !API_URL.startsWith('https://')) {
 const MAX_REFRESH_RETRIES = 3;
 const REFRESH_RETRY_WINDOW_MS = 60000; // 1 minute
 
+/**
+ * Event listener type for the re-consent event (HTTP 451).
+ * The navigation layer subscribes to this so it can show the ReConsentScreen.
+ */
+type ConsentRequiredListener = (data: {
+  currentTermsVersion: string;
+  currentPrivacyVersion: string;
+}) => void;
+
+/** Module-level listeners for consent-required events (451 responses). */
+const consentListeners: Set<ConsentRequiredListener> = new Set();
+
+/**
+ * Subscribe to consent-required events emitted when the API returns 451.
+ * Returns an unsubscribe function.
+ */
+export function onConsentRequired(listener: ConsentRequiredListener): () => void {
+  consentListeners.add(listener);
+  return () => {
+    consentListeners.delete(listener);
+  };
+}
+
 class ApiService {
   private api: AxiosInstance;
   private refreshing: boolean = false;
@@ -35,6 +58,13 @@ class ApiService {
     resolve: (value?: unknown) => void;
     reject: (reason?: unknown) => void;
   }> = [];
+  /** Queue of requests that failed with 451, to be retried after consent. */
+  private consentQueue: Array<{
+    resolve: (value?: unknown) => void;
+    reject: (reason?: unknown) => void;
+    config: InternalAxiosRequestConfig;
+  }> = [];
+  private consentPending: boolean = false;
 
   constructor() {
     this.api = axios.create({
@@ -81,7 +111,34 @@ class ApiService {
           error.config?.url || 'unknown',
           error
         );
-        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean; _consentRetry?: boolean };
+
+        // LGPD Sprint 2: Handle 451 (Unavailable For Legal Reasons) — re-consent required
+        if (error.response?.status === 451 && !originalRequest._consentRetry) {
+          const data = error.response.data as any;
+          if (data?.requiresConsent) {
+            originalRequest._consentRetry = true;
+
+            // Queue the failed request so it can be retried after consent
+            const retryPromise = new Promise((resolve, reject) => {
+              this.consentQueue.push({ resolve, reject, config: originalRequest });
+            }).then(() => this.api(originalRequest));
+
+            // Emit consent-required event for the navigation layer (only once per burst)
+            if (!this.consentPending) {
+              this.consentPending = true;
+              const consentData = {
+                currentTermsVersion: data.currentTermsVersion || '1.0.0',
+                currentPrivacyVersion: data.currentPrivacyVersion || '1.0.0',
+              };
+              for (const listener of consentListeners) {
+                try { listener(consentData); } catch { /* swallow */ }
+              }
+            }
+
+            return retryPromise;
+          }
+        }
 
         if (error.response?.status === 401 && !originalRequest._retry) {
           if (this.refreshing) {
@@ -165,6 +222,28 @@ class ApiService {
     });
 
     this.failedQueue = [];
+  }
+
+  /**
+   * Call after the user has accepted re-consent to retry all queued 451 requests.
+   */
+  resolveConsentQueue() {
+    this.consentPending = false;
+    for (const queued of this.consentQueue) {
+      queued.resolve();
+    }
+    this.consentQueue = [];
+  }
+
+  /**
+   * Reject all queued 451 requests (e.g. user declined terms).
+   */
+  rejectConsentQueue() {
+    this.consentPending = false;
+    for (const queued of this.consentQueue) {
+      queued.reject(new Error('User declined re-consent'));
+    }
+    this.consentQueue = [];
   }
 
   // ======================
@@ -272,6 +351,21 @@ class ApiService {
     return response.data;
   }
 
+  async getMyRestaurants() {
+    const response = await this.api.get('/restaurants/my-restaurants');
+    return response.data;
+  }
+
+  async getStaffProfile() {
+    const response = await this.api.get('/users/staff-profile');
+    return response.data;
+  }
+
+  async getStaffMember(restaurantId: string, memberId: string) {
+    const response = await this.api.get(`/restaurants/${restaurantId}/staff/${memberId}`);
+    return response.data;
+  }
+
   // ======================
   // ORDER ENDPOINTS (Customer Side)
   // ======================
@@ -319,6 +413,7 @@ class ApiService {
   // ======================
 
   async getRestaurantOrders(params?: {
+    restaurant_id?: string;
     status?: string;
     date?: string;
     table_id?: string;
@@ -355,7 +450,7 @@ class ApiService {
   // KDS (Kitchen Display System)
   // ======================
 
-  async getKitchenOrders() {
+  async getActiveKitchenOrders() {
     const response = await this.api.get('/orders/restaurant', {
       params: { status: 'confirmed,preparing' }
     });
@@ -483,24 +578,43 @@ class ApiService {
     return response.data;
   }
 
-  async createMenuItem(data: Record<string, unknown>) {
+  async createMenuItem(data: {
+    restaurant_id?: string;
+    name: string;
+    description?: string;
+    price: number;
+    category?: string;
+    image_url?: string;
+    preparation_time?: number;
+    allergens?: string[];
+    dietary_info?: Record<string, boolean>;
+    [key: string]: unknown;
+  }) {
     const response = await this.api.post('/menu-items', data);
     return response.data;
   }
 
-  async updateMenuItem(id: string, data: Record<string, unknown>) {
+  async updateMenuItem(id: string, data: {
+    name?: string;
+    description?: string;
+    price?: number;
+    is_available?: boolean;
+    category?: string;
+    preparation_time?: number;
+    [key: string]: unknown;
+  }) {
     const response = await this.api.patch(`/menu-items/${id}`, data);
     return response.data;
   }
 
-  async toggleMenuItemAvailability(id: string, is_available: boolean) {
+  async setMenuItemAvailability(id: string, is_available: boolean) {
     const response = await this.api.patch(`/menu-items/${id}`, {
       is_available,
     });
     return response.data;
   }
 
-  async toggleAvailability(id: string) {
+  async toggleMenuItemAvailability(id: string) {
     const response = await this.api.patch(`/menu-items/${id}/toggle-availability`);
     return response.data;
   }
@@ -1157,11 +1271,6 @@ class ApiService {
     return response.data;
   }
 
-  async validateQRCode(code: string) {
-    const response = await this.api.post('/qr-code/validate', { code });
-    return response.data;
-  }
-
   async scanQRCode(code: string) {
     const response = await this.api.post('/qr-code/scan', { code });
     return response.data;
@@ -1189,20 +1298,12 @@ class ApiService {
   // ======================
 
   /**
-   * Get all tables for a restaurant
+   * Get all tables for a restaurant (with pagination)
    */
-  async getTables(restaurantId: string, params?: { page?: number; limit?: number }) {
+  async getRestaurantTablesPaginated(restaurantId: string, params?: { page?: number; limit?: number }) {
     const response = await this.api.get('/tables', {
       params: { restaurant_id: restaurantId, ...params },
     });
-    return response.data;
-  }
-
-  /**
-   * Get a single table by ID
-   */
-  async getTable(tableId: string) {
-    const response = await this.api.get(`/tables/${tableId}`);
     return response.data;
   }
 
@@ -1234,14 +1335,6 @@ class ApiService {
     notes?: string;
   }) {
     const response = await this.api.patch(`/tables/${tableId}`, data);
-    return response.data;
-  }
-
-  /**
-   * Update table status
-   */
-  async updateTableStatus(tableId: string, status: string) {
-    const response = await this.api.patch(`/tables/${tableId}/status`, { status });
     return response.data;
   }
 
@@ -1499,61 +1592,6 @@ class ApiService {
     return response.data;
   }
 
-  async updateTableStatus(tableId: string, status: string) {
-    const response = await this.api.patch(`/tables/${tableId}/status`, { status });
-    return response.data;
-  }
-
-  // NOTE: updateTableNotes is defined earlier in the class (line ~534)
-
-  async getAvailableTables(restaurantId: string, partySize: number, datetime: string) {
-    const response = await this.api.get(`/tables/restaurant/${restaurantId}/available`, {
-      params: { party_size: partySize, datetime },
-    });
-    return response.data;
-  }
-
-  // ======================
-  // MENU ITEMS ENDPOINTS (Additional)
-  // ======================
-
-  async updateMenuItem(itemId: string, data: {
-    name?: string;
-    description?: string;
-    price?: number;
-    is_available?: boolean;
-    category?: string;
-    preparation_time?: number;
-  }) {
-    const response = await this.api.patch(`/menu-items/${itemId}`, data);
-    return response.data;
-  }
-
-  async deleteMenuItem(itemId: string) {
-    const response = await this.api.delete(`/menu-items/${itemId}`);
-    return response.data;
-  }
-
-  async createMenuItem(data: {
-    restaurant_id: string;
-    name: string;
-    description?: string;
-    price: number;
-    category?: string;
-    image_url?: string;
-    preparation_time?: number;
-    allergens?: string[];
-    dietary_info?: Record<string, boolean>;
-  }) {
-    const response = await this.api.post('/menu-items', data);
-    return response.data;
-  }
-
-  async toggleMenuItemAvailability(itemId: string) {
-    const response = await this.api.patch(`/menu-items/${itemId}/toggle-availability`);
-    return response.data;
-  }
-
   // ======================
   // USERS ENDPOINTS (Additional)
   // ======================
@@ -1626,7 +1664,7 @@ class ApiService {
   // KDS / STAFF ENDPOINTS
   // ======================
 
-  async getKitchenOrders(params?: { status?: string; restaurant_id?: string }) {
+  async getKitchenOrders(params?: { status?: string; restaurant_id?: string; station?: string }) {
     const response = await this.api.get('/orders/kds/kitchen', { params });
     return response.data;
   }
@@ -1918,6 +1956,47 @@ class ApiService {
   // LEGAL ENDPOINTS
   // ======================
 
+  // ======================
+  // CONSENT ENDPOINTS (LGPD Sprint 2)
+  // ======================
+
+  /**
+   * Record user consent for a specific document type/version.
+   */
+  async acceptConsent(consentType: string, version: string) {
+    const response = await this.api.post('/users/me/consent', {
+      consent_type: consentType,
+      version,
+    });
+    return response.data;
+  }
+
+  /**
+   * Get the user's current active consents.
+   */
+  async getMyConsents() {
+    const response = await this.api.get('/users/me/consent');
+    return response.data;
+  }
+
+  /**
+   * Get current versions of all legal documents.
+   */
+  async getLegalVersions() {
+    const response = await this.api.get('/legal/versions');
+    return response.data;
+  }
+
+  /**
+   * Request human review of an automated AI decision (LGPD Art. 20).
+   */
+  async requestAIDecisionReview(decisionId: string, reason: string) {
+    const response = await this.api.post(`/ai/decisions/${decisionId}/review-request`, {
+      reason,
+    });
+    return response.data;
+  }
+
   /**
    * Get the privacy policy document in the requested language.
    */
@@ -1971,6 +2050,55 @@ class ApiService {
   removeResponseInterceptor(id: number): void {
     this.api.interceptors.response.eject(id);
   }
+
+  // ======================
+  // GENERIC HTTP METHODS
+  // ======================
+
+  /**
+   * Generic POST request. Used by auth/otp services for custom endpoints.
+   */
+  async post<T = any>(url: string, data?: any, config?: Record<string, any>) {
+    return this.api.post<T>(url, data, config);
+  }
+
+  /**
+   * Generic GET request. Used by auth/otp services for custom endpoints.
+   */
+  async get<T = any>(url: string, config?: Record<string, any>) {
+    return this.api.get<T>(url, config);
+  }
+
+  /**
+   * Generic PATCH request.
+   */
+  async patch<T = any>(url: string, data?: any, config?: Record<string, any>) {
+    return this.api.patch<T>(url, data, config);
+  }
+
+  /**
+   * Generic PUT request.
+   */
+  async put<T = any>(url: string, data?: any, config?: Record<string, any>) {
+    return this.api.put<T>(url, data, config);
+  }
+
+  /**
+   * Generic DELETE request.
+   */
+  async delete<T = any>(url: string, config?: Record<string, any>) {
+    return this.api.delete<T>(url, config);
+  }
+
+  /**
+   * Generic request method. Used by offline-storage sync queue.
+   */
+  async request<T = any>(config: { method: string; url: string; data?: any }) {
+    return this.api.request<T>(config);
+  }
 }
 
-export default new ApiService();
+const apiServiceInstance = new ApiService();
+
+export { apiServiceInstance as ApiService };
+export default apiServiceInstance;

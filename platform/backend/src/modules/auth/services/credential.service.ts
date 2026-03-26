@@ -9,6 +9,7 @@ import { UserCredential } from '../entities/user-credential.entity';
  */
 @Injectable()
 export class CredentialService {
+  // OWASP recommends bcrypt cost >= 12 (2024). At cost 12, ~250ms per hash on modern CPUs.
   private readonly SALT_ROUNDS = 12;
   private readonly MAX_LOGIN_ATTEMPTS = 5;
   private readonly LOCKOUT_DURATION_MINUTES = 30;

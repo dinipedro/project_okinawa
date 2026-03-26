@@ -68,7 +68,7 @@ export class PasswordResetService {
     await this.resetTokenRepository.save(resetToken);
 
     // Send email with reset link
-    await this.emailService.sendPasswordResetEmail(user.email, token, user.full_name);
+    await this.emailService.sendPasswordResetEmail(user.email, token, user.full_name || undefined);
 
     // Delete expired tokens (cleanup)
     await this.resetTokenRepository.delete({
@@ -128,7 +128,7 @@ export class PasswordResetService {
     await this.auditLogService.logPasswordChange(user.id, ipAddress, userAgent);
 
     // Send confirmation email
-    await this.emailService.sendPasswordChangedEmail(user.email, user.full_name);
+    await this.emailService.sendPasswordChangedEmail(user.email, user.full_name || undefined);
 
     return {
       message: 'Password has been reset successfully',

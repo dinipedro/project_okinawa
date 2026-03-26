@@ -304,7 +304,10 @@ export default function FloorFlowScreen() {
     refetch,
   } = useQuery<FloorTable[]>({
     queryKey: ['floor-tables'],
-    queryFn: () => ApiService.get('/tables?include=session'),
+    queryFn: async () => {
+      const res = await ApiService.get('/tables?include=session');
+      return res.data;
+    },
     refetchInterval: 15000,
   });
 

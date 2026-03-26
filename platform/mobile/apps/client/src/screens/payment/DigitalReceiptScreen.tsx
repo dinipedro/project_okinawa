@@ -13,8 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { useColors } from '@okinawa/shared/theme';
-import { typography } from '@okinawa/shared/theme/typography';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { fontSize, fontWeight } from '@okinawa/shared/theme/typography';
 import { spacing } from '@okinawa/shared/theme/spacing';
 import { t } from '@okinawa/shared/i18n';
 import { formatCurrency } from '@okinawa/shared/utils/formatters';
@@ -183,8 +183,8 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       paddingVertical: spacing.md,
     },
     title: {
-      fontSize: typography.sizes.lg,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.lg,
+      fontWeight: fontWeight.bold as any,
       color: colors.foreground,
     },
     content: {
@@ -208,13 +208,13 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       backgroundColor: colors.success,
     },
     successTitle: {
-      fontSize: typography.sizes.xl,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.xl,
+      fontWeight: fontWeight.bold as any,
       marginBottom: spacing.xs,
       color: colors.success,
     },
     successSubtitle: {
-      fontSize: typography.sizes.sm,
+      fontSize: fontSize.sm,
       color: colors.foregroundSecondary,
     },
     receiptCard: {
@@ -229,13 +229,13 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       alignItems: 'center',
     },
     restaurantName: {
-      fontSize: typography.sizes.lg,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.lg,
+      fontWeight: fontWeight.bold as any,
       marginBottom: spacing.xs,
       color: colors.foreground,
     },
     restaurantDetail: {
-      fontSize: typography.sizes.xs,
+      fontSize: fontSize.xs,
       textAlign: 'center',
       color: colors.foregroundSecondary,
     },
@@ -253,21 +253,21 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       alignItems: 'center',
     },
     infoLabel: {
-      fontSize: typography.sizes.xs,
+      fontSize: fontSize.xs,
       marginBottom: 2,
       color: colors.foregroundSecondary,
     },
     infoValue: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.semibold as any,
       color: colors.foreground,
     },
     itemsSection: {
       padding: spacing.lg,
     },
     sectionTitle: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.semibold as any,
       marginBottom: spacing.md,
       color: colors.foreground,
     },
@@ -283,18 +283,18 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       flex: 1,
     },
     itemQty: {
-      fontSize: typography.sizes.sm,
+      fontSize: fontSize.sm,
       width: 30,
       color: colors.foregroundSecondary,
     },
     itemName: {
-      fontSize: typography.sizes.sm,
+      fontSize: fontSize.sm,
       flex: 1,
       color: colors.foreground,
     },
     itemPrice: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.medium as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.medium as any,
       color: colors.foreground,
     },
     totalsSection: {
@@ -306,11 +306,11 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       marginBottom: spacing.sm,
     },
     totalLabel: {
-      fontSize: typography.sizes.sm,
+      fontSize: fontSize.sm,
       color: colors.foregroundSecondary,
     },
     totalValue: {
-      fontSize: typography.sizes.sm,
+      fontSize: fontSize.sm,
       color: colors.foreground,
     },
     grandTotalRow: {
@@ -322,13 +322,13 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       borderTopColor: colors.border,
     },
     grandTotalLabel: {
-      fontSize: typography.sizes.lg,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.lg,
+      fontWeight: fontWeight.bold as any,
       color: colors.foreground,
     },
     grandTotalValue: {
-      fontSize: typography.sizes.xl,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.xl,
+      fontWeight: fontWeight.bold as any,
       color: colors.primary,
     },
     splitSection: {
@@ -344,12 +344,12 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       flex: 1,
     },
     splitLabel: {
-      fontSize: typography.sizes.xs,
+      fontSize: fontSize.xs,
       color: colors.foregroundSecondary,
     },
     splitValue: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.semibold as any,
       color: colors.foreground,
     },
     paymentSection: {
@@ -364,12 +364,12 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       flex: 1,
     },
     paymentMethod: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.medium as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.medium as any,
       color: colors.foreground,
     },
     paymentDetail: {
-      fontSize: typography.sizes.xs,
+      fontSize: fontSize.xs,
       color: colors.foregroundSecondary,
     },
     loyaltyCard: {
@@ -392,12 +392,12 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       flex: 1,
     },
     loyaltyTitle: {
-      fontSize: typography.sizes.md,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.md,
+      fontWeight: fontWeight.semibold as any,
       color: colors.foreground,
     },
     loyaltySubtitle: {
-      fontSize: typography.sizes.xs,
+      fontSize: fontSize.xs,
       color: colors.foregroundSecondary,
     },
     actions: {
@@ -418,8 +418,8 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
       borderColor: colors.border,
     },
     actionButtonText: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.medium as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.medium as any,
       color: colors.foreground,
     },
     footer: {
@@ -434,8 +434,8 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
     },
     doneButtonText: {
       color: colors.primaryForeground,
-      fontSize: typography.sizes.md,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.md,
+      fontWeight: fontWeight.semibold as any,
     },
   }), [colors]);
 

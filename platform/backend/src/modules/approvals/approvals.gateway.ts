@@ -7,7 +7,7 @@ import {
   ConnectedSocket,
   MessageBody,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, BeforeApplicationShutdown } from '@nestjs/common';
 import { Server } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticatedSocket } from '@common/interfaces/authenticated-socket.interface';
@@ -18,7 +18,7 @@ import { Approval } from './entities/approval.entity';
   namespace: '/approvals',
   cors: getWsCorsConfig(),
 })
-export class ApprovalsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ApprovalsGateway implements OnGatewayConnection, OnGatewayDisconnect, BeforeApplicationShutdown {
   private readonly logger = new Logger(ApprovalsGateway.name);
 
   @WebSocketServer()
@@ -119,5 +119,15 @@ export class ApprovalsGateway implements OnGatewayConnection, OnGatewayDisconnec
 
     // Also emit to the restaurant managers room for real-time updates
     // The restaurant_id is not passed here, so we broadcast on the approval id room
+  }
+
+  async beforeApplicationShutdown() {
+    this.logger.log('Shutting down — disconnecting all clients...');
+    if (this.server) {
+      const sockets = await this.server.fetchSockets();
+      for (const socket of sockets) {
+        socket.disconnect(true);
+      }
+    }
   }
 }

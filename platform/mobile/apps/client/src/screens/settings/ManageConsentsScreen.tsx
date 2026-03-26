@@ -1,0 +1,189 @@
+import React, { useCallback } from 'react';
+import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { Text, Switch, Button, ActivityIndicator, Divider } from 'react-native-paper';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
+import ApiService from '@okinawa/shared/services/api';
+
+interface ConsentRecord {
+  id: string;
+  consent_type: string;
+  version: string;
+  accepted_at: string;
+}
+
+const CONSENT_LABELS: Record<string, { label: string; description: string; revocable: boolean }> = {
+  terms_of_service: {
+    label: 'Termos de Uso',
+    description: 'Necessário para utilizar a plataforma.',
+    revocable: false,
+  },
+  privacy_policy: {
+    label: 'Política de Privacidade',
+    description: 'Necessário para utilizar a plataforma.',
+    revocable: false,
+  },
+  marketing: {
+    label: 'Comunicações de Marketing',
+    description: 'Receber ofertas, novidades e promoções por email e push.',
+    revocable: true,
+  },
+  analytics: {
+    label: 'Análise de Uso',
+    description: 'Permitir coleta de dados anônimos para melhoria do app.',
+    revocable: true,
+  },
+  geolocation: {
+    label: 'Geolocalização',
+    description: 'Permitir uso da localização para encontrar restaurantes próximos.',
+    revocable: true,
+  },
+};
+
+export default function ManageConsentsScreen() {
+  const colors = useColors();
+  const queryClient = useQueryClient();
+
+  const { data: consents, isLoading } = useQuery<ConsentRecord[]>({
+    queryKey: ['user-consents'],
+    queryFn: async () => {
+      const res = await ApiService.get('/users/me/consent');
+      return res.data;
+    },
+  });
+
+  const revokeMutation = useMutation({
+    mutationFn: async (consentType: string) => {
+      await ApiService.delete(`/users/me/consent/${consentType}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-consents'] });
+    },
+    onError: (error: any) => {
+      Alert.alert(
+        t('common.error'),
+        error?.response?.data?.message || t('common.genericError'),
+      );
+    },
+  });
+
+  const activeTypes = new Set(consents?.map((c) => c.consent_type) || []);
+
+  const handleToggle = useCallback(
+    (consentType: string, isActive: boolean) => {
+      if (!isActive) {
+        // Revoking consent
+        Alert.alert(
+          'Revogar Consentimento',
+          `Deseja revogar o consentimento para "${CONSENT_LABELS[consentType]?.label || consentType}"?`,
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            {
+              text: 'Revogar',
+              style: 'destructive',
+              onPress: () => revokeMutation.mutate(consentType),
+            },
+          ],
+        );
+      }
+    },
+    [revokeMutation],
+  );
+
+  if (isLoading) {
+    return (
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.header, { color: colors.text }]}>
+        Gerenciar Consentimentos
+      </Text>
+      <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+        Você pode revogar consentimentos opcionais a qualquer momento, conforme a LGPD.
+      </Text>
+
+      {Object.entries(CONSENT_LABELS).map(([type, info]) => {
+        const isActive = activeTypes.has(type);
+        return (
+          <View key={type}>
+            <View style={styles.row}>
+              <View style={styles.labelContainer}>
+                <Text style={[styles.label, { color: colors.text }]}>{info.label}</Text>
+                <Text style={[styles.description, { color: colors.textSecondary }]}>
+                  {info.description}
+                </Text>
+                {!info.revocable && (
+                  <Text style={[styles.required, { color: colors.warning }]}>
+                    Obrigatório
+                  </Text>
+                )}
+              </View>
+              <Switch
+                value={isActive}
+                disabled={!info.revocable || revokeMutation.isPending}
+                onValueChange={() => handleToggle(type, !isActive)}
+                color={colors.primary}
+              />
+            </View>
+            <Divider />
+          </View>
+        );
+      })}
+
+      <View style={styles.footer}>
+        <Text style={[styles.footerText, { color: colors.textSecondary }]}>
+          Para revogar os Termos de Uso ou Política de Privacidade, é necessário excluir sua conta.
+        </Text>
+        <Button
+          mode="outlined"
+          textColor={colors.destructive}
+          style={styles.deleteButton}
+          onPress={() => {
+            Alert.alert(
+              'Excluir Conta',
+              'Esta ação é irreversível. Todos os seus dados pessoais serão anonimizados.',
+              [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                  text: 'Excluir Conta',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      await ApiService.delete('/users/me');
+                      Alert.alert('Conta excluída', 'Seus dados foram anonimizados.');
+                    } catch {
+                      Alert.alert(t('common.error'), t('common.genericError'));
+                    }
+                  },
+                },
+              ],
+            );
+          }}
+        >
+          Excluir Minha Conta
+        </Button>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  header: { fontSize: 22, fontWeight: '700', marginBottom: 4 },
+  subtitle: { fontSize: 14, marginBottom: 20, lineHeight: 20 },
+  row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 16 },
+  labelContainer: { flex: 1, marginRight: 12 },
+  label: { fontSize: 16, fontWeight: '600' },
+  description: { fontSize: 13, marginTop: 2, lineHeight: 18 },
+  required: { fontSize: 11, fontWeight: '600', marginTop: 4 },
+  footer: { marginTop: 32, marginBottom: 40 },
+  footerText: { fontSize: 13, lineHeight: 18, marginBottom: 16 },
+  deleteButton: { borderColor: '#ef4444' },
+});

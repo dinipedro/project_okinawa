@@ -165,23 +165,47 @@ export class IpRateLimitGuard implements CanActivate {
   }
 
   /**
-   * Extract client IP from request, handling proxies
+   * Trusted proxy CIDRs. Only accept X-Forwarded-For from these sources.
+   * Configure via TRUSTED_PROXIES env var (comma-separated IPs/CIDRs).
+   */
+  private getTrustedProxies(): string[] {
+    const proxies = process.env.TRUSTED_PROXIES;
+    if (!proxies) return ['127.0.0.1', '::1', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'];
+    return proxies.split(',').map((p) => p.trim());
+  }
+
+  private isFromTrustedProxy(request: Request): boolean {
+    const remoteIp = request.socket?.remoteAddress || '';
+    const trusted = this.getTrustedProxies();
+    return trusted.some((cidr) => {
+      if (cidr.includes('/')) {
+        // Simple prefix check for CIDR ranges
+        const prefix = cidr.split('/')[0];
+        return remoteIp.startsWith(prefix.split('.').slice(0, 2).join('.'));
+      }
+      return this.normalizeIp(remoteIp) === this.normalizeIp(cidr);
+    });
+  }
+
+  /**
+   * Extract client IP from request, handling proxies.
+   * Only trusts X-Forwarded-For when request comes from a trusted proxy.
    */
   private getClientIp(request: Request): string {
-    // Check X-Forwarded-For header (common for proxies/load balancers)
-    const forwarded = request.headers['x-forwarded-for'];
-    if (typeof forwarded === 'string') {
-      // Take the first IP (original client)
-      const ips = forwarded.split(',').map((ip) => ip.trim());
-      if (ips[0]) {
-        return this.normalizeIp(ips[0]);
+    // Only trust forwarded headers from known proxies
+    if (this.isFromTrustedProxy(request)) {
+      const forwarded = request.headers['x-forwarded-for'];
+      if (typeof forwarded === 'string') {
+        const ips = forwarded.split(',').map((ip) => ip.trim());
+        if (ips[0]) {
+          return this.normalizeIp(ips[0]);
+        }
       }
-    }
 
-    // Check X-Real-IP header (Nginx)
-    const realIp = request.headers['x-real-ip'];
-    if (typeof realIp === 'string') {
-      return this.normalizeIp(realIp);
+      const realIp = request.headers['x-real-ip'];
+      if (typeof realIp === 'string') {
+        return this.normalizeIp(realIp);
+      }
     }
 
     // Fallback to socket address

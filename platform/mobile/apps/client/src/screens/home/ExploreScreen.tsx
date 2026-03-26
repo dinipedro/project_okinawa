@@ -16,7 +16,7 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import {
   Text,
   Searchbar,
@@ -35,7 +35,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import ApiService from '@/shared/services/api';
 import { useI18n } from '@/shared/hooks/useI18n';
-import { useColors } from '@/shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import logger from '@okinawa/shared/utils/logger';
 import type { Restaurant, Location as LocationType, RootStackParamList } from '../../types';
 
@@ -173,7 +173,7 @@ export default function ExploreScreen() {
     },
     description: {
       marginBottom: 8,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     cuisineChips: {
       flexDirection: 'row',
@@ -186,7 +186,7 @@ export default function ExploreScreen() {
     },
     minOrder: {
       marginTop: 8,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     mapContainer: {
       flex: 1,
@@ -234,7 +234,7 @@ export default function ExploreScreen() {
     emptyText: {
       marginTop: 16,
       textAlign: 'center',
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
   }), [colors]);
 
@@ -286,11 +286,11 @@ export default function ExploreScreen() {
   const loadRestaurants = async () => {
     try {
       setLoading(true);
-      const data = await ApiService.getNearbyRestaurants({
-        latitude: userLocation!.latitude,
-        longitude: userLocation!.longitude,
-        radius: 10,
-      });
+      const data = await ApiService.getNearbyRestaurants(
+        userLocation!.latitude,
+        userLocation!.longitude,
+        10,
+      );
       setRestaurants(data);
     } catch (error) {
       logger.error('Error loading restaurants:', error);
@@ -313,7 +313,7 @@ export default function ExploreScreen() {
 
     if (selectedCuisine !== t('common.all')) {
       filtered = filtered.filter((r) =>
-        r.cuisines?.some((c) => c.toLowerCase() === selectedCuisine.toLowerCase())
+        r.cuisine_type?.some((c) => c.toLowerCase() === selectedCuisine.toLowerCase())
       );
     }
 
@@ -362,7 +362,7 @@ export default function ExploreScreen() {
               <View style={styles.distance}>
                 <IconButton
                   icon="map-marker"
-                  iconColor={colors.mutedForeground}
+                  iconColor={colors.foregroundMuted}
                   size={16}
                   style={styles.markerIcon}
                 />
@@ -371,7 +371,7 @@ export default function ExploreScreen() {
               <View style={styles.deliveryTime}>
                 <IconButton
                   icon="clock-outline"
-                  iconColor={colors.mutedForeground}
+                  iconColor={colors.foregroundMuted}
                   size={16}
                   style={styles.clockIcon}
                 />
@@ -379,7 +379,7 @@ export default function ExploreScreen() {
               </View>
             </View>
           </View>
-          <IconButton icon="heart-outline" iconColor={colors.mutedForeground} size={24} accessibilityLabel="Add to favorites" />
+          <IconButton icon="heart-outline" iconColor={colors.foregroundMuted} size={24} accessibilityLabel="Add to favorites" />
         </View>
 
         {item.description && (
@@ -388,9 +388,9 @@ export default function ExploreScreen() {
           </Text>
         )}
 
-        {item.cuisines && item.cuisines.length > 0 && (
+        {item.cuisine_type && item.cuisine_type.length > 0 && (
           <View style={styles.cuisineChips}>
-            {item.cuisines.slice(0, 3).map((cuisine, index) => (
+            {item.cuisine_type.slice(0, 3).map((cuisine, index) => (
               <Chip key={index} style={styles.chip} textStyle={{ fontSize: 11 }}>
                 {cuisine}
               </Chip>
@@ -398,9 +398,9 @@ export default function ExploreScreen() {
           </View>
         )}
 
-        {item.minimum_order && (
+        {item.min_order_amount && (
           <Text variant="bodySmall" style={styles.minOrder}>
-            {t('restaurant.minOrder')}: R$ {item.minimum_order.toFixed(2)}
+            {t('restaurant.minOrder')}: R$ {item.min_order_amount.toFixed(2)}
           </Text>
         )}
       </Card.Content>
@@ -409,7 +409,7 @@ export default function ExploreScreen() {
 
   const renderListView = () => (
     <FlashList
-      data={filteredRestaurants}
+      data={filteredRestaurants as Restaurant[]}
       renderItem={renderRestaurantCard}
       keyExtractor={(item) => item.id}
       estimatedItemSize={200}
@@ -419,7 +419,7 @@ export default function ExploreScreen() {
       }
       ListEmptyComponent={
         <View style={styles.emptyContainer}>
-          <IconButton icon="food-off" size={64} iconColor={colors.mutedForeground} />
+          <IconButton icon="food-off" size={64} iconColor={colors.foregroundMuted} />
           <Text variant="bodyLarge" style={styles.emptyText}>
             {t('explore.noRestaurants')}
           </Text>
@@ -450,8 +450,8 @@ export default function ExploreScreen() {
           <Marker
             key={restaurant.id}
             coordinate={{
-              latitude: restaurant.latitude || userLocation?.latitude || 0,
-              longitude: restaurant.longitude || userLocation?.longitude || 0,
+              latitude: restaurant.location?.coordinates?.[1] || userLocation?.latitude || 0,
+              longitude: restaurant.location?.coordinates?.[0] || userLocation?.longitude || 0,
             }}
             onPress={() => setSelectedRestaurant(restaurant)}
           >
@@ -481,8 +481,8 @@ export default function ExploreScreen() {
           <Card.Content style={styles.selectedCardContent}>
             <View style={styles.selectedRestaurantInfo}>
               <Text variant="titleMedium">{selectedRestaurant.name}</Text>
-              <Text variant="bodySmall" style={{ color: colors.mutedForeground }}>
-                {selectedRestaurant.cuisines?.join(', ')}
+              <Text variant="bodySmall" style={{ color: colors.foregroundMuted }}>
+                {selectedRestaurant.cuisine_type?.join(', ')}
               </Text>
             </View>
             <IconButton icon="chevron-right" iconColor={colors.primary} />
@@ -530,8 +530,8 @@ export default function ExploreScreen() {
       <View style={styles.filtersContainer}>
         <FlashList
           horizontal
-          data={CUISINE_FILTERS}
-          renderItem={({ item }) => (
+          data={CUISINE_FILTERS as string[]}
+          renderItem={({ item }: ListRenderItemInfo<string>) => (
             <Chip
               selected={selectedCuisine === item}
               onPress={() => setSelectedCuisine(item)}

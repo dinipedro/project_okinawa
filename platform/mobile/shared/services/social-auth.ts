@@ -56,7 +56,7 @@ class SocialAuthService {
     // Generate new device ID
     const randomBytes = await Crypto.getRandomBytesAsync(16);
     const newId = Array.from(randomBytes)
-      .map(b => b.toString(16).padStart(2, '0'))
+      .map((b: number) => b.toString(16).padStart(2, '0'))
       .join('');
     
     await secureStorage.setSecure('device_id', newId);

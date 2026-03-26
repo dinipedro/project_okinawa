@@ -98,9 +98,9 @@ export default function FamilyActivitiesScreen({ route }: FamilyActivitiesScreen
   const estimatedWait = route?.params?.estimatedWait || 15;
 
   const handleGoToMenu = useCallback(() => {
-    navigation.navigate(
-      'MenuScreen' as never,
-      { restaurantId, familyMode: true } as never,
+    (navigation as any).navigate(
+      'MenuScreen',
+      { restaurantId, familyMode: true },
     );
   }, [navigation, restaurantId]);
 

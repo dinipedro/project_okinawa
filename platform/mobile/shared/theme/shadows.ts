@@ -60,6 +60,7 @@ export const shadows = {
 export const componentShadows = {
   // Card shadows
   card: createShadow('#000', 4, 0.08, 12, 4),
+  cardElevated: createShadow('#000', 6, 0.12, 16, 6),
   cardHover: createShadow('#000', 8, 0.12, 20, 8),
   cardActive: createShadow('#000', 2, 0.06, 6, 2),
   

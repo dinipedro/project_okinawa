@@ -21,9 +21,9 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
-import { useRestaurant } from '@/contexts/RestaurantContext';
+import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import ApiService from '@/shared/services/api';
-import { Card, Badge, StatusBadge } from '@okinawa/shared/components';
+import { Card, Badge } from '@okinawa/shared/components';
 
 interface Table {
   id: string;
@@ -61,7 +61,7 @@ export default function TableListScreen() {
     if (!restaurantId) return;
     
     try {
-      const response = await ApiService.getTables(restaurantId);
+      const response = await ApiService.getTables();
       setTables(response.items || response);
     } catch (error) {
       console.error('Error fetching tables:', error);
@@ -130,7 +130,7 @@ export default function TableListScreen() {
 
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('TableDetail' as never, { tableId: item.id } as never)}
+        onPress={() => (navigation as any).navigate('TableDetail', { tableId: item.id })}
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={`Mesa ${item.table_number}, ${item.seats} lugares, ${config.label}`}
@@ -140,11 +140,9 @@ export default function TableListScreen() {
             <View style={styles.tableInfo}>
               <View style={styles.tableHeader}>
                 <Text style={styles.tableNumber}>{item.table_number}</Text>
-                <StatusBadge
-                  status={config.color as any}
-                  label={config.label}
-                  size="small"
-                />
+                <Chip compact style={{ height: 24 }} textStyle={{ fontSize: 11 }}>
+                  {config.label}
+                </Chip>
               </View>
 
               <View style={styles.tableDetails}>
@@ -173,7 +171,7 @@ export default function TableListScreen() {
                 icon="qrcode-plus"
                 size={20}
                 onPress={() =>
-                  navigation.navigate('QRCodeGenerator' as never, { tableId: item.id } as never)
+                  (navigation as any).navigate('QRCodeGenerator', { tableId: item.id })
                 }
                 iconColor={colors.primary}
                 accessibilityRole="button"
@@ -183,7 +181,7 @@ export default function TableListScreen() {
                 icon="pencil"
                 size={20}
                 onPress={() =>
-                  navigation.navigate('TableForm' as never, { tableId: item.id } as never)
+                  (navigation as any).navigate('TableForm', { tableId: item.id })
                 }
                 iconColor={colors.foregroundMuted}
                 accessibilityRole="button"
@@ -295,7 +293,7 @@ export default function TableListScreen() {
         icon="plus"
         style={[styles.fab, { backgroundColor: colors.primary }]}
         color={colors.primaryForeground}
-        onPress={() => navigation.navigate('TableForm' as never)}
+        onPress={() => (navigation as any).navigate('TableForm')}
         accessibilityRole="button"
         accessibilityLabel="Adicionar nova mesa"
       />

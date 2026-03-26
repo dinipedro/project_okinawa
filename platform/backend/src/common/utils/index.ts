@@ -8,3 +8,5 @@ export type {
   CircuitBreakerStats,
 } from './circuit-breaker';
 export { CircuitBreakerService, CircuitBreakerModule } from './circuit-breaker.module';
+export { createTracedAxios } from './traced-http-client';
+export type { TracedAxiosOptions } from './traced-http-client';

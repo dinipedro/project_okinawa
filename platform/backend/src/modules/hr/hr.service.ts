@@ -7,6 +7,16 @@ import { Shift, StaffRole } from './entities/shift.entity';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { UpdateShiftDto } from './dto/update-shift.dto';
 
+export interface AttendanceGroupEntry {
+  staff_id: string;
+  staff_name: string;
+  total_hours: number;
+  days_worked: number;
+  late_arrivals: number;
+  early_departures: number;
+  records: Attendance[];
+}
+
 @Injectable()
 export class HrService {
   private readonly logger = new Logger(HrService.name);
@@ -33,15 +43,7 @@ export class HrService {
       order: { date: 'DESC', check_in: 'ASC' },
     });
 
-    interface AttendanceGroupEntry {
-      staff_id: string;
-      staff_name: string;
-      total_hours: number;
-      days_worked: number;
-      late_arrivals: number;
-      early_departures: number;
-      records: Attendance[];
-    }
+    // Uses AttendanceGroupEntry interface exported at module level
 
     // Group by user and calculate totals
     const grouped: Record<string, AttendanceGroupEntry> = records.reduce((acc: Record<string, AttendanceGroupEntry>, record: Attendance) => {

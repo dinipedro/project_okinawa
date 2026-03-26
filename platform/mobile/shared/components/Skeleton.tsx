@@ -76,7 +76,7 @@ export function Skeleton({
           borderRadius,
           backgroundColor: colors.muted,
           opacity,
-        },
+        } as any,
         style,
       ]}
     />

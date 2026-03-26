@@ -43,12 +43,12 @@ interface PromoterDashboardScreenProps {
 // ============================================
 
 function DashboardSkeleton({ colors }: { colors: ReturnType<typeof useColors> }) {
-  const skel = (w: string, h: number) => ({ width: w, height: h, borderRadius: 4, backgroundColor: colors.backgroundTertiary });
+  const skel = (w: string, h: number) => ({ width: w as any, height: h, borderRadius: 4, backgroundColor: colors.backgroundTertiary });
   return (
     <View style={{ padding: 16, gap: 12 }}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
         {[1, 2, 3, 4].map((i) => (
-          <View key={i} style={{ flex: 1, minWidth: '45%', backgroundColor: colors.card, borderRadius: 12, padding: 16, gap: 8 }}>
+          <View key={i} style={{ flex: 1, minWidth: '45%' as any, backgroundColor: colors.card, borderRadius: 12, padding: 16, gap: 8 }}>
             <View style={skel('60%', 14)} /><View style={skel('40%', 24)} />
           </View>
         ))}

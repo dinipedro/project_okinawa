@@ -161,7 +161,10 @@ export default function NotificationsScreen() {
     refetch,
   } = useQuery<Notification[]>({
     queryKey: ['notifications'],
-    queryFn: () => ApiService.get('/notifications?limit=50&offset=0'),
+    queryFn: async () => {
+      const res = await ApiService.get<Notification[]>('/notifications?limit=50&offset=0');
+      return res.data;
+    },
     refetchInterval: 30000,
   });
 

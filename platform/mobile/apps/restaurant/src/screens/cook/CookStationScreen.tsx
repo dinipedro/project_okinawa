@@ -196,8 +196,8 @@ export default function CookStationScreen() {
       );
     };
 
-    socketService.on('order:new', handleNewOrder);
-    socketService.on('order:updated', handleUpdatedOrder);
+    socketService.on('order:new', handleNewOrder as (data: unknown) => void);
+    socketService.on('order:updated', handleUpdatedOrder as (data: unknown) => void);
 
     return () => {
       socketService.off('order:new');

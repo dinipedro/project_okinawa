@@ -27,7 +27,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { t } from '@okinawa/shared/i18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
-import { useAuth } from '@okinawa/shared/contexts/AuthContext';
+import { useAuth } from '@okinawa/shared/hooks/useAuth';
 import { ApiService } from '@okinawa/shared/services/api';
 import io, { Socket } from 'socket.io-client';
 
@@ -131,7 +131,7 @@ export default function ClubQueueScreen({ route }: ClubQueueScreenProps) {
   useEffect(() => {
     if (!restaurantId || !user?.id) return;
 
-    const apiUrl = ApiService.getBaseUrl?.() || '';
+    const apiUrl = __DEV__ ? 'http://localhost:3000' : 'https://api.okinawa.com';
     const socket = io(`${apiUrl}/queue`, {
       transports: ['websocket'],
     });

@@ -28,7 +28,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useColors } from '@/shared/theme';
 import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import { t } from '@/shared/i18n';
-import ApiService from '../../../../../../shared/services/api';
+import ApiService from '@/shared/services/api';
 
 interface Reservation {
   id: string;
@@ -264,7 +264,7 @@ export default function MaitreDashboardScreen() {
 
   const loadDashboardData = async () => {
     try {
-      const overview = await ApiService.getMaitreOverview(restaurantId);
+      const overview = await ApiService.getMaitreOverview(restaurantId!);
       setReservations(overview.reservations);
       setTables(overview.tables);
     } catch (error) {

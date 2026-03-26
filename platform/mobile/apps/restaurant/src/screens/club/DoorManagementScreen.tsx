@@ -326,12 +326,12 @@ export default function DoorManagementScreen({ route }: DoorManagementScreenProp
 
     socketService.on('club:queue:update', handleQueueUpdate);
     socketService.on('club:queue:new', handleNewEntry);
-    socketService.emit('joinRoom', `club-door:${restaurantId}`);
+    socketService.send('joinRoom', { room: `club-door:${restaurantId}` });
 
     return () => {
       socketService.off('club:queue:update', handleQueueUpdate);
       socketService.off('club:queue:new', handleNewEntry);
-      socketService.emit('leaveRoom', `club-door:${restaurantId}`);
+      socketService.send('leaveRoom', { room: `club-door:${restaurantId}` });
     };
   }, [restaurantId, fetchQueue]);
 

@@ -289,7 +289,7 @@ export default function CallsManagementScreen() {
   useEffect(() => {
     if (!restaurantId) return;
 
-    const apiBaseUrl = ApiService.getBaseUrl?.() || '';
+    const apiBaseUrl = __DEV__ ? 'http://localhost:3000' : 'https://api.okinawa.com';
     const socket = io(`${apiBaseUrl}/calls`, {
       transports: ['websocket'],
     });
@@ -336,7 +336,10 @@ export default function CallsManagementScreen() {
     isLoading: statsLoading,
   } = useQuery<CallStats>({
     queryKey: ['service-calls-stats', restaurantId],
-    queryFn: () => ApiService.get(`/calls/restaurant/${restaurantId}/stats`),
+    queryFn: async () => {
+      const res = await ApiService.get(`/calls/restaurant/${restaurantId}/stats`);
+      return res.data;
+    },
     refetchInterval: 15000,
   });
 
@@ -347,13 +350,15 @@ export default function CallsManagementScreen() {
     refetch,
   } = useQuery<ServiceCall[]>({
     queryKey: ['service-calls', restaurantId, activeTab],
-    queryFn: () => {
+    queryFn: async () => {
       if (activeTab === 'pending') {
-        return ApiService.get(`/calls/restaurant/${restaurantId}/active`);
+        const res = await ApiService.get(`/calls/restaurant/${restaurantId}/active`);
+        return res.data;
       }
-      return ApiService.get(
+      const res = await ApiService.get(
         `/calls/restaurant/${restaurantId}?status=${activeTab}`,
       );
+      return res.data;
     },
     refetchInterval: activeTab === 'pending' ? 10000 : 30000,
   });

@@ -15,16 +15,14 @@ type RouteParams = {
   };
 };
 
-function getStatusColors(colors: ReturnType<typeof useColors>): Record<ReservationStatus, string> {
-  return {
-    pending: colors.warning,
-    confirmed: colors.info,
-    seated: colors.success,
-    completed: colors.successLight,
-    cancelled: colors.error,
-    no_show: colors.foregroundMuted,
-  };
-}
+const STATUS_COLORS: Record<ReservationStatus, string> = {
+  pending: '#FFA726',
+  confirmed: '#42A5F5',
+  seated: '#00C853',
+  completed: '#66BB6A',
+  cancelled: '#EF5350',
+  no_show: '#9E9E9E',
+};
 
 export default function ReservationDetailScreen() {
   const { t } = useI18n();
@@ -70,10 +68,89 @@ export default function ReservationDetailScreen() {
     }
   };
 
+  const styles = useMemo(() => StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.backgroundSecondary,
+    },
+    loadingContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.background,
+    },
+    emptyContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.background,
+    },
+    card: {
+      margin: 16,
+      marginBottom: 8,
+      elevation: 2,
+      backgroundColor: colors.card,
+    },
+    header: {
+      marginBottom: 16,
+    },
+    statusChip: {
+      marginTop: 8,
+      alignSelf: 'flex-start',
+    },
+    chipText: {
+      color: '#fff',
+      fontSize: 12,
+    },
+    info: {
+      gap: 12,
+    },
+    infoRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    icon: {
+      margin: 0,
+      padding: 0,
+      marginRight: 8,
+    },
+    sectionTitle: {
+      marginBottom: 12,
+      color: colors.foreground,
+    },
+    specialRequests: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      backgroundColor: colors.warningLight,
+      padding: 12,
+      borderRadius: 8,
+    },
+    specialRequestsText: {
+      flex: 1,
+      color: colors.foregroundMuted,
+    },
+    actions: {
+      padding: 16,
+      gap: 8,
+    },
+    actionButton: {
+      marginBottom: 8,
+    },
+    seatedButton: {
+      backgroundColor: colors.info,
+    },
+    completedButton: {
+      backgroundColor: colors.success,
+    },
+    cancelButton: {
+      borderColor: colors.error,
+    },
+  }), [colors]);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -81,8 +158,8 @@ export default function ReservationDetailScreen() {
   if (!reservation) {
     return (
       <View style={styles.emptyContainer}>
-        <IconButton icon="alert-circle" size={48} />
-        <Text variant="headlineSmall">{t('reservations.reservationNotFound')}</Text>
+        <IconButton icon="alert-circle" size={48} iconColor={colors.foregroundMuted} />
+        <Text variant="headlineSmall" style={{ color: colors.foreground }}>{t('reservations.reservationNotFound')}</Text>
       </View>
     );
   }
@@ -92,9 +169,9 @@ export default function ReservationDetailScreen() {
       <Card style={styles.card}>
         <Card.Content>
           <View style={styles.header}>
-            <Text variant="headlineMedium">{reservation.customer_name}</Text>
+            <Text variant="headlineMedium">{reservation.customer?.full_name ?? 'Guest'}</Text>
             <Chip
-              style={[styles.statusChip, { backgroundColor: getStatusColors(colors)[reservation.status] }]}
+              style={[styles.statusChip, { backgroundColor: STATUS_COLORS[reservation.status] }]}
               textStyle={styles.chipText}
             >
               {getStatusLabel(reservation.status)}
@@ -112,10 +189,10 @@ export default function ReservationDetailScreen() {
               <IconButton icon="account-group" size={20} style={styles.icon} />
               <Text variant="bodyLarge">{reservation.party_size} pessoas</Text>
             </View>
-            {reservation.customer_phone && (
+            {reservation.customer?.phone && (
               <View style={styles.infoRow}>
                 <IconButton icon="phone" size={20} style={styles.icon} />
-                <Text variant="bodyLarge">{reservation.customer_phone}</Text>
+                <Text variant="bodyLarge">{reservation.customer.phone}</Text>
               </View>
             )}
             {reservation.table_id && (
@@ -187,7 +264,7 @@ export default function ReservationDetailScreen() {
               mode="outlined"
               onPress={() => handleStatusChange('no_show')}
               style={styles.actionButton}
-              textColor={colors.foregroundMuted}
+              textColor="#9E9E9E"
               icon="account-off"
               accessibilityRole="button"
               accessibilityLabel={t('reservations.markNoShow')}
@@ -198,7 +275,7 @@ export default function ReservationDetailScreen() {
               mode="outlined"
               onPress={() => handleStatusChange('cancelled')}
               style={styles.cancelButton}
-              textColor={colors.error}
+              textColor="#d32f2f"
               icon="close-circle"
               accessibilityRole="button"
               accessibilityLabel={t('reservations.cancelReservation')}
@@ -211,101 +288,3 @@ export default function ReservationDetailScreen() {
     </ScrollView>
   );
 }
-
-  const styles = useMemo(() => StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.backgroundSecondary,
-    },
-    loadingContainer: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.background,
-    },
-    emptyContainer: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.background,
-    },
-    card: {
-      margin: 16,
-      marginBottom: 8,
-      elevation: 2,
-      backgroundColor: colors.card,
-    },
-    header: {
-      marginBottom: 16,
-    },
-    statusChip: {
-      marginTop: 8,
-      alignSelf: 'flex-start',
-    },
-    chipText: {
-      color: colors.primaryForeground,
-      fontSize: 12,
-    },
-    info: {
-      gap: 12,
-    },
-    infoRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    icon: {
-      margin: 0,
-      padding: 0,
-      marginRight: 8,
-    },
-    sectionTitle: {
-      marginBottom: 12,
-      color: colors.foreground,
-    },
-    specialRequests: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      backgroundColor: colors.warningLight,
-      padding: 12,
-      borderRadius: 8,
-    },
-    specialRequestsText: {
-      flex: 1,
-      color: colors.textMuted,
-    },
-    actions: {
-      padding: 16,
-      gap: 8,
-    },
-    actionButton: {
-      marginBottom: 8,
-    },
-    seatedButton: {
-      backgroundColor: colors.info,
-    },
-    completedButton: {
-      backgroundColor: colors.success,
-    },
-    cancelButton: {
-      borderColor: colors.error,
-    },
-  }), [colors]);
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    );
-  }
-
-  if (!reservation) {
-    return (
-      <View style={styles.emptyContainer}>
-        <IconButton icon="alert-circle" size={48} iconColor={colors.textMuted} />
-        <Text variant="headlineSmall" style={{ color: colors.foreground }}>{t('reservations.reservationNotFound')}</Text>
-      </View>
-    );
-  }
-
-  return (

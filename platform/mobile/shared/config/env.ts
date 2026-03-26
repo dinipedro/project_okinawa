@@ -24,7 +24,7 @@ export type Environment = 'development' | 'staging' | 'production';
  * Current environment based on React Native's __DEV__ flag
  * Override this for staging builds
  */
-export const CURRENT_ENV: Environment = __DEV__ ? 'development' : 'production';
+export const CURRENT_ENV = (__DEV__ ? 'development' : 'production') as Environment;
 
 /**
  * Environment-specific configuration interface
@@ -136,12 +136,12 @@ const stagingConfig: EnvironmentConfig = {
   AUTH_TOKEN_EXPIRY_DAYS: 7,
   AUTH_REFRESH_TOKEN_EXPIRY_DAYS: 30,
   
-  // External Services
-  SENTRY_DSN: 'https://YOUR_STAGING_SENTRY_DSN@sentry.io/PROJECT_ID',
-  FIREBASE_PROJECT_ID: 'okinawa-staging',
-  FIREBASE_APP_ID: '1:123456789:ios:staging_app_id',
-  FIREBASE_API_KEY: 'AIzaSy_STAGING_KEY_REPLACE_ME',
-  FIREBASE_MESSAGING_SENDER_ID: '123456789',
+  // External Services — read from EAS build env
+  SENTRY_DSN: requireEnv('SENTRY_DSN', ''),
+  FIREBASE_PROJECT_ID: requireEnv('FIREBASE_PROJECT_ID', 'okinawa-staging'),
+  FIREBASE_APP_ID: requireEnv('FIREBASE_APP_ID', ''),
+  FIREBASE_API_KEY: requireEnv('FIREBASE_API_KEY', ''),
+  FIREBASE_MESSAGING_SENDER_ID: requireEnv('FIREBASE_MESSAGING_SENDER_ID', ''),
   
   // Analytics
   ANALYTICS_ENABLED: true,
@@ -168,40 +168,49 @@ const stagingConfig: EnvironmentConfig = {
 };
 
 /**
+ * Reads EAS build-time environment variable from Expo Constants.
+ * In EAS Build, set these via `eas.json` env or `--build-env` flags.
+ * Falls back to defaultValue if not set (non-production) or throws in production.
+ */
+function requireEnv(key: string, defaultValue?: string): string {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const Constants = require('expo-constants').default;
+    const value = Constants.expoConfig?.extra?.[key] ?? process.env[key];
+    if (value) return value;
+  } catch {
+    // expo-constants not available (e.g., in tests)
+  }
+  if (defaultValue !== undefined) return defaultValue;
+  console.warn(`[ENV] Missing required env var: ${key}. Set it in eas.json or app.config.`);
+  return '';
+}
+
+/**
  * Production environment configuration
- * 
- * ⚠️ IMPORTANT: Update these values before production deployment!
+ *
+ * Values are read from EAS build environment variables.
+ * Configure in eas.json under build.production.env or via `eas secret:create`.
  */
 const productionConfig: EnvironmentConfig = {
-  // API Configuration
-  // TODO: Replace with actual production API URL
-  API_BASE_URL: 'https://api.okinawa.com',
+  API_BASE_URL: requireEnv('API_BASE_URL', 'https://api.noowebr.com'),
   API_TIMEOUT_MS: 30000,
-  
-  // WebSocket Configuration
-  // TODO: Replace with actual production WebSocket URL
-  WS_URL: 'wss://api.okinawa.com',
+
+  WS_URL: requireEnv('WS_URL', 'wss://api.noowebr.com'),
   WS_RECONNECT_INTERVAL_MS: 5000,
-  
-  // Authentication
+
   AUTH_TOKEN_EXPIRY_DAYS: 7,
   AUTH_REFRESH_TOKEN_EXPIRY_DAYS: 30,
-  
-  // External Services
-  // TODO: Replace with actual production Sentry DSN
-  SENTRY_DSN: 'https://YOUR_PRODUCTION_SENTRY_DSN@sentry.io/PROJECT_ID',
-  
-  // TODO: Replace with actual Firebase production credentials
-  FIREBASE_PROJECT_ID: 'okinawa-production',
-  FIREBASE_APP_ID: '1:123456789:ios:production_app_id',
-  FIREBASE_API_KEY: 'AIzaSy_PRODUCTION_KEY_REPLACE_ME',
-  FIREBASE_MESSAGING_SENDER_ID: '123456789',
-  
-  // Analytics
+
+  SENTRY_DSN: requireEnv('SENTRY_DSN'),
+  FIREBASE_PROJECT_ID: requireEnv('FIREBASE_PROJECT_ID'),
+  FIREBASE_APP_ID: requireEnv('FIREBASE_APP_ID'),
+  FIREBASE_API_KEY: requireEnv('FIREBASE_API_KEY'),
+  FIREBASE_MESSAGING_SENDER_ID: requireEnv('FIREBASE_MESSAGING_SENDER_ID'),
+
   ANALYTICS_ENABLED: true,
   ANALYTICS_DEBUG: false,
-  
-  // Feature Flags
+
   FEATURES: {
     BIOMETRIC_AUTH: true,
     PUSH_NOTIFICATIONS: true,
@@ -209,17 +218,14 @@ const productionConfig: EnvironmentConfig = {
     AI_FEATURES: true,
     GEOLOCATION: true,
   },
-  
-  // App Store
-  // TODO: Replace with actual App Store URLs after publishing
-  APP_STORE_URL: 'https://apps.apple.com/app/okinawa-client/id0000000000',
-  PLAY_STORE_URL: 'https://play.google.com/store/apps/details?id=com.okinawa.client',
-  
-  // Support
-  SUPPORT_EMAIL: 'support@okinawa.com',
-  SUPPORT_PHONE: '+55 11 99999-9999',
-  PRIVACY_POLICY_URL: 'https://okinawa.com/privacy',
-  TERMS_OF_SERVICE_URL: 'https://okinawa.com/terms',
+
+  APP_STORE_URL: requireEnv('APP_STORE_URL', 'https://apps.apple.com/app/noowe/id0000000000'),
+  PLAY_STORE_URL: requireEnv('PLAY_STORE_URL', 'https://play.google.com/store/apps/details?id=com.noowe.client'),
+
+  SUPPORT_EMAIL: 'help@noowebr.com',
+  SUPPORT_PHONE: '+55 11 0000-0000',
+  PRIVACY_POLICY_URL: requireEnv('PRIVACY_POLICY_URL', 'https://noowebr.com/privacy'),
+  TERMS_OF_SERVICE_URL: requireEnv('TERMS_OF_SERVICE_URL', 'https://noowebr.com/terms'),
 };
 
 /**

@@ -64,7 +64,8 @@ export default function ChefTableScreen() {
   const loadSession = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await ApiService.get('/orders?serviceType=chefs-table&status=active');
+      const res = await ApiService.get('/orders?serviceType=chefs-table&status=active');
+      const data = res.data;
       if (data && data.length > 0) {
         setSession(data[0]);
       }
@@ -79,8 +80,8 @@ export default function ChefTableScreen() {
     loadSession();
 
     socketService.connect();
-    socketService.on('cheftable:updated', (updatedSession: ChefTableSession) => {
-      setSession(updatedSession);
+    socketService.on('cheftable:updated', (updatedSession: unknown) => {
+      setSession(updatedSession as ChefTableSession);
     });
 
     return () => {

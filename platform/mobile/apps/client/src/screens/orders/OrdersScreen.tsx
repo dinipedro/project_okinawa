@@ -5,7 +5,7 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import {
   Text,
   IconButton,
@@ -21,7 +21,7 @@ import { useI18n } from '@/shared/hooks/useI18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import logger from '@okinawa/shared/utils/logger';
 import type { Order, RootStackParamList } from '../../types';
-import { OrderCard } from '@okinawa/shared/components/orders/OrderCard';
+import { OrderCard, OrderCardOrder } from '@okinawa/shared/components/orders/OrderCard';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type FilterType = 'all' | 'active' | 'completed';
@@ -164,10 +164,10 @@ export default function OrdersScreen() {
 
   const renderOrderCard = useCallback(({ item }: { item: Order }) => (
     <OrderCard
-      order={item}
-      onPress={handleOrderPress}
-      onTrack={handleTrackOrder}
-      onCancel={handleCancelOrder}
+      order={item as unknown as OrderCardOrder}
+      onPress={(o: OrderCardOrder) => handleOrderPress(o as unknown as Order)}
+      onTrack={(o: OrderCardOrder) => handleTrackOrder(o as unknown as Order)}
+      onCancel={(o: OrderCardOrder) => handleCancelOrder(o as unknown as Order)}
       canTrack={canTrackOrder(item)}
       canCancel={canCancelOrder(item)}
     />
@@ -186,9 +186,9 @@ export default function OrdersScreen() {
           value={filter}
           onValueChange={(value) => setFilter(value as FilterType)}
           buttons={[
-            { value: 'all', label: t('common.viewAll'), icon: 'format-list-bulleted' },
-            { value: 'active', label: t('orders.active'), icon: 'clock-outline', showSelectedCheck: true },
-            { value: 'completed', label: t('orders.status.completed'), icon: 'check-circle-outline' },
+            { value: 'all', label: t('common.viewAll'), icon: 'format-list-bulleted', accessibilityLabel: 'Show all orders' },
+            { value: 'active', label: t('orders.active'), icon: 'clock-outline', showSelectedCheck: true, accessibilityLabel: 'Show active orders' },
+            { value: 'completed', label: t('orders.status.completed'), icon: 'check-circle-outline', accessibilityLabel: 'Show completed orders' },
           ]}
         />
         {filter === 'active' && activeOrdersCount > 0 && (
@@ -205,7 +205,7 @@ export default function OrdersScreen() {
         </View>
       ) : (
         <FlashList
-          data={filteredOrders}
+          data={filteredOrders as Order[]}
           renderItem={renderOrderCard}
           keyExtractor={(item) => item.id}
           estimatedItemSize={180}

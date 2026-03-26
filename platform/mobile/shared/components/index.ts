@@ -58,6 +58,14 @@ export { OrderCard } from './orders/OrderCard';
 export type { OrderCardProps, OrderCardOrder, OrderCardItem } from './orders/OrderCard';
 
 // ============================================
+// LEGAL / COMPLIANCE COMPONENTS
+// ============================================
+export { AIDisclaimerModal } from './AIDisclaimerModal';
+export { BetaBadge } from './BetaBadge';
+export { LegalConsentSection } from './LegalConsentSection';
+export type { LegalConsentProps } from './LegalConsentSection';
+
+// ============================================
 // UTILITY COMPONENTS
 // ============================================
 export { LoadingSpinner } from './LoadingSpinner';

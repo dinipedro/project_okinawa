@@ -85,8 +85,17 @@ class PushNotificationService {
       }
 
       // Get Expo push token
+      // Read projectId from app config (set via eas.json or app.json extra.eas.projectId)
+      let projectId = 'your-project-id';
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const Constants = require('expo-constants').default;
+        projectId = Constants.expoConfig?.extra?.eas?.projectId || projectId;
+      } catch {
+        // expo-constants not available
+      }
       const tokenData = await Notifications.getExpoPushTokenAsync({
-        projectId: 'your-project-id', // Replace with your Expo project ID
+        projectId,
       });
 
       logger.debug('Expo push token:', tokenData.data);
@@ -131,9 +140,9 @@ class PushNotificationService {
         token,
         platform: Platform.OS,
         device_info: {
-          brand: Device.brand,
-          model: Device.modelName,
-          os_version: Device.osVersion,
+          brand: Device.brand ?? 'unknown',
+          model: Device.modelName ?? 'unknown',
+          os_version: Device.osVersion ?? 'unknown',
         },
       });
       logger.info('Push token registered with backend');

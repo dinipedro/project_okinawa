@@ -38,7 +38,7 @@ interface TableDetailScreenProps {
   onAddGuest: (tableNumber: number, guest: TableGuest) => void;
 }
 
-export default function TableDetailScreen({
+function TableDetailScreen({
   table,
   onBack,
   onAddGuest,

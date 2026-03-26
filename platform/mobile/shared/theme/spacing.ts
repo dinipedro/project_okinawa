@@ -45,6 +45,15 @@ export const spacing = {
   // Screen margins
   screenHorizontal: 16,
   screenVertical: 24,
+
+  // Semantic aliases (for convenience)
+  xs: BASE_UNIT,            // 4px
+  sm: BASE_UNIT * 2,        // 8px
+  md: BASE_UNIT * 4,        // 16px
+  lg: BASE_UNIT * 6,        // 24px
+  xl: BASE_UNIT * 8,        // 32px
+  '2xl': BASE_UNIT * 12,    // 48px
+  '3xl': BASE_UNIT * 16,    // 64px
 };
 
 // Border radius scale

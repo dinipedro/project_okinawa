@@ -178,6 +178,13 @@ export const lightTheme = {
   tableReserved: colorPalette.info.main,
   tableCleaning: colorPalette.warning.main,
 
+  // Muted tokens (legacy compatibility)
+  muted: colorPalette.neutral[200],
+  mutedForeground: colorPalette.neutral[500],
+  cardForeground: colorPalette.neutral[900],
+  successMuted: 'rgba(16, 185, 129, 0.15)',
+  destructive: colorPalette.error.main,
+
   // Premium Dark Card (always dark, for elevated feature headers)
   premiumCard: colorPalette.neutral[800],
   premiumCardForeground: colorPalette.neutral[0],
@@ -276,6 +283,13 @@ export const darkTheme = {
   tableOccupied: colorPalette.error.main,
   tableReserved: colorPalette.info.main,
   tableCleaning: colorPalette.warning.main,
+
+  // Muted tokens (legacy compatibility)
+  muted: colorPalette.neutral[700],
+  mutedForeground: colorPalette.neutral[400],
+  cardForeground: colorPalette.neutral[50],
+  successMuted: 'rgba(16, 185, 129, 0.2)',
+  destructive: colorPalette.error.main,
 
   // Premium Dark Card (always dark, for elevated feature headers)
   premiumCard: colorPalette.neutral[800],

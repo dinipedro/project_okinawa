@@ -132,7 +132,7 @@ export default function RecipeDetailScreen({ route }: { route: any }) {
           marginBottom: 16,
         },
         infoChip: {
-          backgroundColor: colors.primaryBackground || colors.backgroundTertiary,
+          backgroundColor: colors.backgroundTertiary,
         },
         // Info grid
         infoGrid: {

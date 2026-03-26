@@ -77,6 +77,35 @@ export const ptBR = {
     loginWith: 'Entrar com {type}',
     enableBiometric: 'Ativar {type} para logins futuros',
     logoutConfirm: 'Tem certeza que deseja sair?',
+    birthDate: 'Data de nascimento',
+    birthDateRequired: 'Data de nascimento é obrigatória',
+    birthDateHelper: 'Obrigatório. Você deve ter pelo menos 18 anos.',
+    mustBe18: 'Você deve ter pelo menos 18 anos',
+    consentSection: 'Termos e consentimento',
+    acceptTermsPrefix: 'Eu aceito os',
+    acceptPrivacyPrefix: 'Eu aceito a',
+    acceptTermsRequired: 'É necessário aceitar os Termos de Serviço',
+    acceptPrivacyRequired: 'É necessário aceitar a Política de Privacidade',
+    termsOfService: 'Termos de Serviço',
+    privacyPolicy: 'Política de Privacidade',
+    marketingOptIn: 'Aceito receber ofertas promocionais e novidades',
+    and: 'e a',
+    legalConsent: {
+      prefix: 'Li e concordo com os',
+      terms: 'Termos de Uso',
+      and: 'e a',
+      privacy: 'Política de Privacidade',
+      description: 'Ao continuar, você confirma que leu e aceita nossos termos e políticas da NOOWE.',
+      required: 'Você precisa aceitar os termos para continuar',
+      a11yLabel: 'Aceitar Termos de Uso e Política de Privacidade',
+      marketingLabel: 'Receber novidades e promoções',
+      marketingDescription: 'Ofertas exclusivas, lançamentos e dicas. Cancele quando quiser.',
+      marketingA11y: 'Ativar notificações de marketing',
+    },
+    completeProfile: 'Complete seu perfil',
+    profileDescription: 'Nos conte um pouco sobre você',
+    emailOptional: 'E-mail (opcional)',
+    emailHelper: 'Adicione um e-mail para recuperação de conta e recibos',
   },
 
   // Navigation
@@ -189,6 +218,11 @@ export const ptBR = {
     modifyReservation: 'Alterar Reserva',
     inviteGuests: 'Convidar pessoas',
     pendingReservations: 'Reservas Pendentes',
+    reservationNotFound: 'Reserva não encontrada',
+    confirmReserve: 'Confirmar Reserva',
+    markSeated: 'Marcar como Sentado',
+    finishReservation: 'Finalizar Reserva',
+    markNoShow: 'Marcar Não Compareceu',
     status: {
       pending: 'Pendente',
       confirmed: 'Confirmada',
@@ -2240,6 +2274,43 @@ export const ptBR = {
       help: 'Ajuda',
       emergency: 'Emergência',
     },
+  },
+
+  // AI Disclaimer (LGPD)
+  ai: {
+    disclaimer: {
+      title: 'Aviso sobre Recomendacoes de IA',
+      advisory:
+        'As recomendacoes fornecidas pelos nossos recursos de IA sao apenas consultivas e nao devem ser consideradas aconselhamento profissional.',
+      notProfessional:
+        'Essas sugestoes nao substituem o julgamento de profissionais qualificados, como nutricionistas, medicos ou especialistas em seguranca alimentar.',
+      mayContainErrors:
+        'Conteudo gerado por IA pode conter imprecisoes ou erros. Nao garantimos a completude ou a exatidao das informacoes.',
+      verifyInfo:
+        'Sempre verifique informacoes importantes de forma independente antes de tomar decisoes com base em recomendacoes de IA.',
+      iUnderstand: 'Eu entendo e concordo',
+      continue: 'Continuar',
+    },
+  },
+
+  // Legal
+  legal: {
+    loading: 'Carregando...',
+    error: 'Falha ao carregar documento legal',
+    version: 'Versao',
+    lastUpdated: 'Ultima atualizacao',
+    reConsent: {
+      title: 'Termos Atualizados',
+      subtitle: 'Nossos termos de servico e politica de privacidade foram atualizados. Por favor, revise e aceite para continuar usando o aplicativo.',
+      scrollHint: 'Role ate o final para aceitar',
+      accept: 'Eu Aceito',
+      decline: 'Recusar',
+      declineTitle: 'Recusar Termos',
+      declineMessage: 'Se voce recusar os termos atualizados, precisara excluir sua conta. Deseja prosseguir?',
+      deleteAccount: 'Excluir Conta',
+      errorRecording: 'Falha ao registrar seu consentimento. Por favor, tente novamente.',
+    },
+    beta: 'BETA',
   },
 };
 

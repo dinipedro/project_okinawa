@@ -184,7 +184,7 @@ export default function BarmanKDSScreen() {
     },
     modifierChip: {
       height: 24,
-      backgroundColor: colors.primaryBackground,
+      backgroundColor: colors.backgroundSecondary,
     },
     instructions: {
       flexDirection: 'row',
@@ -250,7 +250,7 @@ export default function BarmanKDSScreen() {
 
   const handleStartOrder = async (orderId: string) => {
     try {
-      await ApiService.updateOrderStatus(orderId, { status: 'preparing' });
+      await ApiService.updateOrderStatus(orderId, 'preparing');
       await loadOrders();
     } catch (error) {
       console.error('Failed to start order:', error);
@@ -260,7 +260,7 @@ export default function BarmanKDSScreen() {
 
   const handleCompleteOrder = async (orderId: string) => {
     try {
-      await ApiService.updateOrderStatus(orderId, { status: 'ready' });
+      await ApiService.updateOrderStatus(orderId, 'ready');
       Alert.alert(t('barman.alerts.orderReady'), t('barman.alerts.waiterNotified'));
       await loadOrders();
     } catch (error) {

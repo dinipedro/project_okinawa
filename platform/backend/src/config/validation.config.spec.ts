@@ -18,6 +18,8 @@ describe('validationSchema', () => {
     DATABASE_NAME: 'okinawa_db',
     JWT_SECRET: 'this_is_a_very_long_secret_at_least_32_chars',
     JWT_REFRESH_SECRET: 'this_is_another_very_long_refresh_secret_32',
+    CSRF_SECRET: 'this_is_a_csrf_secret_at_least_32_chars_long',
+    FIELD_ENCRYPTION_KEY: 'this_is_field_encryption_key_at_least_32ch',
   };
 
   describe('development environment — minimal valid config', () => {

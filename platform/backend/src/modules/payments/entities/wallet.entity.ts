@@ -39,6 +39,18 @@ export class Wallet {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   balance: number;
 
+  /** LGPD compliance: maximum wallet balance (R$ 5.000,00 default) */
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 5000 })
+  max_balance: number;
+
+  /** LGPD compliance: daily transaction limit (R$ 3.000,00 default) */
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 3000 })
+  daily_limit: number;
+
+  /** LGPD compliance: monthly transaction limit (R$ 15.000,00 default) */
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 15000 })
+  monthly_limit: number;
+
   @Column({ default: true })
   is_active: boolean;
 

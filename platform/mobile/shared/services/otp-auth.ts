@@ -179,6 +179,9 @@ class OTPAuthService {
     fullName: string;
     email?: string;
     birthDate?: string;
+    acceptedTermsVersion?: string;
+    acceptedPrivacyVersion?: string;
+    marketingConsent?: boolean;
   }): Promise<VerifyOTPResponse> {
     try {
       logger.info('Completing registration');
@@ -188,6 +191,9 @@ class OTPAuthService {
         full_name: data.fullName,
         email: data.email,
         birth_date: data.birthDate,
+        accepted_terms_version: data.acceptedTermsVersion,
+        accepted_privacy_version: data.acceptedPrivacyVersion,
+        marketing_consent: data.marketingConsent,
       });
 
       const responseData = response.data;

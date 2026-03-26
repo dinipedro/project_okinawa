@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  Modal,
   TouchableOpacity,
   Platform,
   Animated,
@@ -20,6 +19,7 @@ import {
   IconButton,
   ActivityIndicator,
   Portal,
+  Modal,
   Switch,
   Chip,
   SegmentedButtons,
@@ -241,7 +241,7 @@ export default function UnifiedPaymentScreen() {
 
       // Try to load loyalty info
       try {
-        const loyaltyData = await ApiService.getLoyaltyInfo?.();
+        const loyaltyData = await ApiService.getMyLoyaltyPoints?.();
         if (loyaltyData && loyaltyData.points_balance > 0) {
           setLoyaltyInfo(loyaltyData);
         }
@@ -403,9 +403,7 @@ export default function UnifiedPaymentScreen() {
           break;
       }
 
-      await ApiService.processPayment(paymentData, {
-        headers: { 'X-Idempotency-Key': idempotencyKey },
-      });
+      await ApiService.processPayment(paymentData as Parameters<typeof ApiService.processPayment>[0]);
 
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await analytics.logPurchase(orderId, finalTotal, 'BRL');

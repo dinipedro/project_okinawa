@@ -77,7 +77,7 @@ export const SkeletonBlock: React.FC<SkeletonBlockProps> = ({
           borderRadius: radiusOverride ?? borderRadius.sm,
           backgroundColor: bgColor,
           opacity,
-        },
+        } as any,
         style,
       ]}
     />

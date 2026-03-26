@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Button, Chip } from 'react-native-paper';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import { Searchbar } from 'react-native-paper';
 import ApiService from '@/shared/services/api';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -222,17 +222,22 @@ export default function MenuScreen() {
         onChangeText={handleSearch}
         value={searchQuery}
         style={styles.searchbar}
+        accessibilityLabel="Search menu items"
+        accessibilityHint="Type to filter menu items by name or description"
       />
 
       <View style={styles.categories}>
         <FlashList
           horizontal
-          data={categories}
-          renderItem={({ item }) => (
+          data={categories as string[]}
+          renderItem={({ item }: ListRenderItemInfo<string>) => (
             <Chip
               selected={selectedCategory === item}
               onPress={() => setSelectedCategory(item)}
               style={styles.categoryFilterChip}
+              accessibilityLabel={`Filter by ${item}`}
+              accessibilityRole="button"
+              accessibilityState={{ selected: selectedCategory === item }}
             >
               {item.charAt(0).toUpperCase() + item.slice(1)}
             </Chip>
@@ -244,7 +249,7 @@ export default function MenuScreen() {
       </View>
 
       <FlashList
-        data={filteredItems}
+        data={filteredItems as MenuItem[]}
         renderItem={renderMenuItem}
         keyExtractor={(item) => item.id}
         estimatedItemSize={120}
@@ -267,8 +272,10 @@ export default function MenuScreen() {
           </View>
           <Button
             mode="contained"
-            onPress={() => navigation.navigate('Cart', { cart, restaurantId })}
+            onPress={() => (navigation as any).navigate('Cart', { cart, restaurantId })}
             style={styles.cartButton}
+            accessibilityLabel={`View cart, ${getTotalItems()} items, total ${getTotalPrice().toFixed(2)}`}
+            accessibilityRole="button"
           >
             {t('cart.viewCart')}
           </Button>

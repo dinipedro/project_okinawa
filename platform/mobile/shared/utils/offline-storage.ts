@@ -179,7 +179,7 @@ class OfflineStorageService extends EventEmitter {
   /**
    * Add operation to sync queue (for offline mutations)
    */
-  async addToSyncQueue(operation: Omit<SyncOperation, 'id' | 'timestamp' | 'retries'>): Promise<string> {
+  async addToSyncQueue(operation: Omit<SyncOperation, 'id' | 'timestamp' | 'retries' | 'maxRetries'> & { maxRetries?: number }): Promise<string> {
     const queue = await this.getSyncQueue();
 
     if (queue.length >= CACHE_CONFIG.MAX_QUEUE_SIZE) {
@@ -247,8 +247,9 @@ class OfflineStorageService extends EventEmitter {
 
     for (const operation of queue) {
       try {
-        // Import api service dynamically to avoid circular dependency
-        const { default: api } = await import('../services/api');
+        // Use require to avoid circular dependency (dynamic import not supported by module config)
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const api = require('../services/api').default;
 
         await api.request({
           method: operation.method,

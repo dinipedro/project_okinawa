@@ -94,15 +94,15 @@ export default function EntryChoiceScreen({ route }: EntryChoiceScreenProps) {
   }, [fetchStats]);
 
   const handleWalkIn = useCallback(() => {
-    navigation.navigate('WaitlistScreen' as never, { restaurantId } as never);
+    (navigation as any).navigate('WaitlistScreen', { restaurantId });
   }, [navigation, restaurantId]);
 
   const handleReservation = useCallback(() => {
-    navigation.navigate('ReservationScreen' as never, { restaurantId } as never);
+    (navigation as any).navigate('ReservationScreen', { restaurantId });
   }, [navigation, restaurantId]);
 
   const handleAlreadySeated = useCallback(() => {
-    navigation.navigate('QRScanScreen' as never, { restaurantId } as never);
+    (navigation as any).navigate('QRScanScreen', { restaurantId });
   }, [navigation, restaurantId]);
 
   const styles = useMemo(

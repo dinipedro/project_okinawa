@@ -60,8 +60,8 @@ export function useCreateRestaurant() {
 // Update restaurant (for restaurant app)
 export function useUpdateRestaurant() {
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
-      ApiService.updateRestaurant(id, data),
+    mutationFn: ({ data }: { id: string; data: any }) =>
+      ApiService.updateRestaurant(data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.restaurants.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.restaurants.detail(variables.id) });

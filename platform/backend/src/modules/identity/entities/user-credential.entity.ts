@@ -16,6 +16,7 @@ import {
   Index,
 } from 'typeorm';
 import { Profile } from '@/modules/users/entities/profile.entity';
+import { encryptedTransformer, encryptedArrayTransformer } from '@/common/utils/field-encryption';
 
 @Entity('user_credentials')
 export class UserCredential {
@@ -54,10 +55,10 @@ export class UserCredential {
   @Column({ type: 'boolean', default: false })
   mfa_enabled: boolean;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, transformer: encryptedTransformer })
   mfa_secret: string | null;
 
-  @Column({ type: 'simple-array', nullable: true })
+  @Column({ type: 'text', nullable: true, transformer: encryptedArrayTransformer })
   mfa_backup_codes: string[] | null;
 
   @CreateDateColumn()

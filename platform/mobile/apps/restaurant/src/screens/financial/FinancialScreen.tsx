@@ -128,22 +128,17 @@ export default function FinancialScreen() {
       const { start, end } = getDateRange();
       const [summaryResponse, transactionsResponse] = await Promise.all([
         ApiService.getFinancialSummary({
-          params: {
-            start_date: start.toISOString(),
-            end_date: end.toISOString(),
-          },
+          start_date: start.toISOString(),
+          end_date: end.toISOString(),
         }),
         ApiService.getFinancialReport({
-          params: {
-            start_date: start.toISOString(),
-            end_date: end.toISOString(),
-            limit: 20,
-          },
+          start_date: start.toISOString(),
+          end_date: end.toISOString(),
         }),
       ]);
 
-      setSummary(summaryResponse.data);
-      setTransactions(transactionsResponse.data);
+      setSummary(summaryResponse);
+      setTransactions(transactionsResponse);
     } catch (error) {
       console.error('Failed to load financial data:', error);
     } finally {

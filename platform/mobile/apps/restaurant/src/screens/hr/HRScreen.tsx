@@ -61,9 +61,8 @@ export default function HRScreen({ navigation }: any) {
           ? { start: startOfMonth(new Date()), end: endOfMonth(new Date()) }
           : { start: new Date(), end: new Date() };
 
-      // Get restaurant ID from user (assuming first restaurant)
       const user = await ApiService.getCurrentUser();
-      const restaurantId = user.roles?.[0]?.restaurant_id;
+      const restaurantId = (user as any).roles?.[0]?.restaurant_id;
 
       if (!restaurantId) {
         throw new Error('No restaurant found for user');
@@ -85,11 +84,11 @@ export default function HRScreen({ navigation }: any) {
         }),
       ]);
 
-      setSummary(summaryResponse);
-      setAttendance(attendanceResponse);
-      setLeaveRequests(leaveResponse);
+      setSummary(summaryResponse as any);
+      setAttendance(attendanceResponse as any);
+      setLeaveRequests(leaveResponse as any);
     } catch (error) {
-      console.error('Failed to load HR data:', error);
+      // Error loading HR data
     } finally {
       setLoading(false);
     }
@@ -106,18 +105,113 @@ export default function HRScreen({ navigation }: any) {
       await ApiService.updateLeaveRequest(requestId, { status });
       loadHRData();
     } catch (error) {
-      console.error('Failed to update leave request:', error);
+      // Error updating leave request
     }
   };
 
   const getLeaveTypeColor = (type: string) => {
-    const colors: Record<string, string> = {
+    const typeColors: Record<string, string> = {
       vacation: '#4CAF50',
       sick: '#F44336',
       personal: '#FF9800',
     };
-    return colors[type] || '#9E9E9E';
+    return typeColors[type] || '#9E9E9E';
   };
+
+  const styles = useMemo(() => StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.backgroundSecondary,
+    },
+    segmentedButtons: {
+      margin: 15,
+    },
+    grid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      padding: 15,
+      paddingTop: 0,
+      gap: 15,
+    },
+    summaryCard: {
+      flex: 1,
+      minWidth: '45%' as any,
+      backgroundColor: colors.card,
+    },
+    cardLabel: {
+      color: colors.foregroundMuted,
+      marginBottom: 5,
+    },
+    active: {
+      color: colors.success,
+      fontWeight: 'bold' as const,
+    },
+    onBreak: {
+      color: colors.warning,
+      fontWeight: 'bold' as const,
+    },
+    card: {
+      margin: 15,
+      marginTop: 0,
+      backgroundColor: colors.card,
+    },
+    payrollRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: 8,
+    },
+    payrollAmount: {
+      fontWeight: '600' as const,
+      color: colors.foreground,
+    },
+    totalRow: {
+      borderTopWidth: 2,
+      borderTopColor: colors.foreground,
+      marginTop: 10,
+      paddingTop: 15,
+    },
+    totalAmount: {
+      fontWeight: 'bold' as const,
+      color: colors.success,
+    },
+    emptyText: {
+      color: colors.foregroundMuted,
+      textAlign: 'center' as const,
+      paddingVertical: 20,
+    },
+    leaveRequest: {
+      paddingVertical: 15,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    leaveHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    leaveDates: {
+      color: colors.foregroundMuted,
+      marginBottom: 5,
+    },
+    leaveReason: {
+      color: colors.foregroundMuted,
+      fontStyle: 'italic' as const,
+      marginBottom: 10,
+    },
+    leaveActions: {
+      flexDirection: 'row',
+      gap: 10,
+      marginTop: 10,
+    },
+    approveButton: {
+      flex: 1,
+      backgroundColor: colors.success,
+    },
+    rejectButton: {
+      flex: 1,
+    },
+  }), [colors]);
 
   return (
     <ScrollView
@@ -141,43 +235,29 @@ export default function HRScreen({ navigation }: any) {
           <View style={styles.grid}>
             <Card style={styles.summaryCard}>
               <Card.Content>
-                <Text variant="titleSmall" style={styles.cardLabel}>
-                  Total Staff
-                </Text>
+                <Text variant="titleSmall" style={styles.cardLabel}>Total Staff</Text>
                 <Text variant="displaySmall">{summary.total_staff}</Text>
               </Card.Content>
             </Card>
 
             <Card style={styles.summaryCard}>
               <Card.Content>
-                <Text variant="titleSmall" style={styles.cardLabel}>
-                  Active Now
-                </Text>
-                <Text variant="displaySmall" style={styles.active}>
-                  {summary.active_staff}
-                </Text>
+                <Text variant="titleSmall" style={styles.cardLabel}>Active Now</Text>
+                <Text variant="displaySmall" style={styles.active}>{summary.active_staff}</Text>
               </Card.Content>
             </Card>
 
             <Card style={styles.summaryCard}>
               <Card.Content>
-                <Text variant="titleSmall" style={styles.cardLabel}>
-                  On Break
-                </Text>
-                <Text variant="displaySmall" style={styles.onBreak}>
-                  {summary.on_break_staff}
-                </Text>
+                <Text variant="titleSmall" style={styles.cardLabel}>On Break</Text>
+                <Text variant="displaySmall" style={styles.onBreak}>{summary.on_break_staff}</Text>
               </Card.Content>
             </Card>
 
             <Card style={styles.summaryCard}>
               <Card.Content>
-                <Text variant="titleSmall" style={styles.cardLabel}>
-                  Avg Hours
-                </Text>
-                <Text variant="displaySmall">
-                  {summary.average_hours_per_staff.toFixed(1)}
-                </Text>
+                <Text variant="titleSmall" style={styles.cardLabel}>Avg Hours</Text>
+                <Text variant="displaySmall">{summary.average_hours_per_staff.toFixed(1)}</Text>
               </Card.Content>
             </Card>
           </View>
@@ -206,12 +286,7 @@ export default function HRScreen({ navigation }: any) {
               <View style={[styles.payrollRow, styles.totalRow]}>
                 <Text variant="titleMedium">Total</Text>
                 <Text variant="titleMedium" style={styles.totalAmount}>
-                  $
-                  {(
-                    summary.payroll_summary.total_payroll +
-                    summary.payroll_summary.total_tips +
-                    summary.payroll_summary.total_bonuses
-                  ).toFixed(2)}
+                  ${(summary.payroll_summary.total_payroll + summary.payroll_summary.total_tips + summary.payroll_summary.total_bonuses).toFixed(2)}
                 </Text>
               </View>
             </Card.Content>
@@ -228,13 +303,10 @@ export default function HRScreen({ navigation }: any) {
               <DataTable.Title numeric>Hours</DataTable.Title>
               <DataTable.Title numeric>Days</DataTable.Title>
             </DataTable.Header>
-
             {attendance.map((record) => (
               <DataTable.Row key={record.staff_id}>
                 <DataTable.Cell>{record.staff_name}</DataTable.Cell>
-                <DataTable.Cell numeric>
-                  {record.total_hours.toFixed(1)}
-                </DataTable.Cell>
+                <DataTable.Cell numeric>{record.total_hours.toFixed(1)}</DataTable.Cell>
                 <DataTable.Cell numeric>{record.days_worked}</DataTable.Cell>
               </DataTable.Row>
             ))}
@@ -243,65 +315,30 @@ export default function HRScreen({ navigation }: any) {
       </Card>
 
       <Card style={styles.card}>
-        <Card.Title
-          title="Pending Leave Requests"
-          right={(props) => (
-            <Button
-              onPress={() => navigation.navigate('AllLeaveRequests')}
-              mode="text"
-              accessibilityRole="button"
-              accessibilityLabel="View all leave requests"
-            >
-              View All
-            </Button>
-          )}
-        />
+        <Card.Title title="Pending Leave Requests" />
         <Card.Content>
           {leaveRequests.length === 0 ? (
-            <Text variant="bodyMedium" style={styles.emptyText}>
-              No pending leave requests
-            </Text>
+            <Text variant="bodyMedium" style={styles.emptyText}>No pending leave requests</Text>
           ) : (
             leaveRequests.map((request) => (
               <View key={request.id} style={styles.leaveRequest}>
                 <View style={styles.leaveHeader}>
                   <Text variant="titleMedium">{request.staff_member.name}</Text>
-                  <Chip
-                    style={{ backgroundColor: getLeaveTypeColor(request.leave_type) }}
-                    textStyle={{ color: '#fff', fontSize: 11 }}
-                  >
+                  <Chip style={{ backgroundColor: getLeaveTypeColor(request.leave_type) }} textStyle={{ color: '#fff', fontSize: 11 }}>
                     {request.leave_type.toUpperCase()}
                   </Chip>
                 </View>
-
                 <Text variant="bodyMedium" style={styles.leaveDates}>
-                  {format(new Date(request.start_date), 'dd/MM/yyyy')} -{' '}
-                  {format(new Date(request.end_date), 'dd/MM/yyyy')}
+                  {format(new Date(request.start_date), 'dd/MM/yyyy')} - {format(new Date(request.end_date), 'dd/MM/yyyy')}
                 </Text>
-
                 {request.reason && (
-                  <Text variant="bodySmall" style={styles.leaveReason}>
-                    {request.reason}
-                  </Text>
+                  <Text variant="bodySmall" style={styles.leaveReason}>{request.reason}</Text>
                 )}
-
                 <View style={styles.leaveActions}>
-                  <Button
-                    mode="contained"
-                    onPress={() => handleLeaveRequest(request.id, 'approved')}
-                    style={styles.approveButton}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Approve leave request for ${request.staff_member.name}`}
-                  >
+                  <Button mode="contained" onPress={() => handleLeaveRequest(request.id, 'approved')} style={styles.approveButton} accessibilityLabel={`Approve leave for ${request.staff_member.name}`}>
                     Approve
                   </Button>
-                  <Button
-                    mode="outlined"
-                    onPress={() => handleLeaveRequest(request.id, 'rejected')}
-                    style={styles.rejectButton}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Reject leave request for ${request.staff_member.name}`}
-                  >
+                  <Button mode="outlined" onPress={() => handleLeaveRequest(request.id, 'rejected')} style={styles.rejectButton} accessibilityLabel={`Reject leave for ${request.staff_member.name}`}>
                     Reject
                   </Button>
                 </View>
@@ -313,100 +350,3 @@ export default function HRScreen({ navigation }: any) {
     </ScrollView>
   );
 }
-
-  const styles = useMemo(() => StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.backgroundSecondary,
-    },
-    segmentedButtons: {
-      margin: 15,
-    },
-    grid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      padding: 15,
-      paddingTop: 0,
-      gap: 15,
-    },
-    summaryCard: {
-      flex: 1,
-      minWidth: '45%',
-      backgroundColor: colors.card,
-    },
-    cardLabel: {
-      color: colors.textMuted,
-      marginBottom: 5,
-    },
-    active: {
-      color: colors.success,
-      fontWeight: 'bold',
-    },
-    onBreak: {
-      color: colors.warning,
-      fontWeight: 'bold',
-    },
-    card: {
-      margin: 15,
-      marginTop: 0,
-      backgroundColor: colors.card,
-    },
-    payrollRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingVertical: 8,
-    },
-    payrollAmount: {
-      fontWeight: '600',
-      color: colors.foreground,
-    },
-    totalRow: {
-      borderTopWidth: 2,
-      borderTopColor: colors.foreground,
-      marginTop: 10,
-      paddingTop: 15,
-    },
-    totalAmount: {
-      fontWeight: 'bold',
-      color: colors.success,
-    },
-    emptyText: {
-      color: colors.textMuted,
-      textAlign: 'center',
-      paddingVertical: 20,
-    },
-    leaveRequest: {
-      paddingVertical: 15,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.border,
-    },
-    leaveHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 8,
-    },
-    leaveDates: {
-      color: colors.textMuted,
-      marginBottom: 5,
-    },
-    leaveReason: {
-      color: colors.textMuted,
-      fontStyle: 'italic',
-      marginBottom: 10,
-    },
-    leaveActions: {
-      flexDirection: 'row',
-      gap: 10,
-      marginTop: 10,
-    },
-    approveButton: {
-      flex: 1,
-      backgroundColor: colors.success,
-    },
-    rejectButton: {
-      flex: 1,
-    },
-  }), [colors]);
-
-  return (

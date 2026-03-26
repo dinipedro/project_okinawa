@@ -210,6 +210,7 @@ export interface SetupCompletion {
       percentage: number;
     }
   >;
+  domains?: Record<string, number>;
 }
 
 // ============================================

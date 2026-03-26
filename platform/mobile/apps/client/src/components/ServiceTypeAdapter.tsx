@@ -1,10 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useServiceType, ServiceType } from '../contexts/ServiceTypeContext';
 import { useConditionalFeature } from '../hooks/useServiceTypeFeatures';
-import { colors } from '../../../shared/theme/colors';
-import { typography } from '../../../shared/theme/typography';
-import { spacing } from '../../../shared/theme/spacing';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { colorPalette } from '@okinawa/shared/theme/colors';
+import { typography } from '@okinawa/shared/theme/typography';
+import { spacing } from '@okinawa/shared/theme/spacing';
 
 interface ConditionalFeatureProps {
   feature: 
@@ -85,13 +86,14 @@ export const FeatureUnavailableMessage: React.FC<FeatureUnavailableMessageProps>
   message,
 }) => {
   const { config } = useServiceType();
-  
+  const colors = useColors();
+
   return (
-    <View style={styles.unavailableContainer}>
-      <Text style={styles.unavailableTitle}>
+    <View style={[staticStyles.unavailableContainer, { backgroundColor: colors.backgroundSecondary }]}>
+      <Text style={[staticStyles.unavailableTitle, { color: colorPalette.neutral[700] }]}>
         {feature} não disponível
       </Text>
-      <Text style={styles.unavailableText}>
+      <Text style={[staticStyles.unavailableText, { color: colorPalette.neutral[500] }]}>
         {message ?? `Esta funcionalidade não está disponível para ${config?.name ?? 'este tipo de estabelecimento'}.`}
       </Text>
     </View>
@@ -109,49 +111,44 @@ export const ServiceTypeBadge: React.FC<ServiceTypeBadgeProps> = ({
   size = 'medium',
 }) => {
   const { config } = useServiceType();
-  
+  const colors = useColors();
+
   if (!config) return null;
-  
+
+  const dynamicStyles = useMemo(() => createBadgeStyles(colors), [colors]);
+
   const sizeStyles = {
-    small: styles.badgeSmall,
-    medium: styles.badgeMedium,
-    large: styles.badgeLarge,
+    small: dynamicStyles.badgeSmall,
+    medium: dynamicStyles.badgeMedium,
+    large: dynamicStyles.badgeLarge,
   };
-  
+
   const textStyles = {
-    small: styles.badgeTextSmall,
-    medium: styles.badgeTextMedium,
-    large: styles.badgeTextLarge,
+    small: dynamicStyles.badgeTextSmall,
+    medium: dynamicStyles.badgeTextMedium,
+    large: dynamicStyles.badgeTextLarge,
   };
-  
+
   return (
-    <View style={[styles.badge, sizeStyles[size]]}>
+    <View style={[dynamicStyles.badge, sizeStyles[size]]}>
       <Text style={textStyles[size]}>{config.name}</Text>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const staticStyles = StyleSheet.create({
   unavailableContainer: {
     padding: spacing.lg,
-    backgroundColor: colors.background.secondary,
     borderRadius: 16,
     alignItems: 'center',
   },
   unavailableTitle: {
-    ...typography.headings.h4,
-    color: colors.neutral.gray700,
+    ...typography.h4,
     marginBottom: spacing.xs,
   },
   unavailableText: {
-    ...typography.body.medium,
-    color: colors.neutral.gray500,
+    ...typography.bodyMedium,
     textAlign: 'center',
-  },
-  badge: {
-    backgroundColor: colors.primary.orange + '20',
-    borderRadius: 8,
-    alignSelf: 'flex-start',
   },
   badgeSmall: {
     paddingHorizontal: spacing.sm,
@@ -165,19 +162,40 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
   },
-  badgeTextSmall: {
-    ...typography.body.small,
-    color: colors.primary.orange,
-    fontWeight: '600',
-  },
-  badgeTextMedium: {
-    ...typography.body.medium,
-    color: colors.primary.orange,
-    fontWeight: '600',
-  },
-  badgeTextLarge: {
-    ...typography.body.large,
-    color: colors.primary.orange,
-    fontWeight: '600',
-  },
 });
+
+const createBadgeStyles = (colors: ReturnType<typeof useColors>) =>
+  StyleSheet.create({
+    badge: {
+      backgroundColor: colorPalette.primary[600] + '20',
+      borderRadius: 8,
+      alignSelf: 'flex-start',
+    },
+    badgeSmall: {
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+    },
+    badgeMedium: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+    },
+    badgeLarge: {
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+    },
+    badgeTextSmall: {
+      ...typography.bodySmall,
+      color: colorPalette.primary[600],
+      fontWeight: '600',
+    },
+    badgeTextMedium: {
+      ...typography.bodyMedium,
+      color: colorPalette.primary[600],
+      fontWeight: '600',
+    },
+    badgeTextLarge: {
+      ...typography.bodyLarge,
+      color: colorPalette.primary[600],
+      fontWeight: '600',
+    },
+  });

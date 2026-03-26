@@ -1,19 +1,69 @@
 /**
  * PhoneRegisterScreen - Complete Registration After Phone Verification
- * 
+ *
  * Collects additional user information after phone number is verified.
  * Follows passwordless-first approach with optional email.
+ *
+ * LGPD compliance: requires separate consent checkboxes for terms,
+ * privacy policy, and optional marketing opt-in. Birth date is required
+ * with 18+ age validation.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { Text, TextInput, Button, IconButton, HelperText, Checkbox } from 'react-native-paper';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { Text, TextInput, Button, IconButton, HelperText } from 'react-native-paper';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { useI18n } from '@/shared/hooks/useI18n';
+import { LegalConsentSection } from '@okinawa/shared/components/LegalConsentSection';
 import { otpAuthService } from '@/shared/services/otp-auth';
 import { validateForm, phoneRegisterSchema } from '@/shared/validation/schemas';
 import Haptic from '@/shared/utils/haptics';
 import { useScreenTracking } from '@/shared/hooks/useAnalytics';
+
+const TERMS_URL = 'https://noowe.com/legal/terms';
+const PRIVACY_URL = 'https://noowe.com/legal/privacy';
+const CURRENT_TERMS_VERSION = '1.0';
+const CURRENT_PRIVACY_VERSION = '1.0';
+
+/**
+ * Validates that a DD/MM/YYYY birth date represents a person 18+ years old
+ */
+function isAtLeast18(dateStr: string): boolean {
+  const parts = dateStr.split('/');
+  if (parts.length !== 3) return false;
+
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1;
+  const year = parseInt(parts[2], 10);
+
+  const birthDate = new Date(year, month, day);
+  if (isNaN(birthDate.getTime())) return false;
+
+  const today = new Date();
+  const age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  const dayDiff = today.getDate() - birthDate.getDate();
+
+  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    return age - 1 >= 18;
+  }
+  return age >= 18;
+}
+
+/**
+ * Converts DD/MM/YYYY to ISO date string YYYY-MM-DD for the API
+ */
+function toISODate(dateStr: string): string {
+  const parts = dateStr.split('/');
+  if (parts.length !== 3) return '';
+  return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+}
 
 interface PhoneRegisterScreenProps {
   navigation: any;
@@ -36,14 +86,16 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
   useScreenTracking('PhoneRegister');
   const { t } = useI18n();
   const colors = useColors();
-  
+
   const tempToken = route.params?.tempToken;
-  
+
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
-  
+  const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
@@ -60,17 +112,36 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
     const result = validateForm(phoneRegisterSchema, {
       fullName,
       email: email || undefined,
-      birthDate: birthDate || undefined,
+      birthDate,
     });
 
+    const errors: Record<string, string> = {};
+
     if (!result.success) {
-      setFieldErrors(result.errors);
+      Object.assign(errors, result.errors);
+    }
+
+    // Birth date is required (LGPD)
+    if (!birthDate) {
+      errors.birthDate = t('auth.birthDateRequired') || 'Birth date is required';
+    } else if (!isAtLeast18(birthDate)) {
+      errors.birthDate = t('auth.mustBe18') || 'You must be at least 18 years old';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       Haptic.errorNotification();
       return false;
     }
 
     if (!acceptTerms) {
-      setError(t('auth.acceptTermsRequired') || 'Please accept the terms of service');
+      setError(t('auth.acceptTermsRequired') || 'Please accept the Terms of Service');
+      Haptic.errorNotification();
+      return false;
+    }
+
+    if (!acceptPrivacy) {
+      setError(t('auth.acceptPrivacyRequired') || 'Please accept the Privacy Policy');
       Haptic.errorNotification();
       return false;
     }
@@ -78,7 +149,7 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
     setFieldErrors({});
     setError('');
     return true;
-  }, [fullName, email, birthDate, acceptTerms, t]);
+  }, [fullName, email, birthDate, acceptTerms, acceptPrivacy, t]);
 
   const handleRegister = async () => {
     if (!validateFields()) return;
@@ -95,12 +166,15 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
         tempToken,
         fullName,
         email: email || undefined,
-        birthDate: birthDate || undefined,
+        birthDate: toISODate(birthDate),
+        acceptedTermsVersion: CURRENT_TERMS_VERSION,
+        acceptedPrivacyVersion: CURRENT_PRIVACY_VERSION,
+        marketingConsent,
       });
 
       if (result.success) {
         Haptic.successNotification();
-        
+
         // Prompt for biometric enrollment if token available
         if (result.biometricEnrollmentToken) {
           onBiometricPrompt(result.biometricEnrollmentToken);
@@ -119,6 +193,8 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
     }
   };
 
+  // Links are handled internally by LegalConsentSection component
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -132,7 +208,7 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
         />
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
@@ -187,39 +263,44 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
           {t('auth.emailHelper') || 'Add email for account recovery and receipts'}
         </Text>
 
-        {/* Birth Date (Optional) */}
+        {/* Birth Date (Required - LGPD) */}
         <TextInput
           mode="outlined"
-          label={t('auth.birthDateOptional') || 'Birth Date (optional)'}
+          label={t('auth.birthDate') || 'Birth Date'}
           value={birthDate}
-          onChangeText={setBirthDate}
+          onChangeText={(text) => {
+            setBirthDate(text);
+            clearFieldError('birthDate');
+          }}
           style={styles.input}
           outlineStyle={styles.inputOutline}
+          error={!!fieldErrors.birthDate}
           placeholder="DD/MM/YYYY"
           keyboardType="numeric"
         />
+        {fieldErrors.birthDate && (
+          <HelperText type="error">{fieldErrors.birthDate}</HelperText>
+        )}
+        <Text style={styles.helperText}>
+          {t('auth.birthDateHelper') || 'Required. You must be at least 18 years old.'}
+        </Text>
 
-        {/* Terms and Conditions */}
-        <View style={styles.termsContainer}>
-          <Checkbox
-            status={acceptTerms ? 'checked' : 'unchecked'}
-            onPress={() => {
-              setAcceptTerms(!acceptTerms);
-              setError('');
-              Haptic.lightImpact();
-            }}
-          />
-          <Text style={styles.termsText}>
-            {t('auth.acceptTermsPrefix') || 'I accept the'}{' '}
-            <Text style={styles.termsLink}>
-              {t('auth.termsOfService') || 'Terms of Service'}
-            </Text>
-            {' '}{t('auth.and') || 'and'}{' '}
-            <Text style={styles.termsLink}>
-              {t('auth.privacyPolicy') || 'Privacy Policy'}
-            </Text>
-          </Text>
-        </View>
+        {/* Legal Consent — Terms of Use + Privacy Policy */}
+        <LegalConsentSection
+          acceptedLegal={acceptTerms && acceptPrivacy}
+          onToggleLegal={(value) => {
+            setAcceptTerms(value);
+            setAcceptPrivacy(value);
+            setError('');
+            Haptic.lightImpact();
+          }}
+          marketingOptIn={marketingConsent}
+          onToggleMarketing={(value) => {
+            setMarketingConsent(value);
+            Haptic.lightImpact();
+          }}
+          showError={!!error && (!acceptTerms || !acceptPrivacy)}
+        />
 
         {error && (
           <HelperText type="error" style={styles.errorText}>
@@ -231,7 +312,7 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
           mode="contained"
           onPress={handleRegister}
           loading={loading}
-          disabled={loading || !fullName || !acceptTerms}
+          disabled={loading || !fullName || !birthDate || !acceptTerms || !acceptPrivacy}
           style={styles.button}
           contentStyle={styles.buttonContent}
         >
@@ -287,21 +368,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginBottom: 16,
     marginLeft: 4,
   },
-  termsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 16,
-  },
-  termsText: {
-    flex: 1,
-    fontSize: 14,
-    color: colors.foreground,
-    lineHeight: 20,
-  },
-  termsLink: {
-    color: colors.primary,
-    textDecorationLine: 'underline',
-  },
+  // Legal consent styles are handled by LegalConsentSection component
   errorText: {
     textAlign: 'center',
     marginBottom: 8,

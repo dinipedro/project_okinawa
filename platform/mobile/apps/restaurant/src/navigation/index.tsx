@@ -124,13 +124,15 @@ import CallsManagementScreen from '../screens/calls/CallsManagementScreen';
 // ============================================
 // LEGAL SCREENS (Privacy Policy & Terms of Service)
 // ============================================
-import { PrivacyPolicyScreen, TermsOfServiceScreen } from '@/shared/screens/legal';
+import { PrivacyPolicyScreen, TermsOfServiceScreen, ReConsentScreen } from '@/shared/screens/legal';
 
 // ============================================
 // MAINTENANCE SCREEN
 // ============================================
 import { MaintenanceScreen } from '@/shared/screens/MaintenanceScreen';
 import { useMaintenanceCheck } from '@/shared/hooks/useMaintenanceCheck';
+import { onConsentRequired } from '@/shared/services/api';
+import ApiService from '@okinawa/shared/services/api';
 
 // Complete auth session for web-based OAuth
 WebBrowser.maybeCompleteAuthSession();
@@ -246,7 +248,7 @@ function AuthStack() {
       {/* Phone OTP Authentication */}
       <Stack.Screen 
         name="PhoneAuth" 
-        options={{ headerShown: false, ...modalScreenOptions }}
+        options={{ ...modalScreenOptions, headerShown: false }}
       >
         {(props) => (
           <PhoneAuthScreen
@@ -367,7 +369,7 @@ function MainStack() {
       {/* Stock Detail (Epic 5) */}
       <Stack.Screen
         name="StockItemDetail"
-        component={StockItemDetailScreen}
+        component={StockItemDetailScreen as any}
         options={{ title: 'Detalhes do Item', ...scaleFadeScreenOptions }}
       />
 
@@ -457,6 +459,13 @@ function MainStack() {
         name="TermsOfService"
         component={TermsOfServiceScreen}
         options={{ title: 'Terms of Service', ...scaleFadeScreenOptions }}
+      />
+
+      {/* LGPD Sprint 2 — Re-consent when terms/privacy version changes */}
+      <Stack.Screen
+        name="ReConsent"
+        component={ReConsentScreen}
+        options={{ headerShown: false, gestureEnabled: false }}
       />
     </Stack.Navigator>
   );
@@ -635,6 +644,11 @@ function MainDrawer() {
 export default function Navigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [requiresConsent, setRequiresConsent] = useState(false);
+  const [consentVersions, setConsentVersions] = useState<{
+    currentTermsVersion: string;
+    currentPrivacyVersion: string;
+  } | null>(null);
   const { isInMaintenance, message: maintenanceMessage, estimatedEnd, clearMaintenance } = useMaintenanceCheck();
 
   useEffect(() => {
@@ -645,8 +659,15 @@ export default function Navigation() {
       setIsAuthenticated(authenticated);
     });
 
+    // LGPD Sprint 2: Listen for 451 (re-consent required) events from API
+    const unsubscribeConsent = onConsentRequired((data) => {
+      setConsentVersions(data);
+      setRequiresConsent(true);
+    });
+
     return () => {
       if (unsubscribe) unsubscribe();
+      unsubscribeConsent();
     };
   }, []);
 
@@ -680,6 +701,21 @@ export default function Navigation() {
   // Show nothing while checking auth (splash screen should be visible)
   if (isLoading) {
     return null;
+  }
+
+  // LGPD Sprint 2: Show re-consent screen when terms/privacy version changed (HTTP 451)
+  if (requiresConsent && consentVersions) {
+    return (
+      <ReConsentScreen
+        termsVersion={consentVersions.currentTermsVersion}
+        privacyVersion={consentVersions.currentPrivacyVersion}
+        onConsentAccepted={() => {
+          setRequiresConsent(false);
+          setConsentVersions(null);
+          ApiService.resolveConsentQueue();
+        }}
+      />
+    );
   }
 
   // Show maintenance screen when backend returns 503 with maintenance flag

@@ -46,8 +46,8 @@ export default function FoodTruckScreen() {
   const loadOrders = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await ApiService.get('/orders?serviceType=food-truck&status=queued,preparing,ready');
-      setOrders(data);
+      const res = await ApiService.get('/orders?serviceType=food-truck&status=queued,preparing,ready');
+      setOrders(res.data);
     } catch (error) {
       console.error('Failed to load food truck orders:', error);
       setOrders([]);
@@ -60,12 +60,12 @@ export default function FoodTruckScreen() {
     loadOrders();
 
     socketService.connect();
-    socketService.on('order:new', (order: FoodTruckOrder) => {
-      setOrders((prev) => [...prev, order]);
-    });
-    socketService.on('order:updated', (order: FoodTruckOrder) => {
-      setOrders((prev) => prev.map((o) => (o.id === order.id ? order : o)));
-    });
+    socketService.on('order:new', ((order: unknown) => {
+      setOrders((prev) => [...prev, order as FoodTruckOrder]);
+    }) as (data: unknown) => void);
+    socketService.on('order:updated', ((order: unknown) => {
+      setOrders((prev) => prev.map((o) => (o.id === (order as FoodTruckOrder).id ? order as FoodTruckOrder : o)));
+    }) as (data: unknown) => void);
 
     return () => {
       socketService.off('order:new');

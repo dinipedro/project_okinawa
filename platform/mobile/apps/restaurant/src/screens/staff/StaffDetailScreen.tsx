@@ -154,7 +154,7 @@ export default function StaffDetailScreen() {
     try {
       setLoading(true);
       const staffList = await ApiService.getStaff();
-      const foundStaff = staffList.find(s => s.id === staffId);
+      const foundStaff = staffList.find((s: User) => s.id === staffId);
       if (foundStaff) {
         setStaff(foundStaff);
       }
@@ -234,7 +234,7 @@ export default function StaffDetailScreen() {
                   .slice(0, 2)
                   .join('')
                   .toUpperCase()}
-                style={{ backgroundColor: getRoleColor(staff.role) }}
+                style={{ backgroundColor: getRoleColor(staff.roles?.[0]?.role) }}
               />
             )}
             <View style={styles.headerInfo}>
@@ -253,11 +253,11 @@ export default function StaffDetailScreen() {
 
           <View style={styles.badges}>
             <Chip
-              style={[styles.roleChip, { backgroundColor: getRoleColor(staff.role) }]}
+              style={[styles.roleChip, { backgroundColor: getRoleColor(staff.roles?.[0]?.role) }]}
               textStyle={styles.chipText}
               icon="shield-account"
             >
-              {getRoleLabel(staff.role)}
+              {getRoleLabel(staff.roles?.[0]?.role)}
             </Chip>
           </View>
         </Card.Content>
@@ -285,17 +285,17 @@ export default function StaffDetailScreen() {
             />
           )}
           <List.Item
-            title={t('staff.role')}
+            title={t('staff.roles?.[0]?.role')}
             titleStyle={styles.listItemTitle}
-            description={getRoleLabel(staff.role)}
+            description={getRoleLabel(staff.roles?.[0]?.role)}
             descriptionStyle={styles.listItemDescription}
             left={props => <List.Icon {...props} icon="briefcase" color={colors.mutedForeground} />}
           />
-          {staff.created_at && (
+          {(staff as any).created_at && (
             <List.Item
               title={t('staff.memberSince')}
               titleStyle={styles.listItemTitle}
-              description={format(new Date(staff.created_at), "dd/MM/yyyy", { locale: ptBR })}
+              description={format(new Date((staff as any).created_at), "dd/MM/yyyy", { locale: ptBR })}
               descriptionStyle={styles.listItemDescription}
               left={props => <List.Icon {...props} icon="calendar" color={colors.mutedForeground} />}
             />

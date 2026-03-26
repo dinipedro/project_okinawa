@@ -87,6 +87,8 @@ services:
       target: production
     container_name: okinawa-backend
     restart: unless-stopped
+    mem_limit: 1g
+    cpus: 1.0
     environment:
       NODE_ENV: production
       PORT: 3000
@@ -128,6 +130,8 @@ services:
       target: production
     container_name: okinawa-worker
     restart: unless-stopped
+    mem_limit: 512m
+    cpus: 0.5
     environment:
       NODE_ENV: production
       DATABASE_HOST: postgres

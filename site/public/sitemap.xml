@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://okinawa.app/</loc>
+    <loc>https://noowebr.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://okinawa.app/pitch</loc>
+    <loc>https://noowebr.com/pitch</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://okinawa.app/pitch/app</loc>
+    <loc>https://noowebr.com/pitch/app</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://okinawa.app/pitch/restaurants</loc>
+    <loc>https://noowebr.com/pitch/restaurants</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://okinawa.app/pitch/investors</loc>
+    <loc>https://noowebr.com/pitch/investors</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://okinawa.app/logo</loc>
+    <loc>https://noowebr.com/logo</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -41,7 +41,7 @@ export class WaitlistController {
   @Post()
   @ApiOperation({ summary: 'Join the restaurant waitlist' })
   async joinWaitlist(@Req() req: AuthenticatedRequest, @Body() dto: JoinWaitlistDto) {
-    const userId = req.user?.id || null;
+    const userId = req.user?.id ?? undefined;
     const result = await this.waitlistService.joinWaitlist(dto, userId);
 
     // Notify waitlist room about new entry
@@ -201,7 +201,7 @@ export class WaitlistController {
   @ApiOperation({ summary: 'Cancel own waitlist spot' })
   @ApiParam({ name: 'id', description: 'Waitlist entry ID' })
   async cancelEntry(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
-    const userId = req.user?.id || null;
+    const userId = req.user?.id ?? undefined;
     const entry = await this.waitlistService.cancelEntry(id, userId);
 
     // Notify waitlist room

@@ -104,7 +104,10 @@ export default function CouponsScreen() {
     refetch,
   } = useQuery<Coupon[]>({
     queryKey: ['coupons'],
-    queryFn: () => ApiService.get('/promotions/my-coupons'),
+    queryFn: async (): Promise<Coupon[]> => {
+      const response = await ApiService.get('/promotions/my-coupons');
+      return response.data;
+    },
   });
 
   // Apply coupon code

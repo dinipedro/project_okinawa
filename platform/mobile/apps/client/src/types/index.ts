@@ -368,6 +368,17 @@ export type RootStackParamList = {
   Wallet: undefined;
   Notifications: undefined;
   Settings: undefined;
+
+  // Service screens
+  CallWaiter: { orderId: string; restaurantId?: string };
+  RestaurantMenu: { restaurantId: string; orderId?: string };
+  QRScanner: { orderId?: string };
+  Addresses: undefined;
+  Coupons: undefined;
+  TabScreen: { restaurantId?: string };
+  TabPayment: { tabId?: string };
+  Reservation: { restaurantId: string };
+  Restaurant: { restaurantId: string };
 };
 
 // Component Props Types

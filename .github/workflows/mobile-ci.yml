@@ -63,6 +63,24 @@ jobs:
         env:
           CI: true
 
+      - name: Check bundle size (shared)
+        run: |
+          echo "## Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          SHARED_SIZE=$(du -sh shared/ | cut -f1)
+          CLIENT_SIZE=$(du -sh apps/client/src/ | cut -f1)
+          RESTAURANT_SIZE=$(du -sh apps/restaurant/src/ | cut -f1)
+          echo "| Package | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Shared | $SHARED_SIZE |" >> $GITHUB_STEP_SUMMARY
+          echo "| Client App | $CLIENT_SIZE |" >> $GITHUB_STEP_SUMMARY
+          echo "| Restaurant App | $RESTAURANT_SIZE |" >> $GITHUB_STEP_SUMMARY
+          # Warn if shared exceeds 2MB source
+          SHARED_BYTES=$(du -s shared/ | cut -f1)
+          if [ "$SHARED_BYTES" -gt 2048 ]; then
+            echo "::warning::Shared package source exceeds 2MB ($SHARED_SIZE)"
+          fi
+
       - name: Upload coverage artifact
         if: always()
         uses: actions/upload-artifact@v4

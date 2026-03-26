@@ -12,7 +12,7 @@ import { Text, Card, Button, Searchbar, Chip, ActivityIndicator, IconButton } fr
 import { useNavigation } from '@react-navigation/native';
 import { t, useTranslations } from '@okinawa/shared/i18n';
 import { useColors, useOkinawaTheme } from '@okinawa/shared/contexts/ThemeContext';
-import { useAuth } from '@okinawa/shared/contexts/AuthContext';
+import { useAuth } from '@okinawa/shared/hooks/useAuth';
 import { ApiService } from '@okinawa/shared/services/api';
 import logger from '@okinawa/shared/utils/logger';
 import type { Restaurant, Order } from '../../types';
@@ -62,7 +62,7 @@ const skeletonStyles = StyleSheet.create({
 });
 
 export default function HomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const { user } = useAuth();
   const translations = useTranslations();
   const { theme, isDark } = useOkinawaTheme();
@@ -87,9 +87,9 @@ export default function HomeScreen() {
   const fetchData = useCallback(async () => {
     try {
       const [nearbyRes, popularRes, ordersRes] = await Promise.all([
-        ApiService.restaurants.getNearby({ limit: 5 }).catch(() => ({ data: [] })),
-        ApiService.restaurants.getPopular({ limit: 5 }).catch(() => ({ data: [] })),
-        user ? ApiService.orders.getMyOrders({ limit: 3 }).catch(() => ({ data: [] })) : { data: [] },
+        ApiService.getRestaurants({ lat: 0, lng: 0 }).then((data: any) => ({ data: Array.isArray(data) ? data.slice(0, 5) : [] })).catch(() => ({ data: [] })),
+        ApiService.getRestaurants().then((data: any) => ({ data: Array.isArray(data) ? data.slice(0, 5) : [] })).catch(() => ({ data: [] })),
+        user ? ApiService.getMyOrders().then((data: any) => ({ data: Array.isArray(data) ? data.slice(0, 3) : [] })).catch(() => ({ data: [] })) : { data: [] },
       ]);
 
       setNearbyRestaurants(nearbyRes.data || []);
@@ -462,6 +462,8 @@ export default function HomeScreen() {
           style={styles.searchBar}
           inputStyle={styles.searchInput}
           iconColor={colors.primary}
+          accessibilityLabel="Search restaurants"
+          accessibilityHint="Type to search for restaurants by name or cuisine"
         />
       </View>
 

@@ -350,7 +350,7 @@ const createStyles = (colors: ReturnType<typeof useColors>) =>
       flex: 1,
     },
     summaryLabel: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginBottom: 4,
     },
     revenueValue: {
@@ -379,7 +379,7 @@ const createStyles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
     },
     profitNote: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       fontStyle: 'italic',
     },
     actions: {

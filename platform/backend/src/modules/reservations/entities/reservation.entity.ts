@@ -57,16 +57,16 @@ export class Reservation {
   occasion: string;
 
   @Column({ type: 'text', nullable: true })
-  special_requests: string;
+  special_requests: string | null;
 
   @Column({ type: 'simple-array', nullable: true })
-  dietary_restrictions: string[];
+  dietary_restrictions: string[] | null;
 
   @Column({ nullable: true })
-  contact_phone: string;
+  contact_phone: string | null;
 
   @Column({ nullable: true })
-  contact_email: string;
+  contact_email: string | null;
 
   @Column({ type: 'timestamp', nullable: true })
   confirmed_at: Date;

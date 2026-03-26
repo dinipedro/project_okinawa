@@ -25,7 +25,7 @@ export function initSentry() {
     enableAutoSessionTracking: true,
 
     // Session timeout in milliseconds (30 minutes)
-    sessionTrackingIntervalMillis: 30000,
+    sessionTrackingIntervalMillis: 30 * 60 * 1000,
 
     // Performance monitoring - sample 10% in production, 100% in dev
     tracesSampleRate: ENVIRONMENT === 'production' ? 0.1 : 1.0,
@@ -88,19 +88,8 @@ export function initSentry() {
 
     // Integrations
     integrations: [
-      new Sentry.ReactNativeTracing({
-        // Trace navigation changes
-        routingInstrumentation: new Sentry.ReactNavigationInstrumentation(),
-
-        // Track component render times
-        enableUserInteractionTracing: true,
-
-        // Track fetch and XHR requests
-        traceFetch: true,
-        traceXHR: true,
-
-        // Trace only these origins
-        tracingOrigins: ['localhost', /^\//],
+      Sentry.reactNavigationIntegration({
+        enableTimeToInitialDisplay: true,
       }),
     ],
   });

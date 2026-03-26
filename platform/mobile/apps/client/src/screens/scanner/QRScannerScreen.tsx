@@ -60,7 +60,7 @@ export default function QRScannerScreen() {
     permissionText: {
       marginTop: 8,
       textAlign: 'center',
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     permissionButton: {
       marginTop: 24,
@@ -268,9 +268,10 @@ export default function QRScannerScreen() {
     switch (type) {
       case 'table':
         try {
-          const tableData = await ApiService.associateTable(
-            payload.tableId || payload.tableCode
-          );
+          const tableResponse = await ApiService.post('/tables/associate', {
+            tableId: payload.tableId || payload.tableCode,
+          });
+          const tableData = tableResponse.data;
           return {
             type: 'table',
             data: tableData,
@@ -293,7 +294,10 @@ export default function QRScannerScreen() {
 
       case 'invite':
         try {
-          const inviteData = await ApiService.acceptInvite(payload.inviteToken);
+          const inviteResponse = await ApiService.post('/reservations/guests/accept', {
+            inviteToken: payload.inviteToken,
+          });
+          const inviteData = inviteResponse.data;
           return {
             type: 'invite',
             data: inviteData,
@@ -330,7 +334,7 @@ export default function QRScannerScreen() {
     setProcessing(true);
     Vibration.vibrate(100);
 
-    analytics.trackEvent('qr_scanned', { data_length: data.length });
+    analytics.logEvent('qr_scanned', { data_length: data.length });
 
     const { type, payload } = parseQRCode(data);
     const result = await processQRCode(type, payload);
@@ -386,7 +390,7 @@ export default function QRScannerScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
-        <IconButton icon="camera-off" size={64} iconColor={colors.mutedForeground} />
+        <IconButton icon="camera-off" size={64} iconColor={colors.foregroundMuted} />
         <Text variant="headlineSmall" style={styles.permissionTitle}>
           {t('scanner.cameraPermission')}
         </Text>

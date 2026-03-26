@@ -98,7 +98,7 @@ export default function CartScreen() {
         [
           {
             text: t('common.ok'),
-            onPress: () => navigation.navigate('Payment', { orderId: order.id }),
+            onPress: () => (navigation as any).navigate('Payment', { orderId: order.id }),
           },
         ]
       );
@@ -280,6 +280,8 @@ export default function CartScreen() {
             size={20}
             onPress={() => cart.removeItem(item.id)}
             iconColor={colors.error}
+            accessibilityLabel={`Remove ${item.name} from cart`}
+            accessibilityRole="button"
           />
         </View>
 
@@ -289,8 +291,10 @@ export default function CartScreen() {
             size={20}
             onPress={() => cart.updateQuantity(item.id, item.quantity - 1)}
             mode="contained"
+            accessibilityLabel={`Decrease quantity of ${item.name}`}
+            accessibilityRole="button"
           />
-          <Text variant="titleMedium" style={styles.quantity}>
+          <Text variant="titleMedium" style={styles.quantity} accessibilityLabel={`Quantity: ${item.quantity}`}>
             {item.quantity}
           </Text>
           <IconButton
@@ -298,6 +302,8 @@ export default function CartScreen() {
             size={20}
             onPress={() => cart.updateQuantity(item.id, item.quantity + 1)}
             mode="contained"
+            accessibilityLabel={`Increase quantity of ${item.name}`}
+            accessibilityRole="button"
           />
           <Text variant="titleMedium" style={styles.itemTotal}>
             {formatCurrency(item.price * item.quantity, getLanguage())}
@@ -312,6 +318,8 @@ export default function CartScreen() {
           multiline
           numberOfLines={2}
           style={styles.instructionsInput}
+          accessibilityLabel={`Special instructions for ${item.name}`}
+          accessibilityHint="Add any preparation notes or dietary requests"
         />
       </Card.Content>
     </Card>
@@ -339,6 +347,8 @@ export default function CartScreen() {
               multiline
               numberOfLines={3}
               style={styles.orderInstructions}
+              accessibilityLabel="Order special instructions"
+              accessibilityHint="Add any special instructions for the entire order"
             />
 
             <Card style={styles.tipCard}>
@@ -351,6 +361,9 @@ export default function CartScreen() {
                     mode={tipPercentage === 10 && !tipAmount ? 'contained' : 'outlined'}
                     onPress={() => setTipByPercentage(10)}
                     style={styles.tipButton}
+                    accessibilityLabel="10 percent tip"
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: tipPercentage === 10 && !tipAmount }}
                   >
                     10%
                   </Button>
@@ -358,6 +371,9 @@ export default function CartScreen() {
                     mode={tipPercentage === 15 && !tipAmount ? 'contained' : 'outlined'}
                     onPress={() => setTipByPercentage(15)}
                     style={styles.tipButton}
+                    accessibilityLabel="15 percent tip"
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: tipPercentage === 15 && !tipAmount }}
                   >
                     15%
                   </Button>
@@ -365,6 +381,9 @@ export default function CartScreen() {
                     mode={tipPercentage === 20 && !tipAmount ? 'contained' : 'outlined'}
                     onPress={() => setTipByPercentage(20)}
                     style={styles.tipButton}
+                    accessibilityLabel="20 percent tip"
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: tipPercentage === 20 && !tipAmount }}
                   >
                     20%
                   </Button>
@@ -381,6 +400,8 @@ export default function CartScreen() {
                   keyboardType="decimal-pad"
                   left={<TextInput.Affix text={getCurrencySymbol(getLanguage())} />}
                   style={styles.customTipInput}
+                  accessibilityLabel="Custom tip amount"
+                  accessibilityHint="Enter a custom tip amount"
                 />
               </Card.Content>
             </Card>
@@ -425,6 +446,8 @@ export default function CartScreen() {
               mode="contained"
               onPress={() => navigation.goBack()}
               style={styles.backButton}
+              accessibilityLabel="Continue shopping"
+              accessibilityRole="button"
             >
               {t('cart.continueShopping')}
             </Button>
@@ -448,6 +471,8 @@ export default function CartScreen() {
             loading={loading}
             disabled={loading}
             style={styles.checkoutButton}
+            accessibilityLabel="Proceed to checkout"
+            accessibilityRole="button"
           >
             {t('cart.checkout')}
           </Button>

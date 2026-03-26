@@ -54,9 +54,10 @@ export class AuthController {
     @Body() registerDto: RegisterDto,
     @Req() req: Request,
     @Headers('user-agent') userAgent?: string,
+    @Headers('x-device-id') deviceId?: string,
   ) {
     const ipAddress = this.getClientIp(req);
-    return this.authService.register(registerDto, ipAddress, userAgent);
+    return this.authService.register(registerDto, ipAddress, userAgent, deviceId);
   }
 
   @Public()

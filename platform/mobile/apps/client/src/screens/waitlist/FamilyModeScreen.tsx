@@ -144,9 +144,9 @@ export default function FamilyModeScreen({ route }: FamilyModeScreenProps) {
       });
 
       // Navigate to activities screen
-      navigation.navigate(
-        'FamilyActivitiesScreen' as never,
-        { restaurantId, entryId } as never,
+      (navigation as any).navigate(
+        'FamilyActivitiesScreen',
+        { restaurantId, entryId },
       );
     } catch (error: any) {
       Alert.alert(t('common.error'), error?.message || t('common.error'));
@@ -156,16 +156,16 @@ export default function FamilyModeScreen({ route }: FamilyModeScreenProps) {
   }, [children, entryId, restaurantId, navigation]);
 
   const handleSeeActivities = useCallback(() => {
-    navigation.navigate(
-      'FamilyActivitiesScreen' as never,
-      { restaurantId, entryId } as never,
+    (navigation as any).navigate(
+      'FamilyActivitiesScreen',
+      { restaurantId, entryId },
     );
   }, [navigation, restaurantId, entryId]);
 
   const handleSeeMenu = useCallback(() => {
-    navigation.navigate(
-      'MenuScreen' as never,
-      { restaurantId, familyMode: true } as never,
+    (navigation as any).navigate(
+      'MenuScreen',
+      { restaurantId, familyMode: true },
     );
   }, [navigation, restaurantId]);
 

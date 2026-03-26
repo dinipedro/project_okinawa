@@ -59,8 +59,8 @@ export default function BuffetCheckinScreen({
       const response = await ApiService.post(`/buffet/${restaurantId}/checkin`, {
         covers,
       });
-      setQrCode(response.qrCode);
-      setTableAssignment(response.tableNumber);
+      setQrCode(response.data.qrCode);
+      setTableAssignment(response.data.tableNumber);
       setIsCheckedIn(true);
     } catch (error) {
       Alert.alert(t('common.error'), t('errors.generic'));

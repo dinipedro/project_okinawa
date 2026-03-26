@@ -18,6 +18,32 @@ export class CsrfMiddleware implements NestMiddleware {
       return next();
     }
 
+    // Origin/Referer validation for state-changing requests
+    // Reject requests whose Origin does not match the allowed CORS_ORIGIN
+    const origin = req.headers.origin;
+    if (origin) {
+      const corsOrigin = process.env.CORS_ORIGIN || '';
+      const allowedOrigins = corsOrigin
+        ? corsOrigin.split(',').map((o) => o.trim().toLowerCase())
+        : [];
+
+      // In development, also allow common local origins
+      if (process.env.NODE_ENV !== 'production') {
+        allowedOrigins.push(
+          'http://localhost:3000',
+          'http://localhost:8081',
+          'http://localhost:19006',
+        );
+      }
+
+      const normalizedOrigin = origin.toLowerCase();
+      if (allowedOrigins.length > 0 && !allowedOrigins.includes(normalizedOrigin)) {
+        throw new ForbiddenException(
+          'Origin not allowed: request origin does not match CORS_ORIGIN',
+        );
+      }
+    }
+
     // Skip CSRF check for API requests with valid Bearer token (mobile/API clients)
     // NOTE: This only bypasses CSRF — the JWT guard will still validate the token
     const authHeader = req.headers.authorization;
@@ -73,11 +99,11 @@ export class CsrfMiddleware implements NestMiddleware {
   }
 
   private generateToken(secret: string): string {
-    const csrfKey = process.env.CSRF_SECRET || process.env.JWT_SECRET;
+    const csrfKey = process.env.CSRF_SECRET;
     if (!csrfKey) {
       throw new Error(
-        'CSRF_SECRET or JWT_SECRET environment variable is required. ' +
-        'The application cannot start without a secure signing key.',
+        'CSRF_SECRET environment variable is required. ' +
+        'Must be a unique secret, separate from JWT_SECRET.',
       );
     }
     return crypto

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { TextInput, Button, Text, HelperText } from 'react-native-paper';
 import { authService } from '@/shared/services/auth';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
@@ -7,7 +7,11 @@ import { useAnalyticsContext } from '@/shared/contexts/AnalyticsContext';
 import { useI18n } from '@/shared/hooks/useI18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { registerSchema, validateForm, type RegisterFormData } from '@/shared/validation/schemas';
+import { LegalConsentSection } from '@okinawa/shared/components/LegalConsentSection';
 import Haptic from '@/shared/utils/haptics';
+
+const CURRENT_TERMS_VERSION = '1.0';
+const CURRENT_PRIVACY_VERSION = '1.0';
 
 export default function RegisterScreen({ navigation }: any) {
   useScreenTracking('Register');
@@ -18,8 +22,11 @@ export default function RegisterScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showConsentError, setShowConsentError] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const analytics = useAnalytics();
@@ -50,13 +57,17 @@ export default function RegisterScreen({ navigation }: any) {
   }, [fullName, email, password, confirmPassword]);
 
   const handleRegister = async () => {
-    // Validate with Zod before submitting
-    if (!validateFields()) {
+    if (!validateFields()) return;
+
+    if (!acceptedLegal) {
+      setShowConsentError(true);
+      Haptic.errorNotification();
       return;
     }
 
     setLoading(true);
     setError('');
+    setShowConsentError(false);
 
     try {
       const result = await authService.register(email, password, fullName);
@@ -84,91 +95,131 @@ export default function RegisterScreen({ navigation }: any) {
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
-    <View style={styles.container}>
-      <Text variant="headlineLarge" style={styles.title}>
-        {t('auth.createAccount')}
-      </Text>
-
-      <TextInput
-        label={t('auth.fullName')}
-        value={fullName}
-        onChangeText={(text) => {
-          setFullName(text);
-          clearFieldError('fullName');
-        }}
-        style={styles.input}
-        error={!!fieldErrors.fullName}
-        accessibilityLabel="Full name"
-      />
-      {fieldErrors.fullName ? <HelperText type="error">{fieldErrors.fullName}</HelperText> : null}
-
-      <TextInput
-        label={t('auth.email')}
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          clearFieldError('email');
-        }}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        style={styles.input}
-        error={!!fieldErrors.email}
-        accessibilityLabel="Email address"
-      />
-      {fieldErrors.email ? <HelperText type="error">{fieldErrors.email}</HelperText> : null}
-
-      <TextInput
-        label={t('auth.password')}
-        value={password}
-        onChangeText={(text) => {
-          setPassword(text);
-          clearFieldError('password');
-        }}
-        secureTextEntry
-        style={styles.input}
-        error={!!fieldErrors.password}
-        accessibilityLabel="Password"
-      />
-      {fieldErrors.password ? <HelperText type="error">{fieldErrors.password}</HelperText> : null}
-
-      <TextInput
-        label={t('auth.confirmPassword')}
-        value={confirmPassword}
-        onChangeText={(text) => {
-          setConfirmPassword(text);
-          clearFieldError('confirmPassword');
-        }}
-        secureTextEntry
-        style={styles.input}
-        error={!!fieldErrors.confirmPassword}
-        accessibilityLabel="Confirm password"
-      />
-      {fieldErrors.confirmPassword ? <HelperText type="error">{fieldErrors.confirmPassword}</HelperText> : null}
-
-      {error ? <HelperText type="error">{error}</HelperText> : null}
-
-      <Button
-        mode="contained"
-        onPress={handleRegister}
-        loading={loading}
-        style={styles.button}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
       >
-        {t('auth.register')}
-      </Button>
+        <Text variant="headlineLarge" style={styles.title}>
+          {t('auth.createAccount')}
+        </Text>
 
-      <Button onPress={() => navigation.navigate('Login')}>
-        {t('auth.hasAccount')}
-      </Button>
-    </View>
+        <TextInput
+          label={t('auth.fullName')}
+          value={fullName}
+          onChangeText={(text) => {
+            setFullName(text);
+            clearFieldError('fullName');
+          }}
+          style={styles.input}
+          error={!!fieldErrors.fullName}
+          accessibilityLabel="Full name"
+          accessibilityHint="Enter your full name"
+          autoCapitalize="words"
+        />
+        {fieldErrors.fullName ? <HelperText type="error">{fieldErrors.fullName}</HelperText> : null}
+
+        <TextInput
+          label={t('auth.email')}
+          value={email}
+          onChangeText={(text) => {
+            setEmail(text);
+            clearFieldError('email');
+          }}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          style={styles.input}
+          error={!!fieldErrors.email}
+          accessibilityLabel="Email address"
+          accessibilityHint="Enter your email address"
+        />
+        {fieldErrors.email ? <HelperText type="error">{fieldErrors.email}</HelperText> : null}
+
+        <TextInput
+          label={t('auth.password')}
+          value={password}
+          onChangeText={(text) => {
+            setPassword(text);
+            clearFieldError('password');
+          }}
+          secureTextEntry
+          style={styles.input}
+          error={!!fieldErrors.password}
+          accessibilityLabel="Password"
+          accessibilityHint="Create a password for your account"
+        />
+        {fieldErrors.password ? <HelperText type="error">{fieldErrors.password}</HelperText> : null}
+
+        <TextInput
+          label={t('auth.confirmPassword')}
+          value={confirmPassword}
+          onChangeText={(text) => {
+            setConfirmPassword(text);
+            clearFieldError('confirmPassword');
+          }}
+          secureTextEntry
+          style={styles.input}
+          error={!!fieldErrors.confirmPassword}
+          accessibilityLabel="Confirm password"
+          accessibilityHint="Re-enter your password to confirm"
+        />
+        {fieldErrors.confirmPassword ? <HelperText type="error">{fieldErrors.confirmPassword}</HelperText> : null}
+
+        {/* Legal Consent — Terms of Use + Privacy Policy */}
+        <LegalConsentSection
+          acceptedLegal={acceptedLegal}
+          onToggleLegal={(value) => {
+            setAcceptedLegal(value);
+            setShowConsentError(false);
+            Haptic.lightImpact();
+          }}
+          marketingOptIn={marketingConsent}
+          onToggleMarketing={(value) => {
+            setMarketingConsent(value);
+            Haptic.lightImpact();
+          }}
+          showError={showConsentError}
+        />
+
+        {error ? <HelperText type="error">{error}</HelperText> : null}
+
+        <Button
+          mode="contained"
+          onPress={handleRegister}
+          loading={loading}
+          disabled={loading}
+          style={styles.button}
+          contentStyle={styles.buttonContent}
+          accessibilityLabel="Create account"
+          accessibilityRole="button"
+        >
+          {t('auth.register')}
+        </Button>
+
+        <Button
+          onPress={() => navigation.navigate('Login')}
+          accessibilityLabel="Go to login"
+          accessibilityRole="button"
+        >
+          {t('auth.hasAccount')}
+        </Button>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
     backgroundColor: colors.background,
+  },
+  scrollContent: {
+    padding: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
   },
   title: {
     marginBottom: 30,
@@ -180,7 +231,11 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.card,
   },
   button: {
-    marginTop: 10,
-    marginBottom: 20,
+    borderRadius: 12,
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  buttonContent: {
+    height: 52,
   },
 });

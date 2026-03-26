@@ -388,16 +388,11 @@ export default function SplitPaymentScreen() {
       // Generate idempotency key
       const idempotencyKey = `split-${split.id}-${Date.now()}`;
 
-      await ApiService.processSplitPayment(
-        {
-          split_id: split.id,
-          amount,
-          payment_method: paymentMethod,
-        },
-        {
-          headers: { 'X-Idempotency-Key': idempotencyKey },
-        },
-      );
+      await ApiService.processSplitPayment({
+        split_id: split.id,
+        amount,
+        payment_method: paymentMethod,
+      });
 
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await analytics.logPurchase(orderId, amount, 'BRL');

@@ -97,7 +97,7 @@ export default function ConfigProfileScreen() {
     reset,
     formState: { isDirty, errors },
   } = useForm<ProfileFormData>({
-    resolver: zodResolver(profileSchema),
+    resolver: zodResolver(profileSchema as any),
     defaultValues: {
       name: '',
       description: '',
@@ -216,9 +216,9 @@ export default function ConfigProfileScreen() {
     setHours((prev) => ({
       ...prev,
       [day]: {
+        ...prev[day],
         open: prev[day]?.open || '08:00',
         close: prev[day]?.close || '22:00',
-        ...prev[day],
         [field]: value,
       },
     }));

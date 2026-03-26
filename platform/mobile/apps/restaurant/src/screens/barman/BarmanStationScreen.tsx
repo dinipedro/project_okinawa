@@ -35,8 +35,8 @@ import {
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ApiService from '@/shared/services/api';
-import { useColors } from '@/shared/theme';
-import { t } from '@/shared/i18n';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { useI18n } from '@/shared/hooks/useI18n';
 
 // ============================================
 // TYPES
@@ -133,6 +133,7 @@ const RECIPE_CATEGORIES = [
  * Pulsing URGENT badge for critical orders
  */
 function UrgentBadge({ colors }: { colors: any }) {
+  const { t } = useI18n();
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -167,6 +168,7 @@ function UrgentBadge({ colors }: { colors: any }) {
 
 export default function BarmanStationScreen({ navigation }: { navigation: any }) {
   const colors = useColors();
+  const { t } = useI18n();
 
   // Tab state
   const [activeTab, setActiveTab] = useState<'orders' | 'recipes' | 'stock'>('orders');
@@ -358,7 +360,7 @@ export default function BarmanStationScreen({ navigation }: { navigation: any })
         },
         modifierChip: {
           height: 24,
-          backgroundColor: colors.primaryBackground,
+          backgroundColor: colors.backgroundSecondary,
         },
         instructions: {
           flexDirection: 'row',
@@ -582,7 +584,8 @@ export default function BarmanStationScreen({ navigation }: { navigation: any })
   const loadRecipes = async () => {
     setRecipesLoading(true);
     try {
-      const data = await ApiService.getRecipes();
+      const res = await ApiService.get('/recipes');
+      const data = res.data;
       setRecipes(data?.items || data || []);
     } catch (error) {
       console.error('Failed to load recipes:', error);
@@ -594,8 +597,8 @@ export default function BarmanStationScreen({ navigation }: { navigation: any })
   const loadStock = async () => {
     setStockLoading(true);
     try {
-      const data = await ApiService.getBarStock();
-      setStockItems(data || []);
+      const res = await ApiService.get('/inventory/bar-stock');
+      setStockItems(res.data || []);
     } catch (error) {
       console.error('Failed to load bar stock:', error);
     } finally {
@@ -609,7 +612,7 @@ export default function BarmanStationScreen({ navigation }: { navigation: any })
 
   const handleStartOrder = async (orderId: string) => {
     try {
-      await ApiService.updateOrderStatus(orderId, { status: 'preparing' });
+      await ApiService.updateOrderStatus(orderId, 'preparing');
       await loadOrders();
     } catch (error) {
       Alert.alert(t('common.error'), t('common.error'));
@@ -618,7 +621,7 @@ export default function BarmanStationScreen({ navigation }: { navigation: any })
 
   const handleCompleteOrder = async (orderId: string) => {
     try {
-      await ApiService.updateOrderStatus(orderId, { status: 'ready' });
+      await ApiService.updateOrderStatus(orderId, 'ready');
       await loadOrders();
     } catch (error) {
       Alert.alert(t('common.error'), t('common.error'));

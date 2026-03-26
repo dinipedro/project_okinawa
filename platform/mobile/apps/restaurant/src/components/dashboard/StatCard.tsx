@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card, Text, IconButton } from 'react-native-paper';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 
 interface StatCardProps {
   icon: string;
@@ -54,7 +54,7 @@ export default function StatCard({
       color: colors.foreground,
     },
     label: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 4,
     },
     trendContainer: {

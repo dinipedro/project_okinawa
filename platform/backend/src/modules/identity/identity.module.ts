@@ -21,6 +21,7 @@ import { UserCredential } from './entities/user-credential.entity';
 import { TokenBlacklist } from './entities/token-blacklist.entity';
 import { AuditLog } from './entities/audit-log.entity';
 import { PasswordResetToken } from './entities/password-reset-token.entity';
+import { UserConsent } from './entities/user-consent.entity';
 
 // Services
 import { CredentialService } from './services/credential.service';
@@ -28,6 +29,7 @@ import { MfaService } from './services/mfa.service';
 import { TokenBlacklistService } from './services/token-blacklist.service';
 import { AuditLogService } from './services/audit-log.service';
 import { PasswordPolicyService } from './services/password-policy.service';
+import { ConsentService } from './services/consent.service';
 
 @Global()
 @Module({
@@ -37,6 +39,7 @@ import { PasswordPolicyService } from './services/password-policy.service';
       TokenBlacklist,
       AuditLog,
       PasswordResetToken,
+      UserConsent,
     ]),
     CacheModule.register(),
   ],
@@ -46,6 +49,7 @@ import { PasswordPolicyService } from './services/password-policy.service';
     TokenBlacklistService,
     AuditLogService,
     PasswordPolicyService,
+    ConsentService,
   ],
   exports: [
     // Services
@@ -54,6 +58,7 @@ import { PasswordPolicyService } from './services/password-policy.service';
     TokenBlacklistService,
     AuditLogService,
     PasswordPolicyService,
+    ConsentService,
     // TypeORM for entities
     TypeOrmModule,
   ],

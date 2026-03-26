@@ -72,8 +72,11 @@ export const OkinawaDarkTheme = {
   dark: true,
 } as const;
 
-// Theme type
-export type OkinawaTheme = typeof OkinawaLightTheme;
+// Theme type — union of light and dark so either can be assigned
+export type OkinawaTheme = typeof OkinawaLightTheme | typeof OkinawaDarkTheme;
+
+// Re-export theme hooks for convenience
+export { useColors, useTheme, useOkinawaTheme } from '../contexts/ThemeContext';
 
 // Default export
 export default OkinawaLightTheme;

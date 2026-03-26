@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useColors, useOkinawaTheme } from '@okinawa/shared/contexts/ThemeContext';
-import { typography } from '@okinawa/shared/theme/typography';
+import { fontSize, fontWeight } from '@okinawa/shared/theme/typography';
 import { spacing } from '@okinawa/shared/theme/spacing';
 
 interface Ingredient {
@@ -153,8 +153,8 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
       paddingVertical: spacing.md,
     },
     title: {
-      fontSize: typography.sizes.lg,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.lg,
+      fontWeight: fontWeight.bold as any,
       color: colors.foreground,
     },
     stepsContainer: {
@@ -190,23 +190,23 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
       fontWeight: 'bold',
     },
     stepLabel: {
-      fontSize: typography.sizes.xs,
-      fontWeight: typography.weights.medium as any,
+      fontSize: fontSize.xs,
+      fontWeight: fontWeight.medium as any,
     },
     content: {
       flex: 1,
       paddingHorizontal: spacing.lg,
     },
     sectionTitle: {
-      fontSize: typography.sizes.md,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.md,
+      fontWeight: fontWeight.semibold as any,
       marginBottom: spacing.md,
       color: colors.foreground,
     },
     hint: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.regular as any,
-      color: colors.mutedForeground,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.regular as any,
+      color: colors.foregroundMuted,
     },
     ingredientsGrid: {
       flexDirection: 'row',
@@ -232,19 +232,19 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
       marginBottom: spacing.sm,
     },
     ingredientName: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.semibold as any,
       textAlign: 'center',
       marginBottom: 2,
       color: colors.foreground,
     },
     ingredientCalories: {
-      fontSize: typography.sizes.xs,
-      color: colors.mutedForeground,
+      fontSize: fontSize.xs,
+      color: colors.foregroundMuted,
     },
     ingredientPrice: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.bold as any,
       marginTop: spacing.xs,
       color: colors.primary,
     },
@@ -277,16 +277,16 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
       marginBottom: spacing.md,
     },
     summaryLabel: {
-      fontSize: typography.sizes.sm,
-      color: colors.mutedForeground,
+      fontSize: fontSize.sm,
+      color: colors.foregroundMuted,
     },
     summaryCalories: {
-      fontSize: typography.sizes.xs,
-      color: colors.mutedForeground,
+      fontSize: fontSize.xs,
+      color: colors.foregroundMuted,
     },
     summaryPrice: {
-      fontSize: typography.sizes.xl,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.xl,
+      fontWeight: fontWeight.bold as any,
       color: colors.foreground,
     },
     footerButtons: {
@@ -302,8 +302,8 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
       borderColor: colors.border,
     },
     backButtonText: {
-      fontSize: typography.sizes.md,
-      fontWeight: typography.weights.medium as any,
+      fontSize: fontSize.md,
+      fontWeight: fontWeight.medium as any,
       color: colors.foreground,
     },
     nextButton: {
@@ -317,12 +317,12 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
       backgroundColor: colors.primary,
     },
     nextButtonDisabled: {
-      backgroundColor: colors.muted,
+      backgroundColor: colors.backgroundTertiary,
     },
     nextButtonText: {
       color: colors.primaryForeground,
-      fontSize: typography.sizes.md,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.md,
+      fontWeight: fontWeight.semibold as any,
     },
   }), [colors]);
 
@@ -357,7 +357,7 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
             <View
               style={[
                 styles.stepDot,
-                { backgroundColor: index <= currentStep ? colors.primary : colors.muted },
+                { backgroundColor: index <= currentStep ? colors.primary : colors.backgroundTertiary },
               ]}
             >
               {selectedIngredients[step].length > 0 && (
@@ -371,7 +371,7 @@ export const DishBuilderScreen: React.FC<DishBuilderScreenProps> = ({
             <Text
               style={[
                 styles.stepLabel,
-                { color: index === currentStep ? colors.primary : colors.mutedForeground },
+                { color: index === currentStep ? colors.primary : colors.foregroundMuted },
               ]}
             >
               {categoryLabels[step]}

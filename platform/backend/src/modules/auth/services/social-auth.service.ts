@@ -13,7 +13,8 @@ import { Repository, DeepPartial } from 'typeorm';
 import * as crypto from 'crypto';
 import { Profile } from '@/modules/users/entities/profile.entity';
 import { SocialProvider } from '../dto/social-auth.dto';
-import { AuditLogService, AuditAction } from '@/modules/identity';
+import { AuditLogService, AuditAction, ConsentService, ConsentType } from '@/modules/identity';
+import { LegalService } from '@/modules/legal/legal.service';
 
 interface AppleTokenPayload {
   iss: string;
@@ -61,6 +62,8 @@ export class SocialAuthService {
     private configService: ConfigService,
     private jwtService: JwtService,
     private auditLogService: AuditLogService,
+    private consentService: ConsentService,
+    private legalService: LegalService,
   ) {}
 
   /**
@@ -206,6 +209,21 @@ export class SocialAuthService {
     } as DeepPartial<Profile>);
 
     await this.profileRepository.save(user as Profile);
+
+    // Record LGPD consents for social auth registrations
+    const versions = this.legalService.getCurrentVersions();
+    await this.consentService.recordConsent({
+      userId: user.id,
+      consentType: ConsentType.TERMS_OF_SERVICE,
+      version: versions.termsVersion,
+      ipAddress: ipAddress || '0.0.0.0',
+    });
+    await this.consentService.recordConsent({
+      userId: user.id,
+      consentType: ConsentType.PRIVACY_POLICY,
+      version: versions.privacyVersion,
+      ipAddress: ipAddress || '0.0.0.0',
+    });
 
     await this.auditLogService.log({
       userId: user.id,

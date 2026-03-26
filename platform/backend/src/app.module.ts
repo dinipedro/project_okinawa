@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
 import { I18nModule } from 'nestjs-i18n';
 import { typeOrmConfig } from './config/typeorm.config';
 import { redisConfig } from './config/redis.config';
@@ -50,6 +51,9 @@ import { ReceiptsModule } from './modules/receipts/receipts.module';
 import { MenuCustomizationModule } from './modules/menu-customization/menu-customization.module';
 import { GeofencingModule } from './modules/geofencing/geofencing.module';
 import { LegalModule } from './modules/legal/legal.module';
+import { FraudDetectionModule } from './modules/fraud-detection/fraud-detection.module';
+import { IncidentResponseModule } from './modules/incident-response/incident-response.module';
+import { MetricsModule } from './modules/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -76,6 +80,9 @@ import { LegalModule } from './modules/legal/legal.module';
     ThrottlerModule.forRootAsync({
       useFactory: throttlerConfig,
     }),
+
+    // Scheduled tasks (LGPD data retention, webhook delivery, etc.)
+    ScheduleModule.forRoot(),
 
     // Internationalization (i18n)
     I18nModule.forRootAsync({
@@ -147,6 +154,15 @@ import { LegalModule } from './modules/legal/legal.module';
 
     // Legal (Privacy Policy & Terms of Service)
     LegalModule,
+
+    // Fraud Detection & Security
+    FraudDetectionModule,
+
+    // Incident Response (LGPD Sprint 2)
+    IncidentResponseModule,
+
+    // Prometheus Metrics
+    MetricsModule,
   ],
 })
 export class AppModule {}

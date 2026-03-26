@@ -1,13 +1,94 @@
 /**
  * Okinawa Firebase Analytics Configuration
- * 
+ *
  * Centralized analytics configuration and event tracking utilities.
  * Uses Firebase Analytics for comprehensive user behavior tracking.
- * 
+ *
+ * LGPD Compliance: Analytics is only initialized when the user has
+ * explicitly granted consent for the "statistics" category.
+ *
  * @module shared/config/analytics
  */
 
 import { ENV, isDevelopment } from './env';
+
+// ============================================================
+// ANALYTICS CONSENT (LGPD Compliance)
+// ============================================================
+
+/**
+ * Keys used for storing analytics consent in AsyncStorage / SecureStore.
+ * These mirror the cookie consent categories used on the web site.
+ */
+const ANALYTICS_CONSENT_KEY = 'analytics_consent_status';
+
+export type AnalyticsConsentStatus = 'granted' | 'denied' | 'pending';
+
+/**
+ * In-memory consent cache to avoid repeated async reads.
+ */
+let _consentStatus: AnalyticsConsentStatus = 'pending';
+
+/**
+ * Load consent status from persistent storage.
+ * Should be called early in the app lifecycle.
+ */
+async function loadConsentStatus(): Promise<AnalyticsConsentStatus> {
+  try {
+    // Use a dynamic import guard so this module can also be used in tests
+    // where AsyncStorage may not be available.
+    const AsyncStorage = await import('@react-native-async-storage/async-storage')
+      .then((m) => m.default)
+      .catch(() => null);
+
+    if (!AsyncStorage) return 'pending';
+
+    const stored = await AsyncStorage.getItem(ANALYTICS_CONSENT_KEY);
+    if (stored === 'granted' || stored === 'denied') {
+      _consentStatus = stored;
+      return stored;
+    }
+  } catch {
+    // Storage unavailable — treat as pending
+  }
+  return 'pending';
+}
+
+/**
+ * Persist the user's analytics consent decision.
+ * Call this from the consent flow / settings screen.
+ */
+export async function setAnalyticsConsent(status: 'granted' | 'denied'): Promise<void> {
+  _consentStatus = status;
+  try {
+    const AsyncStorage = await import('@react-native-async-storage/async-storage')
+      .then((m) => m.default)
+      .catch(() => null);
+
+    if (AsyncStorage) {
+      await AsyncStorage.setItem(ANALYTICS_CONSENT_KEY, status);
+    }
+  } catch {
+    // Best-effort persistence
+  }
+
+  // If consent just granted and analytics not yet initialized, initialize now
+  if (status === 'granted') {
+    await analytics.initialize();
+  }
+
+  // If consent revoked, disable analytics collection
+  if (status === 'denied') {
+    analytics.disable();
+  }
+}
+
+/**
+ * Get the current consent status (synchronous, reads in-memory cache).
+ */
+export function getAnalyticsConsentStatus(): AnalyticsConsentStatus {
+  return _consentStatus;
+}
 
 // ============================================================
 // ANALYTICS CONFIGURATION
@@ -168,30 +249,72 @@ export const USER_PROPERTIES = {
  */
 class AnalyticsService {
   private initialized = false;
+  private disabled = false;
   private userId: string | null = null;
   private userProperties: Record<string, any> = {};
-  
+
   /**
-   * Initialize analytics
-   * Call this in your app's entry point
+   * Initialize analytics.
+   * Call this in your app's entry point.
+   *
+   * LGPD: Will only proceed if the user has granted analytics consent.
+   * If consent is still 'pending' or 'denied', initialization is skipped.
+   * When the user later grants consent via setAnalyticsConsent('granted'),
+   * this method is called again automatically.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    
+
     if (!ANALYTICS_CONFIG.enabled) {
       console.log('[Analytics] Disabled in this environment');
       return;
     }
-    
+
+    // --- LGPD consent gate ---
+    // Load consent from storage on first call
+    if (_consentStatus === 'pending') {
+      await loadConsentStatus();
+    }
+
+    if (_consentStatus !== 'granted') {
+      console.log(
+        `[Analytics] Consent not granted (status: ${_consentStatus}). ` +
+        'Skipping Firebase Analytics initialization. ' +
+        'Analytics will start when the user grants consent.',
+      );
+      return;
+    }
+    // --- end consent gate ---
+
     try {
-      // In a real implementation, this would initialize Firebase
-      // await analytics().setAnalyticsCollectionEnabled(true);
-      
+      try {
+        const firebaseAnalytics = require('@react-native-firebase/analytics').default;
+        await firebaseAnalytics().setAnalyticsCollectionEnabled(true);
+      } catch {
+        // Firebase Analytics not available — continue with local-only analytics
+      }
+
       this.initialized = true;
-      console.log('[Analytics] Initialized successfully');
+      this.disabled = false;
+      console.log('[Analytics] Initialized successfully (consent: granted)');
     } catch (error) {
       console.error('[Analytics] Initialization failed:', error);
     }
+  }
+
+  /**
+   * Disable analytics collection (called when consent is revoked).
+   */
+  disable(): void {
+    this.disabled = true;
+    this.initialized = false;
+    try {
+      const firebaseAnalytics = require('@react-native-firebase/analytics').default;
+      firebaseAnalytics().setAnalyticsCollectionEnabled(false);
+    } catch {
+      // Firebase not available
+    }
+    console.log('[Analytics] Disabled — user revoked analytics consent');
   }
   
   /**
@@ -353,18 +476,28 @@ class AnalyticsService {
   }
   
   /**
-   * Check if analytics is enabled and initialized
+   * Check if analytics is enabled, initialized, and user has granted consent.
    */
   private checkEnabled(): boolean {
     if (!ANALYTICS_CONFIG.enabled) {
       return false;
     }
-    
-    if (!this.initialized) {
-      console.warn('[Analytics] Not initialized. Call initialize() first.');
+
+    if (this.disabled) {
       return false;
     }
-    
+
+    if (_consentStatus !== 'granted') {
+      return false;
+    }
+
+    if (!this.initialized) {
+      if (isDevelopment) {
+        console.warn('[Analytics] Not initialized. Call initialize() first.');
+      }
+      return false;
+    }
+
     return true;
   }
   

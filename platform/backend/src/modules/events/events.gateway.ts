@@ -8,7 +8,7 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { Logger, UnauthorizedException, BeforeApplicationShutdown } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 export interface AuthenticatedSocket extends Socket {
@@ -51,7 +51,7 @@ export interface NotificationData {
     credentials: true,
   },
 })
-export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect, BeforeApplicationShutdown {
   private readonly logger = new Logger(EventsGateway.name);
 
   @WebSocketServer()
@@ -400,5 +400,15 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   getOnlineRestaurantStaff(restaurantId: string): number {
     const restaurantSocketSet = this.restaurantSockets.get(restaurantId);
     return restaurantSocketSet ? restaurantSocketSet.size : 0;
+  }
+
+  async beforeApplicationShutdown() {
+    this.logger.log('Shutting down — disconnecting all clients...');
+    if (this.server) {
+      const sockets = await this.server.fetchSockets();
+      for (const socket of sockets) {
+        socket.disconnect(true);
+      }
+    }
   }
 }

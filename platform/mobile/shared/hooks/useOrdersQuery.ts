@@ -17,9 +17,10 @@ export function useOrder(orderId: string) {
     queryKey: queryKeys.orders.detail(orderId),
     queryFn: () => ApiService.getOrder(orderId),
     enabled: !!orderId,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Auto-refetch active orders every 30 seconds
       const activeStatuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivering'];
+      const data = query.state?.data as any;
       return data?.status && activeStatuses.includes(data.status) ? 30000 : false;
     },
   });

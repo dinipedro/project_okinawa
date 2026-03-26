@@ -356,6 +356,7 @@ export const animation = {
 
 export const lightTheme = {
   colors: {
+    ...colors,
     primary: colors.primary[500],
     primaryLight: colors.primary[100],
     primaryDark: colors.primary[700],
@@ -370,7 +371,6 @@ export const lightTheme = {
     textSecondary: colors.text.secondary,
     textDisabled: colors.text.disabled,
     divider: colors.divider,
-    ...colors,
   },
   spacing,
   typography,

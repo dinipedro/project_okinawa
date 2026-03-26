@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Chip, IconButton, Button } from 'react-native-paper';
 import type { Reservation, ReservationStatus } from '../../types';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { t } from '@/shared/i18n';
 import { formatDateTime } from '@okinawa/shared/utils/formatters';
 import { getLanguage } from '@/shared/i18n';
@@ -67,10 +67,10 @@ export default function ReservationCard({
       marginTop: 4,
     },
     timeText: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     countdown: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 4,
       marginLeft: 24,
     },
@@ -114,7 +114,7 @@ export default function ReservationCard({
     },
     specialRequestsText: {
       flex: 1,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       fontStyle: 'italic',
     },
     actions: {
@@ -170,9 +170,9 @@ export default function ReservationCard({
     <Card.Content>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text variant="titleLarge" style={styles.customerName}>{reservation.customer_name}</Text>
+          <Text variant="titleLarge" style={styles.customerName}>{reservation.customer?.full_name || 'Guest'}</Text>
           <View style={styles.timeInfo}>
-            <IconButton icon="clock-outline" size={16} style={styles.icon} iconColor={colors.textMuted} />
+            <IconButton icon="clock-outline" size={16} style={styles.icon} iconColor={colors.foregroundMuted} />
             <Text variant="bodySmall" style={styles.timeText}>
               {formatDateTime(reservation.reservation_time, getLanguage())}
             </Text>
@@ -193,19 +193,19 @@ export default function ReservationCard({
 
       <View style={styles.details}>
         <View style={styles.detailRow}>
-          <IconButton icon="account-group" size={20} style={styles.icon} iconColor={colors.textMuted} />
+          <IconButton icon="account-group" size={20} style={styles.icon} iconColor={colors.foregroundMuted} />
           <Text variant="bodyMedium" style={styles.detailText}>{reservation.party_size} pessoas</Text>
         </View>
         {reservation.table_id && (
           <View style={styles.detailRow}>
-            <IconButton icon="table-furniture" size={20} style={styles.icon} iconColor={colors.textMuted} />
+            <IconButton icon="table-furniture" size={20} style={styles.icon} iconColor={colors.foregroundMuted} />
             <Text variant="bodyMedium" style={styles.detailText}>Mesa {reservation.table_id.slice(0, 8)}</Text>
           </View>
         )}
-        {reservation.customer_phone && (
+        {reservation.customer?.phone && (
           <View style={styles.detailRow}>
-            <IconButton icon="phone" size={20} style={styles.icon} iconColor={colors.textMuted} />
-            <Text variant="bodyMedium" style={styles.detailText}>{reservation.customer_phone}</Text>
+            <IconButton icon="phone" size={20} style={styles.icon} iconColor={colors.foregroundMuted} />
+            <Text variant="bodyMedium" style={styles.detailText}>{reservation.customer?.phone}</Text>
           </View>
         )}
       </View>

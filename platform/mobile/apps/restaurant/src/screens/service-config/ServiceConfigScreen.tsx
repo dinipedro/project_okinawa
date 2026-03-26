@@ -24,9 +24,9 @@ import {
   RadioButton,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ApiService from '../../../../../../shared/services/api';
+import ApiService from '@/shared/services/api';
 import { useI18n } from '@/shared/hooks/useI18n';
-import { useColors } from '@/shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 
 interface ServiceConfig {
@@ -167,7 +167,7 @@ export default function ServiceConfigScreen() {
       marginBottom: 15,
     },
     chip: {
-      backgroundColor: colors.primaryBackground,
+      backgroundColor: colors.backgroundSecondary,
     },
     divider: {
       marginVertical: 15,
@@ -200,7 +200,7 @@ export default function ServiceConfigScreen() {
 
   const loadConfig = async () => {
     try {
-      const response = await ApiService.getServiceConfig(restaurantId);
+      const response = await ApiService.getServiceConfig(restaurantId!);
       if (response.service_config) {
         setConfig(response.service_config);
       }
@@ -215,7 +215,7 @@ export default function ServiceConfigScreen() {
   const saveConfig = async () => {
     try {
       setSaving(true);
-      await ApiService.updateServiceConfig(restaurantId, config);
+      await ApiService.updateServiceConfig(restaurantId!, config as any);
       Alert.alert(t('common.success'), t('serviceConfig.configSaved'));
     } catch (error) {
       console.error('Error saving config:', error);

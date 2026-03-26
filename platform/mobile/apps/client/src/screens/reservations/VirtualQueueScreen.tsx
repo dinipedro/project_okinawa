@@ -114,7 +114,7 @@ export default function VirtualQueueScreen() {
     },
     loadingText: {
       marginTop: 16,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     restaurantCard: {
       marginBottom: 16,
@@ -129,7 +129,7 @@ export default function VirtualQueueScreen() {
       flex: 1,
     },
     address: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
       marginTop: 2,
     },
     waitInfo: {
@@ -142,7 +142,7 @@ export default function VirtualQueueScreen() {
       marginLeft: -8,
     },
     waitText: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     waitTime: {
       color: colors.primary,
@@ -171,7 +171,7 @@ export default function VirtualQueueScreen() {
       borderTopRightRadius: 12,
     },
     calledText: {
-      color: colors.successForeground,
+      color: colors.foregroundInverse,
       fontWeight: 'bold',
     },
     positionContainer: {
@@ -216,7 +216,7 @@ export default function VirtualQueueScreen() {
       width: '100%',
     },
     leaveButton: {
-      borderColor: colors.destructive,
+      borderColor: colors.error,
       width: '100%',
     },
     joinCard: {
@@ -233,7 +233,7 @@ export default function VirtualQueueScreen() {
     },
     joinDescription: {
       textAlign: 'center',
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
       marginTop: 8,
       marginBottom: 16,
       paddingHorizontal: 24,
@@ -261,7 +261,7 @@ export default function VirtualQueueScreen() {
       flex: 1,
     },
     historyDate: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
       marginTop: 2,
     },
     statusChip: {
@@ -338,15 +338,15 @@ export default function VirtualQueueScreen() {
       setLoading(true);
       
       if (restaurantId) {
-        const [restaurantData, queueData] = await Promise.all([
+        const [restaurantData, queueRes] = await Promise.all([
           ApiService.getRestaurant(restaurantId),
-          ApiService.getQueueEntries(restaurantId),
+          ApiService.get(`/restaurant-waitlist/${restaurantId}/queue`).then(r => r.data),
         ]);
         setRestaurant(restaurantData);
-        setQueueEntries(queueData);
+        setQueueEntries(queueRes as QueueEntry[]);
       } else {
-        const userQueue = await ApiService.getUserQueueEntries();
-        setQueueEntries(userQueue);
+        const userQueueRes = await ApiService.get('/restaurant-waitlist/my-entries').then(r => r.data);
+        setQueueEntries(userQueueRes as QueueEntry[]);
       }
     } catch (error) {
       logger.error('Failed to load queue data:', error);
@@ -366,10 +366,10 @@ export default function VirtualQueueScreen() {
 
     try {
       setJoining(true);
-      await ApiService.joinQueue({
+      await ApiService.post('/restaurant-waitlist/join', {
         restaurant_id: restaurantId,
         party_size: partySize,
-        table_preference: tablePreference as any,
+        table_preference: tablePreference,
         special_requests: specialRequests || undefined,
       });
       setShowJoinModal(false);
@@ -393,7 +393,7 @@ export default function VirtualQueueScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await ApiService.leaveQueue(entryId);
+              await ApiService.patch(`/restaurant-waitlist/${entryId}/cancel`);
               await loadData();
             } catch (error) {
               Alert.alert(t('common.error'), t('queue.leaveError'));
@@ -406,7 +406,7 @@ export default function VirtualQueueScreen() {
 
   const handleConfirmArrival = async (entryId: string) => {
     try {
-      await ApiService.confirmQueueArrival(entryId);
+      await ApiService.patch(`/restaurant-waitlist/${entryId}/confirm-arrival`);
       await loadData();
       Alert.alert(t('queue.confirmed'), t('queue.confirmedMessage'));
     } catch (error) {
@@ -423,7 +423,7 @@ export default function VirtualQueueScreen() {
       case 'seated':
         return { backgroundColor: colors.info, label: t('queue.seated') };
       case 'cancelled':
-        return { backgroundColor: colors.destructive, label: t('queue.cancelled') };
+        return { backgroundColor: colors.error, label: t('queue.cancelled') };
       default:
         return { backgroundColor: colors.muted, label: status };
     }
@@ -484,7 +484,7 @@ export default function VirtualQueueScreen() {
             <Card.Content>
               {activeEntry.status === 'called' && (
                 <View style={styles.calledBanner}>
-                  <IconButton icon="bell-ring" size={20} iconColor={colors.successForeground} />
+                  <IconButton icon="bell-ring" size={20} iconColor={colors.foregroundInverse} />
                   <Text style={styles.calledText}>{t('queue.yourTurn')}</Text>
                 </View>
               )}
@@ -528,7 +528,7 @@ export default function VirtualQueueScreen() {
                     mode="outlined"
                     onPress={() => handleLeaveQueue(activeEntry.id)}
                     style={styles.leaveButton}
-                    textColor={colors.destructive}
+                    textColor={colors.error}
                     icon="exit-run"
                   >
                     {t('queue.leaveQueue')}

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Chip, IconButton, Button } from 'react-native-paper';
 import type { Order, OrderStatus } from '../../types';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { t } from '@/shared/i18n';
 import { formatCurrency, formatDateTime } from '@okinawa/shared/utils/formatters';
 import { getLanguage } from '@/shared/i18n';
@@ -57,7 +57,7 @@ export default function OrderCard({
       marginRight: 8,
     },
     orderTime: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 4,
     },
     statusChip: {
@@ -96,7 +96,7 @@ export default function OrderCard({
     },
     moreItems: {
       marginTop: 4,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       fontStyle: 'italic',
     },
     orderFooter: {
@@ -121,7 +121,7 @@ export default function OrderCard({
     },
     separator: {
       marginHorizontal: 8,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     actionButton: {
       marginLeft: 8,
@@ -139,7 +139,7 @@ export default function OrderCard({
     },
     address: {
       flex: 1,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
   }), [colors]);
 
@@ -228,7 +228,7 @@ export default function OrderCard({
             }
             size={20}
             style={styles.icon}
-            iconColor={colors.textMuted}
+            iconColor={colors.foregroundMuted}
           />
           <Text variant="bodySmall" style={styles.orderInfoText}>
             {t(`orders.orderType.${order.order_type === 'delivery' ? 'delivery' : order.order_type === 'pickup' ? 'pickup' : 'dine_in'}`)}
@@ -257,7 +257,7 @@ export default function OrderCard({
 
       {order.delivery_address && order.order_type === 'delivery' && !compact && (
         <View style={styles.deliveryInfo}>
-          <IconButton icon="map-marker" size={16} style={styles.icon} iconColor={colors.textMuted} />
+          <IconButton icon="map-marker" size={16} style={styles.icon} iconColor={colors.foregroundMuted} />
           <Text variant="bodySmall" numberOfLines={2} style={styles.address}>
             {order.delivery_address.street}, {order.delivery_address.number} - {order.delivery_address.neighborhood}
           </Text>

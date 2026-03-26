@@ -84,12 +84,15 @@ export default function CasualDiningConfigScreen({ route }: CasualDiningConfigSc
   const [isSaving, setIsSaving] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { isLoading } = useQuery<CasualDiningConfig>({
+  const { isLoading, data: queryData } = useQuery<CasualDiningConfig>({
     queryKey: ['casualDiningConfig', restaurantId],
     queryFn: async () => { const res = await ApiService.get(`/service-config/${restaurantId}`); return res.data; },
     enabled: !!restaurantId,
-    onSuccess: (data: CasualDiningConfig) => { setConfig({ ...DEFAULTS, ...data }); },
   });
+
+  useEffect(() => {
+    if (queryData) { setConfig({ ...DEFAULTS, ...queryData }); }
+  }, [queryData]);
 
   const saveMutation = useMutation({
     mutationFn: async (patch: Partial<CasualDiningConfig>) => ApiService.patch(`/service-config/${restaurantId}`, patch),

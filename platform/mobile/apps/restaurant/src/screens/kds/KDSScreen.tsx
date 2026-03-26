@@ -32,15 +32,15 @@ export default function KDSScreen() {
 
     socketService.connect();
 
-    socketService.on('order:new', (order: Order) => {
-      setActiveOrders(prev => [order, ...prev]);
-    });
+    socketService.on('order:new', ((order: unknown) => {
+      setActiveOrders(prev => [order as Order, ...prev]);
+    }) as (data: unknown) => void);
 
-    socketService.on('order:updated', (order: Order) => {
+    socketService.on('order:updated', ((order: unknown) => {
       setActiveOrders(prev =>
-        prev.map(o => (o.id === order.id ? order : o))
+        prev.map(o => (o.id === (order as Order).id ? order as Order : o))
       );
-    });
+    }) as (data: unknown) => void);
 
     return () => {
       socketService.off('order:new');

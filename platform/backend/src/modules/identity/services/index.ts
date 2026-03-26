@@ -9,3 +9,4 @@ export * from './mfa.service';
 export * from './token-blacklist.service';
 export * from './audit-log.service';
 export * from './password-policy.service';
+export * from './consent.service';

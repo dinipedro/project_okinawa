@@ -250,7 +250,7 @@ export default function ClubQueueManagementScreen({ route }: ClubQueueManagement
   useEffect(() => {
     if (!restaurantId) return;
 
-    const apiUrl = ApiService.getBaseUrl?.() || '';
+    const apiUrl = __DEV__ ? 'http://localhost:3000' : 'https://api.okinawa.com';
     const socket = io(`${apiUrl}/queue`, {
       transports: ['websocket'],
     });

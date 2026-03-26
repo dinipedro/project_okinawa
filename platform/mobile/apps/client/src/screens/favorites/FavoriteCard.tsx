@@ -64,7 +64,7 @@ const FavoriteCard = memo<FavoriteCardProps>(({
           />
         </View>
 
-        <Chip icon="silverware-fork-knife" style={[styles.chip, { backgroundColor: colors.muted }]}>
+        <Chip icon="silverware-fork-knife" style={[styles.chip, { backgroundColor: colors.backgroundTertiary }]}>
           {favorite.restaurant.cuisine_type}
         </Chip>
 
@@ -105,6 +105,56 @@ const FavoriteCard = memo<FavoriteCardProps>(({
 
 FavoriteCard.displayName = 'FavoriteCard';
 
-// Note: Styles are inline using semantic tokens via useColors()
+const styles = StyleSheet.create({
+  card: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+    borderRadius: 12,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  restaurantInfo: {
+    flex: 1,
+  },
+  restaurantName: {
+    fontWeight: '700',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    gap: 4,
+  },
+  rating: {
+    marginLeft: 2,
+  },
+  chip: {
+    alignSelf: 'flex-start',
+    marginTop: 8,
+  },
+  addressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 4,
+  },
+  address: {
+    flex: 1,
+  },
+  notesContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 8,
+    borderRadius: 8,
+    marginTop: 8,
+    gap: 8,
+  },
+  notes: {
+    flex: 1,
+  },
+});
 
 export default FavoriteCard;

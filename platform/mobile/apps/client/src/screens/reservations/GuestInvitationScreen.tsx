@@ -5,7 +5,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import ApiService from '@/shared/services/api';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useI18n } from '@/shared/hooks/useI18n';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 
 interface Guest {
   id: string;
@@ -78,7 +78,7 @@ export default function GuestInvitationScreen() {
     },
     loadingText: {
       marginTop: 15,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     summaryCard: {
       marginBottom: 15,
@@ -141,7 +141,7 @@ export default function GuestInvitationScreen() {
       color: colors.foreground,
     },
     guestContact: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 2,
     },
     hostChip: {
@@ -158,7 +158,7 @@ export default function GuestInvitationScreen() {
     },
     emptyText: {
       textAlign: 'center',
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       paddingVertical: 20,
     },
     searchInput: {
@@ -180,7 +180,7 @@ export default function GuestInvitationScreen() {
       flex: 1,
     },
     contactDetail: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     appUserChip: {
       backgroundColor: colors.primaryLight,
@@ -241,10 +241,11 @@ export default function GuestInvitationScreen() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [guestsData, contactsData] = await Promise.all([
+      const [guestsData, contactsRes] = await Promise.all([
         ApiService.getReservationGuests(reservationId),
-        ApiService.getContacts(),
+        ApiService.get('/users/contacts').then(r => r.data).catch(() => []),
       ]);
+      const contactsData = contactsRes as Contact[];
       setGuests(guestsData);
       setContacts(contactsData);
     } catch (error) {
@@ -288,7 +289,7 @@ export default function GuestInvitationScreen() {
 
     setInviting(true);
     try {
-      await ApiService.inviteGuest(reservationId, {
+      await ApiService.inviteGuestToReservation(reservationId, {
         guest_user_id: contact.isAppUser ? contact.id : undefined,
         guest_name: contact.name,
         guest_phone: contact.phone,
@@ -330,7 +331,7 @@ export default function GuestInvitationScreen() {
 
     setInviting(true);
     try {
-      await ApiService.inviteGuest(reservationId, {
+      await ApiService.inviteGuestToReservation(reservationId, {
         guest_name: manualName,
         guest_phone: manualPhone || undefined,
         guest_email: manualEmail || undefined,
@@ -357,7 +358,8 @@ export default function GuestInvitationScreen() {
 
   const handleShareInviteLink = async () => {
     try {
-      const inviteLink = await ApiService.generateInviteLink(reservationId);
+      const inviteLinkRes = await ApiService.post(`/reservation-guests/reservations/${reservationId}/invite-link`);
+      const inviteLink = inviteLinkRes.data?.url || inviteLinkRes.data;
       await Share.share({
         message: `Você foi convidado para uma reserva no Okinawa! Clique para aceitar: ${inviteLink}`,
         title: 'Convite de Reserva',
@@ -382,7 +384,7 @@ export default function GuestInvitationScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await ApiService.cancelGuestInvite(reservationId, guestId);
+              await ApiService.removeReservationGuest(reservationId, guestId);
               Alert.alert(t('common.success'), 'Convite cancelado');
               loadData();
             } catch (error: any) {
@@ -396,7 +398,7 @@ export default function GuestInvitationScreen() {
 
   const requestPartyIncrease = async () => {
     try {
-      await ApiService.requestPartyIncrease(reservationId, partySize + 2);
+      await ApiService.patch(`/reservations/${reservationId}`, { party_size: partySize + 2 });
       Alert.alert(
         'Solicitação enviada',
         'O restaurante receberá sua solicitação de aumento do grupo.'
@@ -480,7 +482,7 @@ export default function GuestInvitationScreen() {
                   icon="close"
                   size={20}
                   onPress={() => handleCancelInvite(guest.id)}
-                  iconColor={colors.textMuted}
+                  iconColor={colors.foregroundMuted}
                 />
               )}
             </View>
@@ -508,7 +510,7 @@ export default function GuestInvitationScreen() {
             left={<TextInput.Icon icon="magnify" />}
             style={styles.searchInput}
             textColor={colors.foreground}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.foregroundMuted}
           />
 
           {/* Contact List */}
@@ -584,7 +586,7 @@ export default function GuestInvitationScreen() {
                   mode="outlined"
                   onPress={() => setShowAddManual(false)}
                   style={styles.cancelButton}
-                  textColor={colors.textMuted}
+                  textColor={colors.foregroundMuted}
                 >
                   Cancelar
                 </Button>

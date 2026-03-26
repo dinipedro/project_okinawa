@@ -305,7 +305,7 @@ export default function TabPaymentScreen() {
           fontWeight: '600',
         },
         itemQty: {
-          color: colors.mutedForeground,
+          color: colors.foregroundMuted,
           marginRight: 8,
           minWidth: 30,
         },
@@ -319,7 +319,7 @@ export default function TabPaymentScreen() {
           paddingVertical: 4,
         },
         totalLabel: {
-          color: colors.mutedForeground,
+          color: colors.foregroundMuted,
         },
         totalValue: {
           color: colors.foreground,
@@ -343,7 +343,7 @@ export default function TabPaymentScreen() {
         },
         methodCardSelected: {
           borderColor: colors.primary,
-          backgroundColor: colors.primaryBackground || colors.background,
+          backgroundColor: colors.background,
         },
         methodCardUnselected: {
           borderColor: colors.border,
@@ -535,7 +535,7 @@ export default function TabPaymentScreen() {
               <Icon
                 name={method.icon}
                 size={24}
-                color={selectedMethod === method.type ? colors.primary : colors.mutedForeground}
+                color={selectedMethod === method.type ? colors.primary : colors.foregroundMuted}
                 style={styles.methodIcon}
               />
               <Text
@@ -575,7 +575,7 @@ export default function TabPaymentScreen() {
       {/* Bottom Pay Bar */}
       <View style={styles.bottomBar}>
         <View style={styles.bottomTotalRow}>
-          <Text variant="bodyLarge" style={{ color: colors.mutedForeground }}>
+          <Text variant="bodyLarge" style={{ color: colors.foregroundMuted }}>
             {t('tab.total')}
           </Text>
           <Text variant="titleLarge" style={{ color: colors.primary, fontWeight: 'bold' }}>

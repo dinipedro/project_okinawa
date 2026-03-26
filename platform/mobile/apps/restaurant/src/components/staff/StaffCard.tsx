@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, Chip, IconButton, Avatar } from 'react-native-paper';
 import type { User } from '../../types';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 
 interface StaffCardProps {
   staff: User & {
@@ -76,7 +76,7 @@ export default function StaffCard({ staff, onPress, onEdit, onDelete, showAction
       color: colors.foreground,
     },
     email: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 2,
     },
     phoneRow: {
@@ -90,7 +90,7 @@ export default function StaffCard({ staff, onPress, onEdit, onDelete, showAction
       marginRight: 2,
     },
     phone: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     headerActions: {
       flexDirection: 'row',
@@ -123,14 +123,14 @@ export default function StaffCard({ staff, onPress, onEdit, onDelete, showAction
       backgroundColor: colors.backgroundSecondary,
     },
     shiftChipText: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       fontSize: 12,
     },
   }), [colors]);
 
   const getRoleColor = (role?: string) => {
-    if (!role) return colors.textMuted;
-    return ROLE_COLORS[role.toLowerCase()] || colors.textMuted;
+    if (!role) return colors.foregroundMuted;
+    return ROLE_COLORS[role.toLowerCase()] || colors.foregroundMuted;
   };
 
   const getRoleLabel = (role?: string) => {
@@ -163,7 +163,7 @@ export default function StaffCard({ staff, onPress, onEdit, onDelete, showAction
             </Text>
             {staff.phone && (
               <View style={styles.phoneRow}>
-                <IconButton icon="phone" size={14} style={styles.phoneIcon} iconColor={colors.textMuted} />
+                <IconButton icon="phone" size={14} style={styles.phoneIcon} iconColor={colors.foregroundMuted} />
                 <Text variant="bodySmall" style={styles.phone}>
                   {staff.phone}
                 </Text>

@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, HelperText, IconButton, Switch } from 'react-native-paper';
 import { authService } from '@/shared/services/auth';
 import { useBiometricAuth } from '@/shared/hooks/useBiometricAuth';
-import { secureStorage } from '@/shared/services/storage';
+import { secureStorage } from '@/shared/services/secure-storage';
 import { showErrorToast, showSuccessToast } from '@/shared/utils/error-handler';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useAnalyticsContext } from '@/shared/contexts/AnalyticsContext';
@@ -179,6 +179,7 @@ export default function LoginScreen({ navigation }: any) {
         style={styles.input}
         error={!!fieldErrors.email}
         accessibilityLabel="Email address"
+        accessibilityHint="Enter your email to log in"
       />
       {fieldErrors.email ? <HelperText type="error">{fieldErrors.email}</HelperText> : null}
 
@@ -195,6 +196,7 @@ export default function LoginScreen({ navigation }: any) {
         style={styles.input}
         error={!!fieldErrors.password}
         accessibilityLabel="Password"
+        accessibilityHint="Enter your password to log in"
       />
       {fieldErrors.password ? <HelperText type="error">{fieldErrors.password}</HelperText> : null}
 
@@ -205,6 +207,8 @@ export default function LoginScreen({ navigation }: any) {
         onPress={handleLogin}
         loading={loading}
         style={styles.button}
+        accessibilityLabel="Log in"
+        accessibilityRole="button"
       >
         {t('auth.login')}
       </Button>
@@ -217,18 +221,30 @@ export default function LoginScreen({ navigation }: any) {
             loading={loading}
             style={styles.biometricButton}
             icon={biometricType === 'FaceID' ? 'face-recognition' : 'fingerprint'}
+            accessibilityLabel={`Log in with ${getBiometricDisplayName()}`}
+            accessibilityRole="button"
           >
             {t('auth.loginWith', { type: getBiometricDisplayName() })}
           </Button>
 
           <View style={styles.biometricToggle}>
             <Text style={{ color: colors.foreground }}>{t('auth.enableBiometric', { type: getBiometricDisplayName() })}</Text>
-            <Switch value={biometricEnabled} onValueChange={toggleBiometric} />
+            <Switch
+              value={biometricEnabled}
+              onValueChange={toggleBiometric}
+              accessibilityLabel={`Enable ${getBiometricDisplayName()} login`}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: biometricEnabled }}
+            />
           </View>
         </>
       )}
 
-      <Button onPress={() => navigation.navigate('Register')}>
+      <Button
+        onPress={() => navigation.navigate('Register')}
+        accessibilityLabel="Go to registration"
+        accessibilityRole="button"
+      >
         {t('auth.noAccount')}
       </Button>
     </View>

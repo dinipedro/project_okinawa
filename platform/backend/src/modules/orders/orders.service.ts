@@ -5,8 +5,6 @@ import {
   InternalServerErrorException,
   ForbiddenException,
   Logger,
-  Inject,
-  forwardRef,
 } from '@nestjs/common';
 import { UserRole as UserRoleEnum } from '@/common/enums';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,7 +17,7 @@ import { Profile } from '@/modules/users/entities/profile.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OrderStatus } from '@common/enums';
+import { OrderStatus, OrderType } from '@common/enums';
 import { EventsGateway } from '@/modules/events/events.gateway';
 import { LoyaltyService } from '@/modules/loyalty/loyalty.service';
 import { PaginationDto, paginate, toPaginationDto } from '@/common/dto/pagination.dto';
@@ -294,5 +292,33 @@ export class OrdersService {
     }
 
     return updatedOrder;
+  }
+
+  /**
+   * Serialize an order for restaurant staff consumption.
+   * Applies LGPD data minimisation:
+   * - DINE_IN orders: exclude delivery_phone and delivery_address
+   * - DELIVERY orders: include all delivery info
+   * - Other types: exclude delivery info (not relevant)
+   */
+  serializeOrderForRestaurant(order: Order): Omit<Order, 'delivery_phone' | 'delivery_address'> & {
+    delivery_phone?: string;
+    delivery_address?: string;
+  } {
+    const serialized = { ...order };
+
+    if (order.order_type !== OrderType.DELIVERY) {
+      delete (serialized as any).delivery_phone;
+      delete (serialized as any).delivery_address;
+    }
+
+    return serialized;
+  }
+
+  /**
+   * Serialize an array of orders for restaurant staff.
+   */
+  serializeOrdersForRestaurant(orders: Order[]): any[] {
+    return orders.map((order) => this.serializeOrderForRestaurant(order));
   }
 }

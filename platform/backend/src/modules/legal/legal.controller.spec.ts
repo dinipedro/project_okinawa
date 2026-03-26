@@ -11,6 +11,7 @@ describe('LegalController', () => {
     content: '## Politica de Privacidade da Okinawa',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const mockPrivacyPolicyEnUS: LegalDocument = {
@@ -18,6 +19,7 @@ describe('LegalController', () => {
     content: '## Okinawa Privacy Policy',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const mockTermsPtBR: LegalDocument = {
@@ -25,6 +27,7 @@ describe('LegalController', () => {
     content: '## Termos de Servico da Okinawa',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const mockTermsEnUS: LegalDocument = {
@@ -32,6 +35,7 @@ describe('LegalController', () => {
     content: '## Okinawa Terms of Service',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   beforeEach(async () => {

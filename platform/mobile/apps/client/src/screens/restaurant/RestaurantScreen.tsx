@@ -257,7 +257,7 @@ export default function RestaurantScreen() {
       <View style={styles.actions}>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate('Menu', { restaurantId: restaurant.id })}
+          onPress={() => (navigation as any).navigate('Menu', { restaurantId: restaurant.id })}
           style={styles.menuButton}
           icon="silverware"
         >
@@ -265,7 +265,7 @@ export default function RestaurantScreen() {
         </Button>
         <Button
           mode="outlined"
-          onPress={() => navigation.navigate('Reservation', { restaurantId: restaurant.id })}
+          onPress={() => (navigation as any).navigate('Reservation', { restaurantId: restaurant.id })}
           style={styles.reservationButton}
           icon="calendar"
         >

@@ -54,8 +54,8 @@ export default function DriveThruScreen() {
   const loadOrders = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await ApiService.get('/orders?serviceType=drive-thru&status=queued,preparing,ready');
-      setOrders(data);
+      const res = await ApiService.get('/orders?serviceType=drive-thru&status=queued,preparing,ready');
+      setOrders(res.data);
     } catch (error) {
       console.error('Failed to load drive-thru orders:', error);
       setOrders([]);
@@ -68,12 +68,12 @@ export default function DriveThruScreen() {
     loadOrders();
 
     socketService.connect();
-    socketService.on('order:new', (order: DriveThruOrder) => {
-      setOrders((prev) => [...prev, order]);
-    });
-    socketService.on('order:updated', (order: DriveThruOrder) => {
-      setOrders((prev) => prev.map((o) => (o.id === order.id ? order : o)));
-    });
+    socketService.on('order:new', ((order: unknown) => {
+      setOrders((prev) => [...prev, order as DriveThruOrder]);
+    }) as (data: unknown) => void);
+    socketService.on('order:updated', ((order: unknown) => {
+      setOrders((prev) => prev.map((o) => (o.id === (order as DriveThruOrder).id ? order as DriveThruOrder : o)));
+    }) as (data: unknown) => void);
 
     return () => {
       socketService.off('order:new');

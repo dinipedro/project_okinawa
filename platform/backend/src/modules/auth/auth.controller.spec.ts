@@ -71,17 +71,21 @@ describe('AuthController', () => {
         email: 'newuser@example.com',
         password: 'password123',
         full_name: 'New User',
+        birth_date: '1990-01-15',
+        accepted_terms_version: '1.0',
+        accepted_privacy_version: '1.0',
       };
 
       mockAuthService.register.mockResolvedValue(mockTokens);
 
-      const result = await controller.register(registerDto, mockRequest, mockUserAgent);
+      const result = await controller.register(registerDto, mockRequest, mockUserAgent, undefined);
 
       expect(result).toEqual(mockTokens);
       expect(mockAuthService.register).toHaveBeenCalledWith(
         registerDto,
         '127.0.0.1',
         mockUserAgent,
+        undefined,
       );
     });
   });

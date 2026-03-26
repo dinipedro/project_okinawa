@@ -61,6 +61,9 @@ export const typeOrmConfig = (): TypeOrmModuleOptions => {
       idleTimeoutMillis: parseInt(process.env.DATABASE_IDLE_TIMEOUT || '30000', 10),
       // Enable connection validation before use
       allowExitOnIdle: !isProduction,
+      // Query-level timeouts (PostgreSQL)
+      statement_timeout: parseInt(process.env.DATABASE_STATEMENT_TIMEOUT || '30000', 10),
+      idle_in_transaction_session_timeout: parseInt(process.env.DATABASE_IDLE_IN_TRANSACTION_TIMEOUT || '60000', 10),
     },
 
     // Auto retry connection on failure

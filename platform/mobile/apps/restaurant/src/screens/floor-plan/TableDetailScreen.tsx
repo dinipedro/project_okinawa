@@ -12,9 +12,21 @@ import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import ApiService from '@/shared/services/api';
-import type { Table, TableStatus } from '../../types';
 import { useI18n } from '@/shared/hooks/useI18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+
+type TableStatus = 'available' | 'occupied' | 'reserved' | 'cleaning';
+
+interface Table {
+  id: string;
+  table_number: string;
+  capacity: number;
+  status: TableStatus;
+  location?: string;
+  current_order_id?: string;
+  current_reservation_id?: string;
+  notes?: string;
+}
 
 type RouteParams = {
   TableDetail: {
@@ -176,7 +188,7 @@ export default function TableDetailScreen() {
     try {
       setLoading(true);
       const tables = await ApiService.getTables();
-      const foundTable = tables.find(t => t.id === tableId);
+      const foundTable = tables.find((tbl: any) => tbl.id === tableId);
       if (foundTable) {
         setTable(foundTable);
         setNotes(foundTable.notes || '');

@@ -23,8 +23,8 @@ import {
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ApiService from '../../../../../../shared/services/api';
-import { useColors } from '@/shared/theme';
+import ApiService from '@/shared/services/api';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 
 interface SetupStep {
@@ -240,7 +240,7 @@ export default function SetupHubScreen() {
     },
     quickActionsCard: {
       margin: 15,
-      backgroundColor: colors.primaryBackground,
+      backgroundColor: colors.backgroundSecondary,
     },
     quickActionsTitle: {
       fontWeight: 'bold',
@@ -280,7 +280,7 @@ export default function SetupHubScreen() {
 
   const loadSetupProgress = async () => {
     try {
-      const response = await ApiService.getSetupProgress(restaurantId);
+      const response = await ApiService.getSetupProgress(restaurantId!);
       if (response.setup_progress) {
         const completedSteps = response.setup_progress;
         setSteps(
@@ -313,7 +313,7 @@ export default function SetupHubScreen() {
 
     try {
       const completedSteps = updatedSteps.filter((s) => s.completed).map((s) => s.id);
-      await ApiService.updateSetupProgress(restaurantId, completedSteps);
+      await ApiService.updateSetupProgress(restaurantId!, completedSteps);
     } catch (error) {
       console.error('Error saving setup progress:', error);
       Alert.alert('Erro', 'Não foi possível salvar o progresso');

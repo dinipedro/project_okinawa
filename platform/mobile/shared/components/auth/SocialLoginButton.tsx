@@ -6,7 +6,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { TouchableOpacity, StyleSheet, View, Platform, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, StyleSheet, View, Platform, ActivityIndicator, Text as RNText } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import Haptic from '@/shared/utils/haptics';
@@ -82,9 +82,9 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
         <>
           <View style={styles.iconContainer}>
             {provider === 'apple' ? (
-              <Text style={[styles.appleIcon, { color: buttonConfig.textColor }]}>
-                
-              </Text>
+              <RNText style={[styles.appleIcon, { color: buttonConfig.textColor }]}>
+                {'\uF8FF'}
+              </RNText>
             ) : (
               <View style={styles.googleIconContainer}>
                 <Text style={styles.googleIcon}>G</Text>

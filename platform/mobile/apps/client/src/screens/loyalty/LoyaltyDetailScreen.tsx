@@ -128,20 +128,29 @@ export default function LoyaltyDetailScreen() {
     refetch,
   } = useQuery<LoyaltyDetail>({
     queryKey: ['loyalty', 'detail', programId],
-    queryFn: () => ApiService.get(`/loyalty/${programId || 'me'}`),
+    queryFn: async () => {
+      const res = await ApiService.get<LoyaltyDetail>(`/loyalty/${programId || 'me'}`);
+      return res.data;
+    },
   });
 
   // Fetch points history
   const { data: history = [] } = useQuery<PointsHistoryEntry[]>({
     queryKey: ['loyalty', 'history', programId],
-    queryFn: () => ApiService.get(`/loyalty/${programId || 'me'}/history`),
+    queryFn: async () => {
+      const res = await ApiService.get<PointsHistoryEntry[]>(`/loyalty/${programId || 'me'}/history`);
+      return res.data;
+    },
     enabled: !!loyalty,
   });
 
   // Fetch stamp cards
   const { data: stampCards = [] } = useQuery<StampCard[]>({
     queryKey: ['loyalty', 'stamps', programId],
-    queryFn: () => ApiService.get(`/loyalty/${programId || 'me'}/stamps`),
+    queryFn: async () => {
+      const res = await ApiService.get<StampCard[]>(`/loyalty/${programId || 'me'}/stamps`);
+      return res.data;
+    },
     enabled: !!loyalty,
   });
 

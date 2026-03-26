@@ -244,8 +244,13 @@ describe('UsersService', () => {
 
       const result = await service.deleteAccount('user-1');
 
-      expect(result.is_active).toBe(false);
-      expect(result.deleted_at).toBeInstanceOf(Date);
+      expect(result).toHaveProperty('message');
+      expect(mockProfileRepository.save).toHaveBeenCalled();
+      const savedProfile = mockProfileRepository.save.mock.calls[0][0];
+      expect(savedProfile.is_active).toBe(false);
+      expect(savedProfile.full_name).toBeNull();
+      expect(savedProfile.phone).toBeNull();
+      expect(savedProfile.email).toMatch(/^deleted_.*@anonymized\.local$/);
     });
 
     it('should throw NotFoundException if user not found', async () => {

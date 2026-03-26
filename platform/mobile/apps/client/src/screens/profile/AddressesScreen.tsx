@@ -128,7 +128,10 @@ export default function AddressesScreen() {
     refetch,
   } = useQuery<Address[]>({
     queryKey: ['addresses'],
-    queryFn: () => ApiService.get('/users/addresses'),
+    queryFn: async () => {
+      const res = await ApiService.get<Address[]>('/users/addresses');
+      return res.data;
+    },
   });
 
   // Add address
@@ -253,7 +256,13 @@ export default function AddressesScreen() {
         <Text variant="bodyLarge" style={styles.errorText}>
           {t('addresses.errorLoading')}
         </Text>
-        <Button mode="contained" onPress={() => refetch()} style={styles.retryButton}>
+        <Button
+          mode="contained"
+          onPress={() => refetch()}
+          style={styles.retryButton}
+          accessibilityLabel="Retry loading addresses"
+          accessibilityRole="button"
+        >
           {t('common.retry')}
         </Button>
       </View>
@@ -346,6 +355,8 @@ export default function AddressesScreen() {
         }}
         style={[styles.fab, { backgroundColor: colors.primary }]}
         color={colors.primaryForeground}
+        accessibilityLabel="Add new address"
+        accessibilityRole="button"
       />
 
       {/* Address Form Dialog */}
@@ -370,6 +381,9 @@ export default function AddressesScreen() {
                       onPress={() => updateField('label', label)}
                       style={styles.labelChip}
                       icon={LABEL_ICONS[label]}
+                      accessibilityLabel={`Label as ${label}`}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: formData.label === label }}
                     >
                       {t(`addresses.labels.${label}`)}
                     </Chip>
@@ -386,6 +400,7 @@ export default function AddressesScreen() {
                   outlineColor={colors.border}
                   activeOutlineColor={colors.primary}
                   accessibilityLabel="Street name"
+                  accessibilityHint="Enter the street name"
                 />
 
                 <View style={styles.formRow}>
@@ -400,6 +415,7 @@ export default function AddressesScreen() {
                     outlineColor={colors.border}
                     activeOutlineColor={colors.primary}
                     accessibilityLabel="Street number"
+                    accessibilityHint="Enter the street number"
                   />
                   <TextInput
                     label={t('addresses.form.complement')}
@@ -411,6 +427,7 @@ export default function AddressesScreen() {
                     outlineColor={colors.border}
                     activeOutlineColor={colors.primary}
                     accessibilityLabel="Address complement"
+                    accessibilityHint="Enter apartment, suite, or floor number"
                   />
                 </View>
 
@@ -424,6 +441,7 @@ export default function AddressesScreen() {
                   outlineColor={colors.border}
                   activeOutlineColor={colors.primary}
                   accessibilityLabel="Neighborhood"
+                  accessibilityHint="Enter the neighborhood name"
                 />
 
                 <View style={styles.formRow}>
@@ -437,6 +455,7 @@ export default function AddressesScreen() {
                     outlineColor={colors.border}
                     activeOutlineColor={colors.primary}
                     accessibilityLabel="City"
+                    accessibilityHint="Enter the city name"
                   />
                   <TextInput
                     label={t('addresses.form.state')}
@@ -450,6 +469,7 @@ export default function AddressesScreen() {
                     outlineColor={colors.border}
                     activeOutlineColor={colors.primary}
                     accessibilityLabel="State"
+                    accessibilityHint="Enter the two-letter state abbreviation"
                   />
                 </View>
 
@@ -465,18 +485,26 @@ export default function AddressesScreen() {
                   outlineColor={colors.border}
                   activeOutlineColor={colors.primary}
                   accessibilityLabel="ZIP code"
+                  accessibilityHint="Enter the postal ZIP code"
                 />
               </ScrollView>
             </KeyboardAvoidingView>
           </Dialog.ScrollArea>
           <Dialog.Actions>
-            <Button onPress={() => setFormVisible(false)} textColor={colors.foregroundSecondary}>
+            <Button
+              onPress={() => setFormVisible(false)}
+              textColor={colors.foregroundSecondary}
+              accessibilityLabel="Cancel adding address"
+              accessibilityRole="button"
+            >
               {t('common.cancel')}
             </Button>
             <Button
               onPress={handleSaveAddress}
               loading={addMutation.isPending}
               textColor={colors.primary}
+              accessibilityLabel="Save address"
+              accessibilityRole="button"
             >
               {t('addresses.form.save')}
             </Button>

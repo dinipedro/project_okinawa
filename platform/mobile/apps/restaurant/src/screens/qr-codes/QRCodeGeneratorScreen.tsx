@@ -21,7 +21,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as Haptics from 'expo-haptics';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
-import { useRestaurant } from '@/contexts/RestaurantContext';
+import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import ApiService from '@/shared/services/api';
 import { Card } from '@okinawa/shared/components';
 
@@ -237,7 +237,7 @@ export default function QRCodeGeneratorScreen() {
       )}
 
       {/* QR Preview */}
-      <Card style={[styles.previewCard, { borderColor: selectedConfig?.primaryColor }]}>
+      <Card style={[styles.previewCard, { borderColor: selectedConfig?.primaryColor }] as any}>
         <View style={styles.previewContainer}>
           {qrCodeImage ? (
             <>

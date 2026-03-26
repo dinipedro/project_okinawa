@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, StyleSheet, ScrollView, Alert, Modal } from 'react-native';
-import { Text, Card, Button, RadioButton, TextInput, Divider, IconButton, ActivityIndicator, Portal } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, Card, Button, RadioButton, TextInput, Divider, IconButton, ActivityIndicator, Portal, Modal } from 'react-native-paper';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import ApiService from '@/shared/services/api';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
@@ -583,17 +583,18 @@ export default function PaymentScreen() {
               value={paymentType}
             >
               {paymentMethods.length > 0 && (
-                <RadioButton.Item label="Saved Card" value="saved_card" labelStyle={{ color: colors.foreground }} />
+                <RadioButton.Item label="Saved Card" value="saved_card" labelStyle={{ color: colors.foreground }} accessibilityLabel="Pay with saved card" />
               )}
-              <RadioButton.Item label="New Card" value="new_card" labelStyle={{ color: colors.foreground }} />
-              <RadioButton.Item label="PIX" value="pix" labelStyle={{ color: colors.foreground }} />
+              <RadioButton.Item label="New Card" value="new_card" labelStyle={{ color: colors.foreground }} accessibilityLabel="Pay with new card" />
+              <RadioButton.Item label="PIX" value="pix" labelStyle={{ color: colors.foreground }} accessibilityLabel="Pay with PIX" />
               <RadioButton.Item
                 label={`Wallet (Balance: $${wallet?.balance.toFixed(2) || '0.00'})`}
                 value="wallet"
                 disabled={!wallet || wallet.balance < order.total_amount}
                 labelStyle={{ color: colors.foreground }}
+                accessibilityLabel={`Pay with wallet, balance ${wallet?.balance.toFixed(2) || '0.00'} dollars`}
               />
-              <RadioButton.Item label="Cash (Pay at restaurant)" value="cash" labelStyle={{ color: colors.foreground }} />
+              <RadioButton.Item label="Cash (Pay at restaurant)" value="cash" labelStyle={{ color: colors.foreground }} accessibilityLabel="Pay with cash at restaurant" />
             </RadioButton.Group>
           </Card.Content>
         </Card>
@@ -625,6 +626,8 @@ export default function PaymentScreen() {
                 onPress={() => setShowAddCardModal(true)}
                 style={styles.addCardButton}
                 icon="plus"
+                accessibilityLabel="Add a new payment card"
+                accessibilityRole="button"
               >
                 Add New Card
               </Button>
@@ -707,6 +710,7 @@ export default function PaymentScreen() {
                 style={styles.input}
                 autoCapitalize="none"
                 accessibilityLabel="PIX key"
+                accessibilityHint="Enter your email, phone, or CPF as PIX key"
               />
 
               <Text variant="bodySmall" style={styles.pixNote}>
@@ -755,6 +759,8 @@ export default function PaymentScreen() {
           loading={loading}
           disabled={loading}
           style={styles.payButton}
+          accessibilityLabel={paymentType === 'cash' ? 'Confirm order for cash payment' : `Pay ${order.total_amount.toFixed(2)} dollars`}
+          accessibilityRole="button"
         >
           {paymentType === 'cash' ? 'Confirm Order' : `Pay $${order.total_amount.toFixed(2)}`}
         </Button>
@@ -817,8 +823,20 @@ export default function PaymentScreen() {
               </View>
             </Card.Content>
             <Card.Actions>
-              <Button onPress={() => setShowAddCardModal(false)}>Cancel</Button>
-              <Button mode="contained" onPress={handleAddNewCard} loading={loading}>
+              <Button
+                onPress={() => setShowAddCardModal(false)}
+                accessibilityLabel="Cancel adding card"
+                accessibilityRole="button"
+              >
+                Cancel
+              </Button>
+              <Button
+                mode="contained"
+                onPress={handleAddNewCard}
+                loading={loading}
+                accessibilityLabel="Save new card"
+                accessibilityRole="button"
+              >
                 Add Card
               </Button>
             </Card.Actions>

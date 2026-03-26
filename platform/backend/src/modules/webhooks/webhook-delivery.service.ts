@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import {
   WebhookSubscription,
   WebhookEvent,
@@ -14,6 +14,7 @@ import {
 import { WebhookSignatureService } from './webhook-signature.service';
 import { CircuitBreakerService } from '@common/utils/circuit-breaker.module';
 import { CircuitBreaker } from '@common/utils/circuit-breaker';
+import { createTracedAxios } from '@common/utils/traced-http-client';
 import { EXPORT } from '@common/constants/limits';
 
 export interface WebhookPayload {
@@ -100,8 +101,10 @@ export class WebhookDeliveryService {
         ...subscription.headers,
       };
 
+      const http = createTracedAxios({ traceId: delivery.id, timeout: 10_000 });
+
       const response = await this.deliveryCircuitBreaker.execute(() =>
-        axios.post(subscription.url, delivery.payload, { headers, timeout: 10000 }),
+        http.post(subscription.url, delivery.payload, { headers }),
       );
 
       delivery.status = DeliveryStatus.SUCCESS;

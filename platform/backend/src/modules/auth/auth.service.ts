@@ -41,8 +41,8 @@ export class AuthService {
 
   // ========== DELEGATION: REGISTRATION ==========
 
-  async register(registerDto: RegisterDto, ipAddress?: string, userAgent?: string) {
-    return this.registrationService.register(registerDto, ipAddress, userAgent);
+  async register(registerDto: RegisterDto, ipAddress?: string, userAgent?: string, deviceId?: string) {
+    return this.registrationService.register(registerDto, ipAddress, userAgent, deviceId);
   }
 
   // ========== DELEGATION: LOGIN ==========
@@ -155,7 +155,7 @@ export class AuthService {
       }
 
       await this.auditLogService.logPasswordChange(userId, ipAddress, userAgent);
-      await this.emailService.sendPasswordChangedEmail(user.email, user.full_name);
+      await this.emailService.sendPasswordChangedEmail(user.email, user.full_name || undefined);
     }
 
     // Update email if provided

@@ -77,6 +77,35 @@ export const enUS = {
     loginWith: 'Login with {type}',
     enableBiometric: 'Enable {type} for future logins',
     logoutConfirm: 'Are you sure you want to logout?',
+    birthDate: 'Birth Date',
+    birthDateRequired: 'Birth date is required',
+    birthDateHelper: 'Required. You must be at least 18 years old.',
+    mustBe18: 'You must be at least 18 years old',
+    consentSection: 'Terms and consent',
+    acceptTermsPrefix: 'I accept the',
+    acceptPrivacyPrefix: 'I accept the',
+    acceptTermsRequired: 'Please accept the Terms of Service',
+    acceptPrivacyRequired: 'Please accept the Privacy Policy',
+    termsOfService: 'Terms of Service',
+    privacyPolicy: 'Privacy Policy',
+    marketingOptIn: 'I agree to receive promotional offers and news',
+    and: 'and the',
+    legalConsent: {
+      prefix: 'I have read and agree to the',
+      terms: 'Terms of Use',
+      and: 'and the',
+      privacy: 'Privacy Policy',
+      description: 'By continuing, you confirm that you have read and accepted NOOWE\'s terms and policies.',
+      required: 'You must accept the terms to continue',
+      a11yLabel: 'Accept Terms of Use and Privacy Policy',
+      marketingLabel: 'Receive news and promotions',
+      marketingDescription: 'Exclusive offers, new features and tips. Unsubscribe anytime.',
+      marketingA11y: 'Enable marketing notifications',
+    },
+    completeProfile: 'Complete your profile',
+    profileDescription: 'Tell us a bit about yourself',
+    emailOptional: 'Email (optional)',
+    emailHelper: 'Add email for account recovery and receipts',
   },
 
   // Navigation
@@ -2245,6 +2274,43 @@ export const enUS = {
       help: 'Help',
       emergency: 'Emergency',
     },
+  },
+
+  // AI Disclaimer (LGPD)
+  ai: {
+    disclaimer: {
+      title: 'AI Recommendation Disclaimer',
+      advisory:
+        'The recommendations provided by our AI features are advisory only and should not be considered professional advice.',
+      notProfessional:
+        'These suggestions do not replace the judgment of qualified professionals such as nutritionists, doctors, or food safety specialists.',
+      mayContainErrors:
+        'AI-generated content may contain inaccuracies or errors. We do not guarantee the completeness or correctness of the information.',
+      verifyInfo:
+        'Always verify important information independently before making decisions based on AI recommendations.',
+      iUnderstand: 'I understand and agree',
+      continue: 'Continue',
+    },
+  },
+
+  // Legal
+  legal: {
+    loading: 'Loading...',
+    error: 'Failed to load legal document',
+    version: 'Version',
+    lastUpdated: 'Last updated',
+    reConsent: {
+      title: 'Updated Terms',
+      subtitle: 'Our terms of service and privacy policy have been updated. Please review and accept to continue using the app.',
+      scrollHint: 'Scroll to the bottom to accept',
+      accept: 'I Accept',
+      decline: 'Decline',
+      declineTitle: 'Decline Terms',
+      declineMessage: 'If you decline the updated terms, you will need to delete your account. Do you want to proceed?',
+      deleteAccount: 'Delete Account',
+      errorRecording: 'Failed to record your consent. Please try again.',
+    },
+    beta: 'BETA',
   },
 };
 

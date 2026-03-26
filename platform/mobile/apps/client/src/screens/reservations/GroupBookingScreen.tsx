@@ -426,7 +426,7 @@ export default function GroupBookingScreen() {
             maximumValue={MAX_GROUP_SIZE}
             step={1}
             value={form.partySize}
-            onValueChange={(val) => updateForm('partySize', Math.round(val))}
+            onValueChange={(val: number) => updateForm('partySize', Math.round(val))}
             minimumTrackTintColor={colors.primary}
             maximumTrackTintColor={colors.backgroundTertiary}
             thumbTintColor={colors.primary}

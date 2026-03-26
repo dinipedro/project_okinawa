@@ -77,6 +77,35 @@ export const esES = {
     loginWith: 'Iniciar sesión con {type}',
     enableBiometric: 'Activar {type} para futuros inicios',
     logoutConfirm: '¿Estás seguro de que quieres cerrar sesión?',
+    birthDate: 'Fecha de nacimiento',
+    birthDateRequired: 'La fecha de nacimiento es obligatoria',
+    birthDateHelper: 'Obligatorio. Debes tener al menos 18 años.',
+    mustBe18: 'Debes tener al menos 18 años',
+    consentSection: 'Términos y consentimiento',
+    acceptTermsPrefix: 'Acepto los',
+    acceptPrivacyPrefix: 'Acepto la',
+    acceptTermsRequired: 'Debes aceptar los Términos de Servicio',
+    acceptPrivacyRequired: 'Debes aceptar la Política de Privacidad',
+    termsOfService: 'Términos de Servicio',
+    privacyPolicy: 'Política de Privacidad',
+    marketingOptIn: 'Acepto recibir ofertas promocionales y novedades',
+    and: 'y la',
+    legalConsent: {
+      prefix: 'He leído y acepto los',
+      terms: 'Términos de Uso',
+      and: 'y la',
+      privacy: 'Política de Privacidad',
+      description: 'Al continuar, confirmas que has leído y aceptado los términos y políticas de NOOWE.',
+      required: 'Debes aceptar los términos para continuar',
+      a11yLabel: 'Aceptar Términos de Uso y Política de Privacidad',
+      marketingLabel: 'Recibir novedades y promociones',
+      marketingDescription: 'Ofertas exclusivas, novedades y consejos. Cancela cuando quieras.',
+      marketingA11y: 'Activar notificaciones de marketing',
+    },
+    completeProfile: 'Completa tu perfil',
+    profileDescription: 'Cuéntanos un poco sobre ti',
+    emailOptional: 'Correo electrónico (opcional)',
+    emailHelper: 'Agrega un correo para recuperación de cuenta y recibos',
   },
 
   // Navigation
@@ -2232,12 +2261,12 @@ export const esES = {
   // Service Calls
   calls: {
     callWaiter: {
-      title: 'Llamar Atención',
+      title: 'Llamar Atencion',
       select: 'Seleccione el tipo',
       message: 'Mensaje opcional',
       submit: 'Enviar Llamado',
       success: 'Llamado enviado!',
-      successMsg: 'En breve un asistente vendrá.',
+      successMsg: 'En breve un asistente vendra.',
     },
     type: {
       waiter: 'Mesero',
@@ -2245,6 +2274,43 @@ export const esES = {
       help: 'Ayuda',
       emergency: 'Emergencia',
     },
+  },
+
+  // AI Disclaimer (LGPD)
+  ai: {
+    disclaimer: {
+      title: 'Aviso sobre Recomendaciones de IA',
+      advisory:
+        'Las recomendaciones proporcionadas por nuestras funciones de IA son solo orientativas y no deben considerarse asesoramiento profesional.',
+      notProfessional:
+        'Estas sugerencias no reemplazan el criterio de profesionales calificados, como nutricionistas, medicos o especialistas en seguridad alimentaria.',
+      mayContainErrors:
+        'El contenido generado por IA puede contener imprecisiones o errores. No garantizamos la integridad ni la exactitud de la informacion.',
+      verifyInfo:
+        'Siempre verifique la informacion importante de forma independiente antes de tomar decisiones basadas en recomendaciones de IA.',
+      iUnderstand: 'Entiendo y acepto',
+      continue: 'Continuar',
+    },
+  },
+
+  // Legal
+  legal: {
+    loading: 'Cargando...',
+    error: 'Error al cargar el documento legal',
+    version: 'Version',
+    lastUpdated: 'Ultima actualizacion',
+    reConsent: {
+      title: 'Terminos Actualizados',
+      subtitle: 'Nuestros terminos de servicio y politica de privacidad han sido actualizados. Por favor, revise y acepte para continuar usando la aplicacion.',
+      scrollHint: 'Desplacese hasta el final para aceptar',
+      accept: 'Acepto',
+      decline: 'Rechazar',
+      declineTitle: 'Rechazar Terminos',
+      declineMessage: 'Si rechaza los terminos actualizados, debera eliminar su cuenta. Desea continuar?',
+      deleteAccount: 'Eliminar Cuenta',
+      errorRecording: 'Error al registrar su consentimiento. Por favor, intentelo de nuevo.',
+    },
+    beta: 'BETA',
   },
 };
 

@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Order } from './entities/order.entity';
@@ -24,9 +24,7 @@ export class WaiterStatsService {
     private tableRepository: Repository<RestaurantTable>,
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
-    @Inject(forwardRef(() => ReservationsService))
     private reservationsService: ReservationsService,
-    @Inject(forwardRef(() => TablesService))
     private tablesService: TablesService,
     private waiterStatsHelper: WaiterStatsHelper,
     private maitreFormatter: MaitreFormatterHelper,

@@ -11,8 +11,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
-import { typography } from '@okinawa/shared/theme/typography';
+import { fontSize, fontWeight } from '@okinawa/shared/theme/typography';
 import { spacing } from '@okinawa/shared/theme/spacing';
+import { BetaBadge } from '@okinawa/shared/components/BetaBadge';
 
 interface MenuItem {
   id: string;
@@ -163,9 +164,12 @@ export const AIPairingAssistantScreen: React.FC<AIPairingAssistantScreenProps> =
         >
           <Ionicons name="arrow-back" size={24} color={colors.foreground} />
         </TouchableOpacity>
-        <Text style={styles.title}>
-          Assistente de Harmonização
-        </Text>
+        <View style={{ position: 'relative' }}>
+          <BetaBadge visible={true} />
+          <Text style={styles.title}>
+            Assistente de Harmonização
+          </Text>
+        </View>
         <View style={{ width: 24 }} />
       </View>
 
@@ -290,8 +294,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     paddingVertical: spacing.md,
   },
   title: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.bold as any,
+    fontSize: fontSize.lg,
+    fontWeight: fontWeight.bold as any,
     color: colors.foreground,
   },
   selectedSummary: {
@@ -302,13 +306,13 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.card,
   },
   summaryLabel: {
-    fontSize: typography.sizes.xs,
+    fontSize: fontSize.xs,
     marginBottom: spacing.xs,
     color: colors.foregroundMuted,
   },
   summaryItems: {
-    fontSize: typography.sizes.sm,
-    fontWeight: typography.weights.medium as any,
+    fontSize: fontSize.sm,
+    fontWeight: fontWeight.medium as any,
     color: colors.foreground,
   },
   loadingContainer: {
@@ -318,7 +322,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     gap: spacing.md,
   },
   loadingText: {
-    fontSize: typography.sizes.md,
+    fontSize: fontSize.md,
     color: colors.foregroundMuted,
   },
   content: {
@@ -326,8 +330,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   sectionTitle: {
-    fontSize: typography.sizes.lg,
-    fontWeight: typography.weights.semibold as any,
+    fontSize: fontSize.lg,
+    fontWeight: fontWeight.semibold as any,
     marginBottom: spacing.md,
     color: colors.foreground,
   },
@@ -369,8 +373,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: `${colors.primary}20`,
   },
   typeText: {
-    fontSize: typography.sizes.xs,
-    fontWeight: typography.weights.medium as any,
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.medium as any,
     color: colors.primary,
   },
   matchBadge: {
@@ -380,18 +384,18 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderRadius: spacing.sm,
   },
   matchText: {
-    color: colors.successForeground || '#fff',
-    fontSize: typography.sizes.xs,
-    fontWeight: typography.weights.bold as any,
+    color: '#fff',
+    fontSize: fontSize.xs,
+    fontWeight: fontWeight.bold as any,
   },
   itemName: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold as any,
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.semibold as any,
     marginBottom: 2,
     color: colors.foreground,
   },
   itemDescription: {
-    fontSize: typography.sizes.xs,
+    fontSize: fontSize.xs,
     marginBottom: spacing.sm,
     color: colors.foregroundMuted,
   },
@@ -402,17 +406,17 @@ const createStyles = (colors: any) => StyleSheet.create({
     padding: spacing.sm,
     borderRadius: spacing.sm,
     marginBottom: spacing.sm,
-    backgroundColor: colors.muted,
+    backgroundColor: colors.backgroundTertiary,
   },
   reasonText: {
     flex: 1,
-    fontSize: typography.sizes.xs,
+    fontSize: fontSize.xs,
     lineHeight: 16,
     color: colors.foreground,
   },
   price: {
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.bold as any,
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.bold as any,
     color: colors.primary,
   },
   checkbox: {
@@ -437,8 +441,8 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   addButtonText: {
     color: colors.primaryForeground,
-    fontSize: typography.sizes.md,
-    fontWeight: typography.weights.semibold as any,
+    fontSize: fontSize.md,
+    fontWeight: fontWeight.semibold as any,
   },
 });
 

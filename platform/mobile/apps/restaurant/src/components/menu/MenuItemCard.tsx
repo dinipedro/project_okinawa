@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, IconButton, Chip, Switch } from 'react-native-paper';
 import type { MenuItem } from '../../types';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -51,7 +51,7 @@ export default function MenuItemCard({
       color: colors.foreground,
     },
     description: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 4,
     },
     price: {
@@ -106,11 +106,11 @@ export default function MenuItemCard({
     },
     allergensLabel: {
       fontWeight: '600',
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginRight: 4,
     },
     allergensText: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       flex: 1,
     },
     actions: {
@@ -127,7 +127,7 @@ export default function MenuItemCard({
     },
     availabilityLabel: {
       marginRight: 8,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     actionButtons: {
       flexDirection: 'row',
@@ -169,12 +169,12 @@ export default function MenuItemCard({
               Alérgenos
             </Chip>
           )}
-          {item.is_vegetarian && (
+          {(item as any).is_vegetarian && (
             <Chip style={styles.vegChip} textStyle={styles.vegText} icon="leaf">
               Vegetariano
             </Chip>
           )}
-          {item.is_vegan && (
+          {(item as any).is_vegan && (
             <Chip style={styles.veganChip} textStyle={styles.veganText} icon="sprout">
               Vegano
             </Chip>

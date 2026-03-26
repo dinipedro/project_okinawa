@@ -16,7 +16,8 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.okinawa.client",
-      "associatedDomains": ["applinks:okinawa.app", "applinks:*.okinawa.app"],
+      "minimumOsVersion": "14.0",
+      "associatedDomains": ["applinks:noowebr.com", "applinks:*.noowebr.com"],
       "infoPlist": {
         "NSCameraUsageDescription": "Permite escanear QR codes de mesas e produtos",
         "NSLocationWhenInUseUsageDescription": "Permite encontrar restaurantes próximos",
@@ -29,6 +30,7 @@
         "backgroundColor": "#FF6B35"
       },
       "package": "com.okinawa.client",
+      "minSdkVersion": 24,
       "intentFilters": [
         {
           "action": "VIEW",
@@ -36,12 +38,12 @@
           "data": [
             {
               "scheme": "https",
-              "host": "okinawa.app",
+              "host": "noowebr.com",
               "pathPrefix": "/"
             },
             {
               "scheme": "https",
-              "host": "*.okinawa.app"
+              "host": "*.noowebr.com"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]

@@ -67,9 +67,9 @@ const OrderCard = memo<OrderCardProps>(({
       ready: colors.success,
       delivering: colors.info,
       completed: colors.success,
-      cancelled: colors.destructive,
+      cancelled: colors.error,
     };
-    return statusColors[status] || colors.mutedForeground;
+    return statusColors[status] || colors.foregroundMuted;
   }, [colors]);
 
   const statusColor = getStatusColor(order.status);
@@ -93,7 +93,7 @@ const OrderCard = memo<OrderCardProps>(({
       marginRight: 8,
     },
     orderNumber: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
       marginTop: 4,
     },
     statusChip: {
@@ -123,7 +123,7 @@ const OrderCard = memo<OrderCardProps>(({
     itemQuantity: {
       minWidth: 30,
       fontWeight: '600',
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     itemName: {
       flex: 1,
@@ -131,7 +131,7 @@ const OrderCard = memo<OrderCardProps>(({
     },
     moreItems: {
       marginTop: 4,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
       fontStyle: 'italic',
     },
     infoSection: {
@@ -218,14 +218,14 @@ const OrderCard = memo<OrderCardProps>(({
           {/* Order Info */}
           <View style={styles.infoSection}>
             <View style={styles.infoRow}>
-              <IconButton icon="calendar" size={16} style={styles.infoIcon} iconColor={colors.mutedForeground} />
+              <IconButton icon="calendar" size={16} style={styles.infoIcon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={{ color: colors.foreground }}>
                 {formatDateTime(order.created_at, locale)}
               </Text>
             </View>
 
             <View style={styles.infoRow}>
-              <IconButton icon="cash" size={16} style={styles.infoIcon} iconColor={colors.mutedForeground} />
+              <IconButton icon="cash" size={16} style={styles.infoIcon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={{ color: colors.foreground }}>
                 {formatCurrency(order.total_amount, locale)}
               </Text>
@@ -243,7 +243,7 @@ const OrderCard = memo<OrderCardProps>(({
                   }
                   size={16}
                   style={styles.infoIcon}
-                  iconColor={colors.mutedForeground}
+                  iconColor={colors.foregroundMuted}
                 />
                 <Text variant="bodySmall" style={{ color: colors.foreground }}>
                   {t(`orders.orderType.${order.order_type === 'delivery' ? 'delivery' : order.order_type === 'pickup' ? 'pickup' : 'dine_in'}`)}
@@ -271,7 +271,7 @@ const OrderCard = memo<OrderCardProps>(({
                     style={[styles.actionButton, styles.cancelButton]}
                     onPress={() => onCancel(order)}
                   >
-                    <IconButton icon="close-circle-outline" size={20} iconColor={colors.destructive} />
+                    <IconButton icon="close-circle-outline" size={20} iconColor={colors.error} />
                     <Text variant="bodySmall" style={{ color: colors.foreground }}>{t('orders.cancel')}</Text>
                   </TouchableOpacity>
                 )}

@@ -109,9 +109,9 @@ export const OTPInput: React.FC<OTPInputProps> = ({
           ref={(ref) => { inputRefs.current[index] = ref; }}
           style={[
             styles.input,
-            value[index] && styles.inputFilled,
+            !!value[index] && styles.inputFilled,
             focusedIndex === index && styles.inputFocused,
-            error && styles.inputError,
+            !!error && styles.inputError,
           ]}
           value={value[index] || ''}
           onChangeText={(text) => handleChange(text, index)}

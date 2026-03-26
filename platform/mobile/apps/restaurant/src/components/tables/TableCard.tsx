@@ -1,8 +1,20 @@
 import React, { useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, Text, IconButton, Chip } from 'react-native-paper';
-import type { Table, TableStatus } from '../../types';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+
+type TableStatus = 'available' | 'occupied' | 'reserved' | 'cleaning';
+
+interface Table {
+  id: string;
+  table_number: string;
+  capacity: number;
+  status: TableStatus;
+  location?: string;
+  current_order_id?: string;
+  current_reservation_id?: string;
+  notes?: string;
+}
 
 interface TableCardProps {
   table: Table;
@@ -56,7 +68,7 @@ export default function TableCard({ table, onPress, compact = false }: TableCard
       color: colors.foreground,
     },
     capacity: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginTop: 2,
     },
     statusChip: {
@@ -73,7 +85,7 @@ export default function TableCard({ table, onPress, compact = false }: TableCard
       marginLeft: 4,
     },
     detailText: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     notes: {
       flexDirection: 'row',
@@ -85,7 +97,7 @@ export default function TableCard({ table, onPress, compact = false }: TableCard
     },
     notesText: {
       flex: 1,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       fontStyle: 'italic',
     },
   }), [colors]);
@@ -114,7 +126,7 @@ export default function TableCard({ table, onPress, compact = false }: TableCard
         <>
           {table.location && (
             <View style={styles.detailRow}>
-              <IconButton icon="map-marker" size={16} style={styles.icon} iconColor={colors.textMuted} />
+              <IconButton icon="map-marker" size={16} style={styles.icon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={styles.detailText}>
                 {table.location}
               </Text>
@@ -123,7 +135,7 @@ export default function TableCard({ table, onPress, compact = false }: TableCard
 
           {table.current_order_id && table.status === 'occupied' && (
             <View style={styles.detailRow}>
-              <IconButton icon="receipt-text" size={16} style={styles.icon} iconColor={colors.textMuted} />
+              <IconButton icon="receipt-text" size={16} style={styles.icon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={styles.detailText}>
                 Pedido #{table.current_order_id.slice(0, 8)}
               </Text>
@@ -132,7 +144,7 @@ export default function TableCard({ table, onPress, compact = false }: TableCard
 
           {table.current_reservation_id && table.status === 'reserved' && (
             <View style={styles.detailRow}>
-              <IconButton icon="calendar-check" size={16} style={styles.icon} iconColor={colors.textMuted} />
+              <IconButton icon="calendar-check" size={16} style={styles.icon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={styles.detailText}>
                 Reserva #{table.current_reservation_id.slice(0, 8)}
               </Text>

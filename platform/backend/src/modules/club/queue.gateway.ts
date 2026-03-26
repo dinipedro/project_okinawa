@@ -7,7 +7,7 @@ import {
   ConnectedSocket,
   MessageBody,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, BeforeApplicationShutdown } from '@nestjs/common';
 import { Server } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticatedSocket } from '@common/interfaces/authenticated-socket.interface';
@@ -40,7 +40,7 @@ export interface QueueStatsPayload {
   namespace: '/queue',
   cors: getWsCorsConfig(),
 })
-export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect, BeforeApplicationShutdown {
   private readonly logger = new Logger(QueueGateway.name);
 
   @WebSocketServer()
@@ -160,5 +160,15 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
       stats,
       timestamp: new Date().toISOString(),
     });
+  }
+
+  async beforeApplicationShutdown() {
+    this.logger.log('Shutting down — disconnecting all clients...');
+    if (this.server) {
+      const sockets = await this.server.fetchSockets();
+      for (const socket of sockets) {
+        socket.disconnect(true);
+      }
+    }
   }
 }

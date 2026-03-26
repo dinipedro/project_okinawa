@@ -16,6 +16,7 @@ describe('LegalService', () => {
     content: '## Politica de Privacidade da Okinawa',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const mockPrivacyPolicyEnUS: LegalDocument = {
@@ -23,6 +24,7 @@ describe('LegalService', () => {
     content: '## Okinawa Privacy Policy',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const mockPrivacyPolicyEsES: LegalDocument = {
@@ -30,6 +32,7 @@ describe('LegalService', () => {
     content: '## Politica de Privacidad de Okinawa',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const mockTermsPtBR: LegalDocument = {
@@ -37,6 +40,7 @@ describe('LegalService', () => {
     content: '## Termos de Servico da Okinawa',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const mockTermsEnUS: LegalDocument = {
@@ -44,6 +48,7 @@ describe('LegalService', () => {
     content: '## Okinawa Terms of Service',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const mockTermsEsES: LegalDocument = {
@@ -51,6 +56,7 @@ describe('LegalService', () => {
     content: '## Terminos de Servicio de Okinawa',
     version: '1.0.0',
     lastUpdated: '2026-03-01',
+    contentHash: 'mock-hash',
   };
 
   const fileContents: Record<string, string> = {

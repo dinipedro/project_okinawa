@@ -186,7 +186,7 @@ export default function DrinkRecipesScreen({ navigation }: { navigation: any }) 
         selectedCard: {
           borderWidth: 2,
           borderColor: colors.primary,
-          backgroundColor: colors.primaryBackground || colors.backgroundSecondary,
+          backgroundColor: colors.backgroundSecondary,
         },
         emptyContainer: {
           alignItems: 'center',
@@ -217,7 +217,7 @@ export default function DrinkRecipesScreen({ navigation }: { navigation: any }) 
         return;
       }
       try {
-        const data = await ApiService.getRecipes();
+        const data = await ApiService.get('/recipes').then(r => r.data);
         setRecipes(data?.items || data || []);
         setLastFetch(Date.now());
       } catch (error) {

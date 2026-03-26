@@ -105,13 +105,13 @@ export default function OrderStatusScreen() {
    */
   const getItemStatusColor = useCallback((status: string): string => {
     const statusColors: Record<string, string> = {
-      pending: colors.mutedForeground,
+      pending: colors.foregroundMuted,
       preparing: colors.warning,
       ready: colors.success,
       delivered: colors.success,
-      cancelled: colors.destructive,
+      cancelled: colors.error,
     };
-    return statusColors[status] || colors.mutedForeground;
+    return statusColors[status] || colors.foregroundMuted;
   }, [colors]);
 
   const styles = useMemo(() => StyleSheet.create({
@@ -131,7 +131,7 @@ export default function OrderStatusScreen() {
     },
     loadingText: {
       marginTop: 16,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     headerCard: {
       marginBottom: 16,
@@ -155,7 +155,7 @@ export default function OrderStatusScreen() {
       color: colors.foreground,
     },
     orderNumber: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
       marginTop: 2,
     },
     tableInfo: {
@@ -166,7 +166,7 @@ export default function OrderStatusScreen() {
       alignItems: 'flex-end',
     },
     timeLabel: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     estimatedTime: {
       color: colors.primary,
@@ -199,7 +199,7 @@ export default function OrderStatusScreen() {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: colors.muted,
+      backgroundColor: colors.backgroundTertiary,
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: 8,
@@ -213,7 +213,7 @@ export default function OrderStatusScreen() {
     statusLabel: {
       fontSize: 10,
       textAlign: 'center',
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     activeStatusLabel: {
       color: colors.foreground,
@@ -225,7 +225,7 @@ export default function OrderStatusScreen() {
       left: '60%',
       right: '-40%',
       height: 2,
-      backgroundColor: colors.muted,
+      backgroundColor: colors.backgroundTertiary,
       zIndex: -1,
     },
     activeStatusLine: {
@@ -236,7 +236,7 @@ export default function OrderStatusScreen() {
       paddingVertical: 24,
     },
     cancelledText: {
-      color: colors.destructive,
+      color: colors.error,
       marginTop: 8,
     },
     card: {
@@ -259,7 +259,7 @@ export default function OrderStatusScreen() {
       color: colors.foreground,
     },
     orderedBy: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
       fontStyle: 'italic',
     },
     itemStatusRow: {
@@ -271,7 +271,7 @@ export default function OrderStatusScreen() {
       height: 24,
     },
     preparedTime: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     itemDivider: {
       marginVertical: 0,
@@ -284,7 +284,7 @@ export default function OrderStatusScreen() {
       marginBottom: 8,
     },
     noticeCard: {
-      backgroundColor: colors.warningMuted,
+      backgroundColor: colors.warningBackground,
     },
     noticeContent: {
       flexDirection: 'row',
@@ -292,7 +292,7 @@ export default function OrderStatusScreen() {
     },
     noticeText: {
       flex: 1,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     liveDot: {
       width: 8,
@@ -448,7 +448,7 @@ export default function OrderStatusScreen() {
   if (!order) {
     return (
       <View style={styles.loadingContainer}>
-        <IconButton icon="receipt-text-remove" size={64} iconColor={colors.mutedForeground} />
+        <IconButton icon="receipt-text-remove" size={64} iconColor={colors.foregroundMuted} />
         <Text variant="titleLarge" style={{ color: colors.foreground }}>{t('orders.notFound')}</Text>
       </View>
     );
@@ -515,7 +515,7 @@ export default function OrderStatusScreen() {
                 <IconButton
                   icon="close-circle"
                   size={64}
-                  iconColor={colors.destructive}
+                  iconColor={colors.error}
                 />
                 <Text variant="titleLarge" style={styles.cancelledText}>
                   {t('orders.status.cancelled')}
@@ -548,7 +548,7 @@ export default function OrderStatusScreen() {
                           <IconButton
                             icon={status.icon}
                             size={24}
-                            iconColor={isActive ? colors.cardForeground : colors.mutedForeground}
+                            iconColor={isActive ? colors.primaryForeground : colors.foregroundMuted}
                             style={styles.statusIcon}
                           />
                         </Animated.View>

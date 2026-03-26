@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { PaymentMethodType } from '../../../common/enums';
 import { Profile } from '../../users/entities/profile.entity';
+import { encryptedTransformer } from '@/common/utils/field-encryption';
 
 @Entity('payment_methods')
 export class PaymentMethod {
@@ -30,13 +31,13 @@ export class PaymentMethod {
   @Column({ nullable: true })
   card_brand: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, transformer: encryptedTransformer })
   card_exp_month: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, transformer: encryptedTransformer })
   card_exp_year: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, transformer: encryptedTransformer })
   pix_key: string;
 
   @Column({ nullable: true })

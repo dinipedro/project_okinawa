@@ -20,7 +20,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as Haptics from 'expo-haptics';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
-import { useRestaurant } from '@/contexts/RestaurantContext';
+import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import ApiService from '@/shared/services/api';
 import { Card, Badge } from '@okinawa/shared/components';
 
@@ -65,7 +65,7 @@ export default function QRCodeBatchScreen() {
     if (!restaurantId) return;
 
     try {
-      const response = await ApiService.getTables(restaurantId, { limit: 100 });
+      const response = await ApiService.getTables();
       const tableList = response.items || response;
       setTables(tableList);
 

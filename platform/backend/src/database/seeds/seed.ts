@@ -316,10 +316,5 @@ export async function runSeeds(dataSource: DataSource) {
   console.log(`   - Restaurants: ${await restaurantRepository.count()}`);
   console.log(`   - Menu Items: ${await menuItemRepository.count()}`);
   console.log(`   - Tables: ${await tableRepository.count()}`);
-  console.log('\n🔐 Test Credentials:');
-  console.log('   Owner: owner@okinawa.com / password123');
-  console.log('   Customer 1: customer1@example.com / password123');
-  console.log('   Customer 2: customer2@example.com / password123');
-  console.log('   Chef: chef@okinawa.com / password123');
-  console.log('   Waiter: waiter@okinawa.com / password123');
+  console.log('\n🔐 Test credentials available in .env.example (never log in production)');
 }

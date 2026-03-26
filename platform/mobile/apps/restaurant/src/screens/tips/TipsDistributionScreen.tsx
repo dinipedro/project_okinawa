@@ -5,8 +5,6 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import ApiService from '@/shared/services/api';
 import { useI18n } from '@/shared/hooks/useI18n';
-import { formatCurrency } from '@okinawa/shared/utils/formatters';
-import { getLanguage } from '@okinawa/shared/i18n';
 import { useColors } from '@/shared/theme';
 
 interface StaffTips {
@@ -94,6 +92,99 @@ export default function TipsDistributionScreen() {
     }
   };
 
+  const styles = useMemo(() => StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.backgroundSecondary,
+    },
+    card: {
+      margin: 16,
+      marginBottom: 8,
+      elevation: 2,
+      backgroundColor: colors.card,
+    },
+    title: {
+      marginBottom: 16,
+      color: colors.foreground,
+    },
+    totalAmount: {
+      color: colors.success,
+      fontWeight: 'bold',
+      marginBottom: 8,
+    },
+    subtitle: {
+      color: colors.foregroundMuted,
+    },
+    methodButtons: {
+      flexDirection: 'row',
+      gap: 8,
+      marginBottom: 16,
+    },
+    methodChip: {
+      flex: 1,
+    },
+    calculateButton: {
+      marginTop: 8,
+    },
+    staffRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 12,
+    },
+    staffInfo: {
+      flex: 1,
+    },
+    role: {
+      color: colors.foregroundMuted,
+      marginTop: 4,
+    },
+    amountContainer: {
+      alignItems: 'flex-end',
+    },
+    percentage: {
+      color: colors.foregroundMuted,
+      marginBottom: 4,
+    },
+    amount: {
+      color: colors.success,
+      fontWeight: 'bold',
+    },
+    manualInput: {
+      width: 120,
+      backgroundColor: colors.background,
+    },
+    divider: {
+      marginVertical: 8,
+    },
+    summaryRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    distributedAmount: {
+      color: colors.success,
+      fontWeight: 'bold',
+    },
+    remainingLabel: {
+      color: colors.foregroundMuted,
+    },
+    remainingAmount: {
+      color: colors.warning,
+      fontWeight: '600',
+    },
+    negative: {
+      color: colors.error,
+    },
+    actions: {
+      padding: 16,
+    },
+    distributeButton: {
+      marginBottom: 16,
+    },
+  }), [colors]);
+
   const totalDistributed = staff.reduce((sum, s) => sum + s.amount, 0);
   const remaining = totalTips - totalDistributed;
 
@@ -105,7 +196,7 @@ export default function TipsDistributionScreen() {
             {t('tips.totalTips')}
           </Text>
           <Text variant="displayMedium" style={styles.totalAmount}>
-            {formatCurrency(totalTips, getLanguage())}
+            R$ {totalTips.toFixed(2)}
           </Text>
           <Text variant="bodyMedium" style={styles.subtitle}>
             {t('tips.period')}: {format(new Date(), 'dd/MM/yyyy', { locale: ptBR })}
@@ -123,6 +214,9 @@ export default function TipsDistributionScreen() {
               selected={distributionMethod === 'equal'}
               onPress={() => setDistributionMethod('equal')}
               style={styles.methodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.equal')}
+              accessibilityState={{ selected: distributionMethod === 'equal' }}
             >
               {t('tips.equal')}
             </Chip>
@@ -130,6 +224,9 @@ export default function TipsDistributionScreen() {
               selected={distributionMethod === 'role'}
               onPress={() => setDistributionMethod('role')}
               style={styles.methodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.byRole')}
+              accessibilityState={{ selected: distributionMethod === 'role' }}
             >
               {t('tips.byRole')}
             </Chip>
@@ -137,12 +234,21 @@ export default function TipsDistributionScreen() {
               selected={distributionMethod === 'manual'}
               onPress={() => setDistributionMethod('manual')}
               style={styles.methodChip}
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.manual')}
+              accessibilityState={{ selected: distributionMethod === 'manual' }}
             >
               {t('tips.manual')}
             </Chip>
           </View>
           {distributionMethod !== 'manual' && (
-            <Button mode="outlined" onPress={calculateDistribution} style={styles.calculateButton}>
+            <Button
+              mode="outlined"
+              onPress={calculateDistribution}
+              style={styles.calculateButton}
+              accessibilityRole="button"
+              accessibilityLabel={t('tips.calculateDistribution')}
+            >
               {t('tips.calculateDistribution')}
             </Button>
           )}
@@ -172,6 +278,7 @@ export default function TipsDistributionScreen() {
                     keyboardType="decimal-pad"
                     style={styles.manualInput}
                     dense
+                    accessibilityLabel={`${t('tips.totalTips')} ${person.staff_name}`}
                   />
                 ) : (
                   <View style={styles.amountContainer}>
@@ -181,7 +288,7 @@ export default function TipsDistributionScreen() {
                       </Text>
                     )}
                     <Text variant="titleLarge" style={styles.amount}>
-                      {formatCurrency(person.amount, getLanguage())}
+                      R$ {person.amount.toFixed(2)}
                     </Text>
                   </View>
                 )}
@@ -196,7 +303,7 @@ export default function TipsDistributionScreen() {
           <View style={styles.summaryRow}>
             <Text variant="titleMedium">{t('tips.totalDistributed')}:</Text>
             <Text variant="titleLarge" style={styles.distributedAmount}>
-              {formatCurrency(totalDistributed, getLanguage())}
+              R$ {totalDistributed.toFixed(2)}
             </Text>
           </View>
           {Math.abs(remaining) > 0.01 && (
@@ -205,7 +312,7 @@ export default function TipsDistributionScreen() {
                 {t('tips.remaining')}:
               </Text>
               <Text variant="bodyLarge" style={[styles.remainingAmount, remaining < 0 && styles.negative]}>
-                {formatCurrency(remaining, getLanguage())}
+                R$ {remaining.toFixed(2)}
               </Text>
             </View>
           )}
@@ -220,6 +327,8 @@ export default function TipsDistributionScreen() {
           disabled={distributing || Math.abs(remaining) > 0.01}
           style={styles.distributeButton}
           icon="cash-multiple"
+          accessibilityRole="button"
+          accessibilityLabel={t('tips.confirmDistribution')}
         >
           {t('tips.confirmDistribution')}
         </Button>
@@ -227,101 +336,3 @@ export default function TipsDistributionScreen() {
     </ScrollView>
   );
 }
-
-  const styles = useMemo(() => StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.backgroundSecondary,
-    },
-    card: {
-      margin: 16,
-      marginBottom: 8,
-      elevation: 2,
-      backgroundColor: colors.card,
-    },
-    title: {
-      marginBottom: 16,
-      color: colors.foreground,
-    },
-    totalAmount: {
-      color: colors.success,
-      fontWeight: 'bold',
-      marginBottom: 8,
-    },
-    subtitle: {
-      color: colors.textMuted,
-    },
-    methodButtons: {
-      flexDirection: 'row',
-      gap: 8,
-      marginBottom: 16,
-    },
-    methodChip: {
-      flex: 1,
-    },
-    calculateButton: {
-      marginTop: 8,
-    },
-    staffRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: 12,
-    },
-    staffInfo: {
-      flex: 1,
-    },
-    role: {
-      color: colors.textMuted,
-      marginTop: 4,
-    },
-    amountContainer: {
-      alignItems: 'flex-end',
-    },
-    percentage: {
-      color: colors.textMuted,
-      marginBottom: 4,
-    },
-    amount: {
-      color: colors.success,
-      fontWeight: 'bold',
-    },
-    manualInput: {
-      width: 120,
-      backgroundColor: colors.background,
-    },
-    divider: {
-      marginVertical: 8,
-    },
-    summaryRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 8,
-    },
-    distributedAmount: {
-      color: colors.success,
-      fontWeight: 'bold',
-    },
-    remainingLabel: {
-      color: colors.textMuted,
-    },
-    remainingAmount: {
-      color: colors.warning,
-      fontWeight: '600',
-    },
-    negative: {
-      color: colors.error,
-    },
-    actions: {
-      padding: 16,
-    },
-    distributeButton: {
-      marginBottom: 16,
-    },
-  }), [colors]);
-
-  const totalDistributed = staff.reduce((sum, s) => sum + s.amount, 0);
-  const remaining = totalTips - totalDistributed;
-
-  return (

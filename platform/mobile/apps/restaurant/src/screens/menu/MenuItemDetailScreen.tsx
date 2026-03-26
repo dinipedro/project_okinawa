@@ -138,7 +138,7 @@ export default function MenuItemDetailScreen() {
       color: colors.foreground,
     },
     allergensCard: {
-      backgroundColor: colors.warningMuted,
+      backgroundColor: colors.warningBackground,
       padding: 12,
       borderRadius: 8,
       marginBottom: 16,
@@ -205,7 +205,7 @@ export default function MenuItemDetailScreen() {
     try {
       setLoading(true);
       const menu = await ApiService.getMenu();
-      const foundItem = menu.find(i => i.id === itemId);
+      const foundItem = menu.find((i: MenuItem) => i.id === itemId);
       if (foundItem) {
         setItem(foundItem);
         populateForm(foundItem);
@@ -224,9 +224,9 @@ export default function MenuItemDetailScreen() {
     setPrice(menuItem.price.toFixed(2));
     setPreparationTime(menuItem.preparation_time?.toString() || '');
     setCalories(menuItem.calories?.toString() || '');
-    setIsAvailable(menuItem.is_available);
-    setIsVegetarian(menuItem.is_vegetarian || false);
-    setIsVegan(menuItem.is_vegan || false);
+    setIsAvailable(menuItem.is_available ?? true);
+    setIsVegetarian((menuItem as any).is_vegetarian || false);
+    setIsVegan((menuItem as any).is_vegan || false);
     setAllergens(menuItem.allergens?.join(', ') || '');
   };
 
@@ -293,7 +293,7 @@ export default function MenuItemDetailScreen() {
     if (!item) return;
 
     try {
-      await ApiService.toggleAvailability(item.id);
+      await ApiService.toggleMenuItemAvailability(item.id);
       setItem({ ...item, is_available: !item.is_available });
       setIsAvailable(!item.is_available);
     } catch (error) {
@@ -377,12 +377,12 @@ export default function MenuItemDetailScreen() {
                     {typeof item.category === 'string' ? item.category : item.category.name}
                   </Chip>
                 )}
-                {item.is_vegetarian && (
+                {(item as any).is_vegetarian && (
                   <Chip style={styles.vegBadge} textStyle={styles.vegText} icon="leaf">
                     {t('menu.dietaryInfo.vegetarian')}
                   </Chip>
                 )}
-                {item.is_vegan && (
+                {(item as any).is_vegan && (
                   <Chip style={styles.veganBadge} textStyle={styles.veganText} icon="sprout">
                     {t('menu.dietaryInfo.vegan')}
                   </Chip>

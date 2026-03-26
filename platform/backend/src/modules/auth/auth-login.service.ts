@@ -31,11 +31,13 @@ export class AuthLoginService {
     });
 
     if (!user) {
+      // Constant-time: always hash to prevent timing-based user enumeration
+      await bcrypt.hash(loginDto.password, 12);
       await this.auditLogService.logFailedLogin(
         loginDto.email,
         ipAddress,
         userAgent,
-        'User not found',
+        'Invalid credentials',
       );
       throw new UnauthorizedException('Invalid credentials');
     }

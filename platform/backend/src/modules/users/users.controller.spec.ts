@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { DataExportService } from './data-export.service';
+import { ConsentService } from '@/modules/identity/services/consent.service';
 import { UserRole } from '@/common/enums';
 import { mockAuthenticatedUser } from '@common/interfaces/authenticated-user.interface';
 
@@ -33,7 +35,11 @@ describe('UsersController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [{ provide: UsersService, useValue: mockUsersService }],
+      providers: [
+        { provide: UsersService, useValue: mockUsersService },
+        { provide: DataExportService, useValue: { exportUserData: jest.fn(), generateDownloadToken: jest.fn(), validateDownloadToken: jest.fn() } },
+        { provide: ConsentService, useValue: { getActiveConsents: jest.fn().mockResolvedValue([]), revokeConsent: jest.fn() } },
+      ],
     })
       .overrideGuard(
         require('@/modules/auth/guards/jwt-auth.guard').JwtAuthGuard,
@@ -78,13 +84,12 @@ describe('UsersController', () => {
   });
 
   describe('deleteAccount', () => {
-    it('should soft delete the current user account', async () => {
-      const deleted = { ...mockProfile, is_active: false, deleted_at: new Date() };
-      mockUsersService.deleteAccount.mockResolvedValue(deleted);
+    it('should anonymize and delete the user account', async () => {
+      mockUsersService.deleteAccount.mockResolvedValue({ message: 'Account deleted and personal data anonymized.' });
 
       const result = await controller.deleteAccount(mockUser);
 
-      expect(result.is_active).toBe(false);
+      expect(result).toHaveProperty('message');
       expect(mockUsersService.deleteAccount).toHaveBeenCalledWith('user-1');
     });
   });

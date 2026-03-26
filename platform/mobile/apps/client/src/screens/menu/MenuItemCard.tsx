@@ -34,15 +34,23 @@ const MenuItemCard = memo<MenuItemCardProps>(({
   const colors = useColors();
 
   return (
-    <Card style={[styles.card, { backgroundColor: colors.card }]}>
+    <Card
+      style={[styles.card, { backgroundColor: colors.card }]}
+      accessible={true}
+      accessibilityLabel={`${item.name}, ${item.price.toFixed(2)} dollars, ${item.is_available ? 'available' : 'unavailable'}`}
+    >
       {item.image_url && (
-        <Card.Cover source={{ uri: item.image_url }} style={styles.image} />
+        <Card.Cover
+          source={{ uri: item.image_url }}
+          style={styles.image}
+          accessibilityLabel={`Photo of ${item.name}`}
+        />
       )}
       <Card.Content>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text variant="titleMedium" style={{ color: colors.foreground }}>{item.name}</Text>
-            <Chip compact style={[styles.categoryChip, { backgroundColor: colors.muted }]}>
+            <Chip compact style={[styles.categoryChip, { backgroundColor: colors.backgroundTertiary }]}>
               {item.category}
             </Chip>
           </View>
@@ -83,6 +91,8 @@ const MenuItemCard = memo<MenuItemCardProps>(({
             mode="contained"
             onPress={() => onAddToCart(item)}
             style={[styles.addButton, { backgroundColor: colors.primary }]}
+            accessibilityLabel={`Add ${item.name} to cart`}
+            accessibilityRole="button"
           >
             {t('menu.addToCart')}
           </Button>
@@ -121,6 +131,69 @@ const MenuItemCard = memo<MenuItemCardProps>(({
 
 MenuItemCard.displayName = 'MenuItemCard';
 
-// Note: All styles use inline semantic tokens via useColors()
+const styles = StyleSheet.create({
+  card: {
+    marginBottom: 16,
+    borderRadius: 12,
+  },
+  image: {
+    height: 160,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginTop: 12,
+  },
+  headerLeft: {
+    flex: 1,
+    marginRight: 12,
+  },
+  categoryChip: {
+    alignSelf: 'flex-start',
+    marginTop: 4,
+  },
+  price: {
+    fontWeight: '700',
+  },
+  description: {
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  details: {
+    marginBottom: 8,
+  },
+  detailText: {
+    marginBottom: 4,
+  },
+  dietaryInfo: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 4,
+    gap: 4,
+  },
+  dietaryChip: {
+    marginRight: 4,
+    marginBottom: 4,
+  },
+  allergens: {
+    marginTop: 4,
+  },
+  actions: {
+    justifyContent: 'flex-end',
+  },
+  addButton: {
+    borderRadius: 8,
+  },
+  quantityControl: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  quantity: {
+    minWidth: 24,
+    textAlign: 'center',
+  },
+});
 
 export default MenuItemCard;

@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import ApiService from '@/shared/services/api';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useI18n } from '@/shared/hooks/useI18n';
-import { useColors } from '../../../../shared/theme';
+import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import logger from '@okinawa/shared/utils/logger';
 
 interface Restaurant {
@@ -58,7 +58,7 @@ export default function CreateReservationScreen() {
     },
     loadingText: {
       marginTop: 15,
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     title: {
       marginBottom: 20,
@@ -76,7 +76,7 @@ export default function CreateReservationScreen() {
       color: colors.foreground,
     },
     restaurantCuisine: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       marginBottom: 10,
     },
     infoRow: {
@@ -89,11 +89,11 @@ export default function CreateReservationScreen() {
       marginRight: -5,
     },
     restaurantAddress: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       flex: 1,
     },
     restaurantPhone: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
     },
     sectionTitle: {
       marginBottom: 20,
@@ -133,7 +133,7 @@ export default function CreateReservationScreen() {
       marginBottom: 10,
     },
     summaryLabel: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       flex: 1,
     },
     summaryValue: {
@@ -147,7 +147,7 @@ export default function CreateReservationScreen() {
       backgroundColor: colors.border,
     },
     specialRequestsNote: {
-      color: colors.textMuted,
+      color: colors.foregroundMuted,
       fontStyle: 'italic',
     },
     noteCard: {
@@ -325,7 +325,7 @@ export default function CreateReservationScreen() {
           )}
           {restaurant.address && (
             <View style={styles.infoRow}>
-              <IconButton icon="map-marker" size={16} style={styles.infoIcon} iconColor={colors.textMuted} />
+              <IconButton icon="map-marker" size={16} style={styles.infoIcon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={styles.restaurantAddress}>
                 {restaurant.address}
               </Text>
@@ -333,7 +333,7 @@ export default function CreateReservationScreen() {
           )}
           {restaurant.phone && (
             <View style={styles.infoRow}>
-              <IconButton icon="phone" size={16} style={styles.infoIcon} iconColor={colors.textMuted} />
+              <IconButton icon="phone" size={16} style={styles.infoIcon} iconColor={colors.foregroundMuted} />
               <Text variant="bodySmall" style={styles.restaurantPhone}>
                 {restaurant.phone}
               </Text>
@@ -409,7 +409,7 @@ export default function CreateReservationScreen() {
                 size={32}
                 onPress={decrementPartySize}
                 disabled={partySize <= 1}
-                iconColor={partySize <= 1 ? colors.textMuted : colors.primary}
+                iconColor={partySize <= 1 ? colors.foregroundMuted : colors.primary}
                 accessibilityLabel="Decrease party size"
                 accessibilityRole="button"
               />
@@ -421,7 +421,7 @@ export default function CreateReservationScreen() {
                 size={32}
                 onPress={incrementPartySize}
                 disabled={partySize >= 20}
-                iconColor={partySize >= 20 ? colors.textMuted : colors.primary}
+                iconColor={partySize >= 20 ? colors.foregroundMuted : colors.primary}
                 accessibilityLabel="Increase party size"
                 accessibilityRole="button"
               />
@@ -442,7 +442,7 @@ export default function CreateReservationScreen() {
               placeholder={t('reservations.specialRequestsPlaceholder')}
               style={styles.textArea}
               textColor={colors.foreground}
-              placeholderTextColor={colors.textMuted}
+              placeholderTextColor={colors.foregroundMuted}
               accessibilityLabel="Special requests for the reservation"
             />
           </View>

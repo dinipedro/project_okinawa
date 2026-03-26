@@ -43,15 +43,19 @@ export class OrdersController {
   @Get('restaurant/:restaurantId')
   @Roles(UserRole.OWNER, UserRole.MANAGER, UserRole.WAITER, UserRole.CHEF, UserRole.BARMAN, UserRole.MAITRE)
   @ApiOperation({ summary: 'Get orders by restaurant (Staff only)' })
-  @ApiResponse({ status: 200, description: 'Returns paginated list of orders' })
+  @ApiResponse({ status: 200, description: 'Returns paginated list of orders (LGPD: delivery info filtered by order type)' })
   @ApiResponse({ status: 403, description: 'Forbidden - staff only' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  findByRestaurant(
+  async findByRestaurant(
     @Param('restaurantId') restaurantId: string,
     @Query() pagination: PaginationDto,
   ) {
-    return this.ordersService.findByRestaurant(restaurantId, pagination);
+    const result = await this.ordersService.findByRestaurant(restaurantId, pagination);
+    return {
+      ...result,
+      items: this.ordersService.serializeOrdersForRestaurant(result.items),
+    };
   }
 
   @Get('user')
@@ -66,12 +70,24 @@ export class OrdersController {
 
   @Get(':id')
   @Roles(UserRole.CUSTOMER, UserRole.OWNER, UserRole.MANAGER, UserRole.WAITER, UserRole.CHEF, UserRole.BARMAN, UserRole.MAITRE)
-  @ApiOperation({ summary: 'Get order by ID' })
+  @ApiOperation({ summary: 'Get order by ID (LGPD: delivery info filtered for staff on non-delivery orders)' })
   @ApiResponse({ status: 200, description: 'Returns order details' })
   @ApiResponse({ status: 404, description: 'Order not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  findOne(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
-    return this.ordersService.findOne(id, user.id, user.roles as UserRole[]);
+  async findOne(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    const order = await this.ordersService.findOne(id, user.id, user.roles as UserRole[]);
+    const roles = user.roles as UserRole[];
+
+    // If the caller is restaurant staff, apply data filtering
+    const isStaff = roles.some((role) =>
+      [UserRole.OWNER, UserRole.MANAGER, UserRole.WAITER, UserRole.CHEF, UserRole.BARMAN, UserRole.MAITRE].includes(role),
+    );
+
+    if (isStaff) {
+      return this.ordersService.serializeOrderForRestaurant(order);
+    }
+
+    return order;
   }
 
   @Patch(':id')

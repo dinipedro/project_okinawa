@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, StyleSheet, RefreshControl, Alert } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import {
   Text,
   Button,
@@ -97,11 +97,11 @@ export default function FavoritesScreen() {
   }, [favorites]);
 
   const handleRestaurantPress = useCallback((restaurantId: string) => {
-    navigation.navigate('Restaurant' as never, { restaurantId } as never);
+    (navigation as any).navigate('Restaurant', { restaurantId });
   }, [navigation]);
 
   const handleViewMenu = useCallback((restaurantId: string) => {
-    navigation.navigate('Menu' as never, { restaurantId } as never);
+    (navigation as any).navigate('Menu', { restaurantId });
   }, [navigation]);
 
   if (loading) {
@@ -123,8 +123,8 @@ export default function FavoritesScreen() {
       />
 
       <FlashList
-        data={filteredFavorites}
-        renderItem={({ item }) => (
+        data={filteredFavorites as Favorite[]}
+        renderItem={({ item }: ListRenderItemInfo<Favorite>) => (
           <FavoriteCard
             favorite={item}
             onPress={handleRestaurantPress}
@@ -162,4 +162,39 @@ export default function FavoritesScreen() {
   );
 }
 
-// Styles are inline with semantic tokens via useColors()
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+  },
+  searchBar: {
+    margin: 16,
+    borderRadius: 12,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 64,
+    paddingHorizontal: 32,
+  },
+  emptyTitle: {
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  emptyText: {
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  exploreButton: {
+    marginTop: 24,
+    borderRadius: 12,
+  },
+});

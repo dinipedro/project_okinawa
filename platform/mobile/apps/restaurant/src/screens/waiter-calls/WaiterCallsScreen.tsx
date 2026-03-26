@@ -121,7 +121,10 @@ export default function WaiterCallsScreen() {
     refetch,
   } = useQuery<WaiterCall[]>({
     queryKey: ['waiter-calls'],
-    queryFn: () => ApiService.get('/waiter-calls/restaurant/current/pending'),
+    queryFn: async () => {
+      const res = await ApiService.get('/waiter-calls/restaurant/current/pending');
+      return res.data;
+    },
     refetchInterval: 10000,
   });
 
@@ -130,7 +133,10 @@ export default function WaiterCallsScreen() {
     data: resolvedCalls = [],
   } = useQuery<WaiterCall[]>({
     queryKey: ['waiter-calls', 'resolved'],
-    queryFn: () => ApiService.get('/waiter-calls/restaurant/current/resolved'),
+    queryFn: async () => {
+      const res = await ApiService.get('/waiter-calls/restaurant/current/resolved');
+      return res.data;
+    },
     enabled: activeTab === 'resolved',
     refetchInterval: 30000,
   });

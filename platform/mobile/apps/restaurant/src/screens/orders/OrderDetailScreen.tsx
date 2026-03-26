@@ -312,12 +312,12 @@ export default function OrderDetailScreen() {
             {t('common.user')}
           </Text>
           <Text variant="bodyLarge" style={{ color: colors.foreground }}>
-            {order.user?.full_name || t('common.user')}
+            {order.customer?.full_name || t('common.user')}
           </Text>
-          {order.user?.phone && (
+          {order.customer?.phone && (
             <View style={styles.infoRow}>
               <IconButton icon="phone" size={20} style={styles.icon} iconColor={colors.mutedForeground} />
-              <Text variant="bodyMedium" style={styles.infoText}>{order.user.phone}</Text>
+              <Text variant="bodyMedium" style={styles.infoText}>{order.customer.phone}</Text>
             </View>
           )}
           {order.delivery_address && order.order_type === 'delivery' && (
@@ -355,7 +355,7 @@ export default function OrderDetailScreen() {
               <View style={styles.itemDetails}>
                 <Text variant="bodyLarge" style={styles.itemName}>{item.menu_item?.name}</Text>
                 <Text variant="bodyMedium" style={styles.itemPrice}>
-                  R$ {item.unit_price.toFixed(2)}
+                  R$ {(item.unit_price ?? 0).toFixed(2)}
                 </Text>
                 {item.special_instructions && (
                   <Text variant="bodySmall" style={styles.instructions}>
@@ -364,7 +364,7 @@ export default function OrderDetailScreen() {
                 )}
               </View>
               <Text variant="bodyLarge" style={styles.itemTotal}>
-                R$ {(item.quantity * item.unit_price).toFixed(2)}
+                R$ {(item.quantity * (item.unit_price ?? 0)).toFixed(2)}
               </Text>
             </View>
           ))}
@@ -378,13 +378,13 @@ export default function OrderDetailScreen() {
         </Card.Content>
       </Card>
 
-      {order.notes && (
+      {order.special_instructions && (
         <Card style={styles.card}>
           <Card.Content>
             <Text variant="titleMedium" style={styles.sectionTitle}>
               {t('orders.specialInstructions')}
             </Text>
-            <Text variant="bodyMedium" style={{ color: colors.foreground }}>{order.notes}</Text>
+            <Text variant="bodyMedium" style={{ color: colors.foreground }}>{order.special_instructions}</Text>
           </Card.Content>
         </Card>
       )}

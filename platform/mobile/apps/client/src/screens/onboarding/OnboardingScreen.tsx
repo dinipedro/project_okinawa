@@ -115,7 +115,7 @@ export default function OnboardingScreen() {
     description: { 
       textAlign: 'center', 
       lineHeight: 24,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     pagination: { 
       flexDirection: 'row', 
@@ -168,7 +168,7 @@ export default function OnboardingScreen() {
       color: colors.foreground,
     },
     preferencesSubtitle: {
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     scrollContent: { 
       paddingBottom: 100,
@@ -187,7 +187,7 @@ export default function OnboardingScreen() {
     },
     sectionDescription: { 
       marginBottom: 15,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     chipContainer: { 
       flexDirection: 'row', 
@@ -376,7 +376,7 @@ export default function OnboardingScreen() {
       </View>
 
       <View style={styles.navigation}>
-        <Button mode="text" onPress={handleSkip} textColor={colors.mutedForeground} style={styles.skipButton}>
+        <Button mode="text" onPress={handleSkip} textColor={colors.foregroundMuted} style={styles.skipButton}>
           Pular
         </Button>
         <Button

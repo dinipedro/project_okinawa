@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import LangProvider from "@/components/site/LangProvider";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import SkipNavLink from "@/components/a11y/SkipNavLink";
+import CookieConsent from "@/components/CookieConsent";
 import { lazy, Suspense } from "react";
 import DemoLayout from "@/components/site/DemoLayout";
 import SiteLayout from "@/components/site/SiteLayout";
@@ -58,6 +59,7 @@ const App = () => (
               <SkipNavLink />
               <Toaster />
               <Sonner />
+              <CookieConsent />
               <BrowserRouter>
                 <Suspense fallback={<PageLoader />}>
                   <div id="main-content">

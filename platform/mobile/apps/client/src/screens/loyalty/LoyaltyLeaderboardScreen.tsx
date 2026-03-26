@@ -17,7 +17,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
-import { typography } from '@okinawa/shared/theme/typography';
+import { fontSize, fontWeight } from '@okinawa/shared/theme/typography';
 import { spacing } from '@okinawa/shared/theme/spacing';
 
 interface LeaderboardUser {
@@ -64,7 +64,7 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       platinum: '#E5E4E2',
       diamond: '#B9F2FF',
     };
-    return tierColors[tier] || colors.mutedForeground;
+    return tierColors[tier] || colors.foregroundMuted;
   }, [colors]);
 
   const currentUser: LeaderboardUser = {
@@ -127,8 +127,8 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       paddingVertical: spacing.md,
     },
     title: {
-      fontSize: typography.sizes.lg,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.lg,
+      fontWeight: fontWeight.bold as any,
       color: colors.foreground,
     },
     content: {
@@ -157,16 +157,16 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       height: 48,
       borderRadius: 24,
       borderWidth: 2,
-      borderColor: colors.cardForeground,
+      borderColor: colors.primaryForeground,
     },
     statsName: {
       color: colors.glassStrong,
-      fontSize: typography.sizes.sm,
+      fontSize: fontSize.sm,
     },
     statsPoints: {
-      color: colors.cardForeground,
-      fontSize: typography.sizes.xxl,
-      fontWeight: typography.weights.bold as any,
+      color: colors.primaryForeground,
+      fontSize: fontSize['2xl'],
+      fontWeight: fontWeight.bold as any,
     },
     statsTier: {
       flexDirection: 'row',
@@ -177,8 +177,8 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       borderRadius: spacing.md,
     },
     statsTierText: {
-      fontSize: typography.sizes.xs,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.xs,
+      fontWeight: fontWeight.bold as any,
       color: colors.foreground,
     },
     progressSection: {
@@ -192,12 +192,12 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
     },
     progressFill: {
       height: '100%',
-      backgroundColor: colors.cardForeground,
+      backgroundColor: colors.primaryForeground,
       borderRadius: 4,
     },
     progressText: {
       color: colors.glassStrong,
-      fontSize: typography.sizes.xs,
+      fontSize: fontSize.xs,
     },
     statsRow: {
       flexDirection: 'row',
@@ -207,13 +207,13 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       alignItems: 'center',
     },
     statValue: {
-      color: colors.cardForeground,
-      fontSize: typography.sizes.lg,
-      fontWeight: typography.weights.bold as any,
+      color: colors.primaryForeground,
+      fontSize: fontSize.lg,
+      fontWeight: fontWeight.bold as any,
     },
     statLabel: {
       color: colors.glassBorder,
-      fontSize: typography.sizes.xs,
+      fontSize: fontSize.xs,
     },
     statDivider: {
       width: 1,
@@ -225,7 +225,7 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       padding: 4,
       borderRadius: spacing.md,
       marginBottom: spacing.lg,
-      backgroundColor: colors.muted,
+      backgroundColor: colors.backgroundTertiary,
     },
     tab: {
       flex: 1,
@@ -237,8 +237,8 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       borderRadius: spacing.md - 2,
     },
     tabText: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.medium as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.medium as any,
     },
     podium: {
       flexDirection: 'row',
@@ -292,13 +292,13 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
     },
     podiumName: {
       marginTop: spacing.md,
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.medium as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.medium as any,
       color: colors.foreground,
     },
     podiumPoints: {
-      fontSize: typography.sizes.xs,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.xs,
+      fontWeight: fontWeight.bold as any,
       color: colors.primary,
     },
     podiumBar: {
@@ -334,9 +334,9 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
     },
     userRank: {
       width: 32,
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.medium as any,
-      color: colors.mutedForeground,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.medium as any,
+      color: colors.foregroundMuted,
     },
     userAvatar: {
       width: 40,
@@ -348,8 +348,8 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       flex: 1,
     },
     userName: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.semibold as any,
       color: colors.foreground,
     },
     tierBadge: {
@@ -363,12 +363,12 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       borderRadius: 4,
     },
     tierText: {
-      fontSize: typography.sizes.xs,
-      color: colors.mutedForeground,
+      fontSize: fontSize.xs,
+      color: colors.foregroundMuted,
     },
     userPoints: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.bold as any,
       color: colors.primary,
     },
     rewardsGrid: {
@@ -394,17 +394,17 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       marginBottom: spacing.sm,
     },
     rewardName: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.semibold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.semibold as any,
       textAlign: 'center',
       marginBottom: 2,
       color: colors.foreground,
     },
     rewardDescription: {
-      fontSize: typography.sizes.xs,
+      fontSize: fontSize.xs,
       textAlign: 'center',
       marginBottom: spacing.sm,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     rewardCost: {
       flexDirection: 'row',
@@ -415,8 +415,8 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       borderRadius: spacing.sm,
     },
     rewardCostText: {
-      fontSize: typography.sizes.sm,
-      fontWeight: typography.weights.bold as any,
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.bold as any,
     },
     redeemBadge: {
       position: 'absolute',
@@ -428,7 +428,7 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
       backgroundColor: colors.primary,
     },
     redeemText: {
-      color: colors.cardForeground,
+      color: colors.primaryForeground,
       fontSize: 10,
       fontWeight: 'bold',
     },
@@ -544,9 +544,9 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
             <Text style={styles.rewardDescription}>
               {reward.description}
             </Text>
-            <View style={[styles.rewardCost, { backgroundColor: canRedeem ? `${colors.primary}20` : colors.muted }]}>
-              <Ionicons name="star" size={14} color={canRedeem ? colors.primary : colors.mutedForeground} />
-              <Text style={[styles.rewardCostText, { color: canRedeem ? colors.primary : colors.mutedForeground }]}>
+            <View style={[styles.rewardCost, { backgroundColor: canRedeem ? `${colors.primary}20` : colors.backgroundTertiary }]}>
+              <Ionicons name="star" size={14} color={canRedeem ? colors.primary : colors.foregroundMuted} />
+              <Text style={[styles.rewardCostText, { color: canRedeem ? colors.primary : colors.foregroundMuted }]}>
                 {reward.pointsCost.toLocaleString()}
               </Text>
             </View>
@@ -577,7 +577,7 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
           accessibilityRole="button"
           accessibilityLabel="Loyalty program information"
         >
-          <Ionicons name="information-circle-outline" size={24} color={colors.mutedForeground} />
+          <Ionicons name="information-circle-outline" size={24} color={colors.foregroundMuted} />
         </TouchableOpacity>
       </View>
 
@@ -637,9 +637,9 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
             <Ionicons
               name="podium"
               size={18}
-              color={activeTab === 'leaderboard' ? colors.primary : colors.mutedForeground}
+              color={activeTab === 'leaderboard' ? colors.primary : colors.foregroundMuted}
             />
-            <Text style={[styles.tabText, { color: activeTab === 'leaderboard' ? colors.foreground : colors.mutedForeground }]}>
+            <Text style={[styles.tabText, { color: activeTab === 'leaderboard' ? colors.foreground : colors.foregroundMuted }]}>
               Ranking
             </Text>
           </TouchableOpacity>
@@ -653,9 +653,9 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
             <Ionicons
               name="gift"
               size={18}
-              color={activeTab === 'rewards' ? colors.primary : colors.mutedForeground}
+              color={activeTab === 'rewards' ? colors.primary : colors.foregroundMuted}
             />
-            <Text style={[styles.tabText, { color: activeTab === 'rewards' ? colors.foreground : colors.mutedForeground }]}>
+            <Text style={[styles.tabText, { color: activeTab === 'rewards' ? colors.foreground : colors.foregroundMuted }]}>
               Recompensas
             </Text>
           </TouchableOpacity>

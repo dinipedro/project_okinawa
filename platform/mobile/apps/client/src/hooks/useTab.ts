@@ -156,7 +156,10 @@ export function useTab(tabId: string) {
     refetch,
   } = useQuery<Tab>({
     queryKey: queryKeys.tabs.detail(tabId),
-    queryFn: () => ApiService.get(`/tabs/${tabId}`),
+    queryFn: async () => {
+      const res = await ApiService.get<Tab>(`/tabs/${tabId}`);
+      return res.data;
+    },
     enabled: !!tabId,
     staleTime: 1000 * 30, // 30 seconds — WebSocket handles real-time
     refetchOnWindowFocus: true,
@@ -324,7 +327,10 @@ export function useTab(tabId: string) {
 export function useMyTabs() {
   return useQuery<Tab[]>({
     queryKey: queryKeys.tabs.my,
-    queryFn: () => ApiService.get('/tabs/my'),
+    queryFn: async () => {
+      const res = await ApiService.get<Tab[]>('/tabs/my');
+      return res.data;
+    },
     staleTime: 1000 * 60 * 2, // 2 minutes
   });
 }
@@ -335,7 +341,10 @@ export function useMyTabs() {
 export function useTabSplitOptions(tabId: string) {
   return useQuery({
     queryKey: queryKeys.tabs.splitOptions(tabId),
-    queryFn: () => ApiService.get(`/tabs/${tabId}/split-options`),
+    queryFn: async () => {
+      const res = await ApiService.get(`/tabs/${tabId}/split-options`);
+      return res.data;
+    },
     enabled: !!tabId,
   });
 }

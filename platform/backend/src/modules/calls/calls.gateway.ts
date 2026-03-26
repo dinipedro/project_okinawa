@@ -7,7 +7,7 @@ import {
   ConnectedSocket,
   MessageBody,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, BeforeApplicationShutdown } from '@nestjs/common';
 import { Server } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticatedSocket } from '@common/interfaces/authenticated-socket.interface';
@@ -18,7 +18,7 @@ import { ServiceCall } from './entities/service-call.entity';
   namespace: '/calls',
   cors: getWsCorsConfig(),
 })
-export class CallsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class CallsGateway implements OnGatewayConnection, OnGatewayDisconnect, BeforeApplicationShutdown {
   private readonly logger = new Logger(CallsGateway.name);
 
   @WebSocketServer()
@@ -123,5 +123,15 @@ export class CallsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         resolved_at: call.resolved_at,
         resolved_by: call.resolved_by,
       });
+  }
+
+  async beforeApplicationShutdown() {
+    this.logger.log('Shutting down — disconnecting all clients...');
+    if (this.server) {
+      const sockets = await this.server.fetchSockets();
+      for (const socket of sockets) {
+        socket.disconnect(true);
+      }
+    }
   }
 }

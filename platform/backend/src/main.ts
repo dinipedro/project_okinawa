@@ -8,6 +8,9 @@ import { TransformResponseInterceptor } from './common/interceptors/transform-re
 import { StructuredLoggerService } from './common/logging';
 import { CsrfMiddleware, CSRF_EXCLUDED_ROUTES } from './common/middleware/csrf.middleware';
 import { MaintenanceMiddleware, MAINTENANCE_EXCLUDED_PATHS } from './common/middleware/maintenance.middleware';
+import { TermsVersionMiddleware } from './common/middleware/terms-version.middleware';
+import { ConsentService } from './modules/identity/services/consent.service';
+import { LegalService } from './modules/legal/legal.service';
 import { initializeSentry } from './config/sentry.config';
 import { swaggerConfig } from './config/swagger.config';
 import compression from 'compression';
@@ -38,7 +41,7 @@ async function bootstrap() {
   const corsOrigin = configService.get<string>('CORS_ORIGIN');
   const nodeEnv = configService.get<string>('NODE_ENV') || 'development';
   const isProduction = nodeEnv === 'production';
-  const swaggerEnabled = !isProduction && configService.get<string>('SWAGGER_ENABLED') !== 'false';
+  const swaggerEnabled = configService.get<string>('SWAGGER_ENABLED') === 'true';
 
   // Socket.IO Redis adapter for horizontal scaling
   await configureRedisAdapter(app);
@@ -60,6 +63,11 @@ async function bootstrap() {
   app.use(helmet({
     contentSecurityPolicy: { directives: cspDirectives },
     crossOriginEmbedderPolicy: isProduction, // Only enforce in production
+    strictTransportSecurity: {
+      maxAge: 31536000, // 1 year in seconds
+      includeSubDomains: true,
+      preload: true,
+    },
   }));
   app.use(compression());
   app.use(cookieParser()); // Required for CSRF tokens
@@ -81,6 +89,15 @@ async function bootstrap() {
       return next();
     }
     return csrfMiddleware.use(req, res, next);
+  });
+
+  // Terms/Privacy re-consent middleware (LGPD Sprint 2)
+  // Returns HTTP 451 when authenticated users haven't accepted the current legal document versions.
+  const consentService = app.get(ConsentService);
+  const legalService = app.get(LegalService);
+  const termsVersionMiddleware = new TermsVersionMiddleware(consentService, legalService);
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    return termsVersionMiddleware.use(req, res, next);
   });
 
   // CORS configuration - SECURITY: Never use '*' in production
@@ -116,7 +133,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: corsOrigins.length > 0 ? corsOrigins : false, // false = reject all cross-origin
-    credentials: configService.get<boolean>('CORS_CREDENTIALS') ?? true,
+    credentials: configService.get<boolean>('CORS_CREDENTIALS') ?? false,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Content-Type',

@@ -2,12 +2,15 @@ import { Injectable, NotFoundException, ForbiddenException, Logger } from '@nest
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan, Between } from 'typeorm';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { Review } from '@/modules/reviews/entities/review.entity';
 import { Order } from '@/modules/orders/entities/order.entity';
 import { MenuItem } from '@/modules/menu-items/entities/menu-item.entity';
 import { LoyaltyProgram } from '@/modules/loyalty/entities/loyalty-program.entity';
 import { Restaurant } from '@/modules/restaurants/entities/restaurant.entity';
+import { CircuitBreakerService } from '@common/utils/circuit-breaker.module';
+import { CircuitBreaker, CircuitBreakerOpenError } from '@common/utils/circuit-breaker';
+import { createTracedAxios } from '@common/utils/traced-http-client';
 
 export interface SentimentAnalysis {
   review_id: string;
@@ -64,6 +67,7 @@ export class AiService {
   private readonly logger = new Logger(AiService.name);
   private readonly openaiApiKey: string | undefined;
   private readonly openaiModel: string;
+  private readonly openaiCircuitBreaker: CircuitBreaker;
 
   constructor(
     @InjectRepository(Review)
@@ -77,9 +81,16 @@ export class AiService {
     @InjectRepository(Restaurant)
     private restaurantRepository: Repository<Restaurant>,
     private configService: ConfigService,
+    private readonly circuitBreakerService: CircuitBreakerService,
   ) {
     this.openaiApiKey = this.configService.get<string>('OPENAI_API_KEY') || undefined;
     this.openaiModel = this.configService.get<string>('OPENAI_MODEL') || 'gpt-4-turbo-preview';
+
+    this.openaiCircuitBreaker = this.circuitBreakerService.getBreaker('openai', {
+      failureThreshold: 3,   // Open after 3 consecutive failures
+      resetTimeout: 60_000,  // Wait 60s before trying again
+      halfOpenMax: 1,        // Allow 1 trial call in half-open state
+    });
 
     if (this.openaiApiKey) {
       this.logger.log('OpenAI API key detected — AI-powered analysis enabled');
@@ -98,32 +109,82 @@ export class AiService {
   }
 
   /**
+   * LGPD compliance: Sanitize data before sending to OpenAI.
+   * Strips user IDs, restaurant names, and any PII, replacing
+   * them with anonymous identifiers.
+   */
+  private sanitizeForAI(data: string): string {
+    let sanitized = data;
+
+    // Replace UUIDs (user_id, restaurant_id, order_id, etc.)
+    sanitized = sanitized.replace(
+      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
+      'anonymous_id',
+    );
+
+    // Replace email addresses
+    sanitized = sanitized.replace(
+      /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+      'anonymous_email',
+    );
+
+    // Replace phone numbers (Brazilian and international formats)
+    sanitized = sanitized.replace(
+      /(\+?\d{1,3}[\s-]?)?\(?\d{2,3}\)?[\s-]?\d{4,5}[\s-]?\d{4}/g,
+      'anonymous_phone',
+    );
+
+    // Replace CPF numbers (Brazilian tax ID: XXX.XXX.XXX-XX)
+    sanitized = sanitized.replace(
+      /\d{3}\.\d{3}\.\d{3}-\d{2}/g,
+      'anonymous_cpf',
+    );
+
+    // Replace proper names after common PII labels (case-insensitive)
+    sanitized = sanitized.replace(
+      /(?:name|nome|customer|cliente|user|usuario):\s*["']?([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
+      (match, _name) => match.replace(_name, 'Anonymous User'),
+    );
+
+    return sanitized;
+  }
+
+  /**
    * Make a chat completion request to the OpenAI API.
    * Handles timeout, rate-limit, and generic errors gracefully.
+   * All prompts are sanitized to remove PII before transmission (LGPD compliance).
    */
   private async callOpenAI<T>(
     systemPrompt: string,
     userPrompt: string,
+    traceId?: string,
   ): Promise<T> {
-    const response = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: this.openaiModel,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
-        temperature: 0.3,
-        max_tokens: 1024,
-        response_format: { type: 'json_object' },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${this.openaiApiKey}`,
-          'Content-Type': 'application/json',
+    // LGPD safety net: ensure no PII reaches external AI services
+    const safeSystemPrompt = this.sanitizeForAI(systemPrompt);
+    const safeUserPrompt = this.sanitizeForAI(userPrompt);
+
+    const http = createTracedAxios({ traceId, timeout: 15_000 });
+
+    const response = await this.openaiCircuitBreaker.execute(() =>
+      http.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: this.openaiModel,
+          messages: [
+            { role: 'system', content: safeSystemPrompt },
+            { role: 'user', content: safeUserPrompt },
+          ],
+          temperature: 0.3,
+          max_tokens: 1024,
+          response_format: { type: 'json_object' },
         },
-        timeout: 15_000, // 15 second timeout
-      },
+        {
+          headers: {
+            Authorization: `Bearer ${this.openaiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      ),
     );
 
     const content = response.data.choices?.[0]?.message?.content;
@@ -250,9 +311,13 @@ Context: The review has a numeric rating of ${review.rating}/5.${review.food_rat
         ? `Review text: "${review.comment}"`
         : `No text provided. Rating: ${review.rating}/5.`;
 
+      // LGPD: Sanitize prompts to strip any PII before sending to OpenAI
+      const sanitizedSystemPrompt = this.sanitizeForAI(systemPrompt);
+      const sanitizedUserPrompt = this.sanitizeForAI(userPrompt);
+
       const aiResult = await this.callOpenAI<OpenAISentimentResponse>(
-        systemPrompt,
-        userPrompt,
+        sanitizedSystemPrompt,
+        sanitizedUserPrompt,
       );
 
       return {
@@ -269,7 +334,11 @@ Context: The review has a numeric rating of ${review.rating}/5.${review.food_rat
       };
     } catch (error) {
       // Log the error and degrade gracefully to rule-based analysis
-      if (error instanceof AxiosError) {
+      if (error instanceof CircuitBreakerOpenError) {
+        this.logger.warn(
+          `OpenAI circuit breaker open — falling back to rule-based sentiment for review ${reviewId}`,
+        );
+      } else if (error instanceof AxiosError) {
         if (error.response?.status === 429) {
           this.logger.warn(
             `OpenAI rate limit hit — falling back to rule-based sentiment for review ${reviewId}`,

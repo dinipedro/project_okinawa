@@ -18,28 +18,34 @@ export class Profile {
   email: string;
 
   @Column({ nullable: true })
-  full_name: string;
+  full_name: string | null;
 
   @Column({ nullable: true })
-  avatar_url: string;
+  avatar_url: string | null;
 
   @Column({ nullable: true })
-  phone: string;
+  phone: string | null;
 
   @Column({ type: 'boolean', default: false })
   phone_verified: boolean;
 
   @Column({ nullable: true })
-  default_address: string;
+  default_address: string | null;
 
   @Column({ type: 'simple-array', nullable: true })
-  dietary_restrictions: string[];
+  dietary_restrictions: string[] | null;
 
   @Column({ type: 'simple-array', nullable: true })
-  favorite_cuisines: string[];
+  favorite_cuisines: string[] | null;
 
   @Column({ type: 'jsonb', nullable: true })
-  preferences: Record<string, any>;
+  preferences: Record<string, any> | null;
+
+  @Column({ type: 'date', nullable: true })
+  birth_date: Date;
+
+  @Column({ type: 'boolean', default: false })
+  marketing_consent: boolean;
 
   @Column({ default: true })
   is_active: boolean;

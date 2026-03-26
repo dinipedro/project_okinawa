@@ -68,10 +68,10 @@ export function formatDate(
   }
 
   const options: Intl.DateTimeFormatOptions = {
-    short: { day: '2-digit', month: '2-digit', year: '2-digit' },
-    medium: { day: '2-digit', month: '2-digit', year: 'numeric' },
-    long: { day: 'numeric', month: 'long', year: 'numeric' },
-    full: { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' },
+    short: { day: '2-digit' as const, month: '2-digit' as const, year: '2-digit' as const },
+    medium: { day: '2-digit' as const, month: '2-digit' as const, year: 'numeric' as const },
+    long: { day: 'numeric' as const, month: 'long' as const, year: 'numeric' as const },
+    full: { weekday: 'long' as const, day: 'numeric' as const, month: 'long' as const, year: 'numeric' as const },
   }[format];
 
   try {

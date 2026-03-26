@@ -178,7 +178,7 @@ function DrinkItemRow({
         paddingHorizontal: 16,
         borderBottomWidth: 1,
         borderBottomColor: colors.border,
-        backgroundColor: quantity > 0 ? (colors.primaryBackground || colors.background) : 'transparent',
+        backgroundColor: quantity > 0 ? (colors.background) : 'transparent',
       }}
     >
       <View style={{ flex: 1, marginRight: 12 }}>
@@ -191,7 +191,7 @@ function DrinkItemRow({
         {item.description ? (
           <Text
             variant="bodySmall"
-            style={{ color: colors.mutedForeground, marginTop: 2 }}
+            style={{ color: colors.foregroundMuted, marginTop: 2 }}
             numberOfLines={1}
           >
             {item.description}
@@ -236,9 +236,12 @@ export default function RoundBuilderSheet({
   // Fetch drink menu for this restaurant
   const { data: menuItems = [], isLoading: menuLoading } = useQuery<MenuItem[]>({
     queryKey: queryKeys.restaurants.menu(restaurantId),
-    queryFn: () => ApiService.get(`/restaurants/${restaurantId}/menu-items`, {
-      params: { category_type: 'drinks', is_available: true },
-    }),
+    queryFn: async () => {
+      const res = await ApiService.get<MenuItem[]>(`/restaurants/${restaurantId}/menu-items`, {
+        params: { category_type: 'drinks', is_available: true },
+      });
+      return res.data;
+    },
     enabled: visible && !!restaurantId,
   });
 
@@ -431,7 +434,7 @@ export default function RoundBuilderSheet({
           paddingVertical: 40,
         },
         emptyText: {
-          color: colors.mutedForeground,
+          color: colors.foregroundMuted,
           marginTop: 12,
         },
         footer: {
@@ -453,7 +456,7 @@ export default function RoundBuilderSheet({
           marginBottom: 12,
         },
         totalLabel: {
-          color: colors.mutedForeground,
+          color: colors.foregroundMuted,
         },
         totalAmount: {
           color: colors.foreground,
@@ -574,7 +577,7 @@ export default function RoundBuilderSheet({
                       <Icon
                         name="glass-mug-variant"
                         size={48}
-                        color={colors.foregroundMuted || colors.mutedForeground}
+                        color={colors.foregroundMuted || colors.foregroundMuted}
                       />
                       <Text variant="bodyLarge" style={styles.emptyText}>
                         {t('tab.round.empty')}

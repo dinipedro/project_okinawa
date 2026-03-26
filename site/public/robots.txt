@@ -18,4 +18,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://okinawa.app/sitemap.xml
+Sitemap: https://noowebr.com/sitemap.xml

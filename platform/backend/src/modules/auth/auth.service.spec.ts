@@ -15,12 +15,14 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
+import { ConsentService } from '../identity/services/consent.service';
 import { LoginDto } from './dto/login.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ConfirmResetPasswordDto } from './dto/confirm-reset-password.dto';
 import { EmailService } from '@/common/services/email.service';
 import { AuditLogService } from '../identity/services/audit-log.service';
 import { CredentialService } from '../identity/services/credential.service';
+import { LegalService } from '../legal/legal.service';
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn(),
@@ -138,6 +140,18 @@ describe('AuthService', () => {
           provide: TokenService,
           useValue: mockTokenService,
         },
+        {
+          provide: ConsentService,
+          useValue: { recordConsent: jest.fn().mockResolvedValue({}), revokeConsent: jest.fn().mockResolvedValue(undefined) },
+        },
+        {
+          provide: LegalService,
+          useValue: {
+            getTermsOfService: jest.fn().mockReturnValue({ version: '1.0', contentHash: 'mock-hash' }),
+            getPrivacyPolicy: jest.fn().mockReturnValue({ version: '1.0', contentHash: 'mock-hash' }),
+            getCurrentVersions: jest.fn().mockReturnValue({ termsVersion: '1.0', privacyVersion: '1.0' }),
+          },
+        },
       ],
     }).compile();
 
@@ -158,6 +172,9 @@ describe('AuthService', () => {
         email: 'newuser@example.com',
         password: 'Password123!',
         full_name: 'New User',
+        birth_date: '1990-01-15',
+        accepted_terms_version: '1.0',
+        accepted_privacy_version: '1.0',
       };
 
       mockProfileRepository.findOne.mockResolvedValue(null);
@@ -183,7 +200,7 @@ describe('AuthService', () => {
       expect(result).toHaveProperty('access_token');
       expect(result).toHaveProperty('refresh_token');
       expect(result).toHaveProperty('user');
-      expect(result.user.email).toBe(registerDto.email);
+      expect((result as any).user.email).toBe(registerDto.email);
       expect(mockProfileRepository.findOne).toHaveBeenCalledWith({
         where: { email: registerDto.email },
       });
@@ -194,16 +211,20 @@ describe('AuthService', () => {
       expect(mockTokenService.generateTokens).toHaveBeenCalled();
     });
 
-    it('should throw ConflictException if email already exists', async () => {
+    it('should return generic message if email already exists (prevent enumeration)', async () => {
       const registerDto: RegisterDto = {
         email: 'existing@example.com',
         password: 'Password123!',
         full_name: 'Existing User',
+        birth_date: '1990-01-15',
+        accepted_terms_version: '1.0',
+        accepted_privacy_version: '1.0',
       };
 
       mockProfileRepository.findOne.mockResolvedValue(mockUser);
 
-      await expect(service.register(registerDto)).rejects.toThrow(ConflictException);
+      const result = await service.register(registerDto);
+      expect(result).toHaveProperty('message');
       expect(mockProfileRepository.save).not.toHaveBeenCalled();
     });
   });

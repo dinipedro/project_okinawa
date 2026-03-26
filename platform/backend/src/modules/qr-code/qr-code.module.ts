@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QrCodeService } from './qr-code.service';
 import { QrCodeSecurityService } from './qr-code-security.service';
@@ -11,7 +11,7 @@ import { TablesModule } from '../tables/tables.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([TableQrCode, TableSession, QrScanLog]),
-    forwardRef(() => TablesModule),
+    TablesModule,
   ],
   controllers: [QrCodeController],
   providers: [QrCodeService, QrCodeSecurityService],

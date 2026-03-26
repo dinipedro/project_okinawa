@@ -124,12 +124,12 @@ function TabStatusChip({
       chipIcon = 'clock-outline';
       break;
     case 'closed':
-      chipColor = colors.foregroundMuted || colors.mutedForeground;
+      chipColor = colors.foregroundMuted || colors.foregroundMuted;
       chipLabel = t('tab.status.closed');
       chipIcon = 'check-circle';
       break;
     default:
-      chipColor = colors.foregroundMuted || colors.mutedForeground;
+      chipColor = colors.foregroundMuted || colors.foregroundMuted;
       chipLabel = status;
       chipIcon = 'help-circle-outline';
   }
@@ -181,8 +181,8 @@ function RoundCard({
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Icon name="clock-outline" size={14} color={colors.mutedForeground} />
-            <Text variant="bodySmall" style={{ color: colors.mutedForeground }}>
+            <Icon name="clock-outline" size={14} color={colors.foregroundMuted} />
+            <Text variant="bodySmall" style={{ color: colors.foregroundMuted }}>
               {formattedTime}
             </Text>
           </View>
@@ -212,7 +212,7 @@ function RoundCard({
                 {item.special_instructions ? (
                   <Text
                     variant="bodySmall"
-                    style={{ color: colors.mutedForeground, fontStyle: 'italic', marginTop: 2 }}
+                    style={{ color: colors.foregroundMuted, fontStyle: 'italic', marginTop: 2 }}
                   >
                     {item.special_instructions}
                   </Text>
@@ -222,7 +222,7 @@ function RoundCard({
                 variant="bodyMedium"
                 style={{ color: colors.foreground, fontWeight: '600' }}
               >
-                {formatCurrency(lineTotal, getLanguage())}
+                {formatCurrency(Number(lineTotal), getLanguage())}
               </Text>
             </View>
           );
@@ -240,7 +240,7 @@ function RoundCard({
             borderTopColor: colors.border,
           }}
         >
-          <Text variant="bodySmall" style={{ color: colors.mutedForeground }}>
+          <Text variant="bodySmall" style={{ color: colors.foregroundMuted }}>
             {t('tab.round.subtotal')}
           </Text>
           <Text
@@ -401,7 +401,7 @@ export default function TabScreen() {
           gap: 4,
         },
         infoText: {
-          color: colors.mutedForeground,
+          color: colors.foregroundMuted,
         },
         wsIndicator: {
           width: 8,
@@ -415,7 +415,7 @@ export default function TabScreen() {
           marginTop: 8,
         },
         totalLabel: {
-          color: colors.mutedForeground,
+          color: colors.foregroundMuted,
           marginRight: 8,
         },
         totalAmount: {
@@ -438,7 +438,7 @@ export default function TabScreen() {
         },
         emptyText: {
           textAlign: 'center',
-          color: colors.mutedForeground,
+          color: colors.foregroundMuted,
           marginTop: 16,
         },
         bottomBar: {
@@ -526,7 +526,7 @@ export default function TabScreen() {
       <Icon
         name="glass-mug-variant"
         size={64}
-        color={colors.foregroundMuted || colors.mutedForeground}
+        color={colors.foregroundMuted || colors.foregroundMuted}
       />
       <Text variant="bodyLarge" style={styles.emptyText}>
         {t('tab.empty')}
@@ -567,14 +567,14 @@ export default function TabScreen() {
         {/* Table number and opened-at info */}
         <View style={styles.infoRow}>
           <View style={styles.infoItem}>
-            <Icon name="table-furniture" size={16} color={colors.mutedForeground} />
+            <Icon name="table-furniture" size={16} color={colors.foregroundMuted} />
             <Text variant="bodyMedium" style={styles.infoText}>
               {t('tab.table')}: {tableLabel}
             </Text>
           </View>
           {openedAtFormatted ? (
             <View style={styles.infoItem}>
-              <Icon name="clock-outline" size={16} color={colors.mutedForeground} />
+              <Icon name="clock-outline" size={16} color={colors.foregroundMuted} />
               <Text variant="bodyMedium" style={styles.infoText}>
                 {t('tab.opened')}: {openedAtFormatted}
               </Text>
@@ -593,7 +593,7 @@ export default function TabScreen() {
           <Badge
             style={[styles.itemCountBadge, { backgroundColor: colors.primary }]}
           >
-            {itemCount} {t('tab.items')}
+            {`${itemCount} ${t('tab.items')}`}
           </Badge>
         </View>
       </View>
@@ -617,7 +617,7 @@ export default function TabScreen() {
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
         <View style={styles.bottomTotal}>
-          <Text variant="bodyLarge" style={{ color: colors.mutedForeground }}>
+          <Text variant="bodyLarge" style={{ color: colors.foregroundMuted }}>
             {t('tab.total')}
           </Text>
           <Text variant="titleLarge" style={{ color: colors.primary, fontWeight: 'bold' }}>

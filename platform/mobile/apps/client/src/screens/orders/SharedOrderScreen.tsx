@@ -111,9 +111,9 @@ export default function SharedOrderScreen() {
       preparing: colors.info,
       ready: colors.success,
       delivered: colors.success,
-      cancelled: colors.destructive,
+      cancelled: colors.error,
     };
-    return statusColors[status] || colors.mutedForeground;
+    return statusColors[status] || colors.foregroundMuted;
   }, [colors]);
 
   const styles = useMemo(() => StyleSheet.create({
@@ -133,7 +133,7 @@ export default function SharedOrderScreen() {
     },
     loadingText: {
       marginTop: 16,
-      color: colors.mutedForeground,
+      color: colors.foregroundMuted,
     },
     headerCard: {
       marginBottom: 16,
@@ -452,7 +452,7 @@ export default function SharedOrderScreen() {
   if (!order) {
     return (
       <View style={styles.loadingContainer}>
-        <IconButton icon="receipt-text-remove" size={64} iconColor={colors.mutedForeground} />
+        <IconButton icon="receipt-text-remove" size={64} iconColor={colors.foregroundMuted} />
         <Text variant="titleLarge" style={{ color: colors.foreground }}>{t('orders.notFound')}</Text>
       </View>
     );
@@ -556,7 +556,7 @@ export default function SharedOrderScreen() {
                       icon="close"
                       size={20}
                       onPress={() => handleRemoveGuest(guest.id)}
-                      iconColor={colors.mutedForeground}
+                      iconColor={colors.foregroundMuted}
                     />
                   )}
                 </View>

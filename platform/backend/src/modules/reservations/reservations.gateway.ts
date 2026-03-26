@@ -8,7 +8,7 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { Logger } from '@nestjs/common';
+import { Logger, BeforeApplicationShutdown } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticatedSocket } from '@common/interfaces/authenticated-socket.interface';
 import { getWsCorsConfig } from '@common/config/ws-cors.config';
@@ -27,7 +27,7 @@ export interface ReservationEventPayload {
   namespace: '/reservations',
   cors: getWsCorsConfig(),
 })
-export class ReservationsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ReservationsGateway implements OnGatewayConnection, OnGatewayDisconnect, BeforeApplicationShutdown {
   private readonly logger = new Logger(ReservationsGateway.name);
 
   @WebSocketServer()
@@ -100,5 +100,15 @@ export class ReservationsGateway implements OnGatewayConnection, OnGatewayDiscon
   notifyReservationUpdated(reservation: ReservationEventPayload) {
     this.server.to(`restaurant:${reservation.restaurant_id}`).emit('reservation:updated', reservation);
     this.server.to(`user:${reservation.user_id}`).emit('reservation:updated', reservation);
+  }
+
+  async beforeApplicationShutdown() {
+    this.logger.log('Shutting down — disconnecting all clients...');
+    if (this.server) {
+      const sockets = await this.server.fetchSockets();
+      for (const socket of sockets) {
+        socket.disconnect(true);
+      }
+    }
   }
 }
