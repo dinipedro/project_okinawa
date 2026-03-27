@@ -533,3 +533,110 @@ echo "🚀 Deploy concluído!"
 | Testes pré-submissão (QA) | 6 | ~8h |
 | Build e submissão (DevOps) | 6 | ~4h |
 | **Total Store Submission** | **36** | **~41h** |
+
+---
+
+## 13. Google Play Console ToS & DDA — Compliance
+
+> Auditoria baseada nos Play Console Terms of Service (abril/2020), Termos de Assinatura de Apps (agosto/2021), DDA e legislação de exportação dos EUA.
+
+### 13.1 Itens em Conformidade (✅)
+
+| Item | Status | Detalhes |
+|------|--------|---------|
+| Android App Bundle (AAB) | ✅ | EAS Build gera AAB por padrão. Sem config APK-only |
+| Play App Signing | ✅ | eas.json configurado com serviceAccountKeyPath |
+| Google Play Billing | ✅ N/A | App vende bens físicos (comida) — IAP não necessário |
+| Restrições de uso (ToS 4.x) | ✅ | Sem reverse engineering, atividade ilegal ou interferência |
+| HTTPS/TLS obrigatório | ✅ | Validação em runtime + enforcement em produção |
+| Token storage seguro | ✅ | expo-secure-store (Keychain/Keystore nativo) |
+| Target SDK (API 34) | ✅ | Expo 51 targets API 34 por padrão. minSdk 24 |
+| Permissões mínimas e justificadas | ✅ | Camera (QR), Location (restaurantes), Vibrate, Boot |
+| Países embargados | ✅ | Google Play bloqueia automaticamente |
+| Classificação ECCN | ✅ EAR99 | Apenas HTTPS padrão — sem criptografia custom no app binary |
+| Consent analytics LGPD | ✅ | waitForReady() bloqueia tracking antes do consent |
+| Sentry PII redaction | ✅ | 10 headers + 6 body fields filtrados em beforeSend |
+
+### 13.2 Ações Obrigatórias Antes da Submissão (⚠️)
+
+| # | Ação | Responsável | Severidade | Detalhes |
+|---|------|-------------|-----------|----------|
+| G1 | **Verificação de idade (18+) no registro** | Mobile Dev | **ALTA** | Adicionar checkbox "Tenho 18 anos ou mais" + validação de data de nascimento. Backend já tem `IsAdultConstraint` no RegisterDto — falta enforcement no mobile |
+| G2 | **Preencher IARC Content Rating** | Product | **ALTA** | Play Console → App Content → Content Rating. Declarar: conteúdo gerado por usuário (reviews), referências a álcool (bar/pub service) → resultado esperado: 12+ |
+| G3 | **Preencher Data Safety Section** | Product | **ALTA** | Play Console → App Content → Data Safety. Declarar todos os dados: nome, email, phone, localização, push tokens, analytics, crash reports, pagamentos via gateway externo |
+| G4 | **Atualizar Privacy Policy** | Legal | **MÉDIA** | Adicionar menções explícitas a: (1) Sentry crash reporting com PII redacted, (2) Expo Push token collection, (3) Firebase Analytics com consent |
+| G5 | **Adicionar política de moderação de conteúdo** | Legal | **MÉDIA** | Reviews são user-generated content. Adicionar nos Termos de Uso: "Conteúdo de reviews deve respeitar normas da comunidade. Conteúdo impróprio será removido." |
+| G6 | **Disclaimer de álcool nos Termos** | Legal | **MÉDIA** | Adicionar: "Pedidos de bebidas alcoólicas estão sujeitos à legislação local. A verificação de idade é responsabilidade do estabelecimento parceiro no ponto de venda." |
+| G7 | **Implementar "Reportar review"** | Mobile Dev | **MÉDIA** | Adicionar botão de report em ReviewsScreen para moderação de conteúdo gerado por usuário |
+| G8 | **Documentar ECCN no Play Console** | DevOps | **BAIXA** | Nota nas declarações: "App uses standard TLS 1.3 encryption for data in transit. No custom cryptographic algorithms. ECCN classification: EAR99." |
+| G9 | **Configurar países de distribuição** | DevOps | **BAIXA** | Play Console → Setup → Countries: Selecionar "Brasil" como mercado principal (ou "All countries" com exclusões automáticas) |
+
+### 13.3 Data Safety Section — Declaração Recomendada
+
+Preencher no Google Play Console com base na análise do código:
+
+```
+DADOS COLETADOS:
+
+☑ Informações pessoais
+  • Nome completo (obrigatório no cadastro)
+  • Email (obrigatório no cadastro)
+  • Telefone (obrigatório no cadastro)
+  • Data de nascimento (verificação de idade)
+  • Foto de perfil (opcional)
+  → Finalidade: Funcionalidade do app, gerenciamento de conta
+  → Vinculado ao usuário: Sim
+  → Compartilhado: Não
+
+☑ Localização
+  • Localização precisa (GPS)
+  • Localização aproximada
+  → Finalidade: Funcionalidade do app (encontrar restaurantes)
+  → Vinculado ao usuário: Sim
+  → Compartilhado: Não
+
+☑ Identificadores do dispositivo
+  • Token de push notification
+  • Modelo do dispositivo, versão do OS
+  → Finalidade: Funcionalidade do app (push notifications)
+  → Vinculado ao usuário: Sim
+  → Compartilhado: Com Expo Push Service
+
+☑ Dados de compra
+  • Histórico de pedidos, valores
+  • Tipo de método de pagamento (NÃO dados do cartão)
+  → Finalidade: Funcionalidade do app
+  → Vinculado ao usuário: Sim
+  → Compartilhado: Com gateway de pagamento (Asaas/Stripe)
+
+☑ Conteúdo gerado pelo usuário
+  • Avaliações e comentários de restaurantes
+  → Finalidade: Funcionalidade do app
+  → Vinculado ao usuário: Sim
+  → Compartilhado: Visível publicamente
+
+☑ Dados de uso do app
+  • Eventos de analytics (telas visitadas, ações)
+  • Dados de crash (sem PII)
+  → Finalidade: Analytics, melhoria do app
+  → Vinculado ao usuário: Não (anonimizado)
+  → Compartilhado: Firebase Analytics, Sentry
+
+PRÁTICAS DE SEGURANÇA:
+☑ Dados criptografados em trânsito (HTTPS/TLS 1.3)
+☑ Dados criptografados em repouso (AES-256-GCM no servidor)
+☑ Você pode solicitar exclusão dos dados (DELETE /users/me)
+☑ Dados do app são transferidos com segurança
+```
+
+### 13.4 Legislação de Exportação (EUA)
+
+| Item | Status | Detalhes |
+|------|--------|---------|
+| Criptografia no app binary | **Apenas HTTPS/TLS** | Usa stack TLS padrão do Android/iOS — não requer notificação BIS |
+| Criptografia custom | **Nenhuma** | AES-256-GCM roda apenas no backend (servidor), não no app mobile |
+| Classificação ECCN | **EAR99** | Software não listado, sem restrições especiais |
+| Países embargados | **Bloqueados pelo Google Play** | Cuba, Irã, Coreia do Norte, Síria, Crimeia — distribuição bloqueada automaticamente |
+| Código aberto? | **Não** | Repositório privado — não se aplica exceção de domínio público |
+
+> **Nota:** Mesmo usando HTTPS padrão, o Google Play **bloqueia automaticamente** distribuição para países embargados. Nenhuma ação adicional necessária além de configurar países no Play Console.

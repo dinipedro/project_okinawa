@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { TextInput, Button, Text, HelperText } from 'react-native-paper';
+import { TextInput, Button, Text, HelperText, Checkbox } from 'react-native-paper';
 import { authService } from '@/shared/services/auth';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useAnalyticsContext } from '@/shared/contexts/AnalyticsContext';
@@ -23,10 +23,12 @@ export default function RegisterScreen({ navigation }: any) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptedLegal, setAcceptedLegal] = useState(false);
+  const [confirmedAge, setConfirmedAge] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showConsentError, setShowConsentError] = useState(false);
+  const [showAgeError, setShowAgeError] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const analytics = useAnalytics();
@@ -58,6 +60,12 @@ export default function RegisterScreen({ navigation }: any) {
 
   const handleRegister = async () => {
     if (!validateFields()) return;
+
+    if (!confirmedAge) {
+      setShowAgeError(true);
+      Haptic.errorNotification();
+      return;
+    }
 
     if (!acceptedLegal) {
       setShowConsentError(true);
@@ -167,6 +175,33 @@ export default function RegisterScreen({ navigation }: any) {
           accessibilityHint="Re-enter your password to confirm"
         />
         {fieldErrors.confirmPassword ? <HelperText type="error">{fieldErrors.confirmPassword}</HelperText> : null}
+
+        {/* Age Verification — Google Play / LGPD requirement */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+          <Checkbox
+            status={confirmedAge ? 'checked' : 'unchecked'}
+            onPress={() => {
+              setConfirmedAge(!confirmedAge);
+              setShowAgeError(false);
+              Haptic.lightImpact();
+            }}
+            color={colors.primary}
+          />
+          <Text
+            style={{ flex: 1, color: colors.text, fontSize: 14 }}
+            onPress={() => {
+              setConfirmedAge(!confirmedAge);
+              setShowAgeError(false);
+            }}
+          >
+            Confirmo que tenho 18 anos ou mais
+          </Text>
+        </View>
+        {showAgeError && (
+          <HelperText type="error" visible>
+            Você precisa ter 18 anos ou mais para criar uma conta.
+          </HelperText>
+        )}
 
         {/* Legal Consent — Terms of Use + Privacy Policy */}
         <LegalConsentSection

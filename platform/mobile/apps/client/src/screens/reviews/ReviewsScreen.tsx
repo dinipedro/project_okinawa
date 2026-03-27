@@ -96,6 +96,29 @@ export default function ReviewsScreen() {
     }
   };
 
+  const handleReportReview = (review: Review) => {
+    Alert.alert(
+      'Reportar Review',
+      'Deseja denunciar esta avaliação por conteúdo impróprio?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Reportar',
+          onPress: async () => {
+            try {
+              await ApiService.post(`/reviews/${review.id}/report`, {
+                reason: 'inappropriate_content',
+              });
+              Alert.alert('Obrigado', 'Sua denúncia foi enviada e será analisada pela nossa equipe.');
+            } catch {
+              Alert.alert('Erro', 'Não foi possível enviar a denúncia. Tente novamente.');
+            }
+          },
+        },
+      ],
+    );
+  };
+
   const handleDeleteReview = (review: Review) => {
     Alert.alert(
       'Delete Review',
@@ -197,6 +220,13 @@ export default function ReviewsScreen() {
                     onPress={() => handleDeleteReview(item)}
                     iconColor={colors.error}
                     accessibilityLabel={`Delete review for ${item.restaurant?.name || 'restaurant'}`}
+                  />
+                  <IconButton
+                    icon="flag"
+                    size={20}
+                    onPress={() => handleReportReview(item)}
+                    iconColor={colors.foregroundMuted}
+                    accessibilityLabel={`Report review for ${item.restaurant?.name || 'restaurant'}`}
                   />
                 </View>
               </View>
