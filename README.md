@@ -1,5 +1,4 @@
-# Project Okinawa — Restaurant Technology Platform
-
+# NOOWE — Restaurant Technology Platform
 
 > **Bilingual Documentation** — This document is available in both English and Portuguese.
 > **Documentação Bilíngue** — Este documento está disponível em inglês e português.
@@ -17,7 +16,7 @@
 
 ## Overview
 
-Project Okinawa is a comprehensive **in-person  experience platform** designed to modernize and optimize hospitality operations. Unlike food delivery apps, Okinawa focuses exclusively on **physical dining experiences**, creating seamless connections between customers and establishments through technology.
+NOOWE is a comprehensive **in-person experience platform** designed to modernize and optimize hospitality operations. Unlike food delivery apps, NOOWE focuses exclusively on **physical dining experiences**, creating seamless connections between customers and establishments through technology.
 
 ### Mission Statement
 
@@ -25,141 +24,259 @@ Project Okinawa is a comprehensive **in-person  experience platform** designed t
 
 The platform is NOT a restaurant-focused tool, but rather centers on creating **exceptional user experiences** and meaningful connections.
 
-
 ### Platform Components
 
-| Component | Technology | Description |
-|-----------|------------|-------------|
-| **Client Mobile App** | React Native / Expo | Customer-facing app for discovery, ordering, reservations, and payments |
-| **Restaurant Mobile App** | React Native / Expo | Staff management app with KDS, floor management, and analytics |
-| **Backend API** | NestJS | Scalable REST API with real-time WebSocket support (35+ modules) |
-| **Preview System** | React / Vite | Interactive web-based prototype for validating flows (62+ screens) |
+| Component | Technology | Scope |
+|-----------|------------|-------|
+| **Client Mobile App** | React Native 0.74 / Expo 51 | 61 screens — discovery, ordering, reservations, payments, loyalty |
+| **Restaurant Mobile App** | React Native 0.74 / Expo 51 | 81 screens — KDS, floor management, analytics, CRM, fiscal |
+| **Backend API** | NestJS 10.4 | 54 modules, 539 endpoints, 9 WebSocket gateways, 96 entities |
+| **Site (Web)** | React + Vite + Tailwind | Institutional landing page + interactive demo |
+
+### Platform Numbers
+
+| Metric | Count |
+|--------|------:|
+| Total mobile screens | **142** |
+| Backend modules | **54** |
+| REST API endpoints | **539** |
+| WebSocket gateways | **9** |
+| Database entities | **96** |
+| Database migrations | **45** |
+| Backend test files | **137** |
+| i18n keys (per language) | **2,800+** |
+| Languages supported | **3** (PT-BR, EN-US, ES-ES) |
+| CI/CD workflows | **6** |
+| Documentation files | **53** |
+| Total .tsx files (mobile) | **898** |
+| Accessibility labels | **681+** |
 
 ### Competitive Differentiation
 
-Okinawa's market advantage is built on three pillars:
+NOOWE's market advantage is built on three pillars:
 
-1. **Total Integration** — Centralizes 5+ fragmented tools (loyalty, KDS, payments, reservations, BI) into one ecosystem
-2. **UX-First Defensibility** — 62+ native screens optimized for behavioral habits and intuitive operations
+1. **Total Integration** — Centralizes 8+ fragmented tools (loyalty, KDS, payments, reservations, BI, fiscal, CRM, stock) into one ecosystem
+2. **UX-First Defensibility** — 142 native screens optimized for behavioral habits and intuitive operations
 3. **Natural Lock-in** — Deep data integration that increases switching costs through accumulated insights
 
 ## Supported Service Types
 
-The platform dynamically adapts to **11 distinct service types**:
+The platform dynamically adapts to **11 distinct service types** via a feature registry (`service-type.registry.ts`):
 
 | Service Type | Description | Key Features |
 |--------------|-------------|--------------|
 | **Fine Dining** | Premium experience with personalized service | Sommelier, wine pairing, dress code |
-| **Quick Service** | Fast food with minimal wait times | Counter ordering, self-service pickup |
-| **Fast Casual** | Quality food with quick turnaround | Hybrid ordering, table delivery |
-| **Café / Bakery** | Coffee shops and bakeries | Tab system, loyalty stamps |
-| **Buffet** | Self-service with weight-based pricing | Smart scale integration |
-| **Drive-Thru** | Vehicle-based ordering | GPS queue, car recognition |
-| **Food Truck** | Mobile food vendors | Geolocation, schedule tracking |
-| **Chef's Table** | Exclusive tasting experiences | Fixed menus, limited seating |
+| **Quick Service** | Fast food with minimal wait times | Counter ordering, pickup codes |
+| **Fast Casual** | Quality food with quick turnaround | Hybrid ordering, customization |
+| **Café / Bakery** | Coffee shops and bakeries | Tab system, stamp cards, auto-award |
+| **Buffet** | Self-service with weight-based pricing | Covers-based pricing, check-in |
+| **Drive-Thru** | Vehicle-based ordering | GPS queue, proximity sorting |
+| **Food Truck** | Mobile food vendors | Real-time GPS tracking, geolocation |
+| **Chef's Table** | Exclusive tasting experiences | Chef approval workflow, capacity enforcement, pre-pay |
 | **Casual Dining** | Relaxed full-service restaurants | Waitlist, flexible reservations |
-| **Pub & Bar** | Drinks-focused establishments | Tab management, happy hour |
-| **Club & Balada** | Nightclubs and venues | Entry tickets, VIP tables, promoters |
+| **Pub & Bar** | Drinks-focused establishments | Tab management, cover charge, invite QR, happy hour |
+| **Club & Balada** | Nightclubs and venues | Entry tickets, VIP tables, area selector, promoters, birthday packages |
 
 ## Platform Capabilities
 
 | Capability | Description |
 |------------|-------------|
-| **Order Management** | Complete order lifecycle from placement to delivery with real-time tracking |
-| **Table Management** | Real-time floor plan with drag-and-drop status tracking |
-| **Reservation System** | Advanced booking with guest management and invitation flows |
-| **Digital Payments** | Wallet system with Apple Pay, Google Pay, PIX, TAP to Pay, and cards |
+| **Order Management** | Complete order lifecycle with real-time WebSocket tracking, pickup codes, post-payment automation |
+| **KDS Brain** | Autonomous kitchen orchestration: auto-fire, convergence, routing, self-learning, analytics |
+| **Table Management** | Real-time floor plan with auto-free after payment, state machine (Occupied→Cleaning→Available) |
+| **Reservation System** | Advanced booking with guest management, chef approval (Chef's Table), reminders, no-show detection |
+| **Digital Payments** | Wallet, PIX, Credit/Debit, Apple Pay, Google Pay, TAP to Pay, Cash with manual confirmation |
+| **Payment Gateway** | Asaas + Stripe Terminal adapters, webhook processing, reconciliation |
 | **Split Payment** | 4 flexible modes: Individual, Equal, Selective, Fixed Amount |
-| **Loyalty Program** | Points-based rewards with tier progression |
-| **Kitchen Display (KDS)** | Gesture-based KDS with SLA monitoring for kitchen and bar |
-| **Analytics** | Comprehensive business intelligence with exportable reports |
-| **Multi-role RBAC** | 6-tier access control: Owner, Manager, Waiter, Chef, Barman, Maître |
-| **Quick Actions** | Context-aware FAB for rapid task execution |
+| **Loyalty Program** | Points-based rewards with tier progression, stamp cards with auto-award and redemption |
+| **Financial Brain** | Cash register, COGS tracking, NFC-e fiscal, forecast, accounts payable, reconciliation |
+| **Analytics & CRM** | Business intelligence, customer profiles, visit tracking, exportable reports |
+| **Integrations** | iFood, Rappi, UberEats adapters with capacity management and status sync |
+| **Stock Management** | Stock items, alerts, receive/adjust flows, purchase import (XML/manual) |
+| **Multi-role RBAC** | 7-tier access control: Owner, Manager, Waiter, Chef, Barman, Cook, Maître |
+| **i18n** | 3 languages (PT-BR, EN-US, ES-ES) with 2,800+ keys per language |
+| **Accessibility** | 681+ accessibility labels across 133 files, accessible component wrappers |
+| **LGPD Compliance** | Consent tracking, data export, data retention, re-consent (HTTP 451), account deletion |
 
 ## Key Features
 
-### Customer Application (37 Screens)
+### Customer Application (61 Screens)
 
 **Discovery & Onboarding:**
-- Restaurant discovery with geolocation, maps, and filters
+- Restaurant discovery with real geolocation (expo-location), maps, and filters
 - QR code scanning for seamless table check-in (identifies tables, menus, invitations)
 - Passwordless-first authentication: Welcome → Phone Auth (OTP) → Biometric Enrollment
 - Social login (Google, Apple) with real RSA-SHA256 signature verification
+- Fully internationalized onboarding with cuisine/dietary preference selection
 
 **Ordering & Payments:**
-- Real-time menu browsing with category filtering and search
+- Real-time menu browsing with category filtering, search, and dish builder (5-step customization)
 - **Unified Payment Screen** with 3 tabs: Checkout, Split Details, Tip Selection
 - **4 Split Payment Modes**: Individual, Equal, Selective by item, Fixed amount
 - **6 Payment Methods**: Apple Pay, Google Pay, PIX QR, Credit/Debit, TAP to Pay, Wallet
 - Quick reorder from order history
+- Digital receipts with auto-generated receipt numbers
+- Post-order review prompt (5-star rating modal on completion)
 
 **Reservations & Loyalty:**
-- Advanced reservation system with guest invitation via QR/link
+- Advanced reservation system with guest invitation via QR/link, group booking
+- Virtual queue with real-time WebSocket position updates
 - Digital wallet with transaction history and balance management
-- Loyalty program with points, tiers, and reward redemption
+- Loyalty program with points, tiers, stamp cards, and reward redemption button
 - Favorites management for quick restaurant access
+- Coupon/promotion redemption
+
+**Service-Type Specific:**
+- **Pub/Bar**: Tab management, round builder, cover charge display, tab invite QR (FAB + modal)
+- **Club**: Area selector (Pista/VIP/Rooftop), virtual queue, birthday booking with dynamic pricing, VIP tables, lineup
+- **Buffet**: Check-in flow
+- **Waitlist**: Family mode, activities, entry choice
 
 **Engagement:**
-- **Quick Actions FAB** — Context-aware floating button for frequent actions
 - Push notifications for order status, reservation reminders, promotions
 - Reviews and ratings with photo uploads
-- Service-type specific flows (tabs for bars, VIP tables for clubs, etc.)
+- Geolocation tracking for nearby restaurant discovery
+- AI pairing assistant
 
-### Restaurant Application (25 Screens)
+### Restaurant Application (81 Screens)
 
 **Dashboard & Analytics:**
 - Real-time dashboard with live metrics (revenue, orders, occupancy)
-- **Role-Adaptive Dashboard** — Content adapts to staff role:
-  - **Owner**: Revenue KPIs, customer count, average ticket
-  - **Manager**: Active orders, average prep time, pending payments
-  - **Waiter**: My tables, tips today, pending calls
-  - **Chef**: Queue depth, prep status, SLA metrics
-  - **Barman**: Drink orders, completion rate, top items
-  - **Maître**: Reservations, waitlist, occupancy, VIP alerts
+- **Role-Adaptive Dashboard** — Content adapts to staff role (7 roles):
+  - **Owner**: Revenue KPIs, customer count, average ticket, financial reports
+  - **Manager**: Active orders, approvals, daily reports, promotions management
+  - **Waiter**: My tables, tips today, pending calls, order management, payment collection
+  - **Chef**: KDS queue depth, prep status, SLA metrics, chef approvals (Chef's Table)
+  - **Barman**: Drink orders, recipes, completion rate, bar KDS
+  - **Cook**: Station management, cook KDS
+  - **Maître**: Reservations, waitlist, floor flow, occupancy, VIP alerts
 
-**Kitchen & Bar Operations:**
-- **KDS with Swipe Gestures**: Swipe right to progress (New → Preparing → Ready)
-- **SLA Monitoring**: Visual alerts at 5min (warning) and 8min (critical)
-- Barman KDS for beverage orders with separate workflow
-- Priority management and order batching
+**KDS Brain (Autonomous Kitchen):**
+- **Brain Router**: Automatic order routing to correct stations
+- **Auto-Fire**: Course sequencing with 30s cron
+- **Auto-Sync**: Convergence checking for multi-course orders
+- **Self-Learning**: Weekly cron for prep time suggestions based on analytics
+- **Chef View**: Unified overview of all stations
+- **KDS Analytics**: Prep time trends, station efficiency, SLA compliance
+- Station settings and brain configuration screens
+
+**Financial Brain:**
+- **Cash Register**: Open/close sessions, movements, cash count
+- **COGS Tracking**: Ingredients, recipes, margin dashboard
+- **Fiscal**: NFC-e emission via Focus NFe, fiscal setup, document management
+- **Forecast**: Revenue prediction and trend analysis
+- **Bills**: Accounts payable management
+- **Financial Reports**: Multi-format export (PDF, Excel)
 
 **Floor & Reservations:**
-- Interactive floor plan with drag-and-drop table management
+- Interactive floor plan with table detail management
 - Reservation calendar with guest counts and special requests
-- Waitlist management for walk-ins
+- Waitlist management with auto-advance after payment
 - Table status tracking (Available, Occupied, Reserved, Cleaning)
+- Maître dashboard with floor flow visualization
 
-**Payments & Staff:**
-- **Order Payment Tracking** — Guest-by-guest payment status in real-time
-- Tip distribution and management
-- Staff scheduling and HR management
-- Financial reports with multi-format export (PDF, Excel)
-- **Quick Actions FAB** with role-specific shortcuts
+**Operations:**
+- Service calls management (waiter calls, help requests)
+- Tips distribution and management
+- Staff management and HR
+- QR code generation (batch + individual)
+- Service configuration hub (12 config screens)
+- Setup hub for initial restaurant configuration
+- Integration settings (iFood, Rappi, UberEats)
+- Customer CRM dashboard
+- Stock management with alerts
+- Cost control with recipe/margin tracking
 
-### Backend API (26 Modules)
+**Service-Type Specific:**
+- **Drive-Thru**: Lane management with proximity-based sorting (Haversine)
+- **Food Truck**: Real-time GPS sharing (expo-location, 30s interval)
+- **Chef's Table**: Chef approval workflow for reservations
+- **Club**: Door management, queue management, VIP table management, promoter dashboard
 
-**Core Services:**
-- RESTful API with comprehensive OpenAPI/Swagger documentation
-- Real-time WebSocket connections for live updates (Socket.IO)
-- Multi-layer caching strategy (L1: In-memory, L2: Redis, L3: Database)
-- Isolated worker process for background jobs
+### Backend API (54 Modules)
 
-**Security & Auth:**
-- JWT-based authentication with **JTI blacklisting** (Redis + PostgreSQL)
-- OAuth integration (Google, Apple, Microsoft) — no vendor lock-in
-- **Apple JWT verification** with real RSA-SHA256 cryptographic validation (JWKS)
-- Multi-Factor Authentication (TOTP) support
-- Role-based access control with restaurant-scoped permissions
-- CSRF protection with double-submit cookie pattern (httpOnly)
-- Bcrypt cost factor 12
+**Core Services (Modules 1-20):**
 
-**Processing & Integration:**
-- Queue-based job processing with Bull (notifications, reports, exports)
-- Internationalization (i18n) with PT/EN support
-- Structured logging with correlation IDs (DI-injected `StructuredLoggerService`)
-- Distributed tracing with span export via NestJS Logger
-- Rate limiting (100 req/min general, 5 req/15min auth)
-- Idempotent request handling
+| # | Module | Description |
+|---|--------|-------------|
+| 1 | **Auth** | JWT (15min access + 7d refresh), OAuth (Google/Apple), token rotation, JTI blacklisting |
+| 2 | **Identity** | Credentials, MFA (TOTP), AES-256-GCM encryption, password policy |
+| 3 | **Users** | Profile management, preferences, data export, data retention, account deletion |
+| 4 | **User Roles** | RBAC implementation (7 roles, restaurant-scoped) |
+| 5 | **Restaurants** | Restaurant CRUD, service configuration |
+| 6 | **Orders** | Order lifecycle, pickup codes, post-payment automation, stock deduction |
+| 7 | **Payments** | Wallet, transactions, 4-mode split payment, refunds, cashback |
+| 8 | **Payment Gateway** | Asaas + Stripe Terminal + Wallet adapters, webhook processing, gateway routing |
+| 9 | **Reservations** | Booking, guest management, chef approval, reminders (cron), no-show detection |
+| 10 | **Tables** | Floor plan, table status, auto-free after payment |
+| 11 | **Tabs** | Tab management, happy hour, round tracking |
+| 12 | **Menu Items** | Menu management, categories, prep time, station assignment |
+| 13 | **Menu Customization** | Customization groups with JSONB options |
+| 14 | **Club** | Club features, VIP tables, virtual queue, promoters, birthday packages |
+| 15 | **Loyalty** | Points, tiers, rewards, stamp cards, cashback service |
+| 16 | **Promotions** | Stamp cards, promotional campaigns |
+| 17 | **Tips** | Gratuity distribution and management |
+| 18 | **Reviews** | Ratings, review moderation |
+| 19 | **Favorites** | User favorites management |
+| 20 | **Notifications** | Push notifications (FCM), WebSocket real-time |
+
+**Operations & Intelligence (Modules 21-40):**
+
+| # | Module | Description |
+|---|--------|-------------|
+| 21 | **Analytics** | Business intelligence, metrics, aggregation, forecasting |
+| 22 | **Financial** | Reports, transactions, multi-format export, event listener |
+| 23 | **Financial Brain** | Forecast service, accounting export |
+| 24 | **Cash Register** | Sessions, movements, cash count |
+| 25 | **Cost Control** | Ingredients, recipes, COGS, margin tracking |
+| 26 | **Fiscal** | NFC-e via Focus NFe + SEFAZ direct, fiscal config, onboarding |
+| 27 | **KDS Brain** | Brain router, auto-fire, auto-sync, analytics, self-learning, cook stations |
+| 28 | **Stock** | Stock items, alerts, receive/adjust flows |
+| 29 | **Purchase Import** | XML/manual import, confirmation |
+| 30 | **Customer CRM** | Customer profiles, visit tracking |
+| 31 | **Integrations** | iFood/Rappi/UberEats adapters, capacity manager, status sync |
+| 32 | **Reconciliation** | Delivery settlements, payment reconciliation |
+| 33 | **Accounts Payable** | Bills management, payment tracking |
+| 34 | **HR** | Staff management, scheduling, attendance |
+| 35 | **AI** | AI-powered features (pairing, recommendations) via OpenAI |
+| 36 | **QR Code** | QR generation, validation, deep linking |
+| 37 | **Webhooks** | External integrations (delivery, signatures) |
+| 38 | **Events** | WebSocket event handling (Socket.IO) |
+| 39 | **Fraud Detection** | Fraud rule engine and detection |
+| 40 | **Incident Response** | Security incident workflow |
+
+**Infrastructure (Modules 41-54):**
+
+| # | Module | Description |
+|---|--------|-------------|
+| 41 | **i18n** | Internationalization (PT-BR/EN-US/ES-ES) |
+| 42 | **Health** | System health checks, circuit breaker, readiness probes |
+| 43 | **Service Config** | Config Hub (JSONB, 11 endpoints, WebSocket) |
+| 44 | **Approvals** | Manager approval workflows (WebSocket) |
+| 45 | **Inventory** | 3-tier stock inventory management |
+| 46 | **Recipes** | Drink recipes with seed data |
+| 47 | **Restaurant Waitlist** | Smart waitlist with WebSocket, auto-advance |
+| 48 | **Calls** | Service calls (waiter, help) with WebSocket |
+| 49 | **Addresses** | User address management |
+| 50 | **Receipts** | Receipt generation with auto receipt_number |
+| 51 | **Geofencing** | Haversine distance calculations |
+| 52 | **Legal** | Privacy policy, terms of service (i18n), consent tracking, re-consent (HTTP 451) |
+| 53 | **Metrics** | Application performance metrics |
+| 54 | **Admin** | Administrative operations |
+
+### WebSocket Gateways (9)
+
+| Gateway | Namespace | Purpose |
+|---------|-----------|---------|
+| OrdersGateway | `/orders` | Order status updates, new orders, item status |
+| TabsGateway | `/tabs` | Tab updates, round additions, closure |
+| ReservationsGateway | `/reservations` | Reservation creation, status changes, reminders |
+| WaitlistGateway | `/waitlist` | Queue position updates, auto-advance |
+| CallsGateway | `/calls` | Waiter calls, acknowledgments |
+| EventsGateway | `/events` | Payment completed, cashback, general events |
+| ApprovalsGateway | `/approvals` | Manager approval requests/responses |
+| ServiceConfigGateway | `/service-config` | Configuration changes broadcast |
+| ClubQueueGateway | `/queue` | Club queue position, called status |
 
 ## Technology Stack
 
@@ -170,13 +287,13 @@ The platform dynamically adapts to **11 distinct service types**:
 | Node.js | 20.x | Runtime environment |
 | NestJS | 10.4.x | Application framework |
 | TypeScript | 5.x | Programming language |
-| PostgreSQL | 16.x | Primary database |
-| Redis | 7.x | Caching, queues, and JTI blacklisting |
-| TypeORM | 0.3.x | Database ORM |
-| Socket.IO | 4.8.x | Real-time communication |
+| PostgreSQL | 16.x | Primary database (+ PostGIS for spatial data) |
+| Redis | 7.x | Caching, queues, JTI blacklisting, Socket.IO adapter |
+| TypeORM | 0.3.x | Database ORM (96 entities, 45 migrations) |
+| Socket.IO | 4.8.x | Real-time communication (9 gateways) |
 | Bull | 4.x | Job queue processing |
 | Passport | 0.7.x | Authentication strategies |
-| Swagger | 8.x | API documentation |
+| Swagger | 8.x | API documentation (conditional via env) |
 | Helmet | latest | Security headers (CSP, HSTS, X-Frame) |
 
 ### Mobile
@@ -186,222 +303,190 @@ The platform dynamically adapts to **11 distinct service types**:
 | React Native | 0.74.x | Mobile framework |
 | Expo | 51.x | Development platform |
 | TypeScript | 5.x | Programming language |
-| React Navigation | 6.x | Navigation |
+| React Navigation | 6.x | Navigation (Tab + Stack + Drawer) |
 | React Native Paper | 5.12.x | UI components |
 | TanStack Query | 5.x | Data fetching & caching |
 | React Hook Form | 7.x | Form management |
 | Zod | 4.x | Schema validation |
+| Zustand | — | State management |
 | Socket.IO Client | 4.8.x | Real-time updates |
-| Vitest | 3.x | Testing framework |
-| MSW | 2.x | API mocking for tests |
+| expo-location | — | GPS tracking (Food Truck, geofencing) |
+| expo-haptics | — | Haptic feedback |
 
 ### Infrastructure
 
 | Technology | Purpose |
 |------------|---------|
-| Docker | Multi-stage production containerization |
-| Docker Compose | Local orchestration |
-| GitHub Actions | CI/CD pipelines (audit blocks on critical vulns) |
-| PostgreSQL + PostGIS | Spatial data support |
-| Redis | Session, cache, and queue management |
+| Docker | Multi-stage production containerization (4 stages, non-root user) |
+| Docker Compose | Local orchestration with resource limits |
+| GitHub Actions | 6 CI/CD pipelines (ci, backend-ci, mobile-ci, security-audit, deploy, smoke-tests) |
+| PostgreSQL + PostGIS | Spatial data support (Haversine distance) |
+| Redis | Session, cache, queue, Socket.IO adapter |
+| EAS Build | Expo Application Services for mobile builds |
 
 ## Architecture
 
 ### High-Level System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                           CLIENTS                                    │
-├─────────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐ │
-│  │  Client App     │    │  Restaurant App │    │  Preview (Web)  │ │
-│  │  React Native   │    │  React Native   │    │  React + Vite   │ │
-│  │  37 screens     │    │  25 screens     │    │  62+ screens    │ │
-│  └────────┬────────┘    └────────┬────────┘    └────────┬────────┘ │
-└───────────┼──────────────────────┼──────────────────────┼──────────┘
-            └──────────────────────┼──────────────────────┘
-                                   │ HTTPS + WSS
-                    ┌──────────────▼──────────────┐
-                    │        NestJS Backend       │
-                    │   26 Modules · 850+ Tests   │
-                    │   Rate Limiting · RBAC      │
-                    │   JWT JTI · CSRF · Helmet   │
-                    └──────┬──────────┬───────────┘
-                           │          │
-              ┌────────────▼┐   ┌────▼────────┐   ┌───────────────┐
-              │ PostgreSQL  │   │    Redis     │   │  External     │
-              │  + PostGIS  │   │ Cache+Queue  │   │  Services     │
-              │  31 tables  │   │ JTI Blacklist│   │ Twilio, Stripe│
-              └─────────────┘   └─────────────┘   └───────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                            CLIENTS                                    │
+├──────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────┐    ┌──────────────────┐    ┌────────────────┐ │
+│  │  Client App      │    │  Restaurant App  │    │  Site (Web)    │ │
+│  │  React Native    │    │  React Native    │    │  React + Vite  │ │
+│  │  61 screens      │    │  81 screens      │    │  Landing page  │ │
+│  └────────┬─────────┘    └────────┬─────────┘    └───────┬────────┘ │
+└───────────┼───────────────────────┼──────────────────────┼──────────┘
+            └───────────────────────┼──────────────────────┘
+                                    │ HTTPS + WSS
+                     ┌──────────────▼──────────────┐
+                     │        NestJS Backend        │
+                     │  54 Modules · 539 Endpoints  │
+                     │  9 WS Gateways · 96 Entities │
+                     │  RBAC · JWT · CSRF · Helmet  │
+                     └──────┬──────────┬────────────┘
+                            │          │
+               ┌────────────▼┐   ┌────▼─────────┐   ┌───────────────┐
+               │ PostgreSQL  │   │    Redis      │   │  External     │
+               │  + PostGIS  │   │ Cache+Queue   │   │  Services     │
+               │  96 entities│   │ JTI+Socket.IO │   │ Asaas, OpenAI │
+               │  45 migrations│  │ Bull Queues  │   │ FCM, Twilio   │
+               └─────────────┘   └──────────────┘   └───────────────┘
 ```
 
 ### Security Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    WAF / DDoS Protection                         │
-├─────────────────────────────────────────────────────────────────┤
-│                    TLS 1.3 / HSTS                                │
-├─────────────────────────────────────────────────────────────────┤
-│                    Rate Limiting (100/min, 5/15min auth)         │
-├─────────────────────────────────────────────────────────────────┤
-│  Helmet CSP │ CSRF (double-submit) │ CORS (explicit origins)   │
-├─────────────────────────────────────────────────────────────────┤
-│  JWT + JTI  │  RBAC (6 roles)      │  Input Validation (DTO)   │
-├─────────────────────────────────────────────────────────────────┤
-│  Structured Logging │ Correlation ID │ Distributed Tracing      │
-├─────────────────────────────────────────────────────────────────┤
-│                    PostgreSQL (Encrypted at rest)                 │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                     WAF / DDoS Protection                         │
+├──────────────────────────────────────────────────────────────────┤
+│                     TLS 1.3 / HSTS (1 year, preload)              │
+├──────────────────────────────────────────────────────────────────┤
+│                     Rate Limiting (100/min, 5/15min auth)         │
+├──────────────────────────────────────────────────────────────────┤
+│  Helmet CSP │ CSRF (double-submit) │ CORS (explicit, creds=off)  │
+├──────────────────────────────────────────────────────────────────┤
+│  JWT + JTI  │  RBAC (7 roles)      │  Input Validation (DTO)     │
+├──────────────────────────────────────────────────────────────────┤
+│  AES-256-GCM (PII) │ bcrypt 12    │  Constant-time auth         │
+├──────────────────────────────────────────────────────────────────┤
+│  Account enum fix   │ Fraud detection │ Incident response        │
+├──────────────────────────────────────────────────────────────────┤
+│  Structured Logging │ Correlation ID │  Query timeout (30s)       │
+├──────────────────────────────────────────────────────────────────┤
+│                     PostgreSQL (Encrypted at rest)                 │
+└──────────────────────────────────────────────────────────────────┘
 ```
+
+### LGPD / Data Protection
+
+| Feature | Status | Details |
+|---------|:------:|---------|
+| Consent tracking | ✅ | SHA-256 version hash, device_id, IP |
+| Data export | ✅ | Full JSON export (profile, orders, payments, consent history) |
+| Data retention | ✅ | Automated cron (3AM), configurable periods |
+| Re-consent | ✅ | HTTP 451 middleware when terms updated |
+| Account deletion | ✅ | 30-day grace period, PII anonymization |
+| Privacy policy | ✅ | 3 languages (PT-BR, EN-US, ES-ES) |
 
 ### Project Structure
 
 ```
 project_okinawa/
-├── platform/                         # Production platform code
-│   ├── backend/                      # NestJS Backend API
+├── platform/
+│   ├── backend/                         # NestJS Backend API
 │   │   ├── src/
-│   │   │   ├── common/               # Shared infrastructure
-│   │   │   │   ├── config/           # Environment & feature configs
-│   │   │   │   ├── constants/        # App-wide constants & limits
-│   │   │   │   ├── decorators/       # Custom decorators (@CurrentUser, @Roles)
-│   │   │   │   ├── dto/              # Shared DTOs (pagination, etc.)
-│   │   │   │   ├── filters/          # Exception filters (Sentry, global)
-│   │   │   │   ├── guards/           # Auth guards (JWT, RBAC, CSRF)
-│   │   │   │   ├── interfaces/       # Shared interfaces
-│   │   │   │   ├── middleware/        # CSRF, maintenance, request middleware
-│   │   │   │   ├── services/         # Shared services (email, etc.)
-│   │   │   │   └── utils/            # Utility functions
-│   │   │   ├── config/               # Configuration modules (Swagger, DB, JWT, Redis, Socket)
-│   │   │   ├── database/             # Migrations (TypeORM) and seeds
-│   │   │   │   └── migrations/       # Ordered migration files
-│   │   │   └── modules/              # 35+ Feature modules
-│   │   │       ├── auth/             # JWT, OAuth, session, token rotation
-│   │   │       ├── identity/         # Credentials, MFA, password policy
-│   │   │       ├── users/            # Profiles, preferences
-│   │   │       ├── user-roles/       # RBAC implementation
-│   │   │       ├── restaurants/      # Restaurant CRUD, service config
-│   │   │       ├── orders/           # Order lifecycle, KDS formatting
-│   │   │       ├── payments/         # Split payments, wallet, transactions
-│   │   │       ├── reservations/     # Booking, guest management
-│   │   │       ├── tables/           # Floor plan, table status
-│   │   │       ├── tabs/             # Tab management (casual/bar, happy hour)
-│   │   │       ├── menu-items/       # Menu management, categories
-│   │   │       ├── menu-customization/ # Customization groups & options
-│   │   │       ├── club/             # Club features, VIP, queue, promoters
-│   │   │       ├── loyalty/          # Points, tiers, rewards
-│   │   │       ├── tips/             # Gratuity distribution
-│   │   │       ├── reviews/          # Ratings, review moderation
-│   │   │       ├── favorites/        # User favorites
-│   │   │       ├── notifications/    # Push notifications (FCM)
-│   │   │       ├── analytics/        # Business intelligence (metrics, aggregation, forecast)
-│   │   │       ├── financial/        # Reports, transactions, export
-│   │   │       ├── hr/               # Staff management, scheduling
-│   │   │       ├── ai/               # AI-powered features
-│   │   │       ├── qr-code/          # QR generation and validation
-│   │   │       ├── webhooks/         # External integrations (delivery, signature)
-│   │   │       ├── events/           # WebSocket event handling
-│   │   │       ├── i18n/             # Internationalization (PT/EN/ES)
-│   │   │       ├── health/           # System health checks, circuit breaker
-│   │   │       ├── service-config/   # Config Hub (JSONB, 11 endpoints, WS)
-│   │   │       ├── approvals/        # Manager approval workflows (WS)
-│   │   │       ├── inventory/        # 3-tier stock inventory
-│   │   │       ├── recipes/          # Drink recipes with seeds
-│   │   │       ├── promotions/       # Loyalty promotions & stamp cards
-│   │   │       ├── restaurant-waitlist/ # Smart waitlist (WS)
-│   │   │       ├── calls/            # Service calls (WS)
-│   │   │       ├── addresses/        # User addresses
-│   │   │       ├── receipts/         # Receipt generation (auto receipt_number)
-│   │   │       ├── geofencing/       # Haversine distance calculations
-│   │   │       └── legal/            # Privacy policy & terms of service
-│   │   ├── test/                     # E2E tests
-│   │   ├── docker-compose.yml        # Local infrastructure
-│   │   └── Dockerfile                # Multi-stage production build
+│   │   │   ├── common/                  # Shared infrastructure
+│   │   │   │   ├── config/              # Environment & feature configs
+│   │   │   │   ├── decorators/          # Custom decorators (@CurrentUser, @Roles)
+│   │   │   │   ├── dto/                 # Shared DTOs (pagination, etc.)
+│   │   │   │   ├── filters/             # Exception filters (Sentry, global)
+│   │   │   │   ├── guards/             # Auth guards (JWT, RBAC, CSRF, rate limit)
+│   │   │   │   ├── middleware/          # CSRF, terms-version, maintenance
+│   │   │   │   └── utils/              # Utilities (circuit breaker, crypto)
+│   │   │   ├── config/                  # Swagger, DB, JWT, Redis, Socket configs
+│   │   │   ├── database/
+│   │   │   │   ├── migrations/          # 45 ordered migration files
+│   │   │   │   └── seeds/               # Seed data
+│   │   │   └── modules/                 # 54 Feature modules
+│   │   │       ├── auth/                # JWT, OAuth, session, token rotation
+│   │   │       ├── identity/            # Credentials, MFA, consent
+│   │   │       ├── users/               # Profiles, data export, retention, deletion
+│   │   │       ├── orders/              # Order lifecycle, pickup codes, automation
+│   │   │       ├── payments/            # Wallet, split, transactions, refunds
+│   │   │       ├── payment-gateway/     # Asaas, Stripe Terminal, webhook
+│   │   │       ├── kds-brain/           # Auto-fire, routing, sync, self-learning
+│   │   │       ├── financial/           # Reports, transactions, export
+│   │   │       ├── financial-brain/     # Forecast, accounting export
+│   │   │       ├── cash-register/       # Sessions, movements, cash count
+│   │   │       ├── cost-control/        # Ingredients, recipes, COGS, margins
+│   │   │       ├── fiscal/              # NFC-e, Focus NFe, SEFAZ
+│   │   │       ├── stock/               # Stock items, alerts, movements
+│   │   │       ├── integrations/        # iFood, Rappi, UberEats adapters
+│   │   │       ├── customer-crm/        # Customer profiles, visit tracking
+│   │   │       ├── reconciliation/      # Delivery settlements
+│   │   │       ├── accounts-payable/    # Bills management
+│   │   │       ├── fraud-detection/     # Fraud rules engine
+│   │   │       ├── incident-response/   # Security incident workflow
+│   │   │       ├── legal/               # Privacy, terms, consent (i18n)
+│   │   │       └── ...                  # 30+ additional modules
+│   │   ├── Dockerfile                   # Multi-stage (4 stages, non-root)
+│   │   └── docker-compose.yml           # Local infrastructure
 │   │
-│   ├── mobile/
-│   │   ├── apps/
-│   │   │   ├── client/               # Customer mobile app (37+ screens)
-│   │   │   │   ├── src/screens/      # Native screens
-│   │   │   │   ├── src/navigation/   # Stack + Tab navigators
-│   │   │   │   └── src/__tests__/    # Screen-level tests
-│   │   │   └── restaurant/           # Restaurant staff app (25+ screens)
-│   │   │       ├── src/screens/      # Native screens
-│   │   │       ├── src/navigation/   # Drawer + Stack navigators
-│   │   │       └── src/__tests__/    # Screen-level tests
-│   │   ├── shared/                   # Shared code between apps
-│   │   │   ├── components/           # Reusable UI components (design system)
-│   │   │   ├── hooks/                # useAuth, useOrders, useWebSocket, useI18n, useAsyncState
-│   │   │   ├── services/             # Unified API service (single source of truth)
-│   │   │   ├── contexts/             # RestaurantContext, AuthContext, CartContext
-│   │   │   ├── i18n/                 # Translations (pt-BR, en-US, es-ES)
-│   │   │   ├── screens/              # Shared screens (Maintenance, Legal)
-│   │   │   ├── theme/                # Design tokens (colors, spacing, typography)
-│   │   │   ├── validation/           # Zod schemas
-│   │   │   └── types/                # TypeScript definitions
-│   │   └── eas.json                  # EAS Build configuration
-│   │
-│   └── supabase/                     # Supabase configuration
+│   └── mobile/
+│       ├── apps/
+│       │   ├── client/                  # Customer app (61 screens)
+│       │   │   ├── src/screens/         # 28 screen categories
+│       │   │   ├── src/navigation/      # Tab + Stack navigators
+│       │   │   └── src/hooks/           # App-specific hooks
+│       │   └── restaurant/              # Restaurant staff app (81 screens)
+│       │       ├── src/screens/         # 38 screen categories
+│       │       ├── src/navigation/      # Role-filtered Drawer + Stack
+│       │       └── src/services/        # Socket, auth services
+│       └── shared/                      # Shared code between apps
+│           ├── components/              # Design system (20+ components + a11y wrappers)
+│           ├── hooks/                   # useAuth, useOrders, useWebSocket, useI18n
+│           ├── services/               # API service (247+ methods), offline payment
+│           ├── contexts/               # ThemeContext (light/dark), AuthContext
+│           ├── i18n/                   # 3 languages, 2,800+ keys each
+│           ├── theme/                  # Design tokens (colors, spacing, typography, shadows)
+│           └── config/                 # Sentry, analytics, accessibility
 │
-├── src/                              # Web Preview (React + Vite) — reference only
-│   └── components/
-│       └── mobile-preview-v2/        # 62+ preview screens
+├── site/                               # Institutional website (React + Vite)
+├── docs/                               # 53 documentation files
 │
-├── docs/                             # Comprehensive documentation (21 files)
-│   ├── ARCHITECTURE.md               # System architecture (~1500 lines)
-│   ├── SERVICE_TYPES.md              # 11 service types specification (~3000 lines)
-│   ├── BOUNDED_CONTEXTS.md           # Domain bounded contexts
-│   ├── RESTAURANT_STAFF_ROLES.md     # 6-tier RBAC specification
-│   ├── OWASP_CHECKLIST.md            # OWASP Top 10 compliance
-│   ├── PENTEST_REPORT.md             # Penetration testing report
-│   ├── PRODUCTION_CHECKLIST.md       # Production deployment checklist
-│   ├── SCALING_STRATEGY.md           # 10x-100x scaling roadmap
-│   ├── DEVELOPMENT_GUIDE.md          # Development workflows and patterns
-│   ├── INSTALLATION_GUIDE.md         # Setup and configuration
-│   └── ...                           # Additional docs
+├── .github/workflows/                  # 6 CI/CD pipelines
+│   ├── ci.yml                          # Main CI
+│   ├── backend-ci.yml                  # Backend lint, test, coverage
+│   ├── mobile-ci.yml                   # Mobile lint, typecheck, test, bundle size
+│   ├── security-audit.yml              # npm audit, dependency check
+│   ├── deploy.yml                      # CD pipeline (build → staging → prod)
+│   └── smoke-tests.yml                 # Post-deploy health verification
 │
-├── .github/
-│   └── workflows/
-│       └── ci.yml                    # CI pipeline (blocks on critical vulns)
-│
-├── CHANGELOG.md                      # Version changelog (Keep a Changelog format)
-├── SECURITY.md                       # Security policy and practices
-├── CONTRIBUTING.md                   # Contribution guidelines
-├── TESTING.md                        # Testing documentation
-└── ARCHITECTURE.md                   # High-level architecture overview
+└── CLAUDE.md                           # AI assistant instructions
 ```
-
-### Database Schema (31 Tables)
-
-| Category | Tables | Description |
-|----------|--------|-------------|
-| **Users** | `profiles`, `user_roles`, `user_credentials` | Identity and access management |
-| **Restaurants** | `restaurants`, `restaurant_tables`, `restaurant_service_configs` | Establishment data and configuration |
-| **Menu** | `menu_items`, `menu_categories`, `menu_modifiers` | Product catalog |
-| **Orders** | `orders`, `order_items`, `order_guests` | Order processing |
-| **Payments** | `payments`, `payment_splits`, `wallets`, `wallet_transactions` | Financial transactions |
-| **Reservations** | `reservations`, `reservation_guests` | Booking management |
-| **Engagement** | `reviews`, `favorites`, `loyalty_programs`, `loyalty_points` | Customer engagement |
-| **Operations** | `tips`, `notifications`, `audit_logs` | Operational data |
-| **Club** | `club_entries`, `vip_reservations`, `queue_entries`, `promoters` | Nightclub features |
 
 ## Security Hardening
 
-The platform has undergone three rounds of technical audit with the following remediations:
+The platform has undergone **5 rounds of security audit** (PRR Sprints) with comprehensive remediations:
 
 | Remediation | Status | Details |
-|-------------|--------|---------|
-| JWT JTI Blacklisting | ✅ Done | Redis + PostgreSQL dual-layer token revocation |
-| Apple JWT Verification | ✅ Done | RSA-SHA256 cryptographic validation via JWKS (native `crypto.verify`) |
-| Token Expiry Standardization | ✅ Done | Access: 15m, Refresh: 7d |
-| Bcrypt Cost Factor | ✅ Done | Upgraded from 10 to 12 |
-| CSRF Protection | ✅ Done | Double-submit cookie pattern with httpOnly cookies |
-| CSP Hardening | ✅ Done | Removed `unsafe-inline` in production |
-| Structured Logging | ✅ Done | All `console.log` replaced by `StructuredLoggerService` / NestJS `Logger` |
-| LoggingInterceptor DI | ✅ Done | Refactored from manual instantiation to proper DI injection |
-| Swagger Unified Config | ✅ Done | Removed duplicate config in `main.ts`; uses `swagger.config.ts` |
-| CI Audit Blocking | ✅ Done | `npm audit` now fails build on critical/high vulnerabilities |
-| TracingService Logger | ✅ Done | Production span export uses `this.logger.log` instead of `console.log` |
+|-------------|:------:|---------|
+| JWT JTI Blacklisting | ✅ | Redis + PostgreSQL dual-layer token revocation |
+| AES-256-GCM Field Encryption | ✅ | MFA secrets, PIX keys, card data encrypted at rest |
+| Account Enumeration Fix | ✅ | Generic message on registration (no "email exists" leak) |
+| Constant-Time Auth | ✅ | Hash executed even when user not found |
+| CSRF Protection | ✅ | Double-submit cookie, explicit CSRF_SECRET required |
+| CORS Credentials | ✅ | Default `false` (opt-in only) |
+| CSP Hardening | ✅ | Helmet with strict CSP, HSTS 1yr + preload |
+| Trusted Proxy Validation | ✅ | X-Forwarded-For validated before rate limiting |
+| Query Timeout | ✅ | `statement_timeout=30s`, `idle_in_transaction=60s` |
+| Swagger in Production | ✅ | Disabled by default (`SWAGGER_ENABLED=false`) |
+| Log Data Masking | ✅ | Payment data removed from logs |
+| Docker Non-Root | ✅ | User `nestjs` (UID 1001), dumb-init signal handling |
+| Fraud Detection | ✅ | Rule engine for suspicious activity |
+| Incident Response | ✅ | Security incident workflow module |
 
 ## Getting Started
 
@@ -448,7 +533,7 @@ npm run seed
 cd platform/backend
 npm run start:dev
 # API available at http://localhost:3000/api/v1
-# Swagger docs at http://localhost:3000/docs (disabled in production)
+# Swagger docs at http://localhost:3000/docs (set SWAGGER_ENABLED=true)
 
 # Terminal 2 — Client Mobile App
 cd platform/mobile/apps/client
@@ -463,21 +548,28 @@ npx expo start
 
 ```bash
 # Required backend environment variables
-DATABASE_URL=postgresql://user:pass@localhost:5432/okinawa
-REDIS_URL=redis://localhost:6379
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=<your-password>
+DATABASE_NAME=okinawa
+REDIS_HOST=localhost
+REDIS_PORT=6379
 JWT_SECRET=<min-32-chars>
 JWT_REFRESH_SECRET=<min-32-chars>
 CSRF_SECRET=<min-32-chars>
-GOOGLE_CLIENT_ID=<your-google-client-id>
-GOOGLE_CLIENT_SECRET=<your-google-client-secret>
-APPLE_CLIENT_ID=<your-apple-client-id>
-APPLE_TEAM_ID=<your-apple-team-id>
-TWILIO_ACCOUNT_SID=<your-twilio-sid>
-TWILIO_AUTH_TOKEN=<your-twilio-token>
-NODE_ENV=production|development
-```
+FIELD_ENCRYPTION_KEY=<min-32-chars-for-AES-256>
 
-> ⚠️ Docker containers use `${VAR:?error}` to fail on missing required variables.
+# Optional (required for specific features)
+OPENAI_API_KEY=<for-AI-features>
+ASAAS_API_KEY=<for-payment-gateway>
+FCM_SERVER_KEY=<for-push-notifications>
+SENDGRID_API_KEY=<for-transactional-emails>
+TWILIO_ACCOUNT_SID=<for-OTP-SMS>
+TWILIO_AUTH_TOKEN=<for-OTP-SMS>
+GOOGLE_CLIENT_ID=<for-OAuth>
+APPLE_CLIENT_ID=<for-OAuth>
+```
 
 ## API Reference
 
@@ -496,116 +588,84 @@ POST /api/v1/auth/biometric/register # Register biometric credential
 POST /api/v1/auth/biometric/verify   # Verify biometric token
 ```
 
-### Core Endpoints
+### Core Endpoints (539 total)
 
 ```bash
 # Restaurants
-GET    /api/v1/restaurants           # List restaurants (geo-filtered)
-GET    /api/v1/restaurants/:id       # Get restaurant details
-POST   /api/v1/restaurants           # Create restaurant
+GET    /api/v1/restaurants              # List restaurants (geo-filtered)
+GET    /api/v1/restaurants/:id          # Get restaurant details
 
 # Orders
-GET    /api/v1/orders                # List orders
-POST   /api/v1/orders                # Create order
-PATCH  /api/v1/orders/:id/status     # Update order status (KDS integration)
+GET    /api/v1/orders                   # List orders
+POST   /api/v1/orders                   # Create order
+PATCH  /api/v1/orders/:id/status        # Update order status
+POST   /api/v1/orders/:id/confirm-cash  # Confirm cash payment
 
 # Reservations
-GET    /api/v1/reservations          # List reservations
-POST   /api/v1/reservations          # Create reservation
-POST   /api/v1/reservations/:id/invite # Invite guest via QR/link
-
-# Menu
-GET    /api/v1/menu-items            # List menu items
-GET    /api/v1/menu-categories       # List categories
+GET    /api/v1/reservations             # List reservations
+POST   /api/v1/reservations             # Create reservation
+PATCH  /api/v1/reservations/:id/chef-approve  # Chef approval (Chef's Table)
 
 # Payments
-GET    /api/v1/wallets/:id           # Get wallet balance
-POST   /api/v1/payments              # Process payment
-POST   /api/v1/payments/split        # Split payment (4 modes)
+POST   /api/v1/payments                 # Process payment
+POST   /api/v1/payments/split           # Split payment (4 modes)
+POST   /api/v1/payments/refund          # Process refund
 
-# Tables
-GET    /api/v1/tables                # List tables with status
-PATCH  /api/v1/tables/:id/status     # Update table status
+# KDS Brain
+GET    /api/v1/kds-brain/stations       # List cook stations
+POST   /api/v1/kds-brain/bump           # Bump order item
+GET    /api/v1/kds-brain/chef-overview   # Chef unified view
+
+# Financial
+GET    /api/v1/financial/reports         # Financial reports
+POST   /api/v1/cash-register/open        # Open cash register session
+POST   /api/v1/fiscal/emit               # Emit NFC-e
 
 # Loyalty
-GET    /api/v1/loyalty/points        # Get loyalty points
-POST   /api/v1/loyalty/redeem        # Redeem rewards
+GET    /api/v1/loyalty/points            # Get loyalty points
+POST   /api/v1/loyalty/stamp-cards/:id/redeem  # Redeem stamp card reward
+
+# Legal (LGPD)
+GET    /api/v1/legal/privacy-policy      # Privacy policy (i18n)
+GET    /api/v1/legal/terms-of-service    # Terms of service (i18n)
+GET    /api/v1/users/me/data-export      # Export user data (LGPD)
+DELETE /api/v1/users/me                  # Delete account (30-day grace)
 ```
 
-Full API documentation available at `/docs` when running the backend (disabled in production).
+Full API documentation available at `/docs` when `SWAGGER_ENABLED=true`.
 
 ### WebSocket Events
 
 ```typescript
-// Real-time events via Socket.IO
-'order:created'        // New order placed
-'order:status_changed' // Order status update (KDS)
-'table:status_changed' // Table availability change
-'payment:completed'    // Payment processed
-'reservation:updated'  // Reservation status change
-'queue:position'       // Queue position update (clubs)
-'waiter:called'        // Waiter call notification
+// Orders (namespace: /orders)
+'order:created'            // New order placed
+'order:status_changed'     // Order status update
+'order:item_status_changed'// Item status from KDS
+
+// Reservations (namespace: /reservations)
+'reservation:created'      // New reservation
+'reservation:updated'      // Status change
+'reservation:reminder'     // Upcoming reservation reminder
+
+// Tables & Waitlist
+'table:status_changed'     // Table availability change
+'waitlist:position_update' // Queue position update
+'waitlist:called'          // Your turn notification
+
+// Payments & Events
+'payment:completed'        // Payment processed
+'cashback:credited'        // Cashback applied
+
+// Operations
+'waiter:called'            // Waiter call notification
+'call:acknowledged'        // Call acknowledged by staff
+
+// Club
+'queue:positionUpdate'     // Club queue position
+'queue:called'             // Called to enter
 ```
 
-## Backend Modules (35+)
-
-| # | Module | Description |
-|---|--------|-------------|
-| 1 | **Auth** | JWT, OAuth (Google/Apple/Microsoft), token rotation, JTI blacklisting |
-| 2 | **Identity** | Credentials, MFA (TOTP), password policy, password history |
-| 3 | **Users** | Profile management, preferences |
-| 4 | **User Roles** | RBAC implementation (7 roles, restaurant-scoped) |
-| 5 | **Restaurants** | Restaurant CRUD, service configuration |
-| 6 | **Orders** | Order lifecycle, KDS integration, waiter stats |
-| 7 | **Payments** | Wallet, transactions, 4-mode split payment |
-| 8 | **Reservations** | Booking, guest management, invitations |
-| 9 | **Tables** | Floor plan, table status, real-time tracking |
-| 10 | **Tabs** | Tab management, happy hour, waiter calls |
-| 11 | **Menu Items** | Menu management, categories, modifiers |
-| 12 | **Menu Customization** | Customization groups with JSONB options |
-| 13 | **Club** | Club features, VIP tables, virtual queue, promoters |
-| 14 | **Loyalty** | Points, tiers, rewards, redemption |
-| 15 | **Promotions** | Stamp cards, promotional campaigns |
-| 16 | **Tips** | Gratuity distribution and management |
-| 17 | **Reviews** | Ratings, review moderation, photos |
-| 18 | **Favorites** | User favorites management |
-| 19 | **Notifications** | Push notifications (FCM), preferences |
-| 20 | **Analytics** | Business intelligence, metrics, aggregation, forecasting |
-| 21 | **Financial** | Reports, transactions, multi-format export |
-| 22 | **HR** | Staff management, scheduling, attendance |
-| 23 | **AI** | AI-powered features (pairing, recommendations) |
-| 24 | **QR Code** | QR generation, validation, deep linking |
-| 25 | **Webhooks** | External integrations, delivery, signatures |
-| 26 | **Events** | WebSocket event handling (Socket.IO) |
-| 27 | **i18n** | Internationalization (PT-BR/EN-US/ES-ES) |
-| 28 | **Health** | System health checks, circuit breaker, readiness probes |
-| 29 | **Service Config** | Config Hub (JSONB, 11 endpoints, WebSocket) |
-| 30 | **Approvals** | Manager approval workflows (WebSocket) |
-| 31 | **Inventory** | 3-tier stock inventory management |
-| 32 | **Recipes** | Drink recipes with seed data |
-| 33 | **Restaurant Waitlist** | Smart waitlist with WebSocket updates |
-| 34 | **Calls** | Service calls (waiter, help) with WebSocket |
-| 35 | **Addresses** | User address management |
-| 36 | **Receipts** | Receipt generation with auto receipt_number |
-| 37 | **Geofencing** | Haversine distance calculations |
-| 38 | **Legal** | Privacy policy and terms of service (i18n) |
-
 ## Testing
-
-The project includes a comprehensive test suite with **850+ tests** achieving **95%+ coverage**.
-
-| Category | Files | Tests | Coverage |
-|----------|-------|-------|----------|
-| Shared Components | 7 | 180+ | 95%+ |
-| Shared Services | 4 | 75+ | 95%+ |
-| Shared Validation | 1 | 28+ | 100% |
-| Shared Integration | 3 | 50+ | 95%+ |
-| Shared Utils | 4 | 150+ | 95%+ |
-| Shared Hooks | 4 | 120+ | 95%+ |
-| Shared Contexts | 3 | 80+ | 95%+ |
-| Client App | 3 | 85+ | 90%+ |
-| Restaurant App | 3 | 85+ | 90%+ |
-| **Total** | **32** | **850+** | **95%+** |
 
 ```bash
 # Run backend tests
@@ -617,41 +677,44 @@ cd platform/backend && npm run test:cov
 # Run mobile tests
 cd platform/mobile && npm run test
 
-# Run mobile tests with coverage
-cd platform/mobile && npm run test -- --coverage
-
-# Run specific app tests
-cd platform/mobile/apps/client && npx vitest run
-cd platform/mobile/apps/restaurant && npx vitest run
+# Run specific test suites
+npx jest --testPathPattern='auth'           # Auth tests only
+npx jest --testPathPattern='validation'     # Config validation tests
 ```
 
-See [TESTING.md](TESTING.md) for complete testing documentation.
+**Coverage thresholds** (enforced in CI):
+- Lines: 70%
+- Functions: 60%
+- Branches: 50%
+- Statements: 70%
 
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Detailed system architecture (~1500 lines, bilingual) |
-| [SERVICE_TYPES.md](docs/SERVICE_TYPES.md) | 11 service types specification (~3000 lines) |
-| [BOUNDED_CONTEXTS.md](docs/BOUNDED_CONTEXTS.md) | Domain bounded contexts |
-| [RESTAURANT_STAFF_ROLES.md](docs/RESTAURANT_STAFF_ROLES.md) | 6-tier RBAC specification |
-| [OWASP_CHECKLIST.md](docs/OWASP_CHECKLIST.md) | OWASP Top 10 compliance status |
-| [PENTEST_REPORT.md](docs/PENTEST_REPORT.md) | Penetration testing report |
-| [PRODUCTION_CHECKLIST.md](docs/PRODUCTION_CHECKLIST.md) | Production deployment checklist |
-| [SCALING_STRATEGY.md](docs/SCALING_STRATEGY.md) | 10x–100x scaling roadmap |
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Detailed system architecture |
+| [SERVICE_TYPES.md](docs/SERVICE_TYPES.md) | 11 service types specification |
+| [KDS-SYSTEM.md](docs/KDS-SYSTEM.md) | KDS Brain autonomous kitchen documentation |
+| [FINANCIAL-SYSTEM.md](docs/FINANCIAL-SYSTEM.md) | Financial Brain system documentation |
+| [PRODUCTION-READINESS-AUDIT-FINAL.md](docs/PRODUCTION-READINESS-AUDIT-FINAL.md) | 10-domain production audit |
+| [PRODUCTION-DEPLOYMENT-GUIDE.md](docs/PRODUCTION-DEPLOYMENT-GUIDE.md) | Deployment guide with env vars |
+| [HUMAN-ACTION-REQUIRED.md](docs/HUMAN-ACTION-REQUIRED.md) | Remaining human actions for go-live |
+| [SECURITY.md](docs/SECURITY.md) | Security policy and practices |
+| [DISASTER-RECOVERY.md](docs/DISASTER-RECOVERY.md) | DR procedures |
+| [RUNBOOK.md](docs/RUNBOOK.md) | Operational runbook |
+| [POST-MORTEM-PROCESS.md](docs/POST-MORTEM-PROCESS.md) | Incident post-mortem process |
 | [DEVELOPMENT_GUIDE.md](docs/DEVELOPMENT_GUIDE.md) | Development workflows and patterns |
-| [INSTALLATION_GUIDE.md](docs/INSTALLATION_GUIDE.md) | Setup and configuration |
-| [QR_CODE_SYSTEM_SPECIFICATION.md](docs/QR_CODE_SYSTEM_SPECIFICATION.md) | QR code system spec |
-| [UX_IMPROVEMENT_PROPOSALS.md](docs/UX_IMPROVEMENT_PROPOSALS.md) | UX improvements |
-| [UX_UI_GUIDE.md](docs/UX_UI_GUIDE.md) | Design system guide |
-| [GTM_STRATEGY.md](docs/GTM_STRATEGY.md) | Go-to-market strategy |
-| [TESTING.md](TESTING.md) | Testing documentation (850+ tests, 95%+ coverage) |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guidelines |
-| [SECURITY.md](SECURITY.md) | Security policy and practices |
+| [BOUNDED_CONTEXTS.md](docs/BOUNDED_CONTEXTS.md) | Domain bounded contexts |
+| [RESTAURANT_STAFF_ROLES.md](docs/RESTAURANT_STAFF_ROLES.md) | 7-tier RBAC specification |
+| [OWASP_CHECKLIST.md](docs/OWASP_CHECKLIST.md) | OWASP Top 10 compliance |
+| [SCALING_STRATEGY.md](docs/SCALING_STRATEGY.md) | 10x–100x scaling roadmap |
+| [DPA-TEMPLATE.md](docs/DPA-TEMPLATE.md) | Data Processing Agreement template |
+| [RIPD-TEMPLATE.md](docs/RIPD-TEMPLATE.md) | Data Protection Impact Assessment |
+| [WAF-CONFIGURATION.md](docs/WAF-CONFIGURATION.md) | WAF configuration guide |
 
 ## Contributing
 
-We welcome contributions to Project Okinawa. Please read our [Contributing Guide](CONTRIBUTING.md) for details on:
+We welcome contributions to NOOWE. Please read our [Contributing Guide](CONTRIBUTING.md) for details on:
 
 - Code of conduct
 - Development process
@@ -673,7 +736,7 @@ Unauthorized copying, modification, distribution, or use of this software, via a
 For technical support or inquiries:
 
 - Review the [documentation](docs/)
-- Check existing [issues](https://github.com/pedrodini/project-okinawa/issues)
+- Check existing [issues](https://github.com/dinipedro/project_okinawa/issues)
 - Create a new issue with detailed information
 
 ---
@@ -682,7 +745,7 @@ For technical support or inquiries:
 
 ## Visão Geral
 
-O Project Okinawa é uma plataforma abrangente de **experiência presencial** projetada para modernizar e otimizar operações de hospitalidade. Diferente de apps de delivery, o Okinawa foca exclusivamente em **experiências físicas de refeição**, criando conexões perfeitas entre clientes e estabelecimentos através da tecnologia.
+O NOOWE é uma plataforma abrangente de **experiência presencial** projetada para modernizar e otimizar operações de hospitalidade. Diferente de apps de delivery, o NOOWE foca exclusivamente em **experiências físicas**, criando conexões entre clientes e estabelecimentos através da tecnologia.
 
 ### Declaração de Missão
 
@@ -690,442 +753,303 @@ O Project Okinawa é uma plataforma abrangente de **experiência presencial** pr
 
 A plataforma NÃO é uma ferramenta focada em restaurantes, mas sim centrada em criar **experiências de usuário excepcionais** e conexões significativas.
 
-### Status da Auditoria Técnica
-
-
 ### Componentes da Plataforma
 
-| Componente | Tecnologia | Descrição |
-|------------|------------|-----------|
-| **App Mobile Cliente** | React Native / Expo | App para clientes: descoberta, pedidos, reservas, pagamentos |
-| **App Mobile Restaurante** | React Native / Expo | App de gestão para equipe: KDS, salão, analytics |
-| **API Backend** | NestJS | API REST escalável com suporte WebSocket em tempo real (35+ módulos) |
-| **Sistema de Preview** | React / Vite | Protótipo web interativo para validação de fluxos (62+ telas) |
+| Componente | Tecnologia | Escopo |
+|------------|------------|--------|
+| **App Mobile Cliente** | React Native 0.74 / Expo 51 | 61 telas — descoberta, pedidos, reservas, pagamentos, fidelidade |
+| **App Mobile Restaurante** | React Native 0.74 / Expo 51 | 81 telas — KDS, salão, analytics, CRM, fiscal |
+| **API Backend** | NestJS 10.4 | 54 módulos, 539 endpoints, 9 gateways WebSocket, 96 entidades |
+| **Site (Web)** | React + Vite + Tailwind | Landing page institucional + demo interativo |
+
+### Números da Plataforma
+
+| Métrica | Quantidade |
+|---------|----------:|
+| Total de telas mobile | **142** |
+| Módulos backend | **54** |
+| Endpoints REST API | **539** |
+| Gateways WebSocket | **9** |
+| Entidades de banco | **96** |
+| Migrações de banco | **45** |
+| Arquivos de teste backend | **137** |
+| Chaves i18n (por idioma) | **2.800+** |
+| Idiomas suportados | **3** (PT-BR, EN-US, ES-ES) |
+| Workflows CI/CD | **6** |
+| Arquivos de documentação | **53** |
+| Total de arquivos .tsx (mobile) | **898** |
+| Labels de acessibilidade | **681+** |
 
 ### Diferenciação Competitiva
 
-A vantagem de mercado do Okinawa é construída em três pilares:
+A vantagem de mercado do NOOWE é construída em três pilares:
 
-1. **Integração Total** — Centraliza 5+ ferramentas fragmentadas (fidelidade, KDS, pagamentos, reservas, BI) em um ecossistema
-2. **Defensibilidade UX-First** — 62+ telas nativas otimizadas para hábitos comportamentais e operações intuitivas
+1. **Integração Total** — Centraliza 8+ ferramentas fragmentadas (fidelidade, KDS, pagamentos, reservas, BI, fiscal, CRM, estoque) em um ecossistema
+2. **Defensibilidade UX-First** — 142 telas nativas otimizadas para hábitos comportamentais e operações intuitivas
 3. **Lock-in Natural** — Integração profunda de dados que aumenta custos de troca através de insights acumulados
 
 ## Tipos de Serviço Suportados
 
-A plataforma se adapta dinamicamente a **11 tipos distintos de serviço**:
+A plataforma se adapta dinamicamente a **11 tipos distintos de serviço** via registro de funcionalidades (`service-type.registry.ts`):
 
 | Tipo de Serviço | Descrição | Recursos Principais |
 |-----------------|-----------|---------------------|
 | **Fine Dining** | Experiência premium com serviço personalizado | Sommelier, harmonização, dress code |
-| **Quick Service** | Fast food com tempo mínimo de espera | Pedido no balcão, retirada self-service |
-| **Fast Casual** | Comida de qualidade com rapidez | Pedido híbrido, entrega na mesa |
-| **Café / Padaria** | Cafeterias e padarias | Sistema de comanda, carimbos de fidelidade |
-| **Buffet** | Self-service com preço por peso | Integração com balança inteligente |
-| **Drive-Thru** | Pedidos para veículos | Fila GPS, reconhecimento de carro |
-| **Food Truck** | Vendedores ambulantes de comida | Geolocalização, rastreamento de agenda |
-| **Chef's Table** | Experiências exclusivas de degustação | Menus fixos, assentos limitados |
+| **Quick Service** | Fast food com tempo mínimo de espera | Pedido no balcão, códigos de retirada |
+| **Fast Casual** | Comida de qualidade com rapidez | Pedido híbrido, personalização |
+| **Café / Padaria** | Cafeterias e padarias | Comanda, cartões de selo, resgate automático |
+| **Buffet** | Self-service com preço por peso | Precificação por cobertura, check-in |
+| **Drive-Thru** | Pedidos para veículos | Fila GPS, ordenação por proximidade |
+| **Food Truck** | Vendedores ambulantes | Rastreamento GPS em tempo real, geolocalização |
+| **Chef's Table** | Experiências exclusivas de degustação | Aprovação do chef, controle de capacidade, pré-pagamento |
 | **Casual Dining** | Restaurantes full-service relaxados | Waitlist, reservas flexíveis |
-| **Pub & Bar** | Estabelecimentos focados em bebidas | Gestão de comandas, happy hour |
-| **Club & Balada** | Casas noturnas e venues | Ingressos, mesas VIP, promoters |
+| **Pub & Bar** | Estabelecimentos focados em bebidas | Comanda, couvert, QR de convite, happy hour |
+| **Club & Balada** | Casas noturnas e venues | Ingressos, mesas VIP, seletor de área, promoters, aniversário |
 
 ## Capacidades da Plataforma
 
 | Capacidade | Descrição |
 |------------|-----------|
-| **Gestão de Pedidos** | Ciclo completo do pedido da criação à entrega com rastreamento em tempo real |
-| **Gestão de Mesas** | Planta do salão em tempo real com arrastar-e-soltar |
-| **Sistema de Reservas** | Reservas avançadas com gestão de convidados e fluxos de convite |
-| **Pagamentos Digitais** | Carteira com Apple Pay, Google Pay, PIX, TAP to Pay, cartões |
-| **Divisão de Pagamento** | 4 modos flexíveis: Individual, Igual, Seletivo, Valor Fixo |
-| **Programa de Fidelidade** | Recompensas baseadas em pontos com progressão de níveis |
-| **Display de Cozinha (KDS)** | KDS baseado em gestos com monitoramento SLA para cozinha e bar |
-| **Analytics** | Business intelligence completo com relatórios exportáveis |
-| **RBAC Multi-função** | Controle de acesso de 6 níveis: Dono, Gerente, Garçom, Chef, Barman, Maître |
-| **Ações Rápidas** | FAB contextual para execução rápida de tarefas |
+| **Gestão de Pedidos** | Ciclo completo com rastreamento WebSocket, códigos de retirada, automação pós-pagamento |
+| **KDS Brain** | Orquestração autônoma de cozinha: auto-fire, convergência, roteamento, self-learning, analytics |
+| **Gestão de Mesas** | Planta em tempo real com liberação automática pós-pagamento, máquina de estados |
+| **Sistema de Reservas** | Reservas avançadas com gestão de convidados, aprovação do chef, lembretes, detecção de no-show |
+| **Pagamentos Digitais** | Wallet, PIX, Crédito/Débito, Apple Pay, Google Pay, TAP to Pay, Dinheiro com confirmação |
+| **Gateway de Pagamento** | Adaptadores Asaas + Stripe Terminal, processamento de webhooks, reconciliação |
+| **Divisão de Pagamento** | 4 modos: Individual, Igual, Seletivo, Valor Fixo |
+| **Programa de Fidelidade** | Pontos com níveis, cartões de selo com resgate automático e botão de resgate |
+| **Cérebro Financeiro** | Caixa registradora, COGS, NFC-e fiscal, previsão, contas a pagar, reconciliação |
+| **Analytics e CRM** | Business intelligence, perfis de clientes, rastreamento de visitas |
+| **Integrações** | Adaptadores iFood, Rappi, UberEats com gestão de capacidade e sync de status |
+| **Gestão de Estoque** | Items de estoque, alertas, recebimento/ajuste, importação de compras |
+| **RBAC Multi-função** | 7 níveis: Dono, Gerente, Garçom, Chef, Barman, Cozinheiro, Maître |
+| **i18n** | 3 idiomas (PT-BR, EN-US, ES-ES) com 2.800+ chaves por idioma |
+| **Acessibilidade** | 681+ labels em 133 arquivos, wrappers de componentes acessíveis |
+| **Conformidade LGPD** | Rastreamento de consentimento, exportação de dados, retenção, re-consentimento (HTTP 451), exclusão |
 
 ## Funcionalidades Principais
 
-### Aplicativo do Cliente (37 Telas)
+### Aplicativo do Cliente (61 Telas)
 
 **Descoberta e Onboarding:**
-- Descoberta de restaurantes com geolocalização, mapas e filtros
+- Descoberta de restaurantes com geolocalização real (expo-location), mapas e filtros
 - Escaneamento de QR code para check-in (identifica mesas, cardápios, convites)
 - Autenticação passwordless-first: Boas-vindas → Telefone (OTP) → Biometria
-- Login social (Google, Apple) com verificação criptográfica RSA-SHA256 real
+- Login social (Google, Apple) com verificação criptográfica RSA-SHA256
+- Onboarding internacionalizado com seleção de culinária/preferências alimentares
 
 **Pedidos e Pagamentos:**
-- Navegação de cardápio em tempo real com filtros e busca
-- **Tela de Pagamento Unificada** com 3 abas: Checkout, Detalhes Divisão, Gorjeta
+- Navegação de cardápio com filtros, busca e montador de pratos (5 etapas de personalização)
+- **Tela de Pagamento Unificada** com 3 abas: Checkout, Divisão, Gorjeta
 - **4 Modos de Divisão**: Individual, Igual, Seletivo por item, Valor fixo
 - **6 Métodos de Pagamento**: Apple Pay, Google Pay, PIX QR, Débito/Crédito, TAP to Pay, Carteira
+- Recibos digitais com número automático
+- Prompt de avaliação pós-pedido (modal 5 estrelas ao completar)
 
 **Reservas e Fidelidade:**
-- Sistema de reservas avançado com convite de convidados via QR/link
-- Carteira digital com histórico de transações e gestão de saldo
-- Programa de fidelidade com pontos, níveis e resgate de recompensas
+- Sistema de reservas com convite de convidados via QR/link, reserva em grupo
+- Fila virtual com atualização de posição em tempo real via WebSocket
+- Carteira digital com histórico e gestão de saldo
+- Fidelidade com pontos, níveis, cartões de selo e botão de resgate
+- Cupons e promoções
 
-**Engajamento:**
-- **FAB de Ações Rápidas** — Botão flutuante contextual para ações frequentes
-- Notificações push para status de pedido, lembretes de reserva, promoções
-- Avaliações com upload de fotos
-- Fluxos específicos por tipo de serviço (comandas para bares, mesas VIP para baladas)
+**Específico por Tipo de Serviço:**
+- **Pub/Bar**: Comanda, montador de rodada, exibição de couvert, QR de convite para comanda
+- **Club**: Seletor de área (Pista/VIP/Rooftop), fila virtual, aniversário com preço dinâmico
+- **Buffet**: Fluxo de check-in
+- **Waitlist**: Modo família, atividades, escolha de entrada
 
-### Aplicativo do Restaurante (25 Telas)
+### Aplicativo do Restaurante (81 Telas)
 
 **Dashboard e Analytics:**
-- Dashboard em tempo real com métricas ao vivo (receita, pedidos, ocupação)
-- **Dashboard Adaptativo por Cargo** — Conteúdo adapta-se ao cargo:
-  - **Dono**: KPIs de receita, contagem de clientes, ticket médio
-  - **Gerente**: Pedidos ativos, tempo médio de preparo, pagamentos pendentes
-  - **Garçom**: Minhas mesas, gorjetas do dia, chamadas pendentes
-  - **Chef**: Profundidade da fila, status de preparo, métricas SLA
-  - **Barman**: Pedidos de bebidas, taxa de conclusão, itens top
-  - **Maître**: Reservas, waitlist, ocupação, alertas VIP
+- Dashboard em tempo real com métricas ao vivo
+- **Dashboard Adaptativo por Cargo** (7 cargos):
+  - **Dono**: KPIs de receita, contagem de clientes, ticket médio, relatórios
+  - **Gerente**: Pedidos ativos, aprovações, relatórios diários, promoções
+  - **Garçom**: Mesas, gorjetas, chamadas, pedidos, cobrança
+  - **Chef**: Fila KDS, status, SLA, aprovações Chef's Table
+  - **Barman**: Bebidas, receitas, taxa de conclusão, KDS bar
+  - **Cozinheiro**: Gestão de estação, KDS cozinha
+  - **Maître**: Reservas, waitlist, fluxo de salão, VIP
 
-**Operações de Cozinha e Bar:**
-- **KDS com Gestos de Swipe**: Swipe direita para progredir (Novo → Preparando → Pronto)
-- **Monitoramento SLA**: Alertas visuais em 5min (aviso) e 8min (crítico)
-- KDS de Barman para pedidos de bebidas com workflow separado
+**KDS Brain (Cozinha Autônoma):**
+- **Brain Router**: Roteamento automático para estações corretas
+- **Auto-Fire**: Sequenciamento de cursos com cron 30s
+- **Auto-Sync**: Verificação de convergência para pedidos multi-curso
+- **Self-Learning**: Cron semanal para sugestões de tempo baseadas em analytics
+- **Chef View**: Visão unificada de todas as estações
+- **KDS Analytics**: Tendências de preparo, eficiência, conformidade SLA
+
+**Cérebro Financeiro:**
+- **Caixa Registradora**: Abertura/fechamento, movimentações, contagem
+- **Controle de Custos**: Ingredientes, receitas, dashboard de margens
+- **Fiscal**: Emissão NFC-e via Focus NFe, configuração fiscal
+- **Previsão**: Predição de receita e análise de tendências
+- **Contas a Pagar**: Gestão de boletos
+- **Relatórios Financeiros**: Exportação multi-formato (PDF, Excel)
 
 **Salão e Reservas:**
-- Planta interativa do salão com gestão arrastar-e-soltar
-- Calendário de reservas com contagem de convidados e solicitações especiais
-- Gestão de waitlist para walk-ins
+- Planta interativa com gestão detalhada de mesas
+- Calendário de reservas com contagem de convidados
+- Waitlist com avanço automático após pagamento
+- Dashboard do Maître com visualização de fluxo
 
-**Pagamentos e Equipe:**
-- **Rastreamento de Pagamentos** — Status de pagamento convidado por convidado em tempo real
-- Distribuição e gestão de gorjetas
-- Agendamento de equipe e gestão de RH
-- Relatórios financeiros com exportação multi-formato (PDF, Excel)
+**Operações:**
+- Gestão de chamadas (garçom, ajuda)
+- Distribuição de gorjetas
+- Gestão de equipe e RH
+- Geração de QR codes (lote + individual)
+- Hub de configuração de serviço (12 telas de config)
+- Configurações de integração (iFood, Rappi, UberEats)
+- Dashboard CRM de clientes
+- Gestão de estoque com alertas
+- Controle de custos com receitas/margens
+- **Drive-Thru**: Gestão de fila com ordenação por proximidade
+- **Food Truck**: Compartilhamento GPS em tempo real
+- **Chef's Table**: Aprovação do chef para reservas
+- **Club**: Porta, fila, mesas VIP, promoter
 
-### Backend API (26 Módulos)
+### API Backend (54 Módulos)
 
-**Serviços Core:**
-- API RESTful com documentação OpenAPI/Swagger completa
-- Conexões WebSocket em tempo real (Socket.IO)
-- Estratégia de cache multi-camada (L1: In-memory, L2: Redis, L3: Database)
-- Worker process isolado para jobs em background
-
-**Segurança e Auth:**
-- Autenticação JWT com **JTI blacklisting** (Redis + PostgreSQL)
-- OAuth (Google, Apple, Microsoft) — sem vendor lock-in
-- **Verificação Apple JWT** com validação criptográfica RSA-SHA256 real (JWKS)
-- MFA (TOTP) com códigos de recuperação
-- RBAC com permissões scoped por restaurante
-- CSRF com double-submit cookie pattern (httpOnly)
-- Bcrypt cost factor 12
-
-**Processamento e Integração:**
-- Filas com Bull (notificações, relatórios, exportações)
-- Internacionalização (i18n) PT/EN
-- Logging estruturado com correlation IDs (`StructuredLoggerService` DI-injected)
-- Tracing distribuído com export de spans via NestJS Logger
-- Rate limiting (100 req/min geral, 5 req/15min auth)
-- Handling de requests idempotentes
-
-## Hardening de Segurança
-
-A plataforma passou por três rodadas de auditoria técnica com as seguintes remediações:
-
-| Remediação | Status | Detalhes |
-|------------|--------|----------|
-| JWT JTI Blacklisting | ✅ Feito | Revogação de tokens dual-layer (Redis + PostgreSQL) |
-| Verificação Apple JWT | ✅ Feito | Validação criptográfica RSA-SHA256 via JWKS (nativo `crypto.verify`) |
-| Padronização Token Expiry | ✅ Feito | Access: 15m, Refresh: 7d |
-| Bcrypt Cost Factor | ✅ Feito | Atualizado de 10 para 12 |
-| Proteção CSRF | ✅ Feito | Double-submit cookie pattern com cookies httpOnly |
-| CSP Hardening | ✅ Feito | Removido `unsafe-inline` em produção |
-| Logging Estruturado | ✅ Feito | Todos `console.log` substituídos por `StructuredLoggerService` / NestJS `Logger` |
-| LoggingInterceptor DI | ✅ Feito | Refatorado de instanciação manual para injeção de dependência |
-| Swagger Config Unificado | ✅ Feito | Removida config duplicada no `main.ts`; usa `swagger.config.ts` |
-| CI Audit Blocking | ✅ Feito | `npm audit` agora falha o build em vulnerabilidades críticas/altas |
-| TracingService Logger | ✅ Feito | Export de spans em produção usa `this.logger.log` em vez de `console.log` |
-
-## Stack Tecnológica
-
-### Backend
-
-| Tecnologia | Versão | Propósito |
-|------------|--------|-----------|
-| Node.js | 20.x | Ambiente de execução |
-| NestJS | 10.4.x | Framework de aplicação |
-| TypeScript | 5.x | Linguagem de programação |
-| PostgreSQL | 16.x | Banco de dados principal |
-| Redis | 7.x | Cache, filas e JTI blacklisting |
-| TypeORM | 0.3.x | ORM de banco de dados |
-| Socket.IO | 4.8.x | Comunicação em tempo real |
-| Bull | 4.x | Processamento de filas |
-| Passport | 0.7.x | Estratégias de autenticação |
-| Swagger | 8.x | Documentação da API |
-| Helmet | latest | Headers de segurança (CSP, HSTS, X-Frame) |
-
-### Mobile
-
-| Tecnologia | Versão | Propósito |
-|------------|--------|-----------|
-| React Native | 0.74.x | Framework mobile |
-| Expo | 51.x | Plataforma de desenvolvimento |
-| TypeScript | 5.x | Linguagem de programação |
-| React Navigation | 6.x | Navegação |
-| React Native Paper | 5.12.x | Componentes de UI |
-| TanStack Query | 5.x | Busca de dados & caching |
-| React Hook Form | 7.x | Gerenciamento de formulários |
-| Zod | 4.x | Validação de schema |
-| Socket.IO Client | 4.8.x | Atualizações em tempo real |
-| Vitest | 3.x | Framework de testes |
-| MSW | 2.x | Mock de APIs para testes |
-
-### Infraestrutura
-
-| Tecnologia | Propósito |
-|------------|-----------|
-| Docker | Containerização multi-stage para produção |
-| Docker Compose | Orquestração local |
-| GitHub Actions | Pipelines CI/CD (audit bloqueia em vulns críticas) |
-| PostgreSQL + PostGIS | Suporte a dados espaciais |
-| Redis | Gestão de sessão, cache e filas |
-
-## Início Rápido
-
-### Pré-requisitos
-
-- Node.js >= 20.0.0
-- npm >= 10.0.0
-- Docker e Docker Compose
-- Git
-- iOS Simulator (macOS) ou Android Studio
-
-### Instalação Rápida
-
-```bash
-# Clonar o repositório
-git clone https://github.com/pedrodini/project-okinawa.git
-cd project_okinawa-1
-
-# Instalar todas as dependências
-./install-dependencies-fixed.sh
-
-# Ou manualmente:
-npm install
-cd backend && npm install
-cd ../mobile && npm install
-```
-
-### Iniciar Infraestrutura
-
-```bash
-# Iniciar PostgreSQL e Redis
-cd backend
-docker-compose up -d
-
-# Executar migrations do banco
-npm run migration:run
-
-# (Opcional) Popular banco com dados de exemplo
-npm run seed
-```
-
-### Executar Aplicações
-
-```bash
-# Terminal 1 — API Backend
-cd backend
-npm run start:dev
-# API disponível em http://localhost:3000/api/v1
-# Documentação Swagger em http://localhost:3000/docs (desabilitado em produção)
-
-# Terminal 2 — App Mobile Cliente
-cd mobile/apps/client
-npm start
-
-# Terminal 3 — App Mobile Restaurante
-cd mobile/apps/restaurant
-npm start
-
-# Terminal 4 — Web Preview
-npm run dev
-# Preview disponível em http://localhost:5173
-```
-
-### Variáveis de Ambiente
-
-```bash
-# Variáveis de ambiente obrigatórias do backend
-DATABASE_URL=postgresql://user:pass@localhost:5432/okinawa
-REDIS_URL=redis://localhost:6379
-JWT_SECRET=<min-32-chars>
-JWT_REFRESH_SECRET=<min-32-chars>
-CSRF_SECRET=<min-32-chars>
-GOOGLE_CLIENT_ID=<seu-google-client-id>
-GOOGLE_CLIENT_SECRET=<seu-google-client-secret>
-APPLE_CLIENT_ID=<seu-apple-client-id>
-APPLE_TEAM_ID=<seu-apple-team-id>
-TWILIO_ACCOUNT_SID=<seu-twilio-sid>
-TWILIO_AUTH_TOKEN=<seu-twilio-token>
-NODE_ENV=production|development
-```
-
-> ⚠️ Containers Docker usam `${VAR:?error}` para falhar em variáveis obrigatórias ausentes.
-
-## Referência da API
-
-### Autenticação
-
-```bash
-POST /api/v1/auth/login              # Login email/senha
-POST /api/v1/auth/register           # Registro de novo usuário
-POST /api/v1/auth/refresh            # Atualizar token (rotação JTI)
-POST /api/v1/auth/logout             # Invalidar sessão (JTI blacklist)
-GET  /api/v1/auth/google             # OAuth Google 2.0
-GET  /api/v1/auth/apple              # Apple Sign In (RSA-SHA256 verificado)
-POST /api/v1/auth/otp/send           # Enviar OTP via SMS/WhatsApp
-POST /api/v1/auth/otp/verify         # Verificar código OTP
-POST /api/v1/auth/biometric/register # Registrar credencial biométrica
-POST /api/v1/auth/biometric/verify   # Verificar token biométrico
-```
-
-### Endpoints Principais
-
-```bash
-# Restaurantes
-GET    /api/v1/restaurants           # Listar restaurantes (geo-filtered)
-GET    /api/v1/restaurants/:id       # Detalhes do restaurante
-POST   /api/v1/restaurants           # Criar restaurante
-
-# Pedidos
-GET    /api/v1/orders                # Listar pedidos
-POST   /api/v1/orders                # Criar pedido
-PATCH  /api/v1/orders/:id/status     # Atualizar status (integração KDS)
-
-# Reservas
-GET    /api/v1/reservations          # Listar reservas
-POST   /api/v1/reservations          # Criar reserva
-POST   /api/v1/reservations/:id/invite # Convidar via QR/link
-
-# Cardápio
-GET    /api/v1/menu-items            # Listar itens do cardápio
-GET    /api/v1/menu-categories       # Listar categorias
-
-# Pagamentos
-GET    /api/v1/wallets/:id           # Saldo da carteira
-POST   /api/v1/payments              # Processar pagamento
-POST   /api/v1/payments/split        # Dividir pagamento (4 modos)
-
-# Mesas
-GET    /api/v1/tables                # Listar mesas com status
-PATCH  /api/v1/tables/:id/status     # Atualizar status da mesa
-
-# Fidelidade
-GET    /api/v1/loyalty/points        # Consultar pontos
-POST   /api/v1/loyalty/redeem        # Resgatar recompensas
-```
-
-Documentação completa da API disponível em `/docs` ao executar o backend (desabilitado em produção).
-
-### Eventos WebSocket
-
-```typescript
-// Eventos em tempo real via Socket.IO
-'order:created'        // Novo pedido criado
-'order:status_changed' // Atualização de status (KDS)
-'table:status_changed' // Mudança de disponibilidade da mesa
-'payment:completed'    // Pagamento processado
-'reservation:updated'  // Atualização de reserva
-'queue:position'       // Posição na fila (clubs)
-'waiter:called'        // Notificação de chamada do garçom
-```
-
-## Módulos do Backend (26)
+**Módulos Core (1-20):**
 
 | # | Módulo | Descrição |
 |---|--------|-----------|
-| 1 | **Auth** | JWT, OAuth (Google/Apple/Microsoft), rotação de tokens, JTI blacklisting |
-| 2 | **Identity** | Credenciais, MFA (TOTP), política de senha, histórico de senhas |
-| 3 | **Users** | Gestão de perfil, preferências |
-| 4 | **User Roles** | Implementação RBAC (6 níveis, scoped por restaurante) |
-| 5 | **Restaurants** | CRUD de restaurante, configuração de serviço |
-| 6 | **Orders** | Ciclo de vida de pedidos, integração KDS, stats do garçom |
-| 7 | **Payments** | Carteira, transações, divisão de pagamento 4 modos |
-| 8 | **Reservations** | Reservas, gestão de convidados, convites |
-| 9 | **Tables** | Planta do salão, status de mesas, rastreamento em tempo real |
-| 10 | **Tabs** | Gestão de comandas para casual dining e bares |
-| 11 | **Menu Items** | Gestão de cardápio, categorias, modificadores |
-| 12 | **Club** | Features de club, mesas VIP, fila virtual, promoters |
-| 13 | **Loyalty** | Pontos, níveis, recompensas, resgate |
-| 14 | **Tips** | Distribuição e gestão de gorjetas |
-| 15 | **Reviews** | Avaliações, moderação, fotos |
-| 16 | **Favorites** | Gestão de favoritos do usuário |
-| 17 | **Notifications** | Notificações push (FCM), preferências |
-| 18 | **Analytics** | Business intelligence, KPIs |
-| 19 | **Financial** | Relatórios, transações, exportação multi-formato |
-| 20 | **HR** | Gestão de equipe, agendamento |
-| 21 | **AI** | Features com IA (harmonização, recomendações) |
-| 22 | **QR Code** | Geração de QR, validação, deep linking |
-| 23 | **Webhooks** | Integrações externas |
-| 24 | **Events** | Handling de eventos WebSocket (Socket.IO) |
-| 25 | **i18n** | Internacionalização (PT/EN) |
-| 26 | **Health** | Verificações de saúde do sistema, readiness probes |
+| 1 | **Auth** | JWT (15min + 7d refresh), OAuth, rotação de tokens, blacklist JTI |
+| 2 | **Identity** | Credenciais, MFA (TOTP), criptografia AES-256-GCM |
+| 3 | **Users** | Perfis, preferências, exportação de dados, retenção, exclusão |
+| 4 | **User Roles** | RBAC (7 cargos, escopo por restaurante) |
+| 5 | **Restaurants** | CRUD, configuração de serviço |
+| 6 | **Orders** | Ciclo de vida, códigos de retirada, automação pós-pagamento |
+| 7 | **Payments** | Wallet, transações, split 4 modos, estornos, cashback |
+| 8 | **Payment Gateway** | Adaptadores Asaas + Stripe Terminal + Wallet, webhooks |
+| 9 | **Reservations** | Reservas, convidados, aprovação chef, lembretes (cron), no-show |
+| 10 | **Tables** | Planta, status, liberação automática |
+| 11 | **Tabs** | Comandas, happy hour, rodadas |
+| 12 | **Menu Items** | Cardápio, categorias, tempo de preparo, estação |
+| 13 | **Menu Customization** | Grupos de personalização com opções JSONB |
+| 14 | **Club** | VIP, fila virtual, promoters, pacotes de aniversário |
+| 15 | **Loyalty** | Pontos, níveis, selo, cashback |
+| 16 | **Promotions** | Cartões de selo, campanhas |
+| 17 | **Tips** | Distribuição de gorjetas |
+| 18 | **Reviews** | Avaliações, moderação |
+| 19 | **Favorites** | Favoritos do usuário |
+| 20 | **Notifications** | Push (FCM), WebSocket tempo real |
+
+**Operações e Inteligência (21-40):**
+
+| # | Módulo | Descrição |
+|---|--------|-----------|
+| 21 | **Analytics** | BI, métricas, agregação, previsão |
+| 22 | **Financial** | Relatórios, transações, exportação |
+| 23 | **Financial Brain** | Previsão, exportação contábil |
+| 24 | **Cash Register** | Sessões, movimentações, contagem |
+| 25 | **Cost Control** | Ingredientes, receitas, COGS, margens |
+| 26 | **Fiscal** | NFC-e via Focus NFe + SEFAZ, configuração |
+| 27 | **KDS Brain** | Roteamento, auto-fire, sync, analytics, self-learning |
+| 28 | **Stock** | Itens de estoque, alertas, movimentações |
+| 29 | **Purchase Import** | Importação XML/manual |
+| 30 | **Customer CRM** | Perfis de clientes, rastreamento de visitas |
+| 31 | **Integrations** | iFood/Rappi/UberEats, capacidade, sync |
+| 32 | **Reconciliation** | Liquidações de delivery |
+| 33 | **Accounts Payable** | Gestão de boletos |
+| 34 | **HR** | Equipe, escala, presença |
+| 35 | **AI** | IA (harmonização, recomendações) via OpenAI |
+| 36 | **QR Code** | Geração, validação, deep linking |
+| 37 | **Webhooks** | Integrações externas |
+| 38 | **Events** | Eventos WebSocket (Socket.IO) |
+| 39 | **Fraud Detection** | Motor de regras de fraude |
+| 40 | **Incident Response** | Workflow de incidentes de segurança |
+
+**Infraestrutura (41-54):**
+
+| # | Módulo | Descrição |
+|---|--------|-----------|
+| 41 | **i18n** | Internacionalização (PT-BR/EN-US/ES-ES) |
+| 42 | **Health** | Health checks, circuit breaker, probes |
+| 43 | **Service Config** | Config Hub (JSONB, 11 endpoints, WS) |
+| 44 | **Approvals** | Aprovações de gerente (WS) |
+| 45 | **Inventory** | Estoque 3 camadas |
+| 46 | **Recipes** | Receitas de drinks com seeds |
+| 47 | **Restaurant Waitlist** | Fila inteligente com WebSocket, avanço automático |
+| 48 | **Calls** | Chamadas de serviço (WS) |
+| 49 | **Addresses** | Endereços do usuário |
+| 50 | **Receipts** | Recibos com numeração automática |
+| 51 | **Geofencing** | Cálculos de distância Haversine |
+| 52 | **Legal** | Política de privacidade, termos (i18n), consentimento, re-consentimento (HTTP 451) |
+| 53 | **Metrics** | Métricas de performance |
+| 54 | **Admin** | Operações administrativas |
+
+### Gateways WebSocket (9)
+
+| Gateway | Namespace | Finalidade |
+|---------|-----------|------------|
+| OrdersGateway | `/orders` | Status de pedidos, novos pedidos |
+| TabsGateway | `/tabs` | Atualizações de comanda, rodadas |
+| ReservationsGateway | `/reservations` | Reservas, lembretes |
+| WaitlistGateway | `/waitlist` | Posição na fila, avanço automático |
+| CallsGateway | `/calls` | Chamadas de garçom |
+| EventsGateway | `/events` | Pagamentos, cashback, eventos gerais |
+| ApprovalsGateway | `/approvals` | Aprovações de gerente |
+| ServiceConfigGateway | `/service-config` | Broadcast de configurações |
+| ClubQueueGateway | `/queue` | Posição na fila do club |
+
+## Conformidade LGPD
+
+| Funcionalidade | Status | Detalhes |
+|----------------|:------:|---------|
+| Rastreamento de consentimento | ✅ | Hash SHA-256, device_id, IP |
+| Exportação de dados | ✅ | JSON completo (perfil, pedidos, pagamentos, histórico de consentimento) |
+| Retenção de dados | ✅ | Cron automatizado (3AM), períodos configuráveis |
+| Re-consentimento | ✅ | Middleware HTTP 451 quando termos atualizados |
+| Exclusão de conta | ✅ | Período de carência de 30 dias, anonimização de PII |
+| Política de privacidade | ✅ | 3 idiomas (PT-BR, EN-US, ES-ES) |
 
 ## Testes
 
-O projeto inclui uma suíte de testes abrangente com **850+ testes** alcançando **95%+ de cobertura**.
-
-| Categoria | Arquivos | Testes | Cobertura |
-|-----------|----------|--------|-----------|
-| Componentes Compartilhados | 7 | 180+ | 95%+ |
-| Serviços Compartilhados | 4 | 75+ | 95%+ |
-| Validação Compartilhada | 1 | 28+ | 100% |
-| Integração Compartilhada | 3 | 50+ | 95%+ |
-| Utils Compartilhados | 4 | 150+ | 95%+ |
-| Hooks Compartilhados | 4 | 120+ | 95%+ |
-| Contextos Compartilhados | 3 | 80+ | 95%+ |
-| App Cliente | 3 | 85+ | 90%+ |
-| App Restaurante | 3 | 85+ | 90%+ |
-| **Total** | **32** | **850+** | **95%+** |
-
 ```bash
-# Executar todos os testes
-cd mobile && npm run test
+# Testes do backend
+cd platform/backend && npm run test
 
-# Executar com cobertura
-npm run test -- --coverage
+# Testes com cobertura
+cd platform/backend && npm run test:cov
 
-# Executar testes de app específico
-cd mobile/apps/client && npx vitest run
-cd mobile/apps/restaurant && npx vitest run
+# Testes mobile
+cd platform/mobile && npm run test
 ```
 
-Veja [TESTING.md](TESTING.md) para documentação completa de testes.
+**Thresholds de cobertura** (aplicados na CI):
+- Linhas: 70%
+- Funções: 60%
+- Branches: 50%
+- Statements: 70%
 
 ## Documentação
 
 | Documento | Descrição |
-|-----------|-----------|
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Arquitetura detalhada do sistema (~1500 linhas, bilíngue) |
-| [SERVICE_TYPES.md](docs/SERVICE_TYPES.md) | Especificação dos 11 tipos de serviço (~3000 linhas) |
-| [BOUNDED_CONTEXTS.md](docs/BOUNDED_CONTEXTS.md) | Bounded contexts do domínio |
-| [RESTAURANT_STAFF_ROLES.md](docs/RESTAURANT_STAFF_ROLES.md) | Especificação RBAC de 6 níveis |
-| [OWASP_CHECKLIST.md](docs/OWASP_CHECKLIST.md) | Status de conformidade OWASP Top 10 |
-| [PENTEST_REPORT.md](docs/PENTEST_REPORT.md) | Relatório de testes de penetração |
-| [PRODUCTION_CHECKLIST.md](docs/PRODUCTION_CHECKLIST.md) | Checklist de deploy para produção |
-| [SCALING_STRATEGY.md](docs/SCALING_STRATEGY.md) | Roadmap de escalabilidade 10x–100x |
-| [DEVELOPMENT_GUIDE.md](docs/DEVELOPMENT_GUIDE.md) | Workflows e padrões de desenvolvimento |
-| [INSTALLATION_GUIDE.md](docs/INSTALLATION_GUIDE.md) | Setup e configuração |
-| [QR_CODE_SYSTEM_SPECIFICATION.md](docs/QR_CODE_SYSTEM_SPECIFICATION.md) | Especificação do sistema QR |
-| [UX_IMPROVEMENT_PROPOSALS.md](docs/UX_IMPROVEMENT_PROPOSALS.md) | Melhorias de UX |
-| [UX_UI_GUIDE.md](docs/UX_UI_GUIDE.md) | Guia de design system |
-| [GTM_STRATEGY.md](docs/GTM_STRATEGY.md) | Estratégia go-to-market |
-| [TESTING.md](TESTING.md) | Documentação de testes (850+ testes, 95%+ cobertura) |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Diretrizes de contribuição |
-| [SECURITY.md](SECURITY.md) | Política e práticas de segurança |
+|----------|-----------|
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Arquitetura detalhada do sistema |
+| [SERVICE_TYPES.md](docs/SERVICE_TYPES.md) | Especificação dos 11 tipos de serviço |
+| [KDS-SYSTEM.md](docs/KDS-SYSTEM.md) | Documentação do KDS Brain |
+| [FINANCIAL-SYSTEM.md](docs/FINANCIAL-SYSTEM.md) | Documentação do Cérebro Financeiro |
+| [PRODUCTION-READINESS-AUDIT-FINAL.md](docs/PRODUCTION-READINESS-AUDIT-FINAL.md) | Auditoria de produção 10 domínios |
+| [PRODUCTION-DEPLOYMENT-GUIDE.md](docs/PRODUCTION-DEPLOYMENT-GUIDE.md) | Guia de deploy com variáveis |
+| [HUMAN-ACTION-REQUIRED.md](docs/HUMAN-ACTION-REQUIRED.md) | Ações humanas pendentes para go-live |
+| [SECURITY.md](docs/SECURITY.md) | Política de segurança |
+| [DISASTER-RECOVERY.md](docs/DISASTER-RECOVERY.md) | Procedimentos de DR |
+| [RUNBOOK.md](docs/RUNBOOK.md) | Runbook operacional |
+| [POST-MORTEM-PROCESS.md](docs/POST-MORTEM-PROCESS.md) | Processo de post-mortem |
+| [DEVELOPMENT_GUIDE.md](docs/DEVELOPMENT_GUIDE.md) | Guia de desenvolvimento |
+| [DPA-TEMPLATE.md](docs/DPA-TEMPLATE.md) | Template de DPA |
+| [RIPD-TEMPLATE.md](docs/RIPD-TEMPLATE.md) | Template de RIPD/DPIA |
 
 ## Contribuindo
 
-Contribuições são bem-vindas no Project Okinawa. Leia nosso [Guia de Contribuição](CONTRIBUTING.md) para detalhes sobre:
+Contribuições são bem-vindas. Leia nosso [Guia de Contribuição](CONTRIBUTING.md) para detalhes sobre:
 
 - Código de conduta
 - Processo de desenvolvimento
-- Padrões de código (semantic tokens, DTOs, padrões DI)
+- Padrões de código (semantic tokens, DTOs, DI patterns)
 - Convenções de commit (Conventional Commits)
 - Processo de pull request
 - Estratégia de branches (main → develop → feature/*)
@@ -1136,61 +1060,12 @@ Este projeto é software proprietário. Todos os direitos reservados.
 
 Copyright (c) 2024–2026 Pedro Dini
 
-A cópia, modificação, distribuição ou uso não autorizado deste software, por qualquer meio, é estritamente proibida sem permissão expressa por escrito do detentor dos direitos autorais.
+A cópia, modificação, distribuição ou uso não autorizado deste software, por qualquer meio, é estritamente proibido sem permissão expressa por escrito do detentor dos direitos autorais.
 
 ## Suporte
 
 Para suporte técnico ou dúvidas:
 
-- Consulte a [documentação](docs/)
-- Verifique [issues](https://github.com/pedrodini/project-okinawa/issues) existentes
+- Revise a [documentação](docs/)
+- Verifique [issues existentes](https://github.com/dinipedro/project_okinawa/issues)
 - Crie uma nova issue com informações detalhadas
-
----
-
-## Recent Updates / Atualizações Recentes
-
-### Version 3.0.0 (February 2026)
-
-**Security Hardening (Audit v3):**
-- Apple JWT verification with real RSA-SHA256 cryptographic validation (JWKS)
-- JWT JTI blacklisting with Redis + PostgreSQL dual-layer revocation
-- All `console.log` replaced by `StructuredLoggerService` / NestJS `Logger`
-- CSP hardened: removed `unsafe-inline` in production
-- CI pipeline blocks on critical/high vulnerabilities
-- LoggingInterceptor refactored to proper Dependency Injection
-- Swagger configuration unified (removed duplication in `main.ts`)
-- TracingService span export via `this.logger.log` (not `console.log`)
-- Bcrypt cost factor upgraded to 12
-
-**Segurança (Auditoria v3):**
-- Verificação Apple JWT com validação criptográfica RSA-SHA256 real (JWKS)
-- JWT JTI blacklisting com revogação dual-layer (Redis + PostgreSQL)
-- Todos `console.log` substituídos por `StructuredLoggerService` / NestJS `Logger`
-- CSP hardened: removido `unsafe-inline` em produção
-- Pipeline CI bloqueia em vulnerabilidades críticas/altas
-- LoggingInterceptor refatorado para Injeção de Dependência
-- Configuração Swagger unificada (removida duplicação no `main.ts`)
-- TracingService export de spans via `this.logger.log` (não `console.log`)
-- Bcrypt cost factor atualizado para 12
-
-### Version 2.1.0 (February 2025)
-
-**UX Improvements / Melhorias de UX:**
-- Unified Payment Screen (4 screens → 1 tabbed interface)
-- Quick Actions FAB (context-aware floating button)
-- Role-Adaptive Dashboard (6 staff roles)
-- KDS Swipe Gestures (touch-friendly kitchen display)
-- Order Payment Tracking (guest-by-guest real-time status)
-
----
-
-**Version:** 3.0.0
-**Last Updated:** February 2026
-**Status:** Production-Ready
-**Audit Score:** 8.7/10
-
-**Versão:** 3.0.0
-**Última Atualização:** Fevereiro 2026
-**Status:** Production-Ready
-**Score de Auditoria:** 8.7/10
