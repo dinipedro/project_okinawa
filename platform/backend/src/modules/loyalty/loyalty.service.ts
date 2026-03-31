@@ -723,6 +723,41 @@ export class LoyaltyService {
     return this.stampCardRepository.save(card);
   }
 
+  /**
+   * Redeem a completed stamp card reward.
+   * Deducts stamps and increments completed cycles.
+   */
+  async redeemStampReward(
+    userId: string,
+    restaurantId: string,
+  ): Promise<{ redeemed: boolean; reward: string }> {
+    const card = await this.stampCardRepository.findOne({
+      where: { user_id: userId, restaurant_id: restaurantId },
+    });
+
+    if (!card || card.current_stamps < card.required_stamps) {
+      return { redeemed: false, reward: '' };
+    }
+
+    card.current_stamps -= card.required_stamps;
+    card.completed_cycles += 1;
+    card.completed = false;
+    card.completed_at = null;
+    await this.stampCardRepository.save(card);
+
+    const reward = card.reward_description || 'Free item!';
+
+    // Notify user about redemption
+    this.eventsGateway.notifyUser(userId, {
+      type: 'loyalty:stamp_reward_redeemed',
+      reward,
+      completed_cycles: card.completed_cycles,
+      restaurant_id: restaurantId,
+    });
+
+    return { redeemed: true, reward };
+  }
+
   // ========== Private Helper Methods ==========
 
   /**

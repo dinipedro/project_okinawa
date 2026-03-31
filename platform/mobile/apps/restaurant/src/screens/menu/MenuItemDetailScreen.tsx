@@ -419,7 +419,7 @@ export default function MenuItemDetailScreen() {
 
               <View style={styles.availability}>
                 <Text variant="titleMedium" style={styles.availabilityText}>{t('menu.availableForSale')}</Text>
-                <Switch value={item.is_available} onValueChange={handleToggleAvailability} />
+                <Switch value={item.is_available} onValueChange={handleToggleAvailability} accessibilityLabel="Toggle item availability" />
               </View>
             </>
           ) : (
@@ -466,6 +466,7 @@ export default function MenuItemDetailScreen() {
                   onChangeText={setPreparationTime}
                   keyboardType="number-pad"
                   style={[styles.input, styles.halfInput]}
+                  accessibilityLabel="Preparation time in minutes"
                 />
                 <TextInput
                   mode="outlined"
@@ -474,6 +475,7 @@ export default function MenuItemDetailScreen() {
                   onChangeText={setCalories}
                   keyboardType="number-pad"
                   style={[styles.input, styles.halfInput]}
+                  accessibilityLabel="Calories"
                 />
               </View>
 
@@ -484,20 +486,21 @@ export default function MenuItemDetailScreen() {
                 onChangeText={setAllergens}
                 placeholder={t('menu.allergensPlaceholder')}
                 style={styles.input}
+                accessibilityLabel="Allergens, comma separated"
               />
 
               <View style={styles.switches}>
                 <View style={styles.switchRow}>
                   <Text variant="bodyLarge" style={styles.switchLabel}>{t('menu.available')}</Text>
-                  <Switch value={isAvailable} onValueChange={setIsAvailable} />
+                  <Switch value={isAvailable} onValueChange={setIsAvailable} accessibilityLabel="Available for sale" />
                 </View>
                 <View style={styles.switchRow}>
                   <Text variant="bodyLarge" style={styles.switchLabel}>{t('menu.dietaryInfo.vegetarian')}</Text>
-                  <Switch value={isVegetarian} onValueChange={setIsVegetarian} />
+                  <Switch value={isVegetarian} onValueChange={setIsVegetarian} accessibilityLabel="Vegetarian" />
                 </View>
                 <View style={styles.switchRow}>
                   <Text variant="bodyLarge" style={styles.switchLabel}>{t('menu.dietaryInfo.vegan')}</Text>
-                  <Switch value={isVegan} onValueChange={setIsVegan} />
+                  <Switch value={isVegan} onValueChange={setIsVegan} accessibilityLabel="Vegan" />
                 </View>
               </View>
 

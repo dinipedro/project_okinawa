@@ -168,6 +168,8 @@ export default function FinancialReportScreen() {
               selected={period === 'week'}
               onPress={() => setPeriod('week')}
               style={styles.periodChip}
+              accessibilityLabel="View weekly report"
+              accessibilityState={{ selected: period === 'week' }}
             >
               {t('financial.week')}
             </Chip>
@@ -175,6 +177,8 @@ export default function FinancialReportScreen() {
               selected={period === 'month'}
               onPress={() => setPeriod('month')}
               style={styles.periodChip}
+              accessibilityLabel="View monthly report"
+              accessibilityState={{ selected: period === 'month' }}
             >
               {t('financial.month')}
             </Chip>
@@ -182,6 +186,8 @@ export default function FinancialReportScreen() {
               selected={period === 'year'}
               onPress={() => setPeriod('year')}
               style={styles.periodChip}
+              accessibilityLabel="View yearly report"
+              accessibilityState={{ selected: period === 'year' }}
             >
               {t('financial.year')}
             </Chip>
@@ -286,13 +292,14 @@ export default function FinancialReportScreen() {
 
       {/* Export Actions */}
       <View style={styles.actions}>
-        <Button 
-          mode="contained" 
-          onPress={showExportOptions} 
-          icon="download" 
+        <Button
+          mode="contained"
+          onPress={showExportOptions}
+          icon="download"
           style={styles.exportButton}
           loading={exporting}
           disabled={exporting}
+          accessibilityLabel="Export financial report"
         >
           {exporting ? 'Exportando...' : t('financial.exportPdf')}
         </Button>

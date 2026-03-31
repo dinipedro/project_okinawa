@@ -115,6 +115,7 @@ export default function BuffetCheckinScreen({
                   ]}
                   onPress={handleDecrement}
                   disabled={covers <= 1}
+                  accessibilityLabel={t('common.remove')}
                 >
                   <Text style={[typography.h2, { color: colors.foreground }]}>-</Text>
                 </TouchableOpacity>
@@ -133,6 +134,7 @@ export default function BuffetCheckinScreen({
                   ]}
                   onPress={handleIncrement}
                   disabled={covers >= 20}
+                  accessibilityLabel={t('common.add')}
                 >
                   <Text style={[typography.h2, { color: colors.foreground }]}>+</Text>
                 </TouchableOpacity>
@@ -173,6 +175,7 @@ export default function BuffetCheckinScreen({
             disabled={isLoading}
             style={[styles.checkinButton, { backgroundColor: colors.primary }]}
             labelStyle={[typography.buttonLarge, { color: colors.primaryForeground }]}
+            accessibilityLabel={t('buffet.checkin')}
           >
             {t('buffet.checkin')}
           </Button>
@@ -218,6 +221,7 @@ export default function BuffetCheckinScreen({
             onPress={handleCallWaiter}
             style={[styles.callWaiterButton, { borderColor: colors.primary }]}
             labelStyle={[typography.buttonLarge, { color: colors.primary }]}
+            accessibilityLabel={t('service.callWaiter') ?? t('waiterCalls.title')}
           >
             {t('service.callWaiter') ?? t('waiterCalls.title')}
           </Button>

@@ -324,7 +324,7 @@ export default function HRScreen({ navigation }: any) {
               <View key={request.id} style={styles.leaveRequest}>
                 <View style={styles.leaveHeader}>
                   <Text variant="titleMedium">{request.staff_member.name}</Text>
-                  <Chip style={{ backgroundColor: getLeaveTypeColor(request.leave_type) }} textStyle={{ color: '#fff', fontSize: 11 }}>
+                  <Chip style={{ backgroundColor: getLeaveTypeColor(request.leave_type) }} textStyle={{ color: '#fff', fontSize: 11 }} accessibilityLabel={`Leave type: ${request.leave_type}`}>
                     {request.leave_type.toUpperCase()}
                   </Chip>
                 </View>

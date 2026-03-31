@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Text, Card, Button, Searchbar, Chip, ActivityIndicator, IconButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import * as Location from 'expo-location';
 import { t, useTranslations } from '@okinawa/shared/i18n';
 import { useColors, useOkinawaTheme } from '@okinawa/shared/contexts/ThemeContext';
 import { useAuth } from '@okinawa/shared/hooks/useAuth';
@@ -74,6 +75,7 @@ export default function HomeScreen() {
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const userLocation = useRef<{ lat: number; lng: number } | null>(null);
 
   const cuisineTypes = [
     { id: 'japanese', label: t('cuisine.japanese'), icon: '🍣' },
@@ -86,8 +88,30 @@ export default function HomeScreen() {
 
   const fetchData = useCallback(async () => {
     try {
+      // F6: Get real device location for nearby restaurants
+      if (!userLocation.current) {
+        try {
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status === 'granted') {
+            const location = await Location.getCurrentPositionAsync({
+              accuracy: Location.Accuracy.Balanced,
+            });
+            userLocation.current = {
+              lat: location.coords.latitude,
+              lng: location.coords.longitude,
+            };
+          } else {
+            logger.warn('Location permission denied, using fallback');
+          }
+        } catch (locError) {
+          logger.warn('Could not get device location, using fallback:', locError);
+        }
+      }
+
+      const locationParams = userLocation.current || undefined;
+
       const [nearbyRes, popularRes, ordersRes] = await Promise.all([
-        ApiService.getRestaurants({ lat: 0, lng: 0 }).then((data: any) => ({ data: Array.isArray(data) ? data.slice(0, 5) : [] })).catch(() => ({ data: [] })),
+        ApiService.getRestaurants(locationParams).then((data: any) => ({ data: Array.isArray(data) ? data.slice(0, 5) : [] })).catch(() => ({ data: [] })),
         ApiService.getRestaurants().then((data: any) => ({ data: Array.isArray(data) ? data.slice(0, 5) : [] })).catch(() => ({ data: [] })),
         user ? ApiService.getMyOrders().then((data: any) => ({ data: Array.isArray(data) ? data.slice(0, 3) : [] })).catch(() => ({ data: [] })) : { data: [] },
       ]);

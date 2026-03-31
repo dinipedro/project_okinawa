@@ -443,13 +443,13 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Close receipt">
           <Ionicons name="close" size={24} color={colors.foreground} />
         </TouchableOpacity>
         <Text style={styles.title}>
           Comprovante Digital
         </Text>
-        <TouchableOpacity onPress={shareReceipt}>
+        <TouchableOpacity onPress={shareReceipt} accessibilityLabel="Share receipt">
           <Ionicons name="share-outline" size={24} color={colors.primary} />
         </TouchableOpacity>
       </View>
@@ -620,6 +620,7 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
           <TouchableOpacity
             style={styles.actionButton}
             onPress={downloadReceipt}
+            accessibilityLabel="Download receipt PDF"
           >
             <Ionicons name="download-outline" size={20} color={colors.foreground} />
             <Text style={styles.actionButtonText}>
@@ -630,6 +631,7 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
           <TouchableOpacity
             style={styles.actionButton}
             onPress={shareReceipt}
+            accessibilityLabel="Send receipt by email"
           >
             <Ionicons name="mail-outline" size={20} color={colors.foreground} />
             <Text style={styles.actionButtonText}>
@@ -646,6 +648,7 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
         <TouchableOpacity
           style={styles.doneButton}
           onPress={() => navigation.navigate('Home')}
+          accessibilityLabel="Go back to home"
         >
           <Text style={styles.doneButtonText}>Voltar ao Início</Text>
         </TouchableOpacity>

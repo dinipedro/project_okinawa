@@ -22,6 +22,8 @@ describe('OrdersController', () => {
     findOne: jest.fn(),
     update: jest.fn(),
     updateStatus: jest.fn(),
+    serializeOrdersForRestaurant: jest.fn((orders) => orders),
+    serializeOrderForRestaurant: jest.fn((order) => order),
   };
 
   const mockKdsService = {
@@ -89,11 +91,11 @@ describe('OrdersController', () => {
       const orders = [mockOrder];
       const pagination = { page: 1, limit: 10 };
 
-      mockOrdersService.findByRestaurant.mockResolvedValue(orders);
+      mockOrdersService.findByRestaurant.mockResolvedValue({ items: orders, total: 1 });
 
       const result = await controller.findByRestaurant(restaurantId, pagination as any);
 
-      expect(result).toEqual(orders);
+      expect(result).toEqual({ items: orders, total: 1 });
       expect(mockOrdersService.findByRestaurant).toHaveBeenCalledWith(restaurantId, pagination);
     });
   });

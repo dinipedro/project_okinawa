@@ -40,7 +40,16 @@ interface DrinkOrder {
   created_at: string;
   priority: 'normal' | 'high' | 'urgent';
   waiter_name?: string;
+  source?: string;
+  delivery_rider_eta?: number;
 }
+
+/** Platform brand colors for delivery source badges */
+const PLATFORM_COLORS: Record<string, string> = {
+  ifood: '#EA1D2C',
+  rappi: '#FF441F',
+  ubereats: '#06C167',
+};
 
 export default function BarmanKDSScreen() {
   const colors = useColors();
@@ -219,6 +228,23 @@ export default function BarmanKDSScreen() {
     readyText: {
       color: colors.success,
       fontWeight: 'bold',
+    },
+    sourceBadge: {
+      height: 22,
+      borderRadius: 4,
+      paddingHorizontal: 6,
+      alignSelf: 'flex-start' as const,
+      marginTop: 4,
+    },
+    sourceBadgeText: {
+      fontSize: 10,
+      fontWeight: '700' as const,
+      color: '#FFFFFF',
+    },
+    riderEta: {
+      fontSize: 11,
+      color: colors.info,
+      marginTop: 4,
     },
   }), [colors]);
 
@@ -422,6 +448,18 @@ export default function BarmanKDSScreen() {
                         Mesa {order.table_number}
                       </Text>
                     </View>
+                    {order.source && order.source !== 'noowe' && (
+                      <View style={[styles.sourceBadge, { backgroundColor: PLATFORM_COLORS[order.source] || colors.mutedForeground }]}>
+                        <Text style={styles.sourceBadgeText}>
+                          {t(`kds.order_source.${order.source}`)}
+                        </Text>
+                      </View>
+                    )}
+                    {order.delivery_rider_eta != null && (
+                      <Text style={styles.riderEta}>
+                        {t('kds.delivery.rider_eta', { minutes: String(order.delivery_rider_eta) })}
+                      </Text>
+                    )}
                   </View>
 
                   <View style={styles.orderHeaderRight}>
@@ -433,6 +471,7 @@ export default function BarmanKDSScreen() {
                         { borderColor: getPriorityColor(order.priority) },
                       ]}
                       mode="outlined"
+                      accessibilityLabel={`Time elapsed ${getTimeElapsed(order.created_at)}, priority ${order.priority}`}
                     >
                       {getTimeElapsed(order.created_at)}
                     </Chip>
@@ -467,6 +506,7 @@ export default function BarmanKDSScreen() {
                               size={20}
                               iconColor={colors.error}
                               onPress={() => handleCancelItem(order.id, item.id)}
+                              accessibilityLabel={`Cancel item ${item.name}`}
                             />
                           )}
                         </View>
@@ -502,6 +542,7 @@ export default function BarmanKDSScreen() {
                       onPress={() => handleStartOrder(order.id)}
                       style={styles.startButton}
                       icon="play"
+                      accessibilityLabel={`Start preparing order ${order.order_number}`}
                     >
                       Iniciar Preparo
                     </Button>
@@ -513,6 +554,7 @@ export default function BarmanKDSScreen() {
                       onPress={() => handleCompleteOrder(order.id)}
                       style={styles.completeButton}
                       icon="check"
+                      accessibilityLabel={`Mark order ${order.order_number} as complete`}
                     >
                       {t('barman.action.complete')}
                     </Button>

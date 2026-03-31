@@ -8,6 +8,9 @@ import { PaymentMethod } from './entities/payment-method.entity';
 import { Order } from '@/modules/orders/entities/order.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { WalletType, TransactionType } from '@common/enums';
+import { CashbackService } from '@/modules/loyalty/cashback.service';
+import { EventsGateway } from '@/modules/events/events.gateway';
+import { FinancialTransactionService } from '@/modules/financial/financial-transaction.service';
 
 describe('PaymentsService', () => {
   let service: PaymentsService;
@@ -94,6 +97,21 @@ describe('PaymentsService', () => {
         {
           provide: DataSource,
           useValue: mockDataSource,
+        },
+        {
+          provide: EventsGateway,
+          useValue: { server: { to: jest.fn().mockReturnValue({ emit: jest.fn() }) } },
+        },
+        {
+          provide: FinancialTransactionService,
+          useValue: { createTransaction: jest.fn().mockResolvedValue({}) },
+        },
+        {
+          provide: CashbackService,
+          useValue: {
+            processOrderCashback: jest.fn().mockResolvedValue({ credited: false }),
+            processOrderPoints: jest.fn().mockResolvedValue({ credited: false }),
+          },
         },
       ],
     }).compile();

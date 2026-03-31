@@ -53,6 +53,18 @@ export class RestaurantTable {
   @Column({ nullable: true })
   qr_code: string;
 
+  @Column({ type: 'varchar', length: 20, default: 'square' })
+  shape: string; // 'square' | 'round' | 'rectangle' | 'bar'
+
+  @Column({ type: 'int', default: 1 })
+  width: number;
+
+  @Column({ type: 'int', default: 1 })
+  height: number;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  occupied_since: Date;
+
   @Column({ type: 'text', nullable: true })
   notes: string;
 

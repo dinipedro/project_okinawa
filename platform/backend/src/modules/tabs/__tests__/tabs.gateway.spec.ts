@@ -183,7 +183,7 @@ describe('TabsGateway', () => {
     });
 
     it('should emit item_added via notifyItemAdded', () => {
-      gateway.notifyItemAdded('tab-1', { id: 'item-1', name: 'pizza', price: 25, quantity: 1 });
+      gateway.notifyItemAdded('tab-1', 'rest-1', 'user-1', { id: 'item-1', name: 'pizza', price: 25, quantity: 1 });
 
       expect(mockServer.to).toHaveBeenCalledWith('tab:tab-1');
       expect(mockServer.emit).toHaveBeenCalledWith('tabUpdate', expect.objectContaining({
@@ -212,7 +212,7 @@ describe('TabsGateway', () => {
     });
 
     it('should emit payment_made via notifyPaymentMade', () => {
-      gateway.notifyPaymentMade('tab-1', { amount: 50, userId: 'u1', method: 'card' });
+      gateway.notifyPaymentMade('tab-1', 'rest-1', 'user-1', { amount: 50, userId: 'u1', method: 'card' });
 
       expect(mockServer.to).toHaveBeenCalledWith('tab:tab-1');
       expect(mockServer.emit).toHaveBeenCalledWith('tabUpdate', expect.objectContaining({
@@ -221,7 +221,7 @@ describe('TabsGateway', () => {
     });
 
     it('should emit tab_closed via notifyTabClosed', () => {
-      gateway.notifyTabClosed('tab-1');
+      gateway.notifyTabClosed('tab-1', 'rest-1', 'user-1');
 
       expect(mockServer.to).toHaveBeenCalledWith('tab:tab-1');
       expect(mockServer.emit).toHaveBeenCalledWith('tabUpdate', expect.objectContaining({

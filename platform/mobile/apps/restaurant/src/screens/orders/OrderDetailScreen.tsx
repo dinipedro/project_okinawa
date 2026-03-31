@@ -217,6 +217,35 @@ export default function OrderDetailScreen() {
     ]);
   };
 
+  const [confirmingCash, setConfirmingCash] = useState(false);
+
+  const handleConfirmCashPayment = () => {
+    Alert.alert(
+      'Confirmar Pagamento em Dinheiro',
+      `Confirmar recebimento de R$ ${order?.total_amount?.toFixed(2)} em dinheiro?`,
+      [
+        { text: t('common.no'), style: 'cancel' },
+        {
+          text: t('common.yes'),
+          onPress: async () => {
+            try {
+              setConfirmingCash(true);
+              await ApiService.confirmCashPayment(orderId);
+              if (order) {
+                setOrder({ ...order, status: 'completed' as OrderStatus });
+              }
+              Alert.alert(t('common.success'), 'Pagamento em dinheiro confirmado.');
+            } catch (error) {
+              Alert.alert(t('common.error'), t('errors.generic'));
+            } finally {
+              setConfirmingCash(false);
+            }
+          },
+        },
+      ],
+    );
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -408,6 +437,24 @@ export default function OrderDetailScreen() {
             accessibilityLabel={`Mark order as ${nextStatus}`}
           >
             {getStatusLabel(nextStatus)}
+          </Button>
+        </View>
+      )}
+
+      {/* Cash Payment Confirmation — visible when order is not completed/cancelled */}
+      {order.status !== 'completed' && order.status !== 'cancelled' && (
+        <View style={styles.actions}>
+          <Button
+            mode="contained"
+            onPress={handleConfirmCashPayment}
+            style={[styles.actionButton, { backgroundColor: colors.success }]}
+            icon="cash"
+            loading={confirmingCash}
+            disabled={confirmingCash}
+            accessibilityRole="button"
+            accessibilityLabel="Confirm cash payment"
+          >
+            Confirmar Pagamento em Dinheiro
           </Button>
         </View>
       )}

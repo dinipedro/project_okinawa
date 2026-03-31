@@ -144,8 +144,8 @@ function TableDetailModal({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <Pressable style={[modalStyles.overlay, { backgroundColor: colors.overlay }]} onPress={onClose}>
-        <Pressable style={[modalStyles.content, { backgroundColor: colors.card }]} onPress={() => {}}>
+      <Pressable style={[modalStyles.overlay, { backgroundColor: colors.overlay }]} onPress={onClose} accessibilityLabel="Close table details overlay">
+        <Pressable style={[modalStyles.content, { backgroundColor: colors.card }]} onPress={() => {}} accessibilityLabel="Table detail panel">
           {/* Header */}
           <View style={modalStyles.header}>
             <View style={[modalStyles.statusDot, { backgroundColor: statusColor }]} />
@@ -228,7 +228,7 @@ function DetailRow({
 }) {
   return (
     <View style={modalStyles.detailRow}>
-      <IconButton icon={icon} size={18} iconColor={iconColor} style={{ margin: 0 }} />
+      <IconButton icon={icon} size={18} iconColor={iconColor} style={{ margin: 0 }} accessibilityLabel={label} />
       <Text variant="bodyMedium" style={[modalStyles.detailLabel, { color: colors.foreground }]}>
         {label}
       </Text>
@@ -363,7 +363,7 @@ export default function FloorFlowScreen() {
   if (isError) {
     return (
       <View style={styles.errorContainer}>
-        <IconButton icon="alert-circle-outline" size={64} iconColor={colors.foregroundMuted} />
+        <IconButton icon="alert-circle-outline" size={64} iconColor={colors.foregroundMuted} accessibilityLabel="Error loading floor plan" />
         <Text variant="bodyLarge" style={styles.errorText}>
           {t('floorFlow.errorLoading')}
         </Text>
@@ -383,7 +383,7 @@ export default function FloorFlowScreen() {
   if (tables.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <IconButton icon="table-furniture" size={80} iconColor={colors.foregroundMuted} />
+        <IconButton icon="table-furniture" size={80} iconColor={colors.foregroundMuted} accessibilityLabel="No tables configured" />
         <Text variant="headlineSmall" style={styles.emptyTitle}>
           {t('floorFlow.noTables')}
         </Text>
@@ -455,6 +455,7 @@ export default function FloorFlowScreen() {
                   size={14}
                   iconColor={statusColor}
                   style={styles.tableStatusIcon}
+                  accessibilityLabel={`Status: ${table.status}`}
                 />
                 {table.current_occupants != null && table.current_occupants > 0 && (
                   <Text variant="labelSmall" style={[styles.tableOccupants, { color: statusColor }]}>

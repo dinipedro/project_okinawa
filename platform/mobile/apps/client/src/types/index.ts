@@ -5,6 +5,7 @@ export interface User {
   full_name: string;
   avatar_url?: string;
   phone?: string;
+  dietary_restrictions?: string[];
   roles?: UserRole[];
 }
 

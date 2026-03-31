@@ -138,6 +138,22 @@ export class RestaurantsController {
     return this.restaurantSetupService.updateSetupProgress(id, updateProgressDto);
   }
 
+  // ========== FOOD TRUCK LOCATION UPDATE (F12) ==========
+
+  @Patch(':id/location')
+  @UseGuards(JwtAuthGuard, RestaurantOwnerGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update restaurant location (Food Truck dynamic location)' })
+  @ApiResponse({ status: 200, description: 'Location updated successfully' })
+  @ApiResponse({ status: 404, description: 'Restaurant not found' })
+  @ApiResponse({ status: 403, description: 'Forbidden - must be owner or manager' })
+  updateLocation(
+    @Param('id') id: string,
+    @Body() body: { latitude: number; longitude: number },
+  ) {
+    return this.restaurantsService.updateLocation(id, body.latitude, body.longitude);
+  }
+
   // ========== GEOFENCING ENDPOINTS ==========
 
   @Get(':id/geofence-check')

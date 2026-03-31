@@ -22,6 +22,7 @@ import {
   Button,
   Card,
   ActivityIndicator,
+  SegmentedButtons,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -85,6 +86,13 @@ export default function ClubQueueScreen({ route }: ClubQueueScreenProps) {
 
   const [queueEntry, setQueueEntry] = useState<QueueEntry | null>(null);
   const [isJoining, setIsJoining] = useState(false);
+  const [selectedArea, setSelectedArea] = useState('pista');
+
+  const areaButtons = [
+    { value: 'pista', label: t('club.areas.pista') },
+    { value: 'vip', label: t('club.areas.vip') },
+    { value: 'rooftop', label: t('club.areas.rooftop') },
+  ];
   const socketRef = useRef<Socket | null>(null);
   const positionAnim = useRef(new Animated.Value(1)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -192,6 +200,7 @@ export default function ClubQueueScreen({ route }: ClubQueueScreenProps) {
       const response = await ApiService.post('/queue', {
         restaurantId,
         partySize: 1,
+        area: selectedArea,
       });
       return response.data as QueueEntry;
     },
@@ -267,6 +276,21 @@ export default function ClubQueueScreen({ route }: ClubQueueScreenProps) {
           >
             {t('club.queueSection.joining')}
           </Text>
+
+          {/* Area Selector */}
+          <Text
+            variant="titleSmall"
+            style={{ color: colors.foreground, textAlign: 'center', marginTop: 20, marginBottom: 8, fontWeight: '600' }}
+          >
+            {t('club.areas.selectArea')}
+          </Text>
+          <SegmentedButtons
+            value={selectedArea}
+            onValueChange={setSelectedArea}
+            buttons={areaButtons}
+            style={{ marginBottom: 8 }}
+          />
+
           <Button
             mode="contained"
             onPress={handleJoinQueue}
@@ -275,6 +299,7 @@ export default function ClubQueueScreen({ route }: ClubQueueScreenProps) {
             style={styles.joinBtn}
             contentStyle={styles.joinBtnContent}
             labelStyle={styles.joinBtnLabel}
+            accessibilityLabel={t('club.joinQueue')}
           >
             {t('club.joinQueue')}
           </Button>
@@ -392,6 +417,7 @@ export default function ClubQueueScreen({ route }: ClubQueueScreenProps) {
           style={[styles.atDoorBtn, { backgroundColor: colors.success }]}
           contentStyle={styles.atDoorBtnContent}
           labelStyle={styles.atDoorBtnLabel}
+          accessibilityLabel={t('club.queueSection.atDoor')}
         >
           {t('club.queueSection.atDoor')}
         </Button>
@@ -405,6 +431,7 @@ export default function ClubQueueScreen({ route }: ClubQueueScreenProps) {
           loading={leaveQueueMutation.isPending}
           style={styles.leaveBtn}
           textColor={colors.error}
+          accessibilityLabel={t('club.queueSection.leave')}
         >
           {t('club.queueSection.leave')}
         </Button>

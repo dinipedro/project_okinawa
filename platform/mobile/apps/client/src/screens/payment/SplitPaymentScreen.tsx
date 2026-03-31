@@ -701,11 +701,11 @@ export default function SplitPaymentScreen() {
   if (error && !order) {
     return (
       <View style={styles.errorContainer}>
-        <IconButton icon="alert-circle" size={48} iconColor={colors.error} />
+        <IconButton icon="alert-circle" size={48} iconColor={colors.error} accessibilityLabel={t('common.error')} />
         <Text variant="bodyLarge" style={styles.errorText}>
           {error}
         </Text>
-        <Button mode="contained" onPress={loadData} buttonColor={colors.primary}>
+        <Button mode="contained" onPress={loadData} buttonColor={colors.primary} accessibilityLabel={t('common.retry')}>
           {t('common.retry')}
         </Button>
       </View>
@@ -768,6 +768,7 @@ export default function SplitPaymentScreen() {
                 icon="check-circle"
                 style={styles.allPaidChip}
                 textStyle={styles.allPaidText}
+                accessibilityLabel={t('split.allPaid')}
               >
                 {t('split.allPaid')}
               </Chip>
@@ -859,6 +860,7 @@ export default function SplitPaymentScreen() {
                           color: getPaymentStatusColor(guest.payment_status),
                           fontSize: 10,
                         }}
+                        accessibilityLabel={`${guest.guest_name}: ${getPaymentStatusText(guest.payment_status)}`}
                       >
                         {getPaymentStatusText(guest.payment_status)}
                       </Chip>
@@ -943,6 +945,7 @@ export default function SplitPaymentScreen() {
                       mode="outlined"
                       left={<TextInput.Affix text={getCurrencySymbol(getLanguage())} />}
                       style={styles.amountInput}
+                      accessibilityLabel={`${t('payment.enterAmount')} ${guest.guest_name}`}
                     />
                   </View>
                 )}
@@ -955,6 +958,7 @@ export default function SplitPaymentScreen() {
                     style={styles.payButton}
                     disabled={allPaid}
                     icon="credit-card"
+                    accessibilityLabel={`${t('split.cta', { amount: (amounts[guest.id] || 0).toFixed(2) })} ${guest.guest_name}`}
                   >
                     {t('split.cta', {
                       amount: (amounts[guest.id] || 0).toFixed(2),
@@ -975,6 +979,7 @@ export default function SplitPaymentScreen() {
             disabled={processing}
             style={styles.createSplitsButton}
             icon="account-group"
+            accessibilityLabel={t('split.createSplits')}
           >
             {t('split.createSplits')}
           </Button>
@@ -1043,6 +1048,7 @@ export default function SplitPaymentScreen() {
             <Button
               mode="text"
               onPress={() => setShowPaymentModal(false)}
+              accessibilityLabel={t('common.cancel')}
             >
               {t('common.cancel')}
             </Button>
@@ -1051,6 +1057,7 @@ export default function SplitPaymentScreen() {
               onPress={handleProcessPayment}
               loading={processing}
               disabled={processing}
+              accessibilityLabel={t('payment.confirm')}
             >
               {t('payment.confirm')}
             </Button>

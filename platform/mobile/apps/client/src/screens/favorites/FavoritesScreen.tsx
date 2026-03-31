@@ -120,6 +120,7 @@ export default function FavoritesScreen() {
         onChangeText={setSearchQuery}
         value={searchQuery}
         style={[styles.searchBar, { backgroundColor: colors.card }]}
+        accessibilityLabel="Search favorites"
       />
 
       <FlashList
@@ -151,6 +152,7 @@ export default function FavoritesScreen() {
                 mode="contained"
                 onPress={() => navigation.navigate('Explore' as never)}
                 style={[styles.exploreButton, { backgroundColor: colors.primary }]}
+                accessibilityLabel="Explore restaurants"
               >
                 Explorar Restaurantes
               </Button>

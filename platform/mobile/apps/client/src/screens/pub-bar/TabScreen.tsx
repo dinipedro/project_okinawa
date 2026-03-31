@@ -24,6 +24,9 @@ import {
   Button,
   Chip,
   Badge,
+  Portal,
+  Modal,
+  FAB,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -266,6 +269,20 @@ export default function TabScreen() {
   const { tabId, restaurantId, tableNumber } = route.params;
 
   const [roundBuilderVisible, setRoundBuilderVisible] = useState(false);
+  const [inviteModalVisible, setInviteModalVisible] = useState(false);
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+
+  const handleShareTab = useCallback(async () => {
+    try {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      const res = await import('@okinawa/shared/services/api').then(m => m.default.post(`/tabs/${tabId}/invite`, {}));
+      setInviteCode(res.data?.inviteCode || tabId.slice(0, 8).toUpperCase());
+      setInviteModalVisible(true);
+    } catch {
+      setInviteCode(tabId.slice(0, 8).toUpperCase());
+      setInviteModalVisible(true);
+    }
+  }, [tabId]);
 
   const resolvedTabId = tabId || '';
 
@@ -647,6 +664,55 @@ export default function TabScreen() {
           </Button>
         </View>
       </View>
+
+      {/* Share Tab FAB */}
+      <FAB
+        icon="qrcode"
+        onPress={handleShareTab}
+        style={{
+          position: 'absolute',
+          right: 16,
+          bottom: 100,
+          backgroundColor: colors.primary,
+        }}
+        color={colors.primaryForeground}
+        accessibilityLabel={t('tab.shareTab')}
+      />
+
+      {/* Invite QR Modal */}
+      <Portal>
+        <Modal
+          visible={inviteModalVisible}
+          onDismiss={() => setInviteModalVisible(false)}
+          contentContainerStyle={{
+            backgroundColor: colors.card,
+            margin: 24,
+            borderRadius: 16,
+            padding: 24,
+            alignItems: 'center',
+          }}
+        >
+          <Text variant="titleLarge" style={{ color: colors.foreground, fontWeight: '700', marginBottom: 16 }}>
+            {t('tab.inviteTitle')}
+          </Text>
+          <View style={{
+            width: 180, height: 180, borderRadius: 12,
+            backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
+            marginBottom: 16, borderWidth: 2, borderColor: colors.border,
+          }}>
+            <Text style={{ fontSize: 48 }}>📱</Text>
+            <Text variant="headlineSmall" style={{ color: '#000', fontWeight: '800', marginTop: 8 }}>
+              {inviteCode}
+            </Text>
+          </View>
+          <Text variant="bodyMedium" style={{ color: colors.foregroundMuted, textAlign: 'center', marginBottom: 16 }}>
+            {t('tab.inviteDesc')}
+          </Text>
+          <Button mode="contained" onPress={() => setInviteModalVisible(false)} style={{ width: '100%' }}>
+            {t('common.done')}
+          </Button>
+        </Modal>
+      </Portal>
 
       {/* Round Builder Bottom Sheet */}
       <RoundBuilderSheet

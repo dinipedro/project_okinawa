@@ -7,13 +7,15 @@ import { ReservationsController } from './reservations.controller';
 import { ReservationsGateway } from './reservations.gateway';
 import { Reservation } from './entities/reservation.entity';
 import { ReservationGuest } from './entities/reservation-guest.entity';
+import { Restaurant } from '@/modules/restaurants/entities/restaurant.entity';
 import { ReservationGuestsService } from './reservation-guests.service';
 import { ReservationGuestsController } from './reservation-guests.controller';
+import { GoogleReserveAdapter } from './adapters/google-reserve.adapter';
 import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Reservation, ReservationGuest]),
+    TypeOrmModule.forFeature([Reservation, ReservationGuest, Restaurant]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -26,7 +28,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     NotificationsModule,
   ],
   controllers: [ReservationsController, ReservationGuestsController],
-  providers: [ReservationsService, ReservationsGateway, ReservationGuestsService],
-  exports: [ReservationsService, ReservationsGateway, ReservationGuestsService],
+  providers: [ReservationsService, ReservationsGateway, ReservationGuestsService, GoogleReserveAdapter],
+  exports: [ReservationsService, ReservationsGateway, ReservationGuestsService, GoogleReserveAdapter],
 })
 export class ReservationsModule {}

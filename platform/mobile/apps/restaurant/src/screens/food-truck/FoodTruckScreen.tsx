@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -16,6 +16,7 @@ import { spacing, borderRadius } from '@okinawa/shared/theme/spacing';
 import { typography } from '@okinawa/shared/theme/typography';
 import ApiService from '@/shared/services/api';
 import socketService from '../../services/socket';
+import * as Location from 'expo-location';
 
 interface FoodTruckOrder {
   id: string;
@@ -113,9 +114,49 @@ export default function FoodTruckScreen() {
     [t],
   );
 
-  const handleToggleLocation = useCallback((value: boolean) => {
+  const locationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const handleToggleLocation = useCallback(async (value: boolean) => {
     setLocationEnabled(value);
-    // In production, this would toggle GPS sharing via the location service
+
+    if (value) {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(t('common.error'), t('foodTruck.locationPermissionDenied'));
+        setLocationEnabled(false);
+        return;
+      }
+
+      // Send location every 30 seconds
+      const sendLocation = async () => {
+        try {
+          const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+          await ApiService.post('/geofencing/update-location', {
+            latitude: loc.coords.latitude,
+            longitude: loc.coords.longitude,
+          });
+        } catch {
+          // Silently fail - will retry next interval
+        }
+      };
+
+      sendLocation();
+      locationIntervalRef.current = setInterval(sendLocation, 30000);
+    } else {
+      if (locationIntervalRef.current) {
+        clearInterval(locationIntervalRef.current);
+        locationIntervalRef.current = null;
+      }
+    }
+  }, [t]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (locationIntervalRef.current) {
+        clearInterval(locationIntervalRef.current);
+      }
+    };
   }, []);
 
   const readyOrders = useMemo(

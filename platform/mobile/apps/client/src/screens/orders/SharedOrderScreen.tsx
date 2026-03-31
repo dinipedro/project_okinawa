@@ -452,7 +452,7 @@ export default function SharedOrderScreen() {
   if (!order) {
     return (
       <View style={styles.loadingContainer}>
-        <IconButton icon="receipt-text-remove" size={64} iconColor={colors.foregroundMuted} />
+        <IconButton icon="receipt-text-remove" size={64} iconColor={colors.foregroundMuted} accessibilityLabel={t('orders.notFound')} />
         <Text variant="titleLarge" style={{ color: colors.foreground }}>{t('orders.notFound')}</Text>
       </View>
     );
@@ -490,6 +490,7 @@ export default function SharedOrderScreen() {
                       { backgroundColor: getStatusColor(order.status) + '20' },
                     ]}
                     textStyle={{ color: getStatusColor(order.status) }}
+                    accessibilityLabel={t(`orders.status.${order.status}`)}
                   >
                     {t(`orders.status.${order.status}`)}
                   </Chip>
@@ -500,6 +501,7 @@ export default function SharedOrderScreen() {
                 size={28}
                 onPress={() => navigation.navigate('QRScanner', { orderId })}
                 iconColor={colors.foreground}
+                accessibilityLabel="Scan QR code"
               />
             </View>
           </Card.Content>
@@ -514,6 +516,7 @@ export default function SharedOrderScreen() {
                 mode="text"
                 onPress={() => setShowAddGuestModal(true)}
                 icon="account-plus"
+                accessibilityLabel={t('orders.addGuest')}
               >
                 {t('orders.addGuest')}
               </Button>
@@ -557,6 +560,7 @@ export default function SharedOrderScreen() {
                       size={20}
                       onPress={() => handleRemoveGuest(guest.id)}
                       iconColor={colors.foregroundMuted}
+                      accessibilityLabel={`${t('orders.removeGuest')}: ${guest.guest_name}`}
                     />
                   )}
                 </View>
@@ -584,10 +588,11 @@ export default function SharedOrderScreen() {
                         styles.itemStatusChip,
                         { backgroundColor: getStatusColor(item.status) + '20' },
                       ]}
-                      textStyle={{ 
+                      textStyle={{
                         color: getStatusColor(item.status),
                         fontSize: 10,
                       }}
+                      accessibilityLabel={`${item.menu_item.name}: ${t(`orders.itemStatus.${item.status}`)}`}
                     >
                       {t(`orders.itemStatus.${item.status}`)}
                     </Chip>
@@ -649,6 +654,7 @@ export default function SharedOrderScreen() {
             onPress={handleAddItems}
             icon="plus"
             style={styles.actionButton}
+            accessibilityLabel={t('orders.addItems')}
           >
             {t('orders.addItems')}
           </Button>
@@ -657,6 +663,7 @@ export default function SharedOrderScreen() {
             onPress={handleGoToSplitPayment}
             icon="credit-card-split"
             style={styles.actionButton}
+            accessibilityLabel={t('payment.splitPayment')}
           >
             {t('payment.splitPayment')}
           </Button>
@@ -679,11 +686,13 @@ export default function SharedOrderScreen() {
             onChangeText={setNewGuestName}
             mode="outlined"
             style={styles.guestInput}
+            accessibilityLabel={t('orders.guestName')}
           />
           <View style={styles.modalActions}>
             <Button
               mode="text"
               onPress={() => setShowAddGuestModal(false)}
+              accessibilityLabel={t('common.cancel')}
             >
               {t('common.cancel')}
             </Button>
@@ -692,6 +701,7 @@ export default function SharedOrderScreen() {
               onPress={handleAddGuest}
               loading={addingGuest}
               disabled={addingGuest || !newGuestName.trim()}
+              accessibilityLabel={t('common.add')}
             >
               {t('common.add')}
             </Button>
@@ -705,6 +715,7 @@ export default function SharedOrderScreen() {
         style={styles.fab}
         onPress={handleAddItems}
         label={t('orders.addItems')}
+        accessibilityLabel={t('orders.addItems')}
       />
     </View>
   );

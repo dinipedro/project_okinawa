@@ -19,6 +19,7 @@ describe('ReceiptsService', () => {
     payment_id: 'payment-1',
     user_id: 'user-1',
     restaurant_id: 'restaurant-1',
+    table_id: null as any,
     items_snapshot: mockItemsSnapshot,
     subtotal: 82.0,
     service_fee: 8.2,

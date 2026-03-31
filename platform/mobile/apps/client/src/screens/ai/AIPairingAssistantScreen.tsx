@@ -14,6 +14,7 @@ import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { fontSize, fontWeight } from '@okinawa/shared/theme/typography';
 import { spacing } from '@okinawa/shared/theme/spacing';
 import { BetaBadge } from '@okinawa/shared/components/BetaBadge';
+import ApiService from '@okinawa/shared/services/api';
 
 interface MenuItem {
   id: string;
@@ -37,6 +38,7 @@ interface AIPairingAssistantScreenProps {
   route: {
     params: {
       selectedItems: MenuItem[];
+      restaurantId?: string;
     };
   };
 }
@@ -46,11 +48,71 @@ export const AIPairingAssistantScreen: React.FC<AIPairingAssistantScreenProps> =
   route,
 }) => {
   const colors = useColors();
-  const { selectedItems } = route.params;
+  const { selectedItems, restaurantId } = route.params;
 
   const [pairings, setPairings] = useState<Pairing[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPairings, setSelectedPairings] = useState<string[]>([]);
+
+  // Mock pairings used as fallback when API is unavailable
+  const mockPairings: Pairing[] = useMemo(() => [
+    {
+      id: '1',
+      item: {
+        id: 'w1',
+        name: 'Vinho Tinto Reserva',
+        description: 'Cabernet Sauvignon chileno, notas de frutas vermelhas',
+        price: 89.90,
+        image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=200',
+        category: 'Vinhos',
+      },
+      reason: 'Harmoniza perfeitamente com carnes vermelhas, realçando os sabores.',
+      matchScore: 95,
+      type: 'beverage',
+    },
+    {
+      id: '2',
+      item: {
+        id: 'b1',
+        name: 'Cerveja Artesanal IPA',
+        description: 'IPA com notas cítricas e amargor equilibrado',
+        price: 24.90,
+        image: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=200',
+        category: 'Cervejas',
+      },
+      reason: 'O amargor complementa pratos condimentados e gordurosos.',
+      matchScore: 88,
+      type: 'beverage',
+    },
+    {
+      id: '3',
+      item: {
+        id: 's1',
+        name: 'Batatas Rústicas',
+        description: 'Batatas assadas com ervas finas e alho',
+        price: 18.90,
+        image: 'https://images.unsplash.com/photo-1518013431117-eb1465fa5752?w=200',
+        category: 'Acompanhamentos',
+      },
+      reason: 'Acompanhamento clássico que equilibra texturas do prato principal.',
+      matchScore: 92,
+      type: 'side',
+    },
+    {
+      id: '4',
+      item: {
+        id: 'd1',
+        name: 'Petit Gâteau',
+        description: 'Bolo de chocolate com centro cremoso e sorvete',
+        price: 32.90,
+        image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=200',
+        category: 'Sobremesas',
+      },
+      reason: 'Finalização perfeita após refeição salgada, contraste de temperaturas.',
+      matchScore: 90,
+      type: 'dessert',
+    },
+  ], []);
 
   useEffect(() => {
     generatePairings();
@@ -58,69 +120,39 @@ export const AIPairingAssistantScreen: React.FC<AIPairingAssistantScreenProps> =
 
   const generatePairings = async () => {
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      if (restaurantId) {
+        const recommendations = await ApiService.getMenuRecommendations(restaurantId);
 
-    const mockPairings: Pairing[] = [
-      {
-        id: '1',
-        item: {
-          id: 'w1',
-          name: 'Vinho Tinto Reserva',
-          description: 'Cabernet Sauvignon chileno, notas de frutas vermelhas',
-          price: 89.90,
-          image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=200',
-          category: 'Vinhos',
-        },
-        reason: 'Harmoniza perfeitamente com carnes vermelhas, realçando os sabores.',
-        matchScore: 95,
-        type: 'beverage',
-      },
-      {
-        id: '2',
-        item: {
-          id: 'b1',
-          name: 'Cerveja Artesanal IPA',
-          description: 'IPA com notas cítricas e amargor equilibrado',
-          price: 24.90,
-          image: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=200',
-          category: 'Cervejas',
-        },
-        reason: 'O amargor complementa pratos condimentados e gordurosos.',
-        matchScore: 88,
-        type: 'beverage',
-      },
-      {
-        id: '3',
-        item: {
-          id: 's1',
-          name: 'Batatas Rústicas',
-          description: 'Batatas assadas com ervas finas e alho',
-          price: 18.90,
-          image: 'https://images.unsplash.com/photo-1518013431117-eb1465fa5752?w=200',
-          category: 'Acompanhamentos',
-        },
-        reason: 'Acompanhamento clássico que equilibra texturas do prato principal.',
-        matchScore: 92,
-        type: 'side',
-      },
-      {
-        id: '4',
-        item: {
-          id: 'd1',
-          name: 'Petit Gâteau',
-          description: 'Bolo de chocolate com centro cremoso e sorvete',
-          price: 32.90,
-          image: 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=200',
-          category: 'Sobremesas',
-        },
-        reason: 'Finalização perfeita após refeição salgada, contraste de temperaturas.',
-        matchScore: 90,
-        type: 'dessert',
-      },
-    ];
-
-    setPairings(mockPairings);
-    setLoading(false);
+        if (recommendations && Array.isArray(recommendations) && recommendations.length > 0) {
+          // Map API MenuRecommendation[] to Pairing[] format
+          const apiPairings: Pairing[] = recommendations.map((rec: any, index: number) => ({
+            id: rec.item_id || String(index + 1),
+            item: {
+              id: rec.item_id,
+              name: rec.item_name,
+              description: rec.reason,
+              price: rec.price || 0,
+              image: rec.image_url || `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200`,
+              category: rec.category || '',
+            },
+            reason: rec.reason,
+            matchScore: rec.confidence || 80,
+            type: (rec.pairing_type as Pairing['type']) || 'side',
+          }));
+          setPairings(apiPairings);
+          setLoading(false);
+          return;
+        }
+      }
+      // Fallback to mock data if no restaurantId or API returned empty
+      setPairings(mockPairings);
+    } catch (error) {
+      console.warn('AI recommendations API failed, using mock data:', error);
+      setPairings(mockPairings);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const togglePairing = (id: string) => {

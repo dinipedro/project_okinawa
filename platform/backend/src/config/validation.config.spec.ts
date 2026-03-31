@@ -39,7 +39,7 @@ describe('validationSchema', () => {
       expect(value.DATABASE_SSL).toBe('false');
       expect(value.DATABASE_SSL_REJECT_UNAUTHORIZED).toBe('true');
       expect(value.CORS_ORIGIN).toBe('http://localhost:3000');
-      expect(value.CORS_CREDENTIALS).toBe('true');
+      expect(value.CORS_CREDENTIALS).toBe('false');
     });
 
     it('should accept CORS_ORIGIN without restriction in development', () => {

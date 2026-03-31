@@ -18,14 +18,25 @@ import {
   Portal,
   Button,
   TextInput,
+  Chip,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 
 import ApiService from '@/shared/services/api';
 import { useI18n } from '@/shared/hooks/useI18n';
 import { useColors, useOkinawaTheme } from '@okinawa/shared/contexts/ThemeContext';
 import logger from '@okinawa/shared/utils/logger';
 import type { User } from '../../types';
+
+const DIETARY_OPTIONS = [
+  'Vegetariano',
+  'Vegano',
+  'Sem Gluten',
+  'Sem Lactose',
+  'Kosher',
+  'Halal',
+];
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -40,6 +51,9 @@ export default function ProfileScreen() {
   const [editField, setEditField] = useState<'full_name' | 'phone'>('full_name');
   const [editValue, setEditValue] = useState('');
   const [saving, setSaving] = useState(false);
+  const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([]);
+  const [savingDietary, setSavingDietary] = useState(false);
 
   useEffect(() => {
     loadUser();
@@ -50,6 +64,8 @@ export default function ProfileScreen() {
       setLoading(true);
       const userData = await ApiService.getCurrentUser();
       setUser(userData);
+      if (userData.avatar_url) setAvatarUri(userData.avatar_url);
+      if (userData.dietary_restrictions) setDietaryRestrictions(userData.dietary_restrictions);
     } catch (error) {
       logger.error('Error loading user:', error);
       Alert.alert(t('common.error'), t('errors.loadProfileFailed'));
@@ -110,6 +126,54 @@ export default function ProfileScreen() {
       Alert.alert(t('common.error'), t('errors.updateProfileFailed'));
     } finally {
       setSaving(false);
+    }
+  };
+
+  // F7: Avatar upload via image picker
+  const pickAvatar = async () => {
+    try {
+      const permResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permResult.granted) {
+        Alert.alert(t('common.error'), t('errors.photoPermissionDenied'));
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setAvatarUri(result.assets[0].uri);
+        // TODO: Upload to server when S3 is configured
+        // await ApiService.uploadAvatar(result.assets[0].uri);
+        logger.log('Avatar selected locally:', result.assets[0].uri);
+      }
+    } catch (error) {
+      logger.error('Error picking avatar:', error);
+      Alert.alert(t('common.error'), t('errors.photoPickFailed'));
+    }
+  };
+
+  // F7: Toggle dietary restriction
+  const toggleDietary = async (option: string) => {
+    const updated = dietaryRestrictions.includes(option)
+      ? dietaryRestrictions.filter((d) => d !== option)
+      : [...dietaryRestrictions, option];
+
+    setDietaryRestrictions(updated);
+
+    try {
+      setSavingDietary(true);
+      await ApiService.updateProfile({ dietary_restrictions: updated } as any);
+    } catch (error) {
+      logger.error('Failed to save dietary preferences:', error);
+      // Revert on failure
+      setDietaryRestrictions(dietaryRestrictions);
+    } finally {
+      setSavingDietary(false);
     }
   };
 
@@ -182,6 +246,16 @@ export default function ProfileScreen() {
     version: {
       color: colors.foregroundMuted,
     },
+    dietaryContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      paddingHorizontal: 16,
+      paddingBottom: 12,
+      gap: 8,
+    },
+    dietaryChip: {
+      marginBottom: 4,
+    },
   }), [colors]);
 
   if (loading) {
@@ -198,14 +272,23 @@ export default function ProfileScreen() {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.avatarContainer}
+          onPress={pickAvatar}
           accessibilityRole="button"
           accessibilityLabel="Change profile photo"
         >
-          <Avatar.Text
-            size={80}
-            label={user?.full_name?.charAt(0) || 'U'}
-            style={styles.avatar}
-          />
+          {avatarUri ? (
+            <Avatar.Image
+              size={80}
+              source={{ uri: avatarUri }}
+              style={styles.avatar}
+            />
+          ) : (
+            <Avatar.Text
+              size={80}
+              label={user?.full_name?.charAt(0) || 'U'}
+              style={styles.avatar}
+            />
+          )}
           <IconButton
             icon="camera"
             size={20}
@@ -258,6 +341,35 @@ export default function ProfileScreen() {
           titleStyle={{ color: colors.foreground }}
           descriptionStyle={{ color: colors.foregroundSecondary }}
         />
+      </View>
+
+      <Divider style={styles.divider} />
+
+      {/* Dietary Preferences Section */}
+      <View style={styles.section}>
+        <Text variant="titleMedium" style={styles.sectionTitle}>
+          {t('profile.dietaryPreferences') || 'Prefer\u00EAncias Alimentares'}
+        </Text>
+        <View style={styles.dietaryContainer}>
+          {DIETARY_OPTIONS.map((option) => (
+            <Chip
+              key={option}
+              selected={dietaryRestrictions.includes(option)}
+              onPress={() => toggleDietary(option)}
+              style={styles.dietaryChip}
+              showSelectedOverlay
+              selectedColor={colors.primary}
+              mode={dietaryRestrictions.includes(option) ? 'flat' : 'outlined'}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: dietaryRestrictions.includes(option) }}
+            >
+              {option}
+            </Chip>
+          ))}
+          {savingDietary && (
+            <ActivityIndicator size="small" color={colors.primary} style={{ marginLeft: 8 }} />
+          )}
+        </View>
       </View>
 
       <Divider style={styles.divider} />

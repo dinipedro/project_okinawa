@@ -18,9 +18,11 @@ import {
   Switch,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import * as Haptics from 'expo-haptics';
 import { t } from '@okinawa/shared/i18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { useAuth } from '@okinawa/shared/hooks/useAuth';
+import { useWebSocket } from '@okinawa/shared/hooks/useWebSocket';
 import { ApiService } from '@okinawa/shared/services/api';
 
 interface WaitlistEntry {
@@ -65,6 +67,55 @@ export default function WaitlistScreen({ route }: WaitlistScreenProps) {
 
   // Position animation
   const positionAnim = useRef(new Animated.Value(0)).current;
+
+  // FIX-13: WebSocket listeners for waitlist events
+  const { connected, on, off, joinRoom, leaveRoom } = useWebSocket('/waitlist');
+
+  useEffect(() => {
+    if (!connected || !restaurantId || !user?.id) return;
+
+    joinRoom(`waitlist:${restaurantId}:user:${user.id}`);
+
+    const handleWaitlistCalled = (data: any) => {
+      // User has been called — their table is ready
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert(
+        t('waitlist.tableReady'),
+        t('waitlist.tableReadyDesc', { table: data?.table_number || '' }),
+      );
+      // Update entry state
+      setEntry((prev) =>
+        prev
+          ? { ...prev, status: 'called', table_number: data?.table_number ?? prev.table_number }
+          : prev,
+      );
+    };
+
+    const handleWaitlistUpdate = (data: any) => {
+      // Position or wait time changed
+      if (data?.position != null || data?.estimated_wait_minutes != null) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setEntry((prev) =>
+          prev
+            ? {
+                ...prev,
+                position: data.position ?? prev.position,
+                estimated_wait_minutes: data.estimated_wait_minutes ?? prev.estimated_wait_minutes,
+              }
+            : prev,
+        );
+      }
+    };
+
+    on('waitlist:called', handleWaitlistCalled);
+    on('waitlist:update', handleWaitlistUpdate);
+
+    return () => {
+      off('waitlist:called', handleWaitlistCalled);
+      off('waitlist:update', handleWaitlistUpdate);
+      leaveRoom(`waitlist:${restaurantId}:user:${user.id}`);
+    };
+  }, [connected, restaurantId, user?.id]);
 
   // Check if already in queue
   const fetchMyPosition = useCallback(async () => {

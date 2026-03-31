@@ -5,6 +5,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import ApiService from '@/shared/services/api';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
 import logger from '@okinawa/shared/utils/logger';
 
 /**
@@ -152,7 +153,7 @@ export default function PaymentScreen() {
       }
     } catch (error) {
       logger.error('Failed to load data:', error);
-      Alert.alert('Error', 'Failed to load payment information');
+      Alert.alert(t('common.error'), t('payment.errorGeneric'));
       await analytics.logError('Failed to load payment data', 'PAYMENT_DATA_LOAD_ERROR', false);
     } finally {
       setInitialLoading(false);
@@ -178,37 +179,37 @@ export default function PaymentScreen() {
 
     // Validate card number length (13-19 digits depending on brand)
     if (!cleanedNumber || cleanedNumber.length < 13 || cleanedNumber.length > 19) {
-      Alert.alert('Error', 'Please enter a valid card number');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
     // Validate card number with Luhn algorithm
     if (!isValidCardNumber(cleanedNumber)) {
-      Alert.alert('Error', 'Invalid card number. Please check and try again.');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
     // Detect and validate card brand
     const brand = getCardBrand(cleanedNumber);
     if (brand === 'Unknown') {
-      Alert.alert('Warning', 'Card brand not recognized. Please verify the card number.');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
     }
 
     // Validate cardholder name
     if (!cardName || cardName.length < 3) {
-      Alert.alert('Error', 'Please enter the cardholder name');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
     // Validate name contains only letters and spaces
     if (!/^[a-zA-Z\s]+$/.test(cardName)) {
-      Alert.alert('Error', 'Cardholder name should only contain letters');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
     // Validate expiry format
     if (!cardExpiry || !/^\d{2}\/\d{2}$/.test(cardExpiry)) {
-      Alert.alert('Error', 'Please enter a valid expiry date (MM/YY)');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
@@ -216,7 +217,7 @@ export default function PaymentScreen() {
     const [month, year] = cardExpiry.split('/');
     const monthNum = parseInt(month, 10);
     if (monthNum < 1 || monthNum > 12) {
-      Alert.alert('Error', 'Invalid expiry month. Please enter a value between 01-12.');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
@@ -225,20 +226,20 @@ export default function PaymentScreen() {
     const now = new Date();
     now.setDate(1); // Compare by month only
     if (expDate < now) {
-      Alert.alert('Error', 'Card has expired. Please use a valid card.');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
     // Validate CVV (3 digits for most cards, 4 for Amex)
     const expectedCVVLength = brand === 'Amex' ? 4 : 3;
     if (!cardCVV || cardCVV.length !== expectedCVVLength) {
-      Alert.alert('Error', `Please enter a valid CVV (${expectedCVVLength} digits for ${brand})`);
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
     // CVV should only contain digits
     if (!/^\d+$/.test(cardCVV)) {
-      Alert.alert('Error', 'CVV should only contain numbers');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
@@ -247,7 +248,7 @@ export default function PaymentScreen() {
 
   const validatePixPayment = () => {
     if (!pixKey || pixKey.length < 5) {
-      Alert.alert('Error', 'Please enter a valid PIX key');
+      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
     return true;
@@ -272,7 +273,7 @@ export default function PaymentScreen() {
 
       await analytics.logAddPaymentMethod('credit_card');
 
-      Alert.alert('Success', 'Card added successfully');
+      Alert.alert(t('common.success'), t('payment.paymentSuccess'));
       setShowAddCardModal(false);
 
       // Clear form
@@ -284,7 +285,7 @@ export default function PaymentScreen() {
       // Reload payment methods
       await loadData();
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.message || 'Failed to add card');
+      Alert.alert(t('common.error'), error.response?.data?.message || t('payment.errorGeneric'));
       await analytics.logError('Failed to add payment method', 'ADD_PAYMENT_METHOD_ERROR', false);
     } finally {
       setLoading(false);
@@ -301,12 +302,12 @@ export default function PaymentScreen() {
       if (!validatePixPayment()) return;
     } else if (paymentType === 'wallet') {
       if (!wallet || wallet.balance < order.total_amount) {
-        Alert.alert('Error', 'Insufficient wallet balance');
+        Alert.alert(t('common.error'), t('payment.errorInsufficientWallet'));
         return;
       }
     } else if (paymentType === 'saved_card') {
       if (!selectedMethod) {
-        Alert.alert('Error', 'Please select a payment method');
+        Alert.alert(t('common.error'), t('payment.errorGeneric'));
         return;
       }
     }
@@ -355,7 +356,7 @@ export default function PaymentScreen() {
         });
       }, 2000);
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.message || 'Payment failed. Please try again.');
+      Alert.alert(t('common.error'), error.response?.data?.message || t('payment.errorGeneric'));
       await analytics.logError('Payment failed', 'PAYMENT_ERROR', false);
     } finally {
       setLoading(false);
@@ -493,7 +494,7 @@ export default function PaymentScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading payment information...</Text>
+        <Text style={styles.loadingText}>{t('common.loading')}</Text>
       </View>
     );
   }
@@ -502,9 +503,9 @@ export default function PaymentScreen() {
     return (
       <View style={styles.successContainer}>
         <IconButton icon="check-circle" size={80} iconColor={colors.success} />
-        <Text variant="headlineMedium" style={styles.successTitle}>Payment Successful!</Text>
+        <Text variant="headlineMedium" style={styles.successTitle}>{t('payment.paymentConfirmed')}</Text>
         <Text variant="bodyLarge" style={styles.successText}>
-          Thank you for your order
+          {t('payment.paymentSuccess')}
         </Text>
       </View>
     );
@@ -513,7 +514,7 @@ export default function PaymentScreen() {
   if (!order) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.bodyText}>Order not found</Text>
+        <Text style={styles.bodyText}>{t('payment.orderNotFound')}</Text>
       </View>
     );
   }
@@ -522,14 +523,14 @@ export default function PaymentScreen() {
     <>
       <ScrollView style={styles.container}>
         <Text variant="headlineSmall" style={styles.title}>
-          Payment
+          {t('payment.title')}
         </Text>
 
         {/* Order Summary */}
         <Card style={styles.card}>
           <Card.Content>
             <Text variant="titleMedium" style={styles.sectionTitle}>
-              Order Summary
+              {t('payment.orderSummary')}
             </Text>
 
             {order.items.map((item) => (
@@ -546,24 +547,24 @@ export default function PaymentScreen() {
             <Divider style={styles.divider} />
 
             <View style={styles.summaryRow}>
-              <Text variant="bodyMedium" style={styles.summaryText}>Subtotal</Text>
+              <Text variant="bodyMedium" style={styles.summaryText}>{t('payment.summarySubtotal')}</Text>
               <Text variant="bodyMedium" style={styles.summaryText}>${order.subtotal_amount.toFixed(2)}</Text>
             </View>
 
             <View style={styles.summaryRow}>
-              <Text variant="bodyMedium" style={styles.summaryText}>Tax</Text>
+              <Text variant="bodyMedium" style={styles.summaryText}>{t('orders.tax')}</Text>
               <Text variant="bodyMedium" style={styles.summaryText}>${order.tax_amount.toFixed(2)}</Text>
             </View>
 
             <View style={styles.summaryRow}>
-              <Text variant="bodyMedium" style={styles.summaryText}>Tip</Text>
+              <Text variant="bodyMedium" style={styles.summaryText}>{t('payment.tipTitle')}</Text>
               <Text variant="bodyMedium" style={styles.summaryText}>${order.tip_amount.toFixed(2)}</Text>
             </View>
 
             <Divider style={styles.divider} />
 
             <View style={styles.totalRow}>
-              <Text variant="titleLarge" style={styles.bodyText}>Total</Text>
+              <Text variant="titleLarge" style={styles.bodyText}>{t('payment.summaryTotal')}</Text>
               <Text variant="titleLarge" style={styles.totalAmount}>
                 ${order.total_amount.toFixed(2)}
               </Text>
@@ -575,7 +576,7 @@ export default function PaymentScreen() {
         <Card style={styles.card}>
           <Card.Content>
             <Text variant="titleMedium" style={styles.sectionTitle}>
-              Payment Method
+              {t('payment.methodsTitle')}
             </Text>
 
             <RadioButton.Group
@@ -583,18 +584,18 @@ export default function PaymentScreen() {
               value={paymentType}
             >
               {paymentMethods.length > 0 && (
-                <RadioButton.Item label="Saved Card" value="saved_card" labelStyle={{ color: colors.foreground }} accessibilityLabel="Pay with saved card" />
+                <RadioButton.Item label={t('payment.savedCard')} value="saved_card" labelStyle={{ color: colors.foreground }} accessibilityLabel={t('payment.savedCard')} />
               )}
-              <RadioButton.Item label="New Card" value="new_card" labelStyle={{ color: colors.foreground }} accessibilityLabel="Pay with new card" />
-              <RadioButton.Item label="PIX" value="pix" labelStyle={{ color: colors.foreground }} accessibilityLabel="Pay with PIX" />
+              <RadioButton.Item label={t('payment.newCard')} value="new_card" labelStyle={{ color: colors.foreground }} accessibilityLabel={t('payment.newCard')} />
+              <RadioButton.Item label={t('payment.pix')} value="pix" labelStyle={{ color: colors.foreground }} accessibilityLabel={t('payment.pix')} />
               <RadioButton.Item
-                label={`Wallet (Balance: $${wallet?.balance.toFixed(2) || '0.00'})`}
+                label={`${t('payment.wallet')} (${wallet?.balance.toFixed(2) || '0.00'})`}
                 value="wallet"
                 disabled={!wallet || wallet.balance < order.total_amount}
                 labelStyle={{ color: colors.foreground }}
-                accessibilityLabel={`Pay with wallet, balance ${wallet?.balance.toFixed(2) || '0.00'} dollars`}
+                accessibilityLabel={`${t('payment.wallet')} ${wallet?.balance.toFixed(2) || '0.00'}`}
               />
-              <RadioButton.Item label="Cash (Pay at restaurant)" value="cash" labelStyle={{ color: colors.foreground }} accessibilityLabel="Pay with cash at restaurant" />
+              <RadioButton.Item label={t('payment.cash')} value="cash" labelStyle={{ color: colors.foreground }} accessibilityLabel={t('payment.cash')} />
             </RadioButton.Group>
           </Card.Content>
         </Card>
@@ -604,7 +605,7 @@ export default function PaymentScreen() {
           <Card style={styles.card}>
             <Card.Content>
               <Text variant="titleMedium" style={styles.sectionTitle}>
-                Select Card
+                {t('payment.selectCard')}
               </Text>
 
               <RadioButton.Group
@@ -629,7 +630,7 @@ export default function PaymentScreen() {
                 accessibilityLabel="Add a new payment card"
                 accessibilityRole="button"
               >
-                Add New Card
+                {t('payment.cardAdd')}
               </Button>
             </Card.Content>
           </Card>
@@ -640,11 +641,11 @@ export default function PaymentScreen() {
           <Card style={styles.card}>
             <Card.Content>
               <Text variant="titleMedium" style={styles.sectionTitle}>
-                Card Details
+                {t('payment.cardDetails')}
               </Text>
 
               <TextInput
-                label="Card Number"
+                label={t('payment.cardNumber_label')}
                 value={cardNumber}
                 onChangeText={(text) => setCardNumber(formatCardNumber(text))}
                 keyboardType="number-pad"
@@ -656,7 +657,7 @@ export default function PaymentScreen() {
               />
 
               <TextInput
-                label="Cardholder Name"
+                label={t('payment.cardName')}
                 value={cardName}
                 onChangeText={setCardName}
                 mode="outlined"
@@ -667,7 +668,7 @@ export default function PaymentScreen() {
 
               <View style={styles.row}>
                 <TextInput
-                  label="Expiry (MM/YY)"
+                  label={t('payment.cardExpiry')}
                   value={cardExpiry}
                   onChangeText={(text) => setCardExpiry(formatExpiry(text))}
                   keyboardType="number-pad"
@@ -679,7 +680,7 @@ export default function PaymentScreen() {
                 />
 
                 <TextInput
-                  label="CVV"
+                  label={t('payment.cardCvv')}
                   value={cardCVV}
                   onChangeText={setCardCVV}
                   keyboardType="number-pad"
@@ -699,11 +700,11 @@ export default function PaymentScreen() {
           <Card style={styles.card}>
             <Card.Content>
               <Text variant="titleMedium" style={styles.sectionTitle}>
-                PIX Payment
+                {t('payment.methodsPix')}
               </Text>
 
               <TextInput
-                label="PIX Key (Email, Phone, or CPF)"
+                label={t('payment.pixLabel')}
                 value={pixKey}
                 onChangeText={setPixKey}
                 mode="outlined"
@@ -714,7 +715,7 @@ export default function PaymentScreen() {
               />
 
               <Text variant="bodySmall" style={styles.pixNote}>
-                You will receive a QR code to complete the payment
+                {t('payment.pixHint')}
               </Text>
             </Card.Content>
           </Card>
@@ -727,7 +728,7 @@ export default function PaymentScreen() {
               <View style={styles.cashNoticeContainer}>
                 <IconButton icon="information" size={24} iconColor={colors.primary} />
                 <Text variant="bodyMedium" style={styles.cashNote}>
-                  You will pay in cash when you arrive at the restaurant.
+                  {t('payment.cashNotice')}
                 </Text>
               </View>
             </Card.Content>
@@ -739,14 +740,14 @@ export default function PaymentScreen() {
           <Card style={styles.card}>
             <Card.Content>
               <View style={styles.walletInfo}>
-                <Text variant="bodyLarge" style={styles.bodyText}>Current Balance:</Text>
+                <Text variant="bodyLarge" style={styles.bodyText}>{t('payment.currentBalance')}</Text>
                 <Text variant="headlineSmall" style={styles.walletBalance}>
                   ${wallet.balance.toFixed(2)}
                 </Text>
               </View>
               {wallet.balance < order.total_amount && (
                 <Text variant="bodySmall" style={styles.insufficientFunds}>
-                  Insufficient balance. Please add funds to your wallet or choose another payment method.
+                  {t('payment.insufficientBalanceMsg')}
                 </Text>
               )}
             </Card.Content>
@@ -762,7 +763,7 @@ export default function PaymentScreen() {
           accessibilityLabel={paymentType === 'cash' ? 'Confirm order for cash payment' : `Pay ${order.total_amount.toFixed(2)} dollars`}
           accessibilityRole="button"
         >
-          {paymentType === 'cash' ? 'Confirm Order' : `Pay $${order.total_amount.toFixed(2)}`}
+          {paymentType === 'cash' ? t('payment.confirmOrder') : t('payment.processPayment')}
         </Button>
       </ScrollView>
 
@@ -774,10 +775,10 @@ export default function PaymentScreen() {
           contentContainerStyle={styles.modalContainer}
         >
           <Card>
-            <Card.Title title="Add New Card" titleStyle={{ color: colors.foreground }} />
+            <Card.Title title={t('payment.cardAdd')} titleStyle={{ color: colors.foreground }} />
             <Card.Content>
               <TextInput
-                label="Card Number"
+                label={t('payment.cardNumber_label')}
                 value={cardNumber}
                 onChangeText={(text) => setCardNumber(formatCardNumber(text))}
                 keyboardType="number-pad"
@@ -788,7 +789,7 @@ export default function PaymentScreen() {
               />
 
               <TextInput
-                label="Cardholder Name"
+                label={t('payment.cardName')}
                 value={cardName}
                 onChangeText={setCardName}
                 mode="outlined"
@@ -799,7 +800,7 @@ export default function PaymentScreen() {
 
               <View style={styles.row}>
                 <TextInput
-                  label="Expiry (MM/YY)"
+                  label={t('payment.cardExpiry')}
                   value={cardExpiry}
                   onChangeText={(text) => setCardExpiry(formatExpiry(text))}
                   keyboardType="number-pad"
@@ -810,7 +811,7 @@ export default function PaymentScreen() {
                 />
 
                 <TextInput
-                  label="CVV"
+                  label={t('payment.cardCvv')}
                   value={cardCVV}
                   onChangeText={setCardCVV}
                   keyboardType="number-pad"
@@ -828,16 +829,16 @@ export default function PaymentScreen() {
                 accessibilityLabel="Cancel adding card"
                 accessibilityRole="button"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 mode="contained"
                 onPress={handleAddNewCard}
                 loading={loading}
-                accessibilityLabel="Save new card"
+                accessibilityLabel={t('payment.cardAdd')}
                 accessibilityRole="button"
               >
-                Add Card
+                {t('payment.cardAdd')}
               </Button>
             </Card.Actions>
           </Card>

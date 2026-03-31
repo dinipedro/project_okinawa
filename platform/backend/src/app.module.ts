@@ -55,6 +55,18 @@ import { FraudDetectionModule } from './modules/fraud-detection/fraud-detection.
 import { IncidentResponseModule } from './modules/incident-response/incident-response.module';
 import { MetricsModule } from './modules/metrics/metrics.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { KdsBrainModule } from './modules/kds-brain/kds-brain.module';
+import { IntegrationsModule } from './modules/integrations/integrations.module';
+import { CashRegisterModule } from './modules/cash-register/cash-register.module';
+import { PaymentGatewayModule } from './modules/payment-gateway/payment-gateway.module';
+import { CostControlModule } from './modules/cost-control/cost-control.module';
+import { FiscalModule } from './modules/fiscal/fiscal.module';
+import { ReconciliationModule } from './modules/reconciliation/reconciliation.module';
+import { AccountsPayableModule } from './modules/accounts-payable/accounts-payable.module';
+import { FinancialBrainModule } from './modules/financial-brain/financial-brain.module';
+import { StockModule } from './modules/stock/stock.module';
+import { PurchaseImportModule } from './modules/purchase-import/purchase-import.module';
+import { CustomerCrmModule } from './modules/customer-crm/customer-crm.module';
 
 @Module({
   imports: [
@@ -167,6 +179,38 @@ import { AdminModule } from './modules/admin/admin.module';
 
     // Admin Panel (operational support)
     AdminModule,
+
+    // KDS Brain (Kitchen Display System)
+    KdsBrainModule,
+
+    // Delivery Platform Integrations (iFood, Rappi, UberEats)
+    IntegrationsModule,
+
+    // Cash Register (Financial Brain Sprint 1)
+    CashRegisterModule,
+
+    // Payment Gateway (Financial Brain Sprint 1)
+    PaymentGatewayModule,
+
+    // Cost Control — COGS, Margins & Recipes (Financial Brain Sprint 2)
+    CostControlModule,
+
+    // Fiscal — NFC-e Emission (Financial Brain Sprint 3)
+    FiscalModule,
+
+    // Delivery Reconciliation (Financial Brain Sprint 3)
+    ReconciliationModule,
+
+    // Accounts Payable — Bills (Financial Brain Sprint 4)
+    AccountsPayableModule,
+
+    // Financial Brain — Forecast & Export (Financial Brain Sprint 4)
+    FinancialBrainModule,
+
+    // GAP Sprint 2 — Stock Management + Purchase Import + Customer CRM
+    StockModule,
+    PurchaseImportModule,
+    CustomerCrmModule,
   ],
 })
 export class AppModule {}

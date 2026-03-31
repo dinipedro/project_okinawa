@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException, InternalServerErrorException, ForbiddenException, BadRequestException, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { UserRole } from '@/common/enums';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, LessThan, MoreThan, IsNull, Between, Not, In } from 'typeorm';
 import { Reservation } from './entities/reservation.entity';
+import { Restaurant } from '@/modules/restaurants/entities/restaurant.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { CreateGroupBookingDto } from './dto/create-group-booking.dto';
 import { UpdateReservationStatusDto } from './dto/update-reservation-status.dto';
@@ -10,6 +12,7 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { ReservationStatus } from '@common/enums';
 import { PaginationDto, paginate, toPaginationDto } from '@/common/dto/pagination.dto';
 import { ORDERS } from '@common/constants/limits';
+import { ReservationsGateway } from './reservations.gateway';
 
 /** Minimum party size to qualify as a group booking */
 const GROUP_BOOKING_MIN_SIZE = ORDERS.GROUP_BOOKING_MIN_SIZE;
@@ -21,10 +24,38 @@ export class ReservationsService {
   constructor(
     @InjectRepository(Reservation)
     private reservationRepository: Repository<Reservation>,
+    @InjectRepository(Restaurant)
+    private restaurantRepository: Repository<Restaurant>,
     private dataSource: DataSource,
+    private reservationsGateway: ReservationsGateway,
   ) {}
 
   async create(userId: string, createReservationDto: CreateReservationDto) {
+    // F10: Chef's Table capacity validation
+    try {
+      const restaurant = await this.restaurantRepository.findOne({
+        where: { id: createReservationDto.restaurant_id },
+      });
+
+      if (restaurant?.service_type === 'chefs-table') {
+        const existingCount = await this.reservationRepository.count({
+          where: {
+            restaurant_id: createReservationDto.restaurant_id,
+            reservation_date: createReservationDto.reservation_date as any,
+            status: Not(In([ReservationStatus.CANCELLED, ReservationStatus.NO_SHOW])),
+          },
+        });
+        const maxCovers = 12; // Chef's table default capacity
+        if (existingCount + createReservationDto.party_size > maxCovers) {
+          throw new BadRequestException("Chef's table is fully booked for this date");
+        }
+      }
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      // Non-blocking: if service type check fails, proceed with reservation
+      this.logger.warn(`Chef's table capacity check failed: ${(error as Error).message}`);
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -40,6 +71,17 @@ export class ReservationsService {
       await queryRunner.commitTransaction();
 
       this.logger.log(`Reservation created: ${savedReservation.id}`);
+
+      // Emit WebSocket event to restaurant staff
+      this.reservationsGateway.notifyReservationCreated({
+        id: savedReservation.id,
+        restaurant_id: savedReservation.restaurant_id,
+        user_id: savedReservation.user_id,
+        status: savedReservation.status,
+        party_size: savedReservation.party_size,
+        reservation_time: savedReservation.reservation_time,
+      });
+
       return savedReservation;
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -114,6 +156,11 @@ export class ReservationsService {
 
     if (updateStatusDto.status === ReservationStatus.CONFIRMED) {
       reservation.confirmed_at = new Date();
+
+      // FIX-8: Push notification placeholder — reservation confirmed
+      this.logger.log(
+        `TODO: Push notification to user ${reservation.user_id} — reservation ${reservation.id.substring(0, 8)} confirmed`,
+      );
     }
 
     if (updateStatusDto.status === ReservationStatus.SEATED) {
@@ -128,7 +175,19 @@ export class ReservationsService {
       reservation.cancelled_at = new Date();
     }
 
-    return this.reservationRepository.save(reservation);
+    const updated = await this.reservationRepository.save(reservation);
+
+    // Emit WebSocket event to restaurant staff and user
+    this.reservationsGateway.notifyReservationUpdated({
+      id: updated.id,
+      restaurant_id: updated.restaurant_id,
+      user_id: updated.user_id,
+      status: updated.status,
+      party_size: updated.party_size,
+      reservation_time: updated.reservation_time,
+    });
+
+    return updated;
   }
 
   /**
@@ -284,5 +343,82 @@ export class ReservationsService {
     });
 
     return paginate(items, total, dto);
+  }
+
+  // ========== CRON JOBS (GAP Sprint 3) ==========
+
+  /**
+   * Send reminders for reservations within 2 hours from now.
+   * Runs every 30 minutes.
+   */
+  @Cron('0 */30 * * * *')
+  async sendReminders(): Promise<void> {
+    const now = new Date();
+    const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
+    try {
+      const reservations = await this.reservationRepository.find({
+        where: {
+          status: ReservationStatus.CONFIRMED,
+          reservation_date: Between(now, twoHoursFromNow),
+          reminder_sent_at: IsNull(),
+        },
+        relations: ['user', 'restaurant'],
+      });
+
+      if (reservations.length === 0) return;
+
+      this.logger.log(`[Reminder Cron] Found ${reservations.length} reservations needing reminders`);
+
+      for (const reservation of reservations) {
+        // Send reminder via WebSocket to user
+        this.reservationsGateway.server.to(`user:${reservation.user_id}`).emit('reservation:reminder', {
+          reservation_id: reservation.id,
+          restaurant_name: reservation.restaurant?.name || '',
+          reservation_time: reservation.reservation_time,
+          message: `Your reservation at ${reservation.restaurant?.name || 'the restaurant'} is in 2 hours`,
+        });
+
+        this.logger.log(
+          `[Reminder] Sent to user ${reservation.user_id.slice(0, 8)} — ` +
+          `restaurant ${reservation.restaurant_id.slice(0, 8)}, ` +
+          `time: ${reservation.reservation_time}`,
+        );
+
+        reservation.reminder_sent_at = now;
+      }
+
+      await this.reservationRepository.save(reservations);
+      this.logger.log(`[Reminder Cron] Sent ${reservations.length} reminders`);
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error(`[Reminder Cron] Failed: ${err.message}`, err.stack);
+    }
+  }
+
+  /**
+   * Mark no-shows: reservations past 30 minutes that were never seated.
+   * Runs every hour.
+   */
+  @Cron('0 0 * * * *')
+  async markNoShows(): Promise<void> {
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+
+    try {
+      const result = await this.reservationRepository
+        .createQueryBuilder()
+        .update(Reservation)
+        .set({ status: ReservationStatus.NO_SHOW })
+        .where('status = :status', { status: ReservationStatus.CONFIRMED })
+        .andWhere('reservation_date < :cutoff', { cutoff: thirtyMinutesAgo })
+        .execute();
+
+      if (result.affected && result.affected > 0) {
+        this.logger.log(`[No-Show Cron] Marked ${result.affected} reservations as no-show`);
+      }
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error(`[No-Show Cron] Failed: ${err.message}`, err.stack);
+    }
   }
 }

@@ -219,6 +219,24 @@ export class TablesService {
     }
   }
 
+  async assignWaiter(tableId: string, waiterId: string) {
+    const table = await this.findOne(tableId);
+    table.assigned_waiter_id = waiterId;
+    const updatedTable = await this.tableRepository.save(table);
+
+    // Emit WebSocket event
+    this.eventsGateway.server
+      .to(`restaurant:${table.restaurant_id}`)
+      .emit('table:waiter_assigned', {
+        table_id: table.id,
+        table_number: table.table_number,
+        waiter_id: waiterId,
+        updated_at: new Date(),
+      });
+
+    return updatedTable;
+  }
+
   async updateNotes(tableId: string, notes?: string) {
     const table = await this.findOne(tableId);
 

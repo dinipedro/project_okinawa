@@ -408,6 +408,7 @@ export default function ConfigProfileScreen() {
                 onValueChange={(val) => updateDayHours(day, 'closed', !val)}
                 trackColor={{ false: colors.backgroundTertiary, true: colors.primaryLight }}
                 thumbColor={!dayData.closed ? colors.primary : colors.foregroundMuted}
+                accessibilityLabel={`${dayLabels[day]} open or closed`}
               />
               {!dayData.closed ? (
                 <View style={styles.dayTimeInputs}>

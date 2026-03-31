@@ -761,7 +761,7 @@ export default function UnifiedPaymentScreen() {
         <Text variant="bodyLarge" style={styles.errorText}>
           {error}
         </Text>
-        <Button mode="contained" onPress={loadData} buttonColor={colors.primary}>
+        <Button mode="contained" onPress={loadData} buttonColor={colors.primary} accessibilityLabel={t('common.retry')}>
           {t('common.retry')}
         </Button>
       </View>
@@ -838,12 +838,14 @@ export default function UnifiedPaymentScreen() {
                     onPress={() => !isDisabled && handleSelectMethod(method.type)}
                     activeOpacity={0.7}
                     disabled={isDisabled}
+                    accessibilityLabel={getMethodLabel(method.type)}
                   >
                     <IconButton
                       icon={method.icon}
                       size={24}
                       iconColor={isSelected ? colors.primary : colors.foregroundSecondary}
                       style={{ margin: 0 }}
+                      accessibilityLabel={getMethodLabel(method.type)}
                     />
                     <Text
                       style={[
@@ -913,6 +915,7 @@ export default function UnifiedPaymentScreen() {
                     onPress={() => setShowAddCardModal(true)}
                     style={styles.addCardButton}
                     icon="plus"
+                    accessibilityLabel={t('payment.cardAdd')}
                   >
                     {t('payment.cardAdd')}
                   </Button>
@@ -931,6 +934,7 @@ export default function UnifiedPaymentScreen() {
                     mode="outlined"
                     style={styles.input}
                     left={<TextInput.Icon icon="credit-card" />}
+                    accessibilityLabel={t('payment.cardNumber_label')}
                   />
                   <TextInput
                     label={t('payment.cardName')}
@@ -939,6 +943,7 @@ export default function UnifiedPaymentScreen() {
                     mode="outlined"
                     style={styles.input}
                     autoCapitalize="words"
+                    accessibilityLabel={t('payment.cardName')}
                   />
                   <View style={styles.row}>
                     <TextInput
@@ -950,6 +955,7 @@ export default function UnifiedPaymentScreen() {
                       mode="outlined"
                       style={[styles.input, styles.halfInput]}
                       placeholder="MM/YY"
+                      accessibilityLabel={t('payment.cardExpiry')}
                     />
                     <TextInput
                       label={t('payment.cardCvv')}
@@ -960,6 +966,7 @@ export default function UnifiedPaymentScreen() {
                       secureTextEntry
                       mode="outlined"
                       style={[styles.input, styles.halfInput]}
+                      accessibilityLabel={t('payment.cardCvv')}
                     />
                   </View>
                 </>
@@ -1030,6 +1037,7 @@ export default function UnifiedPaymentScreen() {
                     ]}
                     onPress={() => setTipPercent(tip)}
                     activeOpacity={0.7}
+                    accessibilityLabel={tip === 0 ? t('payment.tipNone') : `${tip}% tip`}
                   >
                     <Text
                       style={[
@@ -1083,6 +1091,7 @@ export default function UnifiedPaymentScreen() {
                 labelStyle={styles.loyaltyButtonLabel}
                 compact
                 icon={usePoints ? 'check' : undefined}
+                accessibilityLabel={usePoints ? t('payment.loyaltyUsed') : t('payment.loyaltyUse')}
               >
                 {usePoints ? t('payment.loyaltyUsed') : t('payment.loyaltyUse')}
               </Button>
@@ -1150,6 +1159,7 @@ export default function UnifiedPaymentScreen() {
           style={styles.payButton}
           labelStyle={styles.payButtonLabel}
           icon="lock"
+          accessibilityLabel={processing ? t('payment.processing') : t('payment.ctaPay', { amount: finalTotal.toFixed(2) })}
         >
           {processing
             ? t('payment.processing')

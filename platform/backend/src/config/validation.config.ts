@@ -59,7 +59,7 @@ export const validationSchema = Joi.object({
         'any.required': 'CORS_ORIGIN must be set explicitly in production',
       }),
     }),
-  CORS_CREDENTIALS: Joi.string().valid('true', 'false').default('true'),
+  CORS_CREDENTIALS: Joi.string().valid('true', 'false').default('false'),
 
   // Sentry (Optional)
   SENTRY_DSN: Joi.string().uri().optional().allow(''),

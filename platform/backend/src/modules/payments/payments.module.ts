@@ -11,6 +11,9 @@ import { OrderItem } from '@/modules/orders/entities/order-item.entity';
 import { OrderGuest } from '@/modules/orders/entities/order-guest.entity';
 import { PaymentSplitService } from './payment-split.service';
 import { PaymentSplitController } from './payment-split.controller';
+import { LoyaltyModule } from '@/modules/loyalty/loyalty.module';
+import { EventsModule } from '@/modules/events/events.module';
+import { FinancialModule } from '@/modules/financial/financial.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { PaymentSplitController } from './payment-split.controller';
       OrderItem,
       OrderGuest,
     ]),
+    LoyaltyModule,
+    EventsModule,
+    FinancialModule,
   ],
   controllers: [PaymentsController, PaymentSplitController],
   providers: [PaymentsService, PaymentSplitService],

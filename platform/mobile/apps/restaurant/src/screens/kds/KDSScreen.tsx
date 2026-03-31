@@ -82,6 +82,13 @@ export default function KDSScreen() {
     return minutes;
   };
 
+  /** Platform brand colors for delivery source badges */
+  const platformColors: Record<string, string> = useMemo(() => ({
+    ifood: '#EA1D2C',
+    rappi: '#FF441F',
+    ubereats: '#06C167',
+  }), []);
+
   const styles = useMemo(() => StyleSheet.create({
     container: { 
       flex: 1, 
@@ -191,6 +198,23 @@ export default function KDSScreen() {
     emptyText: {
       color: colors.foregroundSecondary,
     },
+    sourceBadge: {
+      height: 22,
+      borderRadius: 4,
+      paddingHorizontal: 6,
+      alignSelf: 'flex-start' as const,
+      marginTop: 4,
+    },
+    sourceBadgeText: {
+      fontSize: 10,
+      fontWeight: '700' as const,
+      color: '#FFFFFF',
+    },
+    riderEta: {
+      fontSize: 11,
+      color: colors.info,
+      marginTop: 4,
+    },
   }), [colors]);
 
   const renderOrderCard = ({ item }: { item: Order }) => {
@@ -208,6 +232,18 @@ export default function KDSScreen() {
               <Text variant="bodySmall" style={styles.orderTime}>
                 {format(new Date(item.created_at), 'HH:mm', { locale: dateFnsPtBR })} - {minutesElapsed} min
               </Text>
+              {(item as any).source && (item as any).source !== 'noowe' && (
+                <View style={[styles.sourceBadge, { backgroundColor: platformColors[(item as any).source] || colors.foregroundMuted }]}>
+                  <Text style={styles.sourceBadgeText}>
+                    {t(`kds.order_source.${(item as any).source}`)}
+                  </Text>
+                </View>
+              )}
+              {(item as any).delivery_rider_eta != null && (
+                <Text style={styles.riderEta}>
+                  {t('kds.delivery.rider_eta', { minutes: String((item as any).delivery_rider_eta) })}
+                </Text>
+              )}
             </View>
             <Chip 
               style={[styles.statusChip, { backgroundColor: statusColors[item.status] }]} 
@@ -241,6 +277,7 @@ export default function KDSScreen() {
                 icon={item.order_type === 'delivery' ? 'truck-delivery' : item.order_type === 'pickup' ? 'package-variant' : 'silverware-fork-knife'}
                 size={20}
                 iconColor={colors.foregroundSecondary}
+                accessibilityLabel={`Order type: ${item.order_type === 'delivery' ? 'delivery' : item.order_type === 'pickup' ? 'pickup' : 'dine-in'}`}
               />
               <Text variant="bodySmall" style={styles.orderTypeText}>
                 {item.order_type === 'delivery' ? t('orders.orderType.delivery') : item.order_type === 'pickup' ? t('orders.orderType.pickup') : t('tables.table')}
@@ -330,7 +367,7 @@ export default function KDSScreen() {
         columnWrapperStyle={styles.row}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <IconButton icon="chef-hat" size={48} iconColor={colors.foregroundMuted} />
+            <IconButton icon="chef-hat" size={48} iconColor={colors.foregroundMuted} accessibilityLabel="No active orders" />
             <Text variant="headlineSmall" style={styles.emptyText}>{t('orders.noActiveOrders')}</Text>
           </View>
         }

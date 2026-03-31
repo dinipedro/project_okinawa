@@ -12,7 +12,8 @@ import { Repository, In, DataSource } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { MenuItem } from '@/modules/menu-items/entities/menu-item.entity';
-import { RestaurantTable } from '@/modules/tables/entities/restaurant-table.entity';
+import { RestaurantTable, TableStatus } from '@/modules/tables/entities/restaurant-table.entity';
+import { WaitlistEntry, WaitlistStatus } from '@/modules/restaurant-waitlist/entities/waitlist-entry.entity';
 import { Profile } from '@/modules/users/entities/profile.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
@@ -22,6 +23,8 @@ import { EventsGateway } from '@/modules/events/events.gateway';
 import { LoyaltyService } from '@/modules/loyalty/loyalty.service';
 import { PaginationDto, paginate, toPaginationDto } from '@/common/dto/pagination.dto';
 import { OrderCalculatorHelper } from './helpers';
+import { StockService } from '@/modules/stock/services/stock.service';
+import { CustomerCrmService } from '@/modules/customer-crm/services/customer-crm.service';
 
 @Injectable()
 export class OrdersService {
@@ -36,12 +39,16 @@ export class OrdersService {
     private menuItemRepository: Repository<MenuItem>,
     @InjectRepository(RestaurantTable)
     private tableRepository: Repository<RestaurantTable>,
+    @InjectRepository(WaitlistEntry)
+    private waitlistRepository: Repository<WaitlistEntry>,
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
     private eventsGateway: EventsGateway,
     private loyaltyService: LoyaltyService,
     private dataSource: DataSource,
     private orderCalculator: OrderCalculatorHelper,
+    private stockService: StockService,
+    private customerCrmService: CustomerCrmService,
   ) {}
 
   async create(userId: string, createOrderDto: CreateOrderDto) {
@@ -113,6 +120,18 @@ export class OrdersService {
 
       const savedOrder = await queryRunner.manager.save(order);
       await queryRunner.commitTransaction();
+
+      // F8: Generate pickup code for pickup/delivery orders (Quick Service / Drive-Thru)
+      if (savedOrder.order_type === OrderType.PICKUP || savedOrder.order_type === OrderType.DELIVERY) {
+        try {
+          const pickupCode = `#${savedOrder.id.substring(0, 4).toUpperCase()}`;
+          savedOrder.metadata = { ...savedOrder.metadata, pickup_code: pickupCode };
+          await this.orderRepository.save(savedOrder);
+        } catch (pickupErr) {
+          const err = pickupErr as Error;
+          this.logger.warn(`Failed to generate pickup code for order ${savedOrder.id}: ${err.message}`);
+        }
+      }
 
       try {
         this.eventsGateway.notifyNewOrder(createOrderDto.restaurant_id, {
@@ -208,6 +227,11 @@ export class OrdersService {
 
     if (updateStatusDto.status === OrderStatus.READY) {
       order.actual_ready_at = new Date();
+
+      // FIX-7: Push notification placeholder — order ready
+      this.logger.log(
+        `TODO: Push notification to user ${order.user_id} — order #${order.id.substring(0, 8)} is ready`,
+      );
     }
 
     if (updateStatusDto.status === OrderStatus.COMPLETED) {
@@ -226,6 +250,111 @@ export class OrdersService {
           `Failed to award loyalty points for order ${order.id}: ${err.message}`,
           err.stack,
         );
+      }
+
+      // GAP Sprint 2: Stock deduction for each order item
+      try {
+        const fullOrder = await this.orderRepository.findOne({
+          where: { id: order.id },
+          relations: ['items'],
+        });
+        if (fullOrder?.items) {
+          for (const item of fullOrder.items) {
+            await this.stockService.deductForOrder(
+              item.menu_item_id,
+              order.restaurant_id,
+              item.quantity,
+            );
+          }
+        }
+      } catch (error) {
+        const err = error as Error;
+        this.logger.error(
+          `Failed to deduct stock for order ${order.id}: ${err.message}`,
+          err.stack,
+        );
+      }
+
+      // GAP Sprint 2: CRM — record customer visit
+      try {
+        await this.customerCrmService.recordVisit(
+          order.user_id,
+          order.restaurant_id,
+          Number(order.total_amount),
+        );
+      } catch (error) {
+        const err = error as Error;
+        this.logger.error(
+          `Failed to record CRM visit for order ${order.id}: ${err.message}`,
+          err.stack,
+        );
+      }
+
+      // F9: Auto-award stamp if restaurant has stamp program
+      try {
+        await this.loyaltyService.addStamp({
+          user_id: order.user_id,
+          restaurant_id: order.restaurant_id,
+          service_type: order.order_type || 'dine_in',
+        });
+      } catch {
+        // Non-blocking: stamp award is best-effort
+      }
+
+      // F13: Schedule review prompt (fire-and-forget)
+      // In production: use Bull queue with delay of 30 minutes
+      this.logger.log(
+        `TODO: Schedule review prompt for user ${order.user_id} in 30 minutes (order ${order.id.substring(0, 8)})`,
+      );
+
+      // F4: Table State Machine — free table when order completes
+      if (order.table_id) {
+        try {
+          await this.tableRepository.update(order.table_id, {
+            status: TableStatus.AVAILABLE,
+            occupied_since: null as any,
+          });
+
+          this.eventsGateway.server
+            .to(`restaurant:${order.restaurant_id}`)
+            .emit('table:status_changed', {
+              table_id: order.table_id,
+              status: 'available',
+            });
+
+          this.logger.log(
+            `Table ${order.table_id} freed after order ${order.id} completed`,
+          );
+
+          // F5: Waitlist Auto-Advance — notify next waiting entry when table freed
+          try {
+            const waitlistEntry = await this.waitlistRepository.findOne({
+              where: { restaurant_id: order.restaurant_id, status: WaitlistStatus.WAITING },
+              order: { created_at: 'ASC' },
+            });
+            if (waitlistEntry) {
+              this.logger.log(
+                `Auto-calling waitlist entry ${waitlistEntry.id} for freed table ${order.table_id}`,
+              );
+              this.eventsGateway.server
+                .to(`restaurant:${order.restaurant_id}`)
+                .emit('waitlist:auto_called', {
+                  waitlist_entry_id: waitlistEntry.id,
+                  customer_name: waitlistEntry.customer_name,
+                  party_size: waitlistEntry.party_size,
+                  freed_table_id: order.table_id,
+                });
+            }
+          } catch {
+            // Non-blocking: waitlist auto-advance is best-effort
+          }
+        } catch (error) {
+          const err = error as Error;
+          this.logger.error(
+            `Failed to free table ${order.table_id} after order ${order.id}: ${err.message}`,
+            err.stack,
+          );
+        }
       }
     }
 
@@ -292,6 +421,120 @@ export class OrdersService {
     }
 
     return updatedOrder;
+  }
+
+  /**
+   * Confirm cash payment for an order.
+   * Sets status to COMPLETED, triggers loyalty points, stock deduction, and CRM visit.
+   */
+  async confirmCashPayment(orderId: string, staffUserId: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+      relations: ['items'],
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    // Only allow confirmation for non-terminal statuses
+    const allowedStatuses = [
+      OrderStatus.PENDING,
+      OrderStatus.CONFIRMED,
+      OrderStatus.PREPARING,
+      OrderStatus.READY,
+      OrderStatus.DELIVERING,
+    ];
+
+    if (!allowedStatuses.includes(order.status)) {
+      throw new BadRequestException(
+        `Order cannot be confirmed for cash payment in status "${order.status}"`,
+      );
+    }
+
+    // Mark order as completed with cash payment metadata
+    order.status = OrderStatus.COMPLETED;
+    order.completed_at = new Date();
+    order.metadata = {
+      ...(order.metadata || {}),
+      payment_method: 'cash',
+      cash_confirmed_by: staffUserId,
+      cash_confirmed_at: new Date().toISOString(),
+    };
+
+    const savedOrder = await this.orderRepository.save(order);
+
+    // Post-payment cascade: loyalty points
+    try {
+      await this.loyaltyService.awardPointsFromOrder(
+        order.user_id,
+        order.restaurant_id,
+        Number(order.total_amount),
+        order.id,
+      );
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error(
+        `Failed to award loyalty points for cash order ${order.id}: ${err.message}`,
+        err.stack,
+      );
+    }
+
+    // Post-payment cascade: stock deduction
+    try {
+      if (order.items) {
+        for (const item of order.items) {
+          await this.stockService.deductForOrder(
+            item.menu_item_id,
+            order.restaurant_id,
+            item.quantity,
+          );
+        }
+      }
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error(
+        `Failed to deduct stock for cash order ${order.id}: ${err.message}`,
+        err.stack,
+      );
+    }
+
+    // Post-payment cascade: CRM visit
+    try {
+      await this.customerCrmService.recordVisit(
+        order.user_id,
+        order.restaurant_id,
+        Number(order.total_amount),
+      );
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error(
+        `Failed to record CRM visit for cash order ${order.id}: ${err.message}`,
+        err.stack,
+      );
+    }
+
+    // Free table if dine-in
+    if (order.table_id) {
+      try {
+        await this.tableRepository.update(order.table_id, { status: TableStatus.AVAILABLE });
+      } catch (error) {
+        const err = error as Error;
+        this.logger.error(
+          `Failed to free table ${order.table_id} after cash order ${order.id}: ${err.message}`,
+          err.stack,
+        );
+      }
+    }
+
+    // WebSocket notification
+    this.eventsGateway.notifyOrderUpdate(orderId, {
+      order_id: orderId,
+      status: OrderStatus.COMPLETED,
+      message: 'Pagamento em dinheiro confirmado',
+    });
+
+    return savedOrder;
   }
 
   /**

@@ -198,6 +198,7 @@ function QueueEntryCard({
               size={18}
               iconColor={colors.primaryForeground}
               style={{ margin: 0, padding: 0, width: 18, height: 18 }}
+              accessibilityLabel="Admit"
             />
             <Text style={{ color: colors.primaryForeground, fontWeight: '700', fontSize: 14, marginLeft: 4 }}>
               {t('club.door.admit')}
@@ -223,6 +224,7 @@ function QueueEntryCard({
               size={18}
               iconColor={colors.error}
               style={{ margin: 0, padding: 0, width: 18, height: 18 }}
+              accessibilityLabel="Deny"
             />
             <Text style={{ color: colors.error, fontWeight: '700', fontSize: 14, marginLeft: 4 }}>
               {t('club.door.deny')}
@@ -403,7 +405,7 @@ export default function DoorManagementScreen({ route }: DoorManagementScreenProp
   const renderEmpty = useCallback(
     () => (
       <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 80 }}>
-        <IconButton icon="door-open" size={48} iconColor={colors.foregroundMuted} />
+        <IconButton icon="door-open" size={48} iconColor={colors.foregroundMuted} accessibilityLabel="No queue entries" />
         <Text
           variant="titleMedium"
           style={{ color: colors.foregroundMuted, textAlign: 'center', marginTop: 8 }}
@@ -497,6 +499,7 @@ export default function DoorManagementScreen({ route }: DoorManagementScreenProp
             size={18}
             iconColor={colors.primaryForeground}
             style={{ margin: 0, padding: 0, width: 18, height: 18 }}
+            accessibilityLabel="Scan QR code"
           />
           <Text style={{ color: colors.primaryForeground, fontWeight: '600', fontSize: 14, marginLeft: 6 }}>
             {t('club.door.scan')}

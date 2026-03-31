@@ -23,12 +23,13 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { Text, Avatar, Button } from 'react-native-paper';
+import { Text, Avatar, Button, Snackbar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useI18n } from '@/shared/hooks/useI18n';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { useWebSocket } from '@okinawa/shared/hooks/useWebSocket';
 import ApiService from '@/shared/services/api';
 
 // ---------------------------------------------------------------------------
@@ -109,10 +110,32 @@ export default function RestaurantReviewsScreen() {
   const [respondingTo, setRespondingTo] = useState<string | null>(null);
   const [responseText, setResponseText] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [newReviewBanner, setNewReviewBanner] = useState(false);
 
   const restaurantId = useMemo(() => {
     return user?.roles?.[0]?.restaurant_id ?? '';
   }, [user]);
+
+  // FIX-12: WebSocket listener for real-time review notifications
+  const { connected, on, off } = useWebSocket('/events');
+
+  useEffect(() => {
+    if (!connected || !restaurantId) return;
+
+    const handleReviewCreated = (data: any) => {
+      if (data?.restaurant_id === restaurantId || !data?.restaurant_id) {
+        setNewReviewBanner(true);
+        // Auto-reload reviews
+        loadData();
+      }
+    };
+
+    on('review:created', handleReviewCreated);
+
+    return () => {
+      off('review:created', handleReviewCreated);
+    };
+  }, [connected, restaurantId]);
 
   // -----------------------------------------------------------------------
   // Data fetching
@@ -547,6 +570,20 @@ export default function RestaurantReviewsScreen() {
         {/* Bottom spacing */}
         <View style={{ height: 32 }} />
       </ScrollView>
+
+      {/* FIX-12: New review notification banner */}
+      <Snackbar
+        visible={newReviewBanner}
+        onDismiss={() => setNewReviewBanner(false)}
+        duration={4000}
+        action={{
+          label: t('common.close'),
+          onPress: () => setNewReviewBanner(false),
+        }}
+        style={{ backgroundColor: colors.primary }}
+      >
+        {t('reviews.newReviewReceived') || 'Nova avaliacao recebida!'}
+      </Snackbar>
     </KeyboardAvoidingView>
   );
 }

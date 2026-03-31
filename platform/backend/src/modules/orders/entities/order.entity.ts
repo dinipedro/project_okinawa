@@ -98,6 +98,15 @@ export class Order {
   })
   payment_split_mode: PaymentSplitMode;
 
+  @Column({ type: 'varchar', length: 20, default: 'noowe' })
+  source: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  source_order_id: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  delivery_rider_eta: Date;
+
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 

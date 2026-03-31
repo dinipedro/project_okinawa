@@ -49,9 +49,18 @@ export const useWebSocket = (namespace: string = '/') => {
         setError(err.message || 'Socket connection error');
       });
 
-      socketRef.current.on('connect_error', (err: any) => {
+      socketRef.current.on('connect_error', async (err: any) => {
         console.error(`Socket connection error on ${namespace}:`, err);
         setError(err.message || 'Failed to connect to socket');
+
+        // Refresh token and reconnect on auth errors
+        if (err.message?.includes('unauthorized') || err.message?.includes('jwt')) {
+          const freshToken = await AsyncStorage.getItem('access_token');
+          if (freshToken && socketRef.current) {
+            socketRef.current.auth = { token: freshToken };
+            socketRef.current.connect();
+          }
+        }
       });
     } catch (err: any) {
       setError(err.message || 'Failed to initialize socket');

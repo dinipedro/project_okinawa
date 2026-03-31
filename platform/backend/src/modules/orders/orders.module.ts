@@ -16,6 +16,7 @@ import { OrderGuest } from './entities/order-guest.entity';
 import { MenuItem } from '@/modules/menu-items/entities/menu-item.entity';
 import { RestaurantTable } from '@/modules/tables/entities/restaurant-table.entity';
 import { Profile } from '@/modules/users/entities/profile.entity';
+import { WaitlistEntry } from '@/modules/restaurant-waitlist/entities/waitlist-entry.entity';
 import { EventsModule } from '@/modules/events/events.module';
 import { LoyaltyModule } from '@/modules/loyalty/loyalty.module';
 import { NotificationsModule } from '@/modules/notifications/notifications.module';
@@ -27,10 +28,12 @@ import {
   WaiterStatsHelper,
   MaitreFormatterHelper,
 } from './helpers';
+import { StockModule } from '@/modules/stock/stock.module';
+import { CustomerCrmModule } from '@/modules/customer-crm/customer-crm.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, OrderItem, OrderGuest, MenuItem, RestaurantTable, Profile]),
+    TypeOrmModule.forFeature([Order, OrderItem, OrderGuest, MenuItem, RestaurantTable, Profile, WaitlistEntry]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -45,6 +48,8 @@ import {
     NotificationsModule,
     ReservationsModule,
     TablesModule,
+    StockModule,
+    CustomerCrmModule,
   ],
   controllers: [OrdersController, OrderGuestsController],
   providers: [

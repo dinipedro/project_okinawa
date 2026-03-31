@@ -84,6 +84,28 @@ export class CallsGateway implements OnGatewayConnection, OnGatewayDisconnect, B
     return { event: 'left', data: { restaurantId: data.restaurantId } };
   }
 
+  @SubscribeMessage('joinUser')
+  handleJoinUser(
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    if (!client.user) {
+      return { event: 'error', data: { message: 'Unauthorized' } };
+    }
+    client.join(`user:${client.user.id}`);
+    return { event: 'joined', data: { userId: client.user.id } };
+  }
+
+  @SubscribeMessage('leaveUser')
+  handleLeaveUser(
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    if (!client.user) {
+      return { event: 'error', data: { message: 'Unauthorized' } };
+    }
+    client.leave(`user:${client.user.id}`);
+    return { event: 'left', data: { userId: client.user.id } };
+  }
+
   /**
    * Emit a new service call to the restaurant staff room
    */
@@ -105,24 +127,35 @@ export class CallsGateway implements OnGatewayConnection, OnGatewayDisconnect, B
 
   /**
    * Emit call update (acknowledged, resolved, cancelled) to the restaurant staff room
+   * AND to the user who created the call
    */
   emitCallUpdated(restaurantId: string, call: ServiceCall) {
+    const payload = {
+      id: call.id,
+      restaurant_id: call.restaurant_id,
+      table_id: call.table_id,
+      user_id: call.user_id,
+      call_type: call.call_type,
+      status: call.status,
+      message: call.message,
+      called_at: call.called_at,
+      acknowledged_at: call.acknowledged_at,
+      acknowledged_by: call.acknowledged_by,
+      resolved_at: call.resolved_at,
+      resolved_by: call.resolved_by,
+    };
+
+    // Notify restaurant staff
     this.server
       .to(`restaurant:${restaurantId}:staff`)
-      .emit('call:updated', {
-        id: call.id,
-        restaurant_id: call.restaurant_id,
-        table_id: call.table_id,
-        user_id: call.user_id,
-        call_type: call.call_type,
-        status: call.status,
-        message: call.message,
-        called_at: call.called_at,
-        acknowledged_at: call.acknowledged_at,
-        acknowledged_by: call.acknowledged_by,
-        resolved_at: call.resolved_at,
-        resolved_by: call.resolved_by,
-      });
+      .emit('call:updated', payload);
+
+    // Notify the user who created the call
+    if (call.user_id) {
+      this.server
+        .to(`user:${call.user_id}`)
+        .emit('call:updated', payload);
+    }
   }
 
   async beforeApplicationShutdown() {

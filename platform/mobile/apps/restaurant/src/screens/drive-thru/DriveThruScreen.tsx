@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -24,6 +24,24 @@ interface DriveThruOrder {
   total: number;
   createdAt: string;
   vehicleDescription?: string;
+  customer_lat?: number;
+  customer_lng?: number;
+  distance_km?: number;
+}
+
+/**
+ * Haversine formula for distance between two geo points
+ */
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
 }
 
 /**
@@ -40,6 +58,41 @@ export default function DriveThruScreen() {
 
   const [orders, setOrders] = useState<DriveThruOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [restaurantLocation, setRestaurantLocation] = useState<{ lat: number; lng: number } | null>(null);
+
+  // Fetch restaurant location for proximity sorting
+  useEffect(() => {
+    ApiService.get('/restaurants/me')
+      .then((res: any) => {
+        if (res.data?.latitude && res.data?.longitude) {
+          setRestaurantLocation({ lat: res.data.latitude, lng: res.data.longitude });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Sort orders by proximity when restaurant location is available
+  const sortedOrders = useMemo(() => {
+    if (!restaurantLocation) return orders;
+    return [...orders].map((order) => {
+      if (order.customer_lat && order.customer_lng) {
+        return {
+          ...order,
+          distance_km: haversineDistance(
+            restaurantLocation.lat, restaurantLocation.lng,
+            order.customer_lat, order.customer_lng,
+          ),
+        };
+      }
+      return order;
+    }).sort((a, b) => {
+      // Prioritize by status first (ready > preparing > queued), then by distance
+      const statusOrder = { ready: 0, preparing: 1, queued: 2, picked_up: 3 };
+      const statusDiff = (statusOrder[a.status] ?? 3) - (statusOrder[b.status] ?? 3);
+      if (statusDiff !== 0) return statusDiff;
+      return (a.distance_km ?? 999) - (b.distance_km ?? 999);
+    });
+  }, [orders, restaurantLocation]);
 
   const statusColors: Record<string, string> = useMemo(
     () => ({

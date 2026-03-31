@@ -17,6 +17,7 @@ export interface ReceiptItemSnapshot {
 @Index('idx_receipts_user', ['user_id'])
 @Index('idx_receipts_restaurant', ['restaurant_id'])
 @Index('uq_receipts_order', ['order_id'], { unique: true })
+@Index('idx_receipts_table', ['table_id'])
 export class Receipt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -32,6 +33,9 @@ export class Receipt {
 
   @Column('uuid')
   restaurant_id: string;
+
+  @Column('uuid', { nullable: true })
+  table_id: string;
 
   @Column({ type: 'jsonb' })
   items_snapshot: ReceiptItemSnapshot[];

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
+import { AuditLogService } from '@/modules/auth/services/audit-log.service';
 import { mockAuthenticatedUser } from '@common/interfaces/authenticated-user.interface';
 
 describe('AiController', () => {
@@ -21,7 +22,10 @@ describe('AiController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AiController],
-      providers: [{ provide: AiService, useValue: mockAiService }],
+      providers: [
+        { provide: AiService, useValue: mockAiService },
+        { provide: AuditLogService, useValue: { log: jest.fn() } },
+      ],
     })
       .overrideGuard(
         require('@/modules/auth/guards/jwt-auth.guard').JwtAuthGuard,

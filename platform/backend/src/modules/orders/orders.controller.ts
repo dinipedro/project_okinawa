@@ -114,6 +114,22 @@ export class OrdersController {
     return this.ordersService.updateStatus(id, updateStatusDto);
   }
 
+  // ========== CASH PAYMENT CONFIRMATION ==========
+
+  @Patch(':id/confirm-cash-payment')
+  @Roles(UserRole.OWNER, UserRole.MANAGER, UserRole.WAITER)
+  @ApiOperation({ summary: 'Confirm cash payment for an order (Staff only)' })
+  @ApiResponse({ status: 200, description: 'Cash payment confirmed and order completed' })
+  @ApiResponse({ status: 400, description: 'Order not eligible for cash confirmation' })
+  @ApiResponse({ status: 404, description: 'Order not found' })
+  @ApiResponse({ status: 403, description: 'Forbidden - staff only' })
+  confirmCashPayment(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.ordersService.confirmCashPayment(id, user.id);
+  }
+
   // ========== PARTIAL ORDER ENDPOINTS (EPIC 17) ==========
 
   @Post(':id/items')
@@ -143,6 +159,37 @@ export class OrdersController {
     @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.orderAdditionsService.openOrderForAdditions(id, user.id, user.roles as UserRole[]);
+  }
+
+  // ========== BUFFET ENDPOINTS (F11) ==========
+
+  @Post('buffet/:restaurantId/checkin')
+  @Roles(UserRole.CUSTOMER)
+  @ApiOperation({ summary: 'Buffet check-in — creates buffet order with covers count' })
+  @ApiResponse({ status: 201, description: 'Buffet check-in successful, returns order with QR code' })
+  @ApiResponse({ status: 400, description: 'Invalid covers count' })
+  async buffetCheckin(
+    @Param('restaurantId') restaurantId: string,
+    @Body() body: { covers: number },
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    const covers = body.covers || 1;
+    // Create a buffet-type dine-in order (buffet does not have individual menu items)
+    const order = await this.ordersService.create(user.id, {
+      restaurant_id: restaurantId,
+      order_type: 'dine_in' as any,
+      items: [],
+      special_instructions: `Buffet check-in: ${covers} covers`,
+    } as any);
+
+    // Generate a QR code for exit validation
+    const qrCode = `BUFFET-${order.id.substring(0, 8).toUpperCase()}`;
+    return {
+      order_id: order.id,
+      qrCode,
+      covers,
+      tableNumber: null, // Assigned by host/maitre
+    };
   }
 
   // ========== KDS ENDPOINTS ==========

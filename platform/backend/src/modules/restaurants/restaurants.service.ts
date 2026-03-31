@@ -102,6 +102,19 @@ export class RestaurantsService {
     return { message: 'Restaurant deactivated successfully' };
   }
 
+  // ========== FOOD TRUCK LOCATION UPDATE (F12) ==========
+
+  /**
+   * Update restaurant lat/lng — used for food truck dynamic location.
+   */
+  async updateLocation(id: string, latitude: number, longitude: number) {
+    const restaurant = await this.findOne(id);
+    restaurant.lat = latitude;
+    restaurant.lng = longitude;
+    await this.restaurantRepository.save(restaurant);
+    return { success: true };
+  }
+
   // ========== GEOFENCING METHODS ==========
 
   /**

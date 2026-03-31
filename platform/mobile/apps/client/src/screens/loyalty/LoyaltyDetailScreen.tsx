@@ -26,8 +26,9 @@ import {
   Button,
   Divider,
 } from 'react-native-paper';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { Alert } from 'react-native';
 import { useI18n } from '@/shared/hooks/useI18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import ApiService from '@/shared/services/api';
@@ -119,6 +120,23 @@ export default function LoyaltyDetailScreen() {
 
   const programId = route.params?.programId;
   const [refreshing, setRefreshing] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Redeem stamp card mutation
+  const redeemStampMutation = useMutation({
+    mutationFn: async (stampCardId: string) => {
+      const res = await ApiService.post(`/loyalty/stamp-cards/${stampCardId}/redeem`, {});
+      return res.data;
+    },
+    onSuccess: () => {
+      Alert.alert(t('common.success'), t('loyalty.detail.redeemSuccess'));
+      queryClient.invalidateQueries({ queryKey: ['loyalty', 'stamps'] });
+      refetch();
+    },
+    onError: (error: any) => {
+      Alert.alert(t('common.error'), error.response?.data?.message || t('common.retry'));
+    },
+  });
 
   // Fetch loyalty detail
   const {
@@ -173,14 +191,14 @@ export default function LoyaltyDetailScreen() {
   if (isError || !loyalty) {
     return (
       <View style={styles.errorContainer}>
-        <IconButton icon="alert-circle-outline" size={64} iconColor={colors.foregroundMuted} />
+        <IconButton icon="alert-circle-outline" size={64} iconColor={colors.foregroundMuted} accessibilityLabel={t('loyalty.detail.emptyTitle')} />
         <Text variant="bodyLarge" style={styles.errorText}>
           {t('loyalty.detail.emptyTitle')}
         </Text>
         <Text variant="bodyMedium" style={styles.emptyMessage}>
           {t('loyalty.detail.emptyMessage')}
         </Text>
-        <Button mode="contained" onPress={() => refetch()} style={styles.retryButton}>
+        <Button mode="contained" onPress={() => refetch()} style={styles.retryButton} accessibilityLabel={t('common.retry')}>
           {t('common.retry')}
         </Button>
       </View>
@@ -211,6 +229,7 @@ export default function LoyaltyDetailScreen() {
             icon={tierConfig.icon}
             style={[styles.tierChip, { backgroundColor: tierConfig.color }]}
             textStyle={styles.tierChipText}
+            accessibilityLabel={t('loyalty.detail.tierBadge', { tier: tierName })}
           >
             {t('loyalty.detail.tierBadge', { tier: tierName })}
           </Chip>
@@ -259,6 +278,7 @@ export default function LoyaltyDetailScreen() {
                       size={20}
                       iconColor={entry.type === 'earned' ? colors.success : colors.error}
                       style={{ margin: 0 }}
+                      accessibilityLabel={entry.type === 'earned' ? t('loyalty.detail.earned') : t('loyalty.detail.redeemed')}
                     />
                     <Text variant="bodyMedium" style={styles.historyDesc}>
                       {entry.description}
@@ -313,9 +333,35 @@ export default function LoyaltyDetailScreen() {
                     />
                   ))}
                 </View>
-                <Text variant="bodySmall" style={styles.stampCount}>
-                  {card.stamps_collected}/{card.stamps_required}
-                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text variant="bodySmall" style={styles.stampCount}>
+                    {card.stamps_collected}/{card.stamps_required}
+                  </Text>
+                  {card.stamps_collected >= card.stamps_required && (
+                    <Button
+                      mode="contained"
+                      compact
+                      onPress={() => {
+                        Alert.alert(
+                          t('loyalty.detail.redeemTitle'),
+                          t('loyalty.detail.redeemConfirm', { reward: card.reward }),
+                          [
+                            { text: t('common.cancel'), style: 'cancel' },
+                            {
+                              text: t('common.confirm'),
+                              onPress: () => redeemStampMutation.mutate(card.id),
+                            },
+                          ],
+                        );
+                      }}
+                      loading={redeemStampMutation.isPending}
+                      style={{ borderRadius: 8 }}
+                      accessibilityLabel={t('loyalty.detail.redeem')}
+                    >
+                      {t('loyalty.detail.redeem')}
+                    </Button>
+                  )}
+                </View>
               </View>
             ))}
           </Card.Content>
@@ -340,6 +386,7 @@ export default function LoyaltyDetailScreen() {
                   size={20}
                   iconColor={colors.primary}
                   style={{ margin: 0 }}
+                  accessibilityLabel={item.rule}
                 />
                 <Text variant="bodyMedium" style={styles.ruleText}>
                   {item.rule}

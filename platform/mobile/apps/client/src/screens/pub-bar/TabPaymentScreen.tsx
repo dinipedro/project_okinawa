@@ -486,12 +486,23 @@ export default function TabPaymentScreen() {
             </Text>
           </View>
 
+          {/* Cover Charge */}
+          {Number(tab.cover_charge_amount) > 0 && (
+            <View style={styles.totalRow}>
+              <Text variant="bodyMedium" style={styles.totalLabel}>
+                {t('tab.payment.coverCharge')}
+              </Text>
+              <Text variant="bodyMedium" style={styles.totalValue}>
+                {formatCurrency(Number(tab.cover_charge_amount), getLanguage())}
+              </Text>
+            </View>
+          )}
+
           {/* Credits */}
           {(Number(tab.cover_charge_credit) > 0 || Number(tab.deposit_credit) > 0) && (
             <View style={styles.totalRow}>
               <Text variant="bodyMedium" style={[styles.totalLabel, { color: colors.success }]}>
-                Credits
-              </Text>
+                {t('tab.payment.credits')}
               <Text variant="bodyMedium" style={{ color: colors.success }}>
                 -{formatCurrency(Number(tab.cover_charge_credit) + Number(tab.deposit_credit), getLanguage())}
               </Text>

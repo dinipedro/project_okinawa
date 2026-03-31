@@ -31,6 +31,7 @@ import { t } from '@okinawa/shared/i18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { gradients } from '@okinawa/shared/theme/colors';
 import { ApiService } from '@okinawa/shared/services/api';
+import { useWebSocket } from '@okinawa/shared/hooks/useWebSocket';
 
 // ============================================
 // TYPES
@@ -113,7 +114,12 @@ export default function CallWaiterScreen({ route }: CallWaiterScreenProps) {
   const [selectedType, setSelectedType] = useState<CallType | null>(null);
   const [message, setMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [callStatus, setCallStatus] = useState<string | null>(null);
+  const [activeCallId, setActiveCallId] = useState<string | null>(null);
   const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // WebSocket connection to /calls namespace for real-time call status updates
+  const { on, off, emit: wsEmit, connected } = useWebSocket('/calls');
 
   // Helper to get color value from colorKey
   const getTypeColor = useCallback((colorKey: string): string => {
@@ -136,9 +142,39 @@ export default function CallWaiterScreen({ route }: CallWaiterScreenProps) {
     }
   }, [colors]);
 
+  // Join user room on connect so the server can send call updates
+  useEffect(() => {
+    if (connected) {
+      wsEmit('joinUser', {});
+    }
+  }, [connected, wsEmit]);
+
+  // Listen for call:updated WebSocket events
+  useEffect(() => {
+    if (!activeCallId) return;
+
+    const handleCallUpdated = (data: any) => {
+      if (data.id !== activeCallId) return;
+
+      if (data.status === 'acknowledged') {
+        setCallStatus('acknowledged');
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      } else if (data.status === 'resolved') {
+        setCallStatus('resolved');
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+    };
+
+    on('call:updated', handleCallUpdated);
+
+    return () => {
+      off('call:updated', handleCallUpdated);
+    };
+  }, [activeCallId, on, off]);
+
   // Auto-dismiss success after 3 seconds
   useEffect(() => {
-    if (showSuccess) {
+    if (showSuccess && !activeCallId) {
       dismissTimer.current = setTimeout(() => {
         navigation.goBack();
       }, AUTO_DISMISS_MS);
@@ -146,13 +182,16 @@ export default function CallWaiterScreen({ route }: CallWaiterScreenProps) {
     return () => {
       if (dismissTimer.current) clearTimeout(dismissTimer.current);
     };
-  }, [showSuccess, navigation]);
+  }, [showSuccess, activeCallId, navigation]);
 
   const callMutation = useMutation({
-    mutationFn: (payload: CallPayload) => ApiService.post('/calls', payload),
-    onSuccess: () => {
+    mutationFn: (payload: CallPayload) => ApiService.post<{ id: string }>('/calls', payload),
+    onSuccess: (data: any) => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setShowSuccess(true);
+      if (data?.id) {
+        setActiveCallId(data.id);
+      }
     },
   });
 
@@ -193,10 +232,18 @@ export default function CallWaiterScreen({ route }: CallWaiterScreenProps) {
             <IconButton icon="check" size={48} iconColor={colors.primaryForeground} style={{ margin: 0 }} />
           </LinearGradient>
           <Text variant="headlineSmall" style={{ color: colors.foreground, fontWeight: '700', marginTop: 16, textAlign: 'center' }}>
-            {t('calls.callWaiter.success')}
+            {callStatus === 'acknowledged'
+              ? t('calls.callWaiter.acknowledged') || 'Garçom notificado'
+              : callStatus === 'resolved'
+                ? t('calls.callWaiter.resolved') || 'Resolvido'
+                : t('calls.callWaiter.success')}
           </Text>
           <Text variant="bodyMedium" style={{ color: colors.foregroundSecondary, marginTop: 4, textAlign: 'center' }}>
-            {t('calls.callWaiter.successMsg')}
+            {callStatus === 'acknowledged'
+              ? t('calls.callWaiter.acknowledgedMsg') || 'Um garçom está a caminho'
+              : callStatus === 'resolved'
+                ? t('calls.callWaiter.resolvedMsg') || 'Sua solicitação foi atendida'
+                : t('calls.callWaiter.successMsg')}
           </Text>
           <Button mode="text" onPress={handleDismissSuccess} style={{ marginTop: 24 }} textColor={colors.primary}>
             {t('common.back')}

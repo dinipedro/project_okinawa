@@ -13,6 +13,7 @@ import {
 } from './entities/promotion.entity';
 import { CreatePromotionDto } from './dto/create-promotion.dto';
 import { ValidatePromotionDto } from './dto/validate-promotion.dto';
+import { EventsGateway } from '@/modules/events/events.gateway';
 
 export interface PromotionValidationResult {
   valid: boolean;
@@ -28,6 +29,7 @@ export class PromotionsService {
   constructor(
     @InjectRepository(Promotion)
     private readonly promotionRepository: Repository<Promotion>,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   /**
@@ -84,7 +86,16 @@ export class PromotionsService {
       current_uses: 0,
     });
 
-    return this.promotionRepository.save(promotion);
+    const saved = await this.promotionRepository.save(promotion);
+
+    this.eventsGateway.notifyRestaurant(saved.restaurant_id, {
+      type: 'promotion:created',
+      promotion_id: saved.id,
+      code: saved.code,
+      status: saved.status,
+    });
+
+    return saved;
   }
 
   /**
@@ -199,7 +210,16 @@ export class PromotionsService {
 
     Object.assign(promotion, updateDto);
 
-    return this.promotionRepository.save(promotion);
+    const saved = await this.promotionRepository.save(promotion);
+
+    this.eventsGateway.notifyRestaurant(saved.restaurant_id, {
+      type: 'promotion:updated',
+      promotion_id: saved.id,
+      code: saved.code,
+      status: saved.status,
+    });
+
+    return saved;
   }
 
   /**
@@ -208,7 +228,15 @@ export class PromotionsService {
   async softDelete(id: string): Promise<Promotion> {
     const promotion = await this.findById(id);
     promotion.status = PromotionStatus.INACTIVE;
-    return this.promotionRepository.save(promotion);
+    const saved = await this.promotionRepository.save(promotion);
+
+    this.eventsGateway.notifyRestaurant(saved.restaurant_id, {
+      type: 'promotion:deactivated',
+      promotion_id: saved.id,
+      code: saved.code,
+    });
+
+    return saved;
   }
 
   /**

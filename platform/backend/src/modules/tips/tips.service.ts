@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { Tip, TipStatus } from './entities/tip.entity';
 import { Profile } from '@/modules/users/entities/profile.entity';
+import { UserRole } from '@/modules/user-roles/entities/user-role.entity';
 import { CreateTipDto } from './dto/create-tip.dto';
 import { DistributeTipsDto } from './dto/distribute-tips.dto';
 import { UpdateTipDto } from './dto/update-tip.dto';
@@ -10,11 +11,15 @@ import { EventsGateway } from '@/modules/events/events.gateway';
 
 @Injectable()
 export class TipsService {
+  private readonly logger = new Logger(TipsService.name);
+
   constructor(
     @InjectRepository(Tip)
     private tipRepository: Repository<Tip>,
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
+    @InjectRepository(UserRole)
+    private userRoleRepository: Repository<UserRole>,
     private eventsGateway: EventsGateway,
   ) {}
 
@@ -232,5 +237,102 @@ export class TipsService {
     }
 
     return this.tipRepository.save(tip);
+  }
+
+  /**
+   * GAP-3: Auto-distribute pending tips when cash register closes.
+   *
+   * 1. Find all PENDING tips for this restaurant between session open and close times
+   * 2. Get all active staff for this restaurant (from user_roles)
+   * 3. Divide equally among staff
+   * 4. Mark each tip as DISTRIBUTED
+   * 5. Log distribution details
+   */
+  async autoDistributeOnClose(
+    restaurantId: string,
+    sessionOpenedAt: Date,
+    sessionClosedAt: Date,
+  ): Promise<void> {
+    // 1. Find all PENDING tips for this restaurant in the session window
+    const pendingTips = await this.tipRepository.find({
+      where: {
+        restaurant_id: restaurantId,
+        status: TipStatus.PENDING,
+        created_at: Between(sessionOpenedAt, sessionClosedAt),
+      },
+    });
+
+    if (pendingTips.length === 0) {
+      this.logger.log(
+        `No pending tips to distribute for restaurant ${restaurantId}`,
+      );
+      return;
+    }
+
+    // 2. Get all active staff for this restaurant
+    const activeStaffRoles = await this.userRoleRepository.find({
+      where: {
+        restaurant_id: restaurantId,
+        is_active: true,
+      },
+    });
+
+    // Deduplicate staff by user_id
+    const uniqueStaffIds = [...new Set(activeStaffRoles.map((r) => r.user_id))];
+
+    if (uniqueStaffIds.length === 0) {
+      this.logger.warn(
+        `No active staff found for restaurant ${restaurantId} — tips remain PENDING`,
+      );
+      return;
+    }
+
+    // 3. Distribute each tip equally among staff
+    const now = new Date();
+    const totalDistributed = pendingTips.reduce(
+      (sum, tip) => sum + Number(tip.amount),
+      0,
+    );
+
+    for (const tip of pendingTips) {
+      const amountPerStaff = Number(tip.amount) / uniqueStaffIds.length;
+
+      tip.status = TipStatus.DISTRIBUTED;
+      tip.distributed_at = now;
+      tip.distribution_details = {
+        method: 'auto_close_equal_split',
+        staff_count: uniqueStaffIds.length,
+        amount_per_staff: amountPerStaff,
+        staff_ids: uniqueStaffIds,
+        session_opened_at: sessionOpenedAt.toISOString(),
+        session_closed_at: sessionClosedAt.toISOString(),
+      };
+
+      await this.tipRepository.save(tip);
+
+      // Notify each staff member
+      for (const staffId of uniqueStaffIds) {
+        this.eventsGateway.notifyUser(staffId, {
+          type: 'tip:auto_distributed',
+          tip_id: tip.id,
+          amount: amountPerStaff,
+          distribution_date: now,
+        });
+      }
+    }
+
+    // 5. Log distribution summary
+    this.logger.log(
+      `Auto-distributed ${pendingTips.length} tips (total R$ ${totalDistributed.toFixed(2)}) ` +
+        `among ${uniqueStaffIds.length} staff for restaurant ${restaurantId}`,
+    );
+
+    // Notify restaurant
+    this.eventsGateway.notifyRestaurant(restaurantId, {
+      type: 'tips:auto_distributed',
+      count: pendingTips.length,
+      total_amount: totalDistributed,
+      staff_count: uniqueStaffIds.length,
+    });
   }
 }

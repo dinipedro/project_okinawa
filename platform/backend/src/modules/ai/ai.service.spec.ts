@@ -8,6 +8,7 @@ import { Order } from '@/modules/orders/entities/order.entity';
 import { MenuItem } from '@/modules/menu-items/entities/menu-item.entity';
 import { LoyaltyProgram } from '@/modules/loyalty/entities/loyalty-program.entity';
 import { Restaurant } from '@/modules/restaurants/entities/restaurant.entity';
+import { CircuitBreakerService } from '@common/utils/circuit-breaker.module';
 
 describe('AiService', () => {
   let service: AiService;
@@ -190,6 +191,12 @@ describe('AiService', () => {
     }),
   };
 
+  const mockCircuitBreakerService = {
+    getBreaker: jest.fn().mockReturnValue({
+      execute: jest.fn((fn: () => Promise<any>) => fn()),
+    }),
+  };
+
   // ConfigService mock — no API key set so tests use fallback logic
   const mockConfigService = {
     get: jest.fn((key: string) => {
@@ -215,6 +222,7 @@ describe('AiService', () => {
           useValue: mockDataSource,
         },
         { provide: ConfigService, useValue: mockConfigService },
+        { provide: CircuitBreakerService, useValue: mockCircuitBreakerService },
       ],
     }).compile();
 

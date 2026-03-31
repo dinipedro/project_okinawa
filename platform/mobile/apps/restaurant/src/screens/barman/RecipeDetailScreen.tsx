@@ -332,6 +332,7 @@ export default function RecipeDetailScreen({ route }: { route: any }) {
               )}
               style={styles.infoChip}
               compact
+              accessibilityLabel={`Glass type: ${recipe.glass_type}`}
             >
               {recipe.glass_type}
             </Chip>
@@ -342,6 +343,7 @@ export default function RecipeDetailScreen({ route }: { route: any }) {
                 icon={() => <Icon name="leaf" size={16} color={colors.success} />}
                 style={styles.infoChip}
                 compact
+                accessibilityLabel={`Garnish: ${recipe.garnish}`}
               >
                 {recipe.garnish}
               </Chip>
@@ -358,7 +360,7 @@ export default function RecipeDetailScreen({ route }: { route: any }) {
             </View>
 
             {/* Category */}
-            <Chip mode="outlined" compact>
+            <Chip mode="outlined" compact accessibilityLabel={`Category: ${recipe.category}`}>
               {recipe.category}
             </Chip>
           </View>

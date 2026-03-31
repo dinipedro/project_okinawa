@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Patch,
   Body,
   Query,
@@ -17,8 +18,11 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { LoyaltyService } from './loyalty.service';
+import { CashbackService } from './cashback.service';
 import { AddPointsDto } from './dto/add-points.dto';
 import { RedeemRewardDto } from './dto/redeem-reward.dto';
+import { RedeemPointsDto } from './dto/redeem-points.dto';
+import { UpsertLoyaltyConfigDto } from './dto/upsert-loyalty-config.dto';
 import { UpdateLoyaltyProgramDto } from './dto/update-loyalty-program.dto';
 import { AddStampDto } from './dto/add-stamp.dto';
 import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
@@ -33,7 +37,10 @@ import { UserRole } from '@/common/enums';
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class LoyaltyController {
-  constructor(private readonly loyaltyService: LoyaltyService) {}
+  constructor(
+    private readonly loyaltyService: LoyaltyService,
+    private readonly cashbackService: CashbackService,
+  ) {}
 
   @Get('my-programs')
   @ApiOperation({ summary: 'Get all loyalty programs for current user' })
@@ -173,5 +180,65 @@ export class LoyaltyController {
   @ApiResponse({ status: 400, description: 'Invalid stamp data' })
   addStamp(@Body() addStampDto: AddStampDto) {
     return this.loyaltyService.addStamp(addStampDto);
+  }
+
+  @Post('stamp-cards/redeem')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.CUSTOMER)
+  @ApiOperation({ summary: 'Redeem a completed stamp card reward' })
+  @ApiQuery({ name: 'restaurant_id', required: true, type: String })
+  @ApiResponse({ status: 200, description: 'Stamp card reward redeemed (or not eligible)' })
+  redeemStampReward(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query('restaurant_id') restaurantId: string,
+  ) {
+    return this.loyaltyService.redeemStampReward(user.id, restaurantId);
+  }
+
+  // ========== Cashback & Points Config (GAP Sprint 3) ==========
+
+  @Get('config')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.OWNER, UserRole.MANAGER)
+  @ApiOperation({ summary: 'Get loyalty config for a restaurant' })
+  @ApiQuery({ name: 'restaurant_id', required: true, type: String })
+  @ApiResponse({ status: 200, description: 'Returns loyalty config' })
+  getConfig(@Query('restaurant_id') restaurantId: string) {
+    return this.cashbackService.getConfig(restaurantId);
+  }
+
+  @Put('config')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.OWNER)
+  @ApiOperation({ summary: 'Upsert loyalty config for a restaurant' })
+  @ApiQuery({ name: 'restaurant_id', required: true, type: String })
+  @ApiResponse({ status: 200, description: 'Loyalty config saved' })
+  upsertConfig(
+    @Query('restaurant_id') restaurantId: string,
+    @Body() dto: UpsertLoyaltyConfigDto,
+  ) {
+    return this.cashbackService.upsertConfig(restaurantId, dto);
+  }
+
+  @Get('points')
+  @ApiOperation({ summary: 'Get points balance for current user at a restaurant' })
+  @ApiQuery({ name: 'restaurant_id', required: true, type: String })
+  @ApiResponse({ status: 200, description: 'Returns points balance' })
+  getPointsBalance(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query('restaurant_id') restaurantId: string,
+  ) {
+    return this.cashbackService.getPointsBalance(user.id, restaurantId);
+  }
+
+  @Post('redeem-points')
+  @ApiOperation({ summary: 'Redeem points for wallet credit' })
+  @ApiResponse({ status: 200, description: 'Points redeemed successfully' })
+  @ApiResponse({ status: 400, description: 'Insufficient points or not enabled' })
+  redeemPoints(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: RedeemPointsDto,
+  ) {
+    return this.cashbackService.redeemPoints(user.id, dto.restaurant_id, dto.points);
   }
 }

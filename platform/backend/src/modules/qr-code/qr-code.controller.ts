@@ -11,9 +11,11 @@ import { Repository, FindOptionsWhere, DeepPartial } from 'typeorm';
 import { TableQrCode, QRCodeStyle } from '../tables/entities/table-qr-code.entity';
 import { TableSession, SessionStatus } from '../tables/entities/table-session.entity';
 import { QrScanLog, ScanResult } from '../tables/entities/qr-scan-log.entity';
+import { RestaurantTable, TableStatus } from '../tables/entities/restaurant-table.entity';
 import { BatchGenerateQRDto } from './dto/batch-generate-qr.dto';
 import { StartSessionDto, EndSessionDto } from './dto/table-session.dto';
 import { AuthenticatedRequest } from '@common/interfaces/authenticated-user.interface';
+import { EventsGateway } from '@/modules/events/events.gateway';
 
 @ApiTags('qr-code')
 @Controller('qr-code')
@@ -29,6 +31,9 @@ export class QrCodeController {
     private readonly sessionRepository: Repository<TableSession>,
     @InjectRepository(QrScanLog)
     private readonly scanLogRepository: Repository<QrScanLog>,
+    @InjectRepository(RestaurantTable)
+    private readonly tableRepository: Repository<RestaurantTable>,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   // ============ LEGACY ENDPOINTS ============
@@ -355,6 +360,20 @@ export class QrCodeController {
 
     await this.sessionRepository.save(session as TableSession);
 
+    // GAP-1: Auto-update table status to OCCUPIED on session start
+    await this.tableRepository.update(dto.table_id, {
+      status: TableStatus.OCCUPIED,
+      occupied_since: new Date(),
+    });
+
+    // Emit table status change to restaurant staff in real-time
+    this.eventsGateway.notifyRestaurant(dto.restaurant_id, {
+      type: 'table:status_changed',
+      table_id: dto.table_id,
+      status: TableStatus.OCCUPIED,
+      session_id: session.id,
+    });
+
     return {
       session_id: session.id,
       is_new: true,
@@ -390,6 +409,20 @@ export class QrCodeController {
     session.notes = (dto as EndSessionDto & { total_amount?: number; notes?: string }).notes ?? '';
 
     await this.sessionRepository.save(session);
+
+    // GAP-1: Auto-update table status to AVAILABLE on session end
+    await this.tableRepository.update(session.table_id, {
+      status: TableStatus.AVAILABLE,
+      occupied_since: null as any,
+    });
+
+    // Emit table status change to restaurant staff in real-time
+    this.eventsGateway.notifyRestaurant(session.restaurant_id, {
+      type: 'table:status_changed',
+      table_id: session.table_id,
+      status: TableStatus.AVAILABLE,
+      session_id: session.id,
+    });
 
     return {
       success: true,

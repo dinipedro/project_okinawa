@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MenuItem } from './entities/menu-item.entity';
@@ -9,9 +9,12 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateCustomizationGroupDto } from './dto/create-customization-group.dto';
 import { UpdateCustomizationGroupDto } from './dto/update-customization-group.dto';
 import { PaginationDto, paginate, toPaginationDto } from '@/common/dto/pagination.dto';
+import { EventsGateway } from '@/modules/events/events.gateway';
 
 @Injectable()
 export class MenuItemsService {
+  private readonly logger = new Logger(MenuItemsService.name);
+
   constructor(
     @InjectRepository(MenuItem)
     private menuItemRepository: Repository<MenuItem>,
@@ -19,6 +22,7 @@ export class MenuItemsService {
     private categoryRepository: Repository<MenuCategory>,
     @InjectRepository(MenuItemCustomizationGroup)
     private customizationGroupRepository: Repository<MenuItemCustomizationGroup>,
+    private eventsGateway: EventsGateway,
   ) {}
 
   async findByRestaurant(restaurantId: string, pagination?: PaginationDto) {
@@ -43,7 +47,17 @@ export class MenuItemsService {
 
   async createItem(createMenuItemDto: CreateMenuItemDto) {
     const item = this.menuItemRepository.create(createMenuItemDto);
-    return this.menuItemRepository.save(item);
+    const saved = await this.menuItemRepository.save(item);
+
+    // Emit WebSocket event to restaurant staff
+    this.eventsGateway.notifyRestaurant(saved.restaurant_id, {
+      type: 'menu:updated',
+      action: 'created',
+      itemId: saved.id,
+      itemName: saved.name,
+    });
+
+    return saved;
   }
 
   async createCategory(createCategoryDto: CreateCategoryDto) {
@@ -54,15 +68,48 @@ export class MenuItemsService {
   async updateItem(id: string, updateData: Partial<CreateMenuItemDto>) {
     const item = await this.menuItemRepository.findOne({ where: { id } });
     if (!item) throw new NotFoundException('Menu item not found');
+
+    const wasAvailable = item.is_available;
     Object.assign(item, updateData);
-    return this.menuItemRepository.save(item);
+    const saved = await this.menuItemRepository.save(item);
+
+    // Emit availability toggle event if is_available changed
+    if (updateData.is_available !== undefined && updateData.is_available !== wasAvailable) {
+      const event = saved.is_available ? 'menu:item_available' : 'menu:item_unavailable';
+      this.eventsGateway.notifyRestaurant(saved.restaurant_id, {
+        type: event,
+        itemId: saved.id,
+        itemName: saved.name,
+        is_available: saved.is_available,
+      });
+    } else {
+      // General update event
+      this.eventsGateway.notifyRestaurant(saved.restaurant_id, {
+        type: 'menu:updated',
+        action: 'updated',
+        itemId: saved.id,
+        itemName: saved.name,
+      });
+    }
+
+    return saved;
   }
 
   async deleteItem(id: string) {
     const item = await this.menuItemRepository.findOne({ where: { id } });
     if (!item) throw new NotFoundException('Menu item not found');
     item.is_available = false;
-    return this.menuItemRepository.save(item);
+    const saved = await this.menuItemRepository.save(item);
+
+    // Emit WebSocket event to restaurant staff
+    this.eventsGateway.notifyRestaurant(saved.restaurant_id, {
+      type: 'menu:updated',
+      action: 'deleted',
+      itemId: saved.id,
+      itemName: saved.name,
+    });
+
+    return saved;
   }
 
   async updateCategory(id: string, updateData: Partial<CreateCategoryDto>) {

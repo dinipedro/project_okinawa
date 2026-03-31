@@ -33,9 +33,11 @@ import { Text, Card, Chip, IconButton, Button, Badge } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { format } from 'date-fns';
 import { ptBR as dateFnsPtBR } from 'date-fns/locale';
+import { useQuery } from '@tanstack/react-query';
 import socketService from '../../services/socket';
 import ApiService from '@/shared/services/api';
 import { useI18n } from '@/shared/hooks/useI18n';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { useColors, useOkinawaTheme } from '@okinawa/shared/contexts/ThemeContext';
 import type { Order, OrderStatus } from '../../types';
 
@@ -49,6 +51,37 @@ interface StationConfig {
   labelKey: string;
   emoji: string;
   keywords: string[];
+}
+
+/** Dynamic station from KDS Brain API */
+interface DynamicStation {
+  id: string;
+  name: string;
+  type: 'kitchen' | 'bar';
+  emoji: string;
+  late_threshold_minutes: number;
+  is_active: boolean;
+  restaurant_id: string;
+}
+
+/** Queue item from KDS Brain API */
+interface StationQueueItem {
+  id: string;
+  order_id: string;
+  order_number?: string;
+  table_number?: string;
+  items: Array<{
+    id: string;
+    menu_item?: { name: string };
+    quantity: number;
+    special_instructions?: string;
+  }>;
+  status: OrderStatus;
+  created_at: string;
+  countdown_minutes?: number;
+  priority?: number;
+  is_fired?: boolean;
+  fire_at?: string | null;
 }
 
 // ============================================
@@ -75,6 +108,13 @@ const STATION_CONFIG: Record<Station, StationConfig> = {
     emoji: '\uD83C\uDF5D',
     keywords: ['Risoto', 'Risotto', 'Ravioli', 'Fettuccine', 'Penne', 'Gnocchi'],
   },
+};
+
+/** Platform brand colors for delivery source badges */
+const PLATFORM_COLORS: Record<string, string> = {
+  ifood: '#EA1D2C',
+  rappi: '#FF441F',
+  ubereats: '#06C167',
 };
 
 /** Delay threshold in minutes for late order highlighting */
@@ -136,12 +176,62 @@ export default function CookStationScreen() {
   const { isDark } = useOkinawaTheme();
   const colors = useColors();
   const { width: screenWidth } = useWindowDimensions();
+  const { user } = useAuth();
+
+  const restaurantId = useMemo(() => {
+    return user?.roles?.[0]?.restaurant_id ?? '';
+  }, [user]);
+
+  // ============================================
+  // DYNAMIC STATIONS FROM API
+  // ============================================
+
+  const {
+    data: dynamicStations = [],
+    isLoading: stationsLoading,
+  } = useQuery<DynamicStation[]>({
+    queryKey: ['kds-stations', restaurantId],
+    queryFn: () => ApiService.getStations(restaurantId),
+    enabled: !!restaurantId,
+    select: (data) => data.filter((s) => s.type === 'kitchen' && s.is_active),
+  });
+
+  /** Whether the restaurant has configured dynamic stations */
+  const useDynamicStations = dynamicStations.length > 0;
 
   // State
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [selectedStation, setSelectedStation] = useState<Station>('grelhados');
+  const [selectedDynamicStationId, setSelectedDynamicStationId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Auto-select first dynamic station when stations load
+  useEffect(() => {
+    if (useDynamicStations && !selectedDynamicStationId) {
+      setSelectedDynamicStationId(dynamicStations[0].id);
+    }
+  }, [useDynamicStations, dynamicStations, selectedDynamicStationId]);
+
+  // ============================================
+  // DYNAMIC STATION QUEUE QUERY
+  // ============================================
+
+  const {
+    data: dynamicQueue = [],
+    isLoading: queueLoading,
+    refetch: refetchQueue,
+  } = useQuery<StationQueueItem[]>({
+    queryKey: ['kds-station-queue', selectedDynamicStationId, restaurantId],
+    queryFn: () => ApiService.getStationQueue(selectedDynamicStationId!, restaurantId),
+    enabled: useDynamicStations && !!selectedDynamicStationId && !!restaurantId,
+    refetchInterval: 10000, // poll every 10s for real-time-ish updates
+  });
+
+  /** Selected dynamic station object */
+  const selectedDynamic = useMemo(() => {
+    return dynamicStations.find((s) => s.id === selectedDynamicStationId) ?? null;
+  }, [dynamicStations, selectedDynamicStationId]);
 
   // Determine column count based on screen width (tablet vs phone)
   const isTablet = screenWidth >= 768;
@@ -513,6 +603,23 @@ export default function CookStationScreen() {
           fontWeight: 'bold',
           fontSize: 12,
         },
+        sourceBadge: {
+          height: 22,
+          borderRadius: 4,
+          paddingHorizontal: 6,
+          alignSelf: 'flex-start' as const,
+          marginTop: 4,
+        },
+        sourceBadgeText: {
+          fontSize: 10,
+          fontWeight: '700' as const,
+          color: '#FFFFFF',
+        },
+        riderEta: {
+          fontSize: 11,
+          color: colors.info,
+          marginTop: 4,
+        },
       }),
     [colors],
   );
@@ -521,6 +628,7 @@ export default function CookStationScreen() {
   // RENDERERS
   // ============================================
 
+  /** Render a hardcoded (fallback) station tab */
   const renderStationTab = useCallback(
     (station: Station) => {
       const config = STATION_CONFIG[station];
@@ -534,6 +642,7 @@ export default function CookStationScreen() {
           onPress={() => setSelectedStation(station)}
           accessibilityRole="tab"
           accessibilityState={{ selected: isActive }}
+          accessibilityLabel={`${t(config.labelKey)} station, ${count} orders`}
           testID={`station-tab-${station}`}
         >
           <Text style={{ fontSize: 16 }}>{config.emoji}</Text>
@@ -559,24 +668,83 @@ export default function CookStationScreen() {
     [selectedStation, stationCounts, styles, t],
   );
 
+  /** Render a dynamic station tab from API */
+  const renderDynamicStationTab = useCallback(
+    (station: DynamicStation) => {
+      const isActive = selectedDynamicStationId === station.id;
+
+      return (
+        <TouchableOpacity
+          key={station.id}
+          style={[styles.stationTab, isActive && styles.stationTabActive]}
+          onPress={() => setSelectedDynamicStationId(station.id)}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: isActive }}
+          accessibilityLabel={`${station.name} station`}
+          testID={`station-tab-${station.id}`}
+        >
+          <Text style={{ fontSize: 16 }}>{station.emoji}</Text>
+          <Text
+            style={[
+              styles.stationTabText,
+              isActive && styles.stationTabTextActive,
+            ]}
+          >
+            {station.name}
+          </Text>
+        </TouchableOpacity>
+      );
+    },
+    [selectedDynamicStationId, styles],
+  );
+
+  /** Render an order card (shared between fallback and dynamic modes) */
   const renderOrderCard = useCallback(
     ({ item }: { item: Order }) => {
       const minutesElapsed = getTimeElapsed(item.created_at);
-      const orderIsLate = isLate(item.created_at);
-      const relevantItems = getRelevantItems(item, selectedStation);
+      const lateThreshold = useDynamicStations && selectedDynamic
+        ? selectedDynamic.late_threshold_minutes
+        : KITCHEN_LATE_MINUTES;
+      const orderIsLate = minutesElapsed >= lateThreshold;
+      const relevantItems = useDynamicStations
+        ? item.items // dynamic mode: API already filters items for the station
+        : getRelevantItems(item, selectedStation);
+
+      // Task 2.5 — Items "waiting fire" (unfired items in dynamic mode)
+      const isWaitingFire = useDynamicStations && (item as any).is_fired === false;
+      const countdownMins = (item as any).countdown_minutes ?? 0;
 
       return (
         <Card
-          style={[styles.orderCard, orderIsLate && styles.lateCard]}
+          style={[
+            styles.orderCard,
+            orderIsLate && !isWaitingFire && styles.lateCard,
+            isWaitingFire && {
+              borderStyle: 'dashed' as const,
+              borderWidth: 2,
+              borderColor: colors.border,
+              opacity: 0.6,
+            },
+          ]}
           testID="order-card"
         >
           <Card.Content>
-            {/* Late Alert */}
-            {orderIsLate && (
+            {/* Waiting Fire Banner */}
+            {isWaitingFire && (
+              <View style={styles.lateAlertRow}>
+                <Icon name="timer-sand" size={16} color={colors.foregroundMuted} />
+                <Text style={[styles.lateAlertText, { color: colors.foregroundMuted }]}>
+                  {t('kds.countdown.waiting_fire', { minutes: String(Math.abs(countdownMins)) })}
+                </Text>
+              </View>
+            )}
+
+            {/* Late Alert (only for fired items) */}
+            {orderIsLate && !isWaitingFire && (
               <View style={styles.lateAlertRow}>
                 <Icon name="alert-circle" size={16} color={colors.error} />
                 <Text style={styles.lateAlertText}>
-                  {t('cook.ticket.lateAlert')}
+                  {t('kds.countdown.late', { minutes: String(minutesElapsed) })}
                 </Text>
               </View>
             )}
@@ -590,23 +758,39 @@ export default function CookStationScreen() {
                 <Text
                   style={[
                     styles.orderTime,
-                    orderIsLate && styles.lateTimeText,
+                    orderIsLate && !isWaitingFire && styles.lateTimeText,
                   ]}
                 >
                   {format(new Date(item.created_at), 'HH:mm', {
                     locale: dateFnsPtBR,
                   })}{' '}
-                  - {t('cook.ticket.elapsed', { min: String(minutesElapsed) })}
+                  {isWaitingFire
+                    ? `- ${t('kds.status.waiting_fire')}`
+                    : `- ${t('kds.countdown.remaining', { minutes: String(minutesElapsed) })}`}
                 </Text>
+                {(item as any).source && (item as any).source !== 'noowe' && (
+                  <View style={[styles.sourceBadge, { backgroundColor: PLATFORM_COLORS[(item as any).source] || colors.foregroundMuted }]}>
+                    <Text style={styles.sourceBadgeText}>
+                      {t(`kds.order_source.${(item as any).source}`)}
+                    </Text>
+                  </View>
+                )}
+                {(item as any).delivery_rider_eta != null && (
+                  <Text style={styles.riderEta}>
+                    {t('kds.delivery.rider_eta', { minutes: String((item as any).delivery_rider_eta) })}
+                  </Text>
+                )}
               </View>
               <Chip
                 style={[
                   styles.statusChip,
-                  { backgroundColor: statusColors[item.status] },
+                  { backgroundColor: isWaitingFire ? colors.foregroundMuted : statusColors[item.status] },
                 ]}
                 textStyle={styles.chipText}
               >
-                {t(`orders.status.${item.status}`)}
+                {isWaitingFire
+                  ? t('kds.status.waiting_fire')
+                  : t(`kds.status.${item.status}`) || t(`orders.status.${item.status}`)}
               </Chip>
             </View>
 
@@ -633,43 +817,84 @@ export default function CookStationScreen() {
               ))}
             </View>
 
-            {/* Action Buttons */}
-            <View style={styles.orderFooter}>
-              {item.status === 'confirmed' && (
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.startButton]}
-                  onPress={() => updateOrderStatus(item.id, 'preparing')}
-                  activeOpacity={0.8}
-                  testID="start-preparing-button"
-                  accessibilityRole="button"
-                  accessibilityLabel={`Start preparing order ${item.order_number || item.id.slice(0, 8)}`}
-                >
-                  <Text style={styles.actionButtonText}>
-                    {t('cook.action.startPreparing')}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {item.status === 'preparing' && (
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.readyButton]}
-                  onPress={() => updateOrderStatus(item.id, 'ready')}
-                  activeOpacity={0.8}
-                  testID="mark-ready-button"
-                  accessibilityRole="button"
-                  accessibilityLabel={`Mark order ${item.order_number || item.id.slice(0, 8)} as ready`}
-                >
-                  <Text style={styles.actionButtonText}>
-                    {t('cook.action.ready')}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
+            {/* Action Buttons — disabled for waiting-fire items */}
+            {!isWaitingFire && (
+              <View style={styles.orderFooter}>
+                {item.status === 'confirmed' && (
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.startButton]}
+                    onPress={() => updateOrderStatus(item.id, 'preparing')}
+                    activeOpacity={0.8}
+                    testID="start-preparing-button"
+                    accessibilityRole="button"
+                    accessibilityLabel={`Start preparing order ${item.order_number || item.id.slice(0, 8)}`}
+                  >
+                    <Text style={styles.actionButtonText}>
+                      {t('cook.action.startPreparing')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {item.status === 'preparing' && (
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.readyButton]}
+                    onPress={() => updateOrderStatus(item.id, 'ready')}
+                    activeOpacity={0.8}
+                    testID="mark-ready-button"
+                    accessibilityRole="button"
+                    accessibilityLabel={`Mark order ${item.order_number || item.id.slice(0, 8)} as ready`}
+                  >
+                    <Text style={styles.actionButtonText}>
+                      {t('cook.action.ready')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
           </Card.Content>
         </Card>
       );
     },
-    [selectedStation, statusColors, styles, colors, t, updateOrderStatus],
+    [selectedStation, useDynamicStations, selectedDynamic, statusColors, styles, colors, t, updateOrderStatus],
   );
+
+  // ============================================
+  // DYNAMIC MODE DATA
+  // ============================================
+
+  /** Convert dynamic queue items to Order-like objects for the shared renderOrderCard.
+   *  Sorts fired items (is_fired=true) before unfired items (waiting fire). */
+  const dynamicOrdersAsList = useMemo((): Order[] => {
+    if (!useDynamicStations) return [];
+    const sorted = [...dynamicQueue].sort((a, b) => {
+      const aFired = a.is_fired !== false ? 1 : 0;
+      const bFired = b.is_fired !== false ? 1 : 0;
+      return bFired - aFired; // fired first
+    });
+    return sorted.map((qi) => ({
+      id: qi.id,
+      order_number: qi.order_number,
+      table_number: qi.table_number,
+      items: qi.items,
+      status: qi.status,
+      created_at: qi.created_at,
+      is_fired: qi.is_fired,
+      countdown_minutes: qi.countdown_minutes,
+    })) as unknown as Order[];
+  }, [useDynamicStations, dynamicQueue]);
+
+  /** Stats for dynamic mode */
+  const dynamicStats = useMemo(() => {
+    if (!useDynamicStations) return { pending: 0, preparing: 0, ready: 0 };
+    return {
+      pending: dynamicQueue.filter((q) => ['pending', 'confirmed'].includes(q.status)).length,
+      preparing: dynamicQueue.filter((q) => q.status === 'preparing').length,
+      ready: dynamicQueue.filter((q) => q.status === 'ready').length,
+    };
+  }, [useDynamicStations, dynamicQueue]);
+
+  /** The final data source for the FlatList */
+  const listData = useDynamicStations ? dynamicOrdersAsList : filteredOrders;
+  const displayStats = useDynamicStations ? dynamicStats : stats;
 
   // ============================================
   // RENDER
@@ -680,15 +905,21 @@ export default function CookStationScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Text style={styles.headerTitle}>{t('cook.title')}</Text>
+          <Text style={styles.headerTitle}>
+            {useDynamicStations && selectedDynamic
+              ? t('kds.station_title', { stationName: selectedDynamic.name })
+              : t('cook.title')}
+          </Text>
           <Text style={{ color: colors.foregroundMuted, fontSize: 14 }}>
             {t('cook.myStation')}
           </Text>
         </View>
 
-        {/* Station Selector Tabs */}
+        {/* Station Selector Tabs — Dynamic or Hardcoded */}
         <View style={styles.stationTabs} testID="station-tabs">
-          {ALL_STATIONS.map(renderStationTab)}
+          {useDynamicStations
+            ? dynamicStations.map(renderDynamicStationTab)
+            : ALL_STATIONS.map(renderStationTab)}
         </View>
       </View>
 
@@ -697,29 +928,29 @@ export default function CookStationScreen() {
         <View style={styles.statCard}>
           <Icon name="clock-outline" size={24} color={colors.warning} />
           <Text variant="headlineSmall" style={styles.statNumber}>
-            {stats.pending}
+            {displayStats.pending}
           </Text>
-          <Text style={styles.statLabel}>{t('cook.pending')}</Text>
+          <Text style={styles.statLabel}>{t('kds.status.pending')}</Text>
         </View>
         <View style={styles.statCard}>
           <Icon name="fire" size={24} color={colors.secondary} />
           <Text variant="headlineSmall" style={styles.statNumber}>
-            {stats.preparing}
+            {displayStats.preparing}
           </Text>
-          <Text style={styles.statLabel}>{t('cook.preparing')}</Text>
+          <Text style={styles.statLabel}>{t('kds.status.preparing')}</Text>
         </View>
         <View style={styles.statCard}>
           <Icon name="check-circle" size={24} color={colors.success} />
           <Text variant="headlineSmall" style={styles.statNumber}>
-            {stats.ready}
+            {displayStats.ready}
           </Text>
-          <Text style={styles.statLabel}>{t('cook.ready')}</Text>
+          <Text style={styles.statLabel}>{t('kds.status.ready')}</Text>
         </View>
       </View>
 
       {/* Orders List */}
       <FlatList
-        data={filteredOrders}
+        data={listData}
         keyExtractor={(item) => item.id}
         renderItem={renderOrderCard}
         contentContainerStyle={styles.listContent}
@@ -728,8 +959,8 @@ export default function CookStationScreen() {
         columnWrapperStyle={numColumns > 1 ? styles.row : undefined}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
+            refreshing={useDynamicStations ? queueLoading : refreshing}
+            onRefresh={useDynamicStations ? () => refetchQueue() : handleRefresh}
             tintColor={colors.primary}
           />
         }
@@ -737,12 +968,14 @@ export default function CookStationScreen() {
           <View style={styles.emptyContainer}>
             <Icon name="chef-hat" size={64} color={colors.foregroundMuted} />
             <Text variant="headlineSmall" style={styles.emptyTitle}>
-              {t('cook.station.noTickets')}
+              {t('kds.empty_state.station')}
             </Text>
             <Text variant="bodyMedium" style={styles.emptySubtitle}>
-              {t('cook.station.noTicketsSub', {
-                station: t(STATION_CONFIG[selectedStation].labelKey),
-              })}
+              {useDynamicStations && selectedDynamic
+                ? t('kds.station_title', { stationName: selectedDynamic.name })
+                : t('cook.station.noTicketsSub', {
+                    station: t(STATION_CONFIG[selectedStation].labelKey),
+                  })}
             </Text>
           </View>
         }

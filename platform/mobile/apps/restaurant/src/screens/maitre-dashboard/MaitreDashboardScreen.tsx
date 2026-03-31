@@ -508,6 +508,7 @@ export default function MaitreDashboardScreen() {
                           onPress={() => handleConfirmReservation(reservation.id)}
                           style={styles.confirmButton}
                           icon="check"
+                          accessibilityLabel={`Confirm reservation for ${reservation.customer_name}`}
                         >
                           Confirmar
                         </Button>
@@ -516,6 +517,7 @@ export default function MaitreDashboardScreen() {
                           onPress={() => handleCancelReservation(reservation.id)}
                           textColor={colors.error}
                           icon="close"
+                          accessibilityLabel={`Cancel reservation for ${reservation.customer_name}`}
                         >
                           Cancelar
                         </Button>
@@ -588,6 +590,7 @@ export default function MaitreDashboardScreen() {
                         onPress={() => handleAssignTable(reservation.id)}
                         style={styles.seatButton}
                         icon="table-furniture"
+                        accessibilityLabel={`Seat guests for ${reservation.customer_name}`}
                       >
                         Acomodar Clientes
                       </Button>
@@ -617,6 +620,8 @@ export default function MaitreDashboardScreen() {
                       navigation.navigate('FloorPlan' as never);
                     }
                   }}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Table ${table.number}, ${table.status}, capacity ${table.capacity}`}
                 >
                   <View
                     style={[
@@ -676,6 +681,7 @@ export default function MaitreDashboardScreen() {
         label="Nova Reserva"
         style={styles.fab}
         onPress={() => navigation.navigate('Reservations' as never)}
+        accessibilityLabel="Create new reservation"
       />
     </View>
   );

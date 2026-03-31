@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, StyleSheet, ScrollView, Image, Linking } from 'react-native';
 import { Text, Card, Button, Chip, Divider, List, IconButton } from 'react-native-paper';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { useScreenTracking, useAnalytics } from '@/shared/hooks/useAnalytics';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import logger from '@okinawa/shared/utils/logger';
+import { SERVICE_TYPE_CONFIGS, ServiceType } from '../../contexts/ServiceTypeContext';
 
 interface Restaurant {
   id: string;
@@ -44,6 +45,21 @@ export default function RestaurantScreen() {
   const [loading, setLoading] = useState(false);
 
   const analytics = useAnalytics();
+
+  // Service-type feature gating: determine which CTA buttons to show
+  const serviceFeatures = useMemo(() => {
+    const type = restaurant?.service_type as ServiceType | undefined;
+    if (!type || !SERVICE_TYPE_CONFIGS[type]) {
+      return { reservations: true, digitalTab: false, ticketPurchase: false, virtualQueue: false };
+    }
+    const features = SERVICE_TYPE_CONFIGS[type].features;
+    return {
+      reservations: features.reservations,
+      digitalTab: features.digitalTab,
+      ticketPurchase: features.ticketPurchase,
+      virtualQueue: features.virtualQueue,
+    };
+  }, [restaurant?.service_type]);
 
   useEffect(() => {
     loadRestaurant();
@@ -255,6 +271,7 @@ export default function RestaurantScreen() {
       </Card>
 
       <View style={styles.actions}>
+        {/* Always visible: View Menu */}
         <Button
           mode="contained"
           onPress={() => (navigation as any).navigate('Menu', { restaurantId: restaurant.id })}
@@ -263,14 +280,51 @@ export default function RestaurantScreen() {
         >
           View Menu
         </Button>
-        <Button
-          mode="outlined"
-          onPress={() => (navigation as any).navigate('Reservation', { restaurantId: restaurant.id })}
-          style={styles.reservationButton}
-          icon="calendar"
-        >
-          Make Reservation
-        </Button>
+
+        {/* Service-type gated CTAs */}
+        {serviceFeatures.reservations && (
+          <Button
+            mode="outlined"
+            onPress={() => (navigation as any).navigate('Reservation', { restaurantId: restaurant.id })}
+            style={styles.reservationButton}
+            icon="calendar"
+          >
+            Fazer Reserva
+          </Button>
+        )}
+
+        {serviceFeatures.digitalTab && (
+          <Button
+            mode="outlined"
+            onPress={() => (navigation as any).navigate('Tab', { restaurantId: restaurant.id })}
+            style={styles.reservationButton}
+            icon="glass-cocktail"
+          >
+            Abrir Tab
+          </Button>
+        )}
+
+        {serviceFeatures.ticketPurchase && (
+          <Button
+            mode="outlined"
+            onPress={() => (navigation as any).navigate('TicketPurchase', { restaurantId: restaurant.id })}
+            style={styles.reservationButton}
+            icon="ticket"
+          >
+            Comprar Entrada
+          </Button>
+        )}
+
+        {serviceFeatures.virtualQueue && (
+          <Button
+            mode="outlined"
+            onPress={() => (navigation as any).navigate('Waitlist', { restaurantId: restaurant.id })}
+            style={styles.reservationButton}
+            icon="account-clock"
+          >
+            Entrar na Fila
+          </Button>
+        )}
       </View>
     </ScrollView>
   );

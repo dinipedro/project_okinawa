@@ -446,6 +446,15 @@ class ApiService {
     return response.data;
   }
 
+  /**
+   * Confirm cash payment for an order (Staff only).
+   * Marks order as completed and triggers post-payment cascade.
+   */
+  async confirmCashPayment(orderId: string) {
+    const response = await this.api.patch(`/orders/${orderId}/confirm-cash-payment`);
+    return response.data;
+  }
+
   // ======================
   // KDS (Kitchen Display System)
   // ======================
@@ -1691,6 +1700,105 @@ class ApiService {
     return response.data;
   }
 
+  // ========== KDS BRAIN ENDPOINTS ==========
+
+  async getStations(restaurantId: string) {
+    const res = await this.api.get(`/kds/brain/stations`, { params: { restaurant_id: restaurantId } });
+    return res.data;
+  }
+
+  async getStationQueue(stationId: string, restaurantId: string) {
+    const res = await this.api.get(`/kds/brain/stations/${stationId}/queue`, { params: { restaurant_id: restaurantId } });
+    return res.data;
+  }
+
+  async bumpItem(itemId: string) {
+    const res = await this.api.patch(`/kds/brain/items/${itemId}/bump`);
+    return res.data;
+  }
+
+  async undoItem(itemId: string) {
+    const res = await this.api.patch(`/kds/brain/items/${itemId}/undo`);
+    return res.data;
+  }
+
+  async toggleItemAvailability(menuItemId: string) {
+    const res = await this.api.patch(`/kds/brain/menu-items/${menuItemId}/toggle-available`);
+    return res.data;
+  }
+
+  async createStation(data: any) {
+    const res = await this.api.post('/kds/brain/stations', data);
+    return res.data;
+  }
+
+  async updateStation(stationId: string, data: any) {
+    const res = await this.api.patch(`/kds/brain/stations/${stationId}`, data);
+    return res.data;
+  }
+
+  async deleteStation(stationId: string) {
+    const res = await this.api.delete(`/kds/brain/stations/${stationId}`);
+    return res.data;
+  }
+
+  async getChefOverview(restaurantId: string) {
+    const res = await this.api.get('/kds/brain/chef/overview', { params: { restaurant_id: restaurantId } });
+    return res.data;
+  }
+
+  // ========== KDS BRAIN ANALYTICS & CONFIG ENDPOINTS ==========
+
+  async getKdsPrepTimes(restaurantId: string, period: number = 7) {
+    const res = await this.api.get('/kds/brain/analytics/prep-times', { params: { restaurant_id: restaurantId, period } });
+    return res.data;
+  }
+
+  async getKdsBottlenecks(restaurantId: string, period: number = 7) {
+    const res = await this.api.get('/kds/brain/analytics/bottlenecks', { params: { restaurant_id: restaurantId, period } });
+    return res.data;
+  }
+
+  async getKdsThroughput(restaurantId: string, period: number = 7) {
+    const res = await this.api.get('/kds/brain/analytics/throughput', { params: { restaurant_id: restaurantId, period } });
+    return res.data;
+  }
+
+  async getKdsPlatformPerformance(restaurantId: string, period: number = 30) {
+    const res = await this.api.get('/kds/brain/analytics/platform-performance', { params: { restaurant_id: restaurantId, period } });
+    return res.data;
+  }
+
+  async getKdsSuggestions(restaurantId: string) {
+    const res = await this.api.get('/kds/brain/suggestions', { params: { restaurant_id: restaurantId } });
+    return res.data;
+  }
+
+  async generateKdsSuggestions(restaurantId: string) {
+    const res = await this.api.post('/kds/brain/suggestions/generate', null, { params: { restaurant_id: restaurantId } });
+    return res.data;
+  }
+
+  async acceptSuggestion(suggestionId: string) {
+    const res = await this.api.patch(`/kds/brain/suggestions/${suggestionId}/accept`);
+    return res.data;
+  }
+
+  async rejectSuggestion(suggestionId: string) {
+    const res = await this.api.patch(`/kds/brain/suggestions/${suggestionId}/reject`);
+    return res.data;
+  }
+
+  async getKdsBrainConfig(restaurantId: string) {
+    const res = await this.api.get('/kds/brain/config', { params: { restaurant_id: restaurantId } });
+    return res.data;
+  }
+
+  async updateKdsBrainConfig(data: any) {
+    const res = await this.api.put('/kds/brain/config', data);
+    return res.data;
+  }
+
   // ========== SERVICE CONFIG ENDPOINTS ==========
 
   async getServiceConfig(restaurant_id: string) {
@@ -2018,6 +2126,30 @@ class ApiService {
   }
 
   // ======================
+  // INTEGRATION / PLATFORM CONNECTION ENDPOINTS
+  // ======================
+
+  async getPlatformConnections(restaurantId: string) {
+    const res = await this.api.get('/integrations/connections', { params: { restaurant_id: restaurantId } });
+    return res.data;
+  }
+
+  async createPlatformConnection(data: any) {
+    const res = await this.api.post('/integrations/connections', data);
+    return res.data;
+  }
+
+  async updatePlatformConnection(id: string, data: any) {
+    const res = await this.api.patch(`/integrations/connections/${id}`, data);
+    return res.data;
+  }
+
+  async deletePlatformConnection(id: string) {
+    const res = await this.api.delete(`/integrations/connections/${id}`);
+    return res.data;
+  }
+
+  // ======================
   // HEALTH / MAINTENANCE ENDPOINTS
   // ======================
 
@@ -2026,6 +2158,471 @@ class ApiService {
    */
   async getMaintenanceStatus() {
     const response = await this.api.get('/health/maintenance');
+    return response.data;
+  }
+
+  // ======================
+  // PAYMENT GATEWAY (Financial Brain)
+  // ======================
+
+  async processGatewayPayment(data: {
+    order_id: string;
+    payment_method: string;
+    amount: number;
+    gateway?: string;
+  }) {
+    const response = await this.api.post('/payment-gateway/process', data);
+    return response.data;
+  }
+
+  async getStripeConnectionToken(restaurantId: string) {
+    const response = await this.api.post('/payment-gateway/connection-token', {
+      restaurant_id: restaurantId,
+    });
+    return response.data;
+  }
+
+  async createTapToPayIntent(orderId: string, amount: number) {
+    const response = await this.api.post('/payment-gateway/tap-to-pay/intent', {
+      order_id: orderId,
+      amount,
+    });
+    return response.data;
+  }
+
+  async getPixQrCode(orderId: string) {
+    const response = await this.api.get(`/payment-gateway/pix/${orderId}/qrcode`);
+    return response.data;
+  }
+
+  async refundGatewayPayment(transactionId: string) {
+    const response = await this.api.post(`/payment-gateway/refund/${transactionId}`);
+    return response.data;
+  }
+
+  // ======================
+  // CASH REGISTER (Financial Brain)
+  // ======================
+
+  async openCashRegister(data: {
+    restaurant_id: string;
+    opening_balance: number;
+  }) {
+    const response = await this.api.post('/cash-register/open', data);
+    return response.data;
+  }
+
+  async getCurrentCashRegister(restaurantId: string) {
+    const response = await this.api.get('/cash-register/current', {
+      params: { restaurant_id: restaurantId },
+    });
+    return response.data;
+  }
+
+  async addCashMovement(data: {
+    session_id: string;
+    type: 'sangria' | 'reforco';
+    amount: number;
+    description?: string;
+  }) {
+    const response = await this.api.post('/cash-register/movement', data);
+    return response.data;
+  }
+
+  async closeCashRegister(data: {
+    session_id: string;
+    actual_balance: number;
+    closing_notes?: string;
+  }) {
+    const response = await this.api.post('/cash-register/close', data);
+    return response.data;
+  }
+
+  async getCashRegisterHistory(restaurantId: string) {
+    const response = await this.api.get('/cash-register/history', {
+      params: { restaurant_id: restaurantId },
+    });
+    return response.data;
+  }
+
+  async getCashRegisterReport(sessionId: string) {
+    const response = await this.api.get(`/cash-register/sessions/${sessionId}/report`);
+    return response.data;
+  }
+
+  // ======================
+  // COST CONTROL (Financial Brain Sprint 2)
+  // ======================
+
+  async createIngredient(data: {
+    restaurant_id: string;
+    name: string;
+    unit: 'kg' | 'l' | 'un' | 'g' | 'ml';
+    category?: string;
+  }) {
+    const response = await this.api.post('/cost-control/ingredients', data);
+    return response.data;
+  }
+
+  async getIngredients(restaurantId: string) {
+    const response = await this.api.get('/cost-control/ingredients', {
+      params: { restaurant_id: restaurantId },
+    });
+    return response.data;
+  }
+
+  async updateIngredient(id: string, data: {
+    name?: string;
+    unit?: string;
+    category?: string;
+    is_active?: boolean;
+  }) {
+    const response = await this.api.patch(`/cost-control/ingredients/${id}`, data);
+    return response.data;
+  }
+
+  async addIngredientPrice(ingredientId: string, data: {
+    price_per_unit: number;
+    supplier?: string;
+    effective_date: string;
+  }) {
+    const response = await this.api.post(`/cost-control/ingredients/${ingredientId}/price`, data);
+    return response.data;
+  }
+
+  async getRecipes(restaurantId: string) {
+    const response = await this.api.get('/cost-control/recipes', {
+      params: { restaurant_id: restaurantId },
+    });
+    return response.data;
+  }
+
+  async createRecipe(data: {
+    menu_item_id: string;
+    restaurant_id: string;
+  }) {
+    const response = await this.api.post('/cost-control/recipes', data);
+    return response.data;
+  }
+
+  async addRecipeIngredient(recipeId: string, data: {
+    ingredient_id: string;
+    quantity: number;
+  }) {
+    const response = await this.api.post(`/cost-control/recipes/${recipeId}/ingredients`, data);
+    return response.data;
+  }
+
+  async removeRecipeIngredient(recipeId: string, ingredientId: string) {
+    const response = await this.api.delete(`/cost-control/recipes/${recipeId}/ingredients/${ingredientId}`);
+    return response.data;
+  }
+
+  async calculateRecipeCost(recipeId: string) {
+    const response = await this.api.post(`/cost-control/recipes/${recipeId}/calculate`);
+    return response.data;
+  }
+
+  async getMargins(restaurantId: string, period: number = 30) {
+    const response = await this.api.get('/cost-control/margins', {
+      params: { restaurant_id: restaurantId, period },
+    });
+    return response.data;
+  }
+
+  async getMarginAlerts(restaurantId: string, threshold?: number) {
+    const response = await this.api.get('/cost-control/alerts', {
+      params: { restaurant_id: restaurantId, ...(threshold && { threshold }) },
+    });
+    return response.data;
+  }
+
+  async getFoodCost(restaurantId: string, period: number = 30) {
+    const response = await this.api.get('/cost-control/food-cost', {
+      params: { restaurant_id: restaurantId, period },
+    });
+    return response.data;
+  }
+
+  // ======================
+  // FINANCIAL BRAIN — FORECAST (Sprint 4)
+  // ======================
+
+  async getForecast(restaurantId: string, days: number = 30) {
+    const response = await this.api.get('/financial-brain/forecast', {
+      params: { restaurant_id: restaurantId, days },
+    });
+    return response.data;
+  }
+
+  async exportAccounting(restaurantId: string, period: string, format: 'csv' | 'pdf' = 'csv') {
+    const response = await this.api.get('/financial-brain/export', {
+      params: { restaurant_id: restaurantId, period, format },
+    });
+    return response.data;
+  }
+
+  // ======================
+  // ACCOUNTS PAYABLE — BILLS (Sprint 4)
+  // ======================
+
+  async getBills(restaurantId: string, status?: string, category?: string) {
+    const response = await this.api.get('/accounts-payable/bills', {
+      params: { restaurant_id: restaurantId, ...(status && { status }), ...(category && { category }) },
+    });
+    return response.data;
+  }
+
+  async createBill(data: {
+    restaurant_id: string;
+    description: string;
+    supplier?: string;
+    category: string;
+    amount: number;
+    due_date: string;
+    is_recurring?: boolean;
+    recurrence?: string;
+  }) {
+    const response = await this.api.post('/accounts-payable/bills', data);
+    return response.data;
+  }
+
+  async updateBill(id: string, data: {
+    description?: string;
+    supplier?: string;
+    category?: string;
+    amount?: number;
+    due_date?: string;
+    is_recurring?: boolean;
+    recurrence?: string;
+  }) {
+    const response = await this.api.patch(`/accounts-payable/bills/${id}`, data);
+    return response.data;
+  }
+
+  async markBillPaid(id: string) {
+    const response = await this.api.patch(`/accounts-payable/bills/${id}/pay`);
+    return response.data;
+  }
+
+  async deleteBill(id: string) {
+    const response = await this.api.delete(`/accounts-payable/bills/${id}`);
+    return response.data;
+  }
+
+  // ======================
+  // BUFFET ENDPOINTS
+  // ======================
+
+  async buffetCheckin(restaurantId: string) {
+    const response = await this.api.post(`/buffet/${restaurantId}/checkin`);
+    return response.data;
+  }
+
+  // ======================
+  // CLUB ENDPOINTS
+  // ======================
+
+  async getClubEvents(restaurantId: string) {
+    const response = await this.api.get(`/clubs/${restaurantId}/events`);
+    return response.data;
+  }
+
+  async getClubLineup(eventId: string) {
+    const response = await this.api.get(`/clubs/${eventId}/lineup`);
+    return response.data;
+  }
+
+  async getBirthdayPackages() {
+    const response = await this.api.get('/clubs/birthday-packages');
+    return response.data;
+  }
+
+  async createBirthdayBooking(data: any) {
+    const response = await this.api.post('/clubs/birthday-bookings', data);
+    return response.data;
+  }
+
+  async purchaseClubEntry(data: any) {
+    const response = await this.api.post('/club-entries', data);
+    return response.data;
+  }
+
+  async getVipTables() {
+    const response = await this.api.get('/tables/vip');
+    return response.data;
+  }
+
+  async createTableReservation(data: any) {
+    const response = await this.api.post('/table-reservations', data);
+    return response.data;
+  }
+
+  // ======================
+  // QUEUE ENDPOINTS
+  // ======================
+
+  async getMyQueuePosition() {
+    const response = await this.api.get('/queue/my');
+    return response.data;
+  }
+
+  async joinQueue(data: any) {
+    const response = await this.api.post('/queue', data);
+    return response.data;
+  }
+
+  async leaveQueue() {
+    const response = await this.api.delete('/queue/my');
+    return response.data;
+  }
+
+  // ======================
+  // TABS INVITATION ENDPOINTS
+  // ======================
+
+  async acceptTabInvite(tabId: string) {
+    const response = await this.api.post(`/tabs/${tabId}/invite/accept`);
+    return response.data;
+  }
+
+  async declineTabInvite(tabId: string) {
+    const response = await this.api.post(`/tabs/${tabId}/invite/decline`);
+    return response.data;
+  }
+
+  // ======================
+  // PROMOTIONS ENDPOINTS
+  // ======================
+
+  async getCurrentPromotions() {
+    const response = await this.api.get('/promotions/current');
+    return response.data;
+  }
+
+  // ======================
+  // LOYALTY STAMP CARDS ENDPOINTS
+  // ======================
+
+  async getCurrentStampCards() {
+    const response = await this.api.get('/loyalty/stamp-cards/current');
+    return response.data;
+  }
+
+  // ======================
+  // ORDERS ITEMS ENDPOINTS
+  // ======================
+
+  async addItemsToOrder(orderId: string, items: any[]) {
+    const response = await this.api.post(`/orders/${orderId}/items`, { items });
+    return response.data;
+  }
+
+  // ======================
+  // RESERVATIONS GROUP ENDPOINTS
+  // ======================
+
+  async createGroupReservation(data: any) {
+    const response = await this.api.post('/reservations/group', data);
+    return response.data;
+  }
+
+  async generateInviteLink(reservationId: string) {
+    const response = await this.api.post(`/reservation-guests/reservations/${reservationId}/invite-link`);
+    return response.data;
+  }
+
+  // ======================
+  // WAITLIST ENDPOINTS
+  // ======================
+
+  async getWaitlistQueue(restaurantId: string) {
+    const response = await this.api.get(`/restaurant-waitlist/${restaurantId}/queue`);
+    return response.data;
+  }
+
+  async getMyWaitlistEntries() {
+    const response = await this.api.get('/restaurant-waitlist/my-entries');
+    return response.data;
+  }
+
+  async joinWaitlist(data: any) {
+    const response = await this.api.post('/restaurant-waitlist/join', data);
+    return response.data;
+  }
+
+  async cancelWaitlistEntry(id: string) {
+    const response = await this.api.patch(`/restaurant-waitlist/${id}/cancel`);
+    return response.data;
+  }
+
+  async confirmWaitlistArrival(id: string) {
+    const response = await this.api.patch(`/restaurant-waitlist/${id}/confirm-arrival`);
+    return response.data;
+  }
+
+  async getWaitlistInfo(restaurantId: string) {
+    const response = await this.api.get(`/restaurant-waitlist/${restaurantId}`);
+    return response.data;
+  }
+
+  async setWaitlistFamilyMode(id: string, data: any) {
+    const response = await this.api.patch(`/restaurant/waitlist/${id}/family`, data);
+    return response.data;
+  }
+
+  async orderFromWaitlistBar(id: string, data: any) {
+    const response = await this.api.post(`/restaurant/waitlist/${id}/bar-order`, data);
+    return response.data;
+  }
+
+  // ======================
+  // REVIEW REPORT ENDPOINTS
+  // ======================
+
+  async reportReview(reviewId: string, data: any) {
+    const response = await this.api.post(`/reviews/${reviewId}/report`, data);
+    return response.data;
+  }
+
+  // ======================
+  // QR / TABLE ASSOCIATION ENDPOINTS
+  // ======================
+
+  async associateTable(tableId: string) {
+    const response = await this.api.post('/tables/associate', { tableId });
+    return response.data;
+  }
+
+  async acceptReservationInvite(token: string) {
+    const response = await this.api.post('/reservations/guests/accept', { inviteToken: token });
+    return response.data;
+  }
+
+  // ======================
+  // REFUND ENDPOINTS
+  // ======================
+
+  async refundOrder(orderId: string, amount?: number) {
+    const response = await this.api.post(`/payments/${orderId}/refund`, { amount });
+    return response.data;
+  }
+
+  // ======================
+  // WAITER ASSIGNMENT ENDPOINTS
+  // ======================
+
+  async assignWaiterToTable(tableId: string, waiterId: string) {
+    const response = await this.api.patch(`/tables/${tableId}/assign-waiter`, { waiter_id: waiterId });
+    return response.data;
+  }
+
+  // ======================
+  // FOOD TRUCK LOCATION (F12)
+  // ======================
+
+  async updateRestaurantLocation(id: string, latitude: number, longitude: number) {
+    const response = await this.api.patch(`/restaurants/${id}/location`, { latitude, longitude });
     return response.data;
   }
 

@@ -24,6 +24,7 @@ import { ErrorBoundary } from '@/shared/components/ErrorBoundary';
 import { logger } from '@/shared/utils/logger';
 import { captureException } from '@/shared/config/sentry';
 import { useColors } from '@/shared/contexts/ThemeContext';
+import { useAuth } from '@/shared/hooks/useAuth';
 import {
   defaultScreenOptions,
   fadeScreenOptions,
@@ -117,9 +118,58 @@ import RecipeDetailScreen from '../screens/barman/RecipeDetailScreen';
 import DrinkRecipesScreen from '../screens/drink-recipes/DrinkRecipesScreen';
 
 // ============================================
+// KDS Brain — Station Settings & Chef View
+// ============================================
+import StationSettingsScreen from '../screens/kds-settings/StationSettingsScreen';
+import ChefViewScreen from '../screens/chef-view/ChefViewScreen';
+
+// ============================================
+// KDS Brain Sprint 3 — Integration Settings
+// ============================================
+import IntegrationSettingsScreen from '../screens/integrations/IntegrationSettingsScreen';
+
+// ============================================
+// KDS Brain Sprint 4 — Analytics & Config
+// ============================================
+import KdsAnalyticsScreen from '../screens/analytics/KdsAnalyticsScreen';
+import KdsBrainConfigScreen from '../screens/kds-settings/KdsBrainConfigScreen';
+
+// ============================================
 // EPIC 12 — Service Calls Management
 // ============================================
 import CallsManagementScreen from '../screens/calls/CallsManagementScreen';
+
+// ============================================
+// FINANCIAL BRAIN SPRINT 1 — Tap to Pay & Cash Register
+// ============================================
+import TapToPayScreen from '../screens/payment/TapToPayScreen';
+import CashRegisterScreen from '../screens/cash-register/CashRegisterScreen';
+
+// ============================================
+// FINANCIAL BRAIN SPRINT 2 — COGS, Margins & Cost Control
+// ============================================
+import RecipeScreen from '../screens/cost-control/RecipeScreen';
+import MarginDashboardScreen from '../screens/cost-control/MarginDashboardScreen';
+
+// ============================================
+// FINANCIAL BRAIN SPRINT 3 — Fiscal (NFC-e) Setup
+// ============================================
+import FiscalSetupScreen from '../screens/fiscal/FiscalSetupScreen';
+
+// ============================================
+// FINANCIAL BRAIN SPRINT 4 — Forecast & Bills
+// ============================================
+import ForecastScreen from '../screens/financial/ForecastScreen';
+import BillsScreen from '../screens/financial/BillsScreen';
+
+// ============================================
+// GAP SPRINT 2 — Stock Management + Customer CRM
+// ============================================
+import CustomerCrmScreen from '../screens/crm/CustomerCrmScreen';
+import FoodTruckScreen from '../screens/food-truck/FoodTruckScreen';
+import ChefTableScreen from '../screens/chef-table/ChefTableScreen';
+import DriveThruScreen from '../screens/drive-thru/DriveThruScreen';
+import DoorControlScreen from '../screens/club/DoorControlScreen';
 
 // ============================================
 // LEGAL SCREENS (Privacy Policy & Terms of Service)
@@ -467,6 +517,39 @@ function MainStack() {
         component={ReConsentScreen}
         options={{ headerShown: false, gestureEnabled: false }}
       />
+
+      {/* Financial Brain Sprint 1 — Tap to Pay */}
+      <Stack.Screen
+        name="TapToPay"
+        component={TapToPayScreen}
+        options={{ title: 'Tap to Pay', ...modalScreenOptions }}
+      />
+
+      {/* Financial Brain Sprint 2 — Recipe Detail */}
+      <Stack.Screen
+        name="RecipeSheet"
+        component={RecipeScreen}
+        options={{ title: 'Recipe Sheets', ...scaleFadeScreenOptions }}
+      />
+
+      {/* Financial Brain Sprint 3 — Fiscal Setup */}
+      <Stack.Screen
+        name="FiscalSetup"
+        component={FiscalSetupScreen}
+        options={{ title: 'Fiscal Setup', ...scaleFadeScreenOptions }}
+      />
+
+      {/* Financial Brain Sprint 4 — Forecast & Bills */}
+      <Stack.Screen
+        name="Forecast"
+        component={ForecastScreen}
+        options={{ title: 'Cash Flow Forecast', ...scaleFadeScreenOptions }}
+      />
+      <Stack.Screen
+        name="Bills"
+        component={BillsScreen}
+        options={{ title: 'Accounts Payable', ...scaleFadeScreenOptions }}
+      />
     </Stack.Navigator>
   );
 }
@@ -475,13 +558,64 @@ function MainStack() {
 // MAIN DRAWER NAVIGATOR
 // ============================================
 
+// ============================================
+// ROLE-BASED SCREEN ACCESS CONTROL
+// ============================================
+
+/**
+ * Defines which drawer screens each staff role can access.
+ * Owner sees everything; other roles see only relevant screens.
+ */
+const ROLE_SCREENS: Record<string, string[]> = {
+  owner: [
+    'Dashboard', 'KDS', 'BarmanKDS', 'BarmanStation', 'CookStation',
+    'StationSettings', 'ChefView', 'WaiterDashboard', 'MaitreDashboard',
+    'WaiterCalls', 'FloorFlow', 'CallsManagement', 'Orders', 'Reservations',
+    'FloorPlan', 'Menu', 'Stock', 'Financial', 'Tips', 'CashRegister',
+    'MarginDashboard', 'Staff', 'HR', 'RoleDashboard', 'Reports',
+    'LoyaltyManagement', 'Integrations', 'KdsAnalytics', 'KdsBrainConfig',
+    'CustomerCRM', 'DriveThru', 'FoodTruck', 'ChefTable', 'DoorControl',
+  ],
+  manager: [
+    'Dashboard', 'KDS', 'BarmanKDS', 'Orders', 'Reservations', 'FloorPlan',
+    'Menu', 'Stock', 'Financial', 'Tips', 'CashRegister', 'MarginDashboard',
+    'Staff', 'HR', 'RoleDashboard', 'Reports', 'LoyaltyManagement',
+    'Integrations', 'KdsAnalytics', 'CustomerCRM', 'CallsManagement',
+  ],
+  chef: [
+    'KDS', 'CookStation', 'ChefView', 'StationSettings', 'KdsAnalytics',
+    'KdsBrainConfig', 'RoleDashboard', 'Stock',
+  ],
+  barman: [
+    'BarmanKDS', 'BarmanStation', 'RoleDashboard',
+  ],
+  waiter: [
+    'WaiterDashboard', 'Orders', 'WaiterCalls', 'CallsManagement',
+    'RoleDashboard',
+  ],
+  maitre: [
+    'MaitreDashboard', 'Reservations', 'FloorPlan', 'FloorFlow',
+    'RoleDashboard',
+  ],
+  cook: [
+    'KDS', 'CookStation', 'StationSettings', 'RoleDashboard',
+  ],
+};
+
 /**
  * Main drawer navigation for restaurant management screens.
  * Provides slide-out navigation to all major app sections.
  * Uses semantic theme colors for consistent styling.
+ * Filters visible screens based on the authenticated user's role.
  */
 function MainDrawer() {
   const colors = useColors();
+  const { user } = useAuth();
+
+  // Determine user role (first role's role field, default to 'owner' for full access)
+  const userRole = user?.roles?.[0]?.role?.toLowerCase() || 'owner';
+  const allowedScreens = ROLE_SCREENS[userRole] || ROLE_SCREENS.owner;
+  const canSee = (screen: string) => allowedScreens.includes(screen);
   
   return (
     <Drawer.Navigator
@@ -498,137 +632,275 @@ function MainDrawer() {
         headerTintColor: colors.foreground,
       }}
     >
-      {/* Primary Dashboard */}
+      {/* Primary Dashboard — always visible */}
       <Drawer.Screen
         name="Dashboard"
         component={DashboardScreen}
         options={{ drawerLabel: 'Dashboard', title: 'Dashboard' }}
       />
-      
-      {/* Role-Specific Dashboards */}
-      <Drawer.Screen
-        name="KDS"
-        component={KDSScreen}
-        options={{ drawerLabel: 'Kitchen Display', title: 'Kitchen Display System' }}
-      />
-      <Drawer.Screen
-        name="BarmanKDS"
-        component={BarmanKDSScreen}
-        options={{ drawerLabel: 'Bar Display', title: 'Bar Display System' }}
-      />
-      <Drawer.Screen
-        name="BarmanStation"
-        component={BarmanStationScreen}
-        options={{ drawerLabel: 'Barman Station', title: 'Barman Station' }}
-      />
-      <Drawer.Screen
-        name="CookStation"
-        component={CookStationScreen}
-        options={{ drawerLabel: 'Cook Station', title: 'Cook Station' }}
-      />
-      <Drawer.Screen
-        name="WaiterDashboard"
-        component={WaiterCommandCenter}
-        options={{ drawerLabel: 'Waiter Panel', title: 'Waiter Command Center', headerShown: false }}
-      />
-      <Drawer.Screen
-        name="MaitreDashboard"
-        component={MaitreDashboardScreen}
-        options={{ drawerLabel: 'Maitre Panel', title: 'Maitre Dashboard' }}
-      />
+
+      {/* Role-Filtered Screens */}
+      {canSee('KDS') && (
+        <Drawer.Screen
+          name="KDS"
+          component={KDSScreen}
+          options={{ drawerLabel: 'Kitchen Display', title: 'Kitchen Display System' }}
+        />
+      )}
+      {canSee('BarmanKDS') && (
+        <Drawer.Screen
+          name="BarmanKDS"
+          component={BarmanKDSScreen}
+          options={{ drawerLabel: 'Bar Display', title: 'Bar Display System' }}
+        />
+      )}
+      {canSee('BarmanStation') && (
+        <Drawer.Screen
+          name="BarmanStation"
+          component={BarmanStationScreen}
+          options={{ drawerLabel: 'Barman Station', title: 'Barman Station' }}
+        />
+      )}
+      {canSee('CookStation') && (
+        <Drawer.Screen
+          name="CookStation"
+          component={CookStationScreen}
+          options={{ drawerLabel: 'Cook Station', title: 'Cook Station' }}
+        />
+      )}
+      {canSee('StationSettings') && (
+        <Drawer.Screen
+          name="StationSettings"
+          component={StationSettingsScreen}
+          options={{ drawerLabel: 'Station Settings', title: 'Kitchen Station Settings' }}
+        />
+      )}
+      {canSee('ChefView') && (
+        <Drawer.Screen
+          name="ChefView"
+          component={ChefViewScreen}
+          options={{ drawerLabel: 'Chef View', title: 'Chef View' }}
+        />
+      )}
+      {canSee('WaiterDashboard') && (
+        <Drawer.Screen
+          name="WaiterDashboard"
+          component={WaiterCommandCenter}
+          options={{ drawerLabel: 'Waiter Panel', title: 'Waiter Command Center', headerShown: false }}
+        />
+      )}
+      {canSee('MaitreDashboard') && (
+        <Drawer.Screen
+          name="MaitreDashboard"
+          component={MaitreDashboardScreen}
+          options={{ drawerLabel: 'Maitre Panel', title: 'Maitre Dashboard' }}
+        />
+      )}
 
       {/* EPIC 3 — Waiter Calls */}
-      <Drawer.Screen
-        name="WaiterCalls"
-        component={WaiterCallsScreen}
-        options={{ drawerLabel: 'Waiter Calls', title: 'Waiter Calls', headerShown: false }}
-      />
+      {canSee('WaiterCalls') && (
+        <Drawer.Screen
+          name="WaiterCalls"
+          component={WaiterCallsScreen}
+          options={{ drawerLabel: 'Waiter Calls', title: 'Waiter Calls', headerShown: false }}
+        />
+      )}
 
       {/* EPIC 3 — Floor Flow */}
-      <Drawer.Screen
-        name="FloorFlow"
-        component={FloorFlowScreen}
-        options={{ drawerLabel: 'Floor Flow', title: 'Floor Flow', headerShown: false }}
-      />
+      {canSee('FloorFlow') && (
+        <Drawer.Screen
+          name="FloorFlow"
+          component={FloorFlowScreen}
+          options={{ drawerLabel: 'Floor Flow', title: 'Floor Flow', headerShown: false }}
+        />
+      )}
 
       {/* EPIC 12 — Service Calls Management */}
-      <Drawer.Screen
-        name="CallsManagement"
-        component={CallsManagementScreen}
-        options={{ drawerLabel: 'Service Calls', title: 'Service Calls', headerShown: false }}
-      />
+      {canSee('CallsManagement') && (
+        <Drawer.Screen
+          name="CallsManagement"
+          component={CallsManagementScreen}
+          options={{ drawerLabel: 'Service Calls', title: 'Service Calls', headerShown: false }}
+        />
+      )}
 
       {/* Operations Management */}
-      <Drawer.Screen
-        name="Orders"
-        component={OrdersScreen}
-        options={{ drawerLabel: 'Orders', title: 'Orders Management' }}
-      />
-      <Drawer.Screen
-        name="Reservations"
-        component={ReservationsScreen}
-        options={{ drawerLabel: 'Reservations', title: 'Reservations' }}
-      />
-      <Drawer.Screen
-        name="FloorPlan"
-        component={FloorPlanScreen}
-        options={{ drawerLabel: 'Floor Plan', title: 'Floor Plan' }}
-      />
-      
+      {canSee('Orders') && (
+        <Drawer.Screen
+          name="Orders"
+          component={OrdersScreen}
+          options={{ drawerLabel: 'Orders', title: 'Orders Management' }}
+        />
+      )}
+      {canSee('Reservations') && (
+        <Drawer.Screen
+          name="Reservations"
+          component={ReservationsScreen}
+          options={{ drawerLabel: 'Reservations', title: 'Reservations' }}
+        />
+      )}
+      {canSee('FloorPlan') && (
+        <Drawer.Screen
+          name="FloorPlan"
+          component={FloorPlanScreen}
+          options={{ drawerLabel: 'Floor Plan', title: 'Floor Plan' }}
+        />
+      )}
+
       {/* Content Management */}
-      <Drawer.Screen
-        name="Menu"
-        component={MenuScreen}
-        options={{ drawerLabel: 'Menu', title: 'Menu Management' }}
-      />
+      {canSee('Menu') && (
+        <Drawer.Screen
+          name="Menu"
+          component={MenuScreen}
+          options={{ drawerLabel: 'Menu', title: 'Menu Management' }}
+        />
+      )}
 
       {/* Stock / Inventory (Epic 5) */}
-      <Drawer.Screen
-        name="Stock"
-        component={StockScreen}
-        options={{ drawerLabel: 'Inventory', title: 'Stock Inventory' }}
-      />
+      {canSee('Stock') && (
+        <Drawer.Screen
+          name="Stock"
+          component={StockScreen}
+          options={{ drawerLabel: 'Inventory', title: 'Stock Inventory' }}
+        />
+      )}
 
       {/* Financial Management */}
-      <Drawer.Screen
-        name="Financial"
-        component={FinancialScreen}
-        options={{ drawerLabel: 'Financial', title: 'Financial Reports' }}
-      />
-      <Drawer.Screen
-        name="Tips"
-        component={TipsScreen}
-        options={{ drawerLabel: 'Tips', title: 'Tips Management' }}
-      />
-      
+      {canSee('Financial') && (
+        <Drawer.Screen
+          name="Financial"
+          component={FinancialScreen}
+          options={{ drawerLabel: 'Financial', title: 'Financial Reports' }}
+        />
+      )}
+      {canSee('Tips') && (
+        <Drawer.Screen
+          name="Tips"
+          component={TipsScreen}
+          options={{ drawerLabel: 'Tips', title: 'Tips Management' }}
+        />
+      )}
+
+      {/* Financial Brain Sprint 1 — Cash Register */}
+      {canSee('CashRegister') && (
+        <Drawer.Screen
+          name="CashRegister"
+          component={CashRegisterScreen}
+          options={{ drawerLabel: 'Cash Register', title: 'Cash Register' }}
+        />
+      )}
+
+      {/* Financial Brain Sprint 2 — Cost Control */}
+      {canSee('MarginDashboard') && (
+        <Drawer.Screen
+          name="MarginDashboard"
+          component={MarginDashboardScreen}
+          options={{ drawerLabel: 'Margin Dashboard', title: 'Margin Dashboard' }}
+        />
+      )}
+
       {/* Staff Management */}
-      <Drawer.Screen
-        name="Staff"
-        component={StaffScreen}
-        options={{ drawerLabel: 'Staff', title: 'Staff Management' }}
-      />
-      <Drawer.Screen
-        name="HR"
-        component={HRScreen}
-        options={{ drawerLabel: 'HR', title: 'Human Resources' }}
-      />
+      {canSee('Staff') && (
+        <Drawer.Screen
+          name="Staff"
+          component={StaffScreen}
+          options={{ drawerLabel: 'Staff', title: 'Staff Management' }}
+        />
+      )}
+      {canSee('HR') && (
+        <Drawer.Screen
+          name="HR"
+          component={HRScreen}
+          options={{ drawerLabel: 'HR', title: 'Human Resources' }}
+        />
+      )}
 
       {/* EPIC 15 — Restaurant Quick Wins */}
-      <Drawer.Screen
-        name="RoleDashboard"
-        component={RoleDashboardScreen}
-        options={{ drawerLabel: 'My Dashboard', title: 'Role Dashboard' }}
-      />
-      <Drawer.Screen
-        name="Reports"
-        component={ReportsScreen}
-        options={{ drawerLabel: 'Reports', title: 'Analytics Reports' }}
-      />
-      <Drawer.Screen
-        name="LoyaltyManagement"
-        component={LoyaltyManagementScreen}
-        options={{ drawerLabel: 'Loyalty', title: 'Loyalty Management' }}
-      />
+      {canSee('RoleDashboard') && (
+        <Drawer.Screen
+          name="RoleDashboard"
+          component={RoleDashboardScreen}
+          options={{ drawerLabel: 'My Dashboard', title: 'Role Dashboard' }}
+        />
+      )}
+      {canSee('Reports') && (
+        <Drawer.Screen
+          name="Reports"
+          component={ReportsScreen}
+          options={{ drawerLabel: 'Reports', title: 'Analytics Reports' }}
+        />
+      )}
+      {canSee('LoyaltyManagement') && (
+        <Drawer.Screen
+          name="LoyaltyManagement"
+          component={LoyaltyManagementScreen}
+          options={{ drawerLabel: 'Loyalty', title: 'Loyalty Management' }}
+        />
+      )}
+
+      {/* KDS Brain Sprint 3 — Delivery Integrations */}
+      {canSee('Integrations') && (
+        <Drawer.Screen
+          name="Integrations"
+          component={IntegrationSettingsScreen}
+          options={{ drawerLabel: 'Integrations', title: 'Delivery Integrations' }}
+        />
+      )}
+
+      {/* KDS Brain Sprint 4 — Analytics & Config */}
+      {canSee('KdsAnalytics') && (
+        <Drawer.Screen
+          name="KdsAnalytics"
+          component={KdsAnalyticsScreen}
+          options={{ drawerLabel: 'Kitchen Analytics', title: 'Kitchen Analytics' }}
+        />
+      )}
+      {canSee('KdsBrainConfig') && (
+        <Drawer.Screen
+          name="KdsBrainConfig"
+          component={KdsBrainConfigScreen}
+          options={{ drawerLabel: 'KDS Brain Config', title: 'KDS Brain Configuration' }}
+        />
+      )}
+
+      {/* GAP Sprint 2 — Customer CRM */}
+      {canSee('CustomerCRM') && (
+        <Drawer.Screen
+          name="CustomerCRM"
+          component={CustomerCrmScreen}
+          options={{ drawerLabel: 'Customer CRM', title: 'Customer CRM' }}
+        />
+      )}
+
+      {/* Service-Type Specific Screens */}
+      {canSee('DriveThru') && (
+        <Drawer.Screen
+          name="DriveThru"
+          component={DriveThruScreen}
+          options={{ drawerLabel: 'Drive-Thru', title: 'Drive-Thru' }}
+        />
+      )}
+      {canSee('FoodTruck') && (
+        <Drawer.Screen
+          name="FoodTruck"
+          component={FoodTruckScreen}
+          options={{ drawerLabel: 'Food Truck', title: 'Food Truck' }}
+        />
+      )}
+      {canSee('ChefTable') && (
+        <Drawer.Screen
+          name="ChefTable"
+          component={ChefTableScreen}
+          options={{ drawerLabel: "Chef's Table", title: "Chef's Table" }}
+        />
+      )}
+      {canSee('DoorControl') && (
+        <Drawer.Screen
+          name="DoorControl"
+          component={DoorControlScreen}
+          options={{ drawerLabel: 'Door Control', title: 'Door Control' }}
+        />
+      )}
     </Drawer.Navigator>
   );
 }

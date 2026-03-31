@@ -62,6 +62,18 @@ export class OrderItem {
   @Column({ type: 'timestamp', nullable: true })
   prepared_at: Date;
 
+  @Column('uuid', { nullable: true })
+  station_id: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  fire_at: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  expected_ready_at: Date;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  course: string;
+
   @CreateDateColumn()
   created_at: Date;
 

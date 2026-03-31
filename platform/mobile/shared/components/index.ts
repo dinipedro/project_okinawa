@@ -66,6 +66,16 @@ export { LegalConsentSection } from './LegalConsentSection';
 export type { LegalConsentProps } from './LegalConsentSection';
 
 // ============================================
+// ACCESSIBLE COMPONENT WRAPPERS
+// ============================================
+export {
+  AccessibleButton,
+  AccessibleIconButton,
+  AccessibleTextInput,
+  AccessibleFAB,
+} from './AccessibleComponents';
+
+// ============================================
 // UTILITY COMPONENTS
 // ============================================
 export { LoadingSpinner } from './LoadingSpinner';

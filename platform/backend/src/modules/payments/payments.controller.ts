@@ -125,4 +125,18 @@ export class PaymentsController {
   deletePaymentMethod(@CurrentUser() user: AuthenticatedUser, @Param('id') id: string) {
     return this.paymentsService.deletePaymentMethod(user.id, id);
   }
+
+  @Post(':orderId/refund')
+  @Roles(UserRole.OWNER, UserRole.MANAGER)
+  @Throttle({ payment: { ttl: RATE_LIMIT_TTL_MS, limit: RATE_LIMIT_SENSITIVE } })
+  @ApiOperation({ summary: 'Refund payment for order (OWNER/MANAGER only)' })
+  @ApiResponse({ status: 201, description: 'Refund processed successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid refund data' })
+  @ApiResponse({ status: 404, description: 'Order not found' })
+  refundPayment(
+    @Param('orderId') orderId: string,
+    @Body() body: { amount?: number },
+  ) {
+    return this.paymentsService.refundPayment(orderId, body?.amount);
+  }
 }

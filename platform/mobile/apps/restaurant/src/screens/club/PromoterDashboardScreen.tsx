@@ -170,6 +170,7 @@ export default function PromoterDashboardScreen({ route }: PromoterDashboardScre
           style={[styles.searchBar, { backgroundColor: colors.card }]}
           inputStyle={{ color: colors.foreground }} iconColor={colors.foregroundMuted}
           placeholderTextColor={colors.foregroundMuted}
+          accessibilityLabel="Search guest list"
         />
       </View>
     );

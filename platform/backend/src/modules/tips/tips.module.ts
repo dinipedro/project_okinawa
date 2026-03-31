@@ -4,11 +4,12 @@ import { TipsService } from './tips.service';
 import { TipsController } from './tips.controller';
 import { Tip } from './entities/tip.entity';
 import { Profile } from '@/modules/users/entities/profile.entity';
+import { UserRole } from '@/modules/user-roles/entities/user-role.entity';
 import { EventsModule } from '@/modules/events/events.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Tip, Profile]),
+    TypeOrmModule.forFeature([Tip, Profile, UserRole]),
     EventsModule,
   ],
   controllers: [TipsController],

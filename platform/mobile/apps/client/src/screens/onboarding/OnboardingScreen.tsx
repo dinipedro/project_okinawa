@@ -19,6 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
 import logger from '@okinawa/shared/utils/logger';
 
 const { width } = Dimensions.get('window');
@@ -31,46 +32,22 @@ interface OnboardingSlide {
   color: string;
 }
 
-const slides: OnboardingSlide[] = [
-  {
-    id: '1',
-    icon: 'compass',
-    title: 'Explore Restaurantes',
-    description: 'Descubra os melhores restaurantes perto de você com recomendações personalizadas baseadas em IA',
-    color: '#FF6B6B',
-  },
-  {
-    id: '2',
-    icon: 'qrcode-scan',
-    title: 'Pedidos Rápidos',
-    description: 'Escaneie QR codes nas mesas e faça pedidos diretamente do seu celular, sem esperar',
-    color: '#4ECDC4',
-  },
-  {
-    id: '3',
-    icon: 'calendar-check',
-    title: 'Reserve Mesas',
-    description: 'Reserve sua mesa com antecedência e receba confirmação instantânea do restaurante',
-    color: '#FFB84D',
-  },
-  {
-    id: '4',
-    icon: 'star',
-    title: 'Avalie e Favorite',
-    description: 'Deixe avaliações, salve seus restaurantes favoritos e ajude outros a descobrir novos lugares',
-    color: '#9B59B6',
-  },
+const slideConfigs = [
+  { id: '1', icon: 'compass', titleKey: 'onboarding.slides.explore_title', descKey: 'onboarding.slides.explore_desc', color: '#FF6B6B' },
+  { id: '2', icon: 'qrcode-scan', titleKey: 'onboarding.slides.orders_title', descKey: 'onboarding.slides.orders_desc', color: '#4ECDC4' },
+  { id: '3', icon: 'calendar-check', titleKey: 'onboarding.slides.reserve_title', descKey: 'onboarding.slides.reserve_desc', color: '#FFB84D' },
+  { id: '4', icon: 'star', titleKey: 'onboarding.slides.rate_title', descKey: 'onboarding.slides.rate_desc', color: '#9B59B6' },
 ];
 
-const cuisineTypes = [
-  'Italiana', 'Japonesa', 'Brasileira', 'Francesa', 'Mexicana', 'Chinesa',
-  'Tailandesa', 'Indiana', 'Árabe', 'Americana', 'Mediterrânea', 'Vegetariana',
-  'Vegana', 'Fast Food', 'Frutos do Mar', 'Churrascaria',
+const cuisineKeys = [
+  'italian', 'japanese', 'brazilian', 'french', 'mexican', 'chinese',
+  'thai', 'indian', 'arabic', 'american', 'mediterranean', 'vegetarian',
+  'vegan', 'fast_food', 'seafood', 'steakhouse',
 ];
 
-const dietaryPreferences = [
-  'Vegetariano', 'Vegano', 'Sem Glúten', 'Sem Lactose',
-  'Kosher', 'Halal', 'Orgânico', 'Low Carb',
+const dietaryKeys = [
+  'vegetarian', 'vegan', 'gluten_free', 'lactose_free',
+  'kosher', 'halal', 'organic', 'low_carb',
 ];
 
 export default function OnboardingScreen() {
@@ -229,6 +206,22 @@ export default function OnboardingScreen() {
 
   const handleSkip = () => setShowPreferences(true);
 
+  const slides = slideConfigs.map((s) => ({
+    ...s,
+    title: t(s.titleKey),
+    description: t(s.descKey),
+  }));
+
+  const cuisineTypes = cuisineKeys.map((key) => ({
+    key,
+    label: t(`onboarding.cuisines.${key}`),
+  }));
+
+  const dietaryPreferences = dietaryKeys.map((key) => ({
+    key,
+    label: t(`onboarding.dietary.${key}`),
+  }));
+
   const toggleCuisine = (cuisine: string) => {
     setSelectedCuisines((prev) =>
       prev.includes(cuisine) ? prev.filter((c) => c !== cuisine) : [...prev, cuisine]
@@ -255,8 +248,8 @@ export default function OnboardingScreen() {
     }
   };
 
-  const renderSlide = ({ item }: { item: OnboardingSlide }) => (
-    <View style={[styles.slide, { width }]}>
+  const renderSlide = ({ item }: { item: typeof slides[0] }) => (
+    <View style={[styles.slide, { width }]} accessibilityLabel={item.title}>
       <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
         <Icon name={item.icon} size={100} color="#fff" />
       </View>
@@ -274,10 +267,10 @@ export default function OnboardingScreen() {
       <View style={styles.preferencesContainer}>
         <View style={styles.preferencesHeader}>
           <Text variant="headlineMedium" style={styles.preferencesTitle}>
-            Personalize sua Experiência
+            {t('onboarding.preferences.title')}
           </Text>
           <Text variant="bodyMedium" style={styles.preferencesSubtitle}>
-            Selecione suas preferências culinárias (opcional)
+            {t('onboarding.preferences.subtitle')}
           </Text>
         </View>
 
@@ -287,21 +280,22 @@ export default function OnboardingScreen() {
             <View style={styles.preferencesContent}>
               <View style={styles.section}>
                 <Text variant="titleLarge" style={styles.sectionTitle}>
-                  Tipos de Culinária
+                  {t('onboarding.preferences.cuisine_title')}
                 </Text>
                 <Text variant="bodySmall" style={styles.sectionDescription}>
-                  Quais culinárias você mais gosta?
+                  {t('onboarding.preferences.cuisine_desc')}
                 </Text>
                 <View style={styles.chipContainer}>
                   {cuisineTypes.map((cuisine) => (
                     <Chip
-                      key={cuisine}
-                      selected={selectedCuisines.includes(cuisine)}
-                      onPress={() => toggleCuisine(cuisine)}
+                      key={cuisine.key}
+                      selected={selectedCuisines.includes(cuisine.key)}
+                      onPress={() => toggleCuisine(cuisine.key)}
                       style={styles.chip}
                       showSelectedCheck
+                      accessibilityLabel={cuisine.label}
                     >
-                      {cuisine}
+                      {cuisine.label}
                     </Chip>
                   ))}
                 </View>
@@ -309,21 +303,22 @@ export default function OnboardingScreen() {
 
               <View style={styles.section}>
                 <Text variant="titleLarge" style={styles.sectionTitle}>
-                  Restrições Alimentares
+                  {t('onboarding.preferences.dietary_title')}
                 </Text>
                 <Text variant="bodySmall" style={styles.sectionDescription}>
-                  Alguma restrição ou preferência especial?
+                  {t('onboarding.preferences.dietary_desc')}
                 </Text>
                 <View style={styles.chipContainer}>
                   {dietaryPreferences.map((dietary) => (
                     <Chip
-                      key={dietary}
-                      selected={selectedDietary.includes(dietary)}
-                      onPress={() => toggleDietary(dietary)}
+                      key={dietary.key}
+                      selected={selectedDietary.includes(dietary.key)}
+                      onPress={() => toggleDietary(dietary.key)}
                       style={styles.chip}
                       showSelectedCheck
+                      accessibilityLabel={dietary.label}
                     >
-                      {dietary}
+                      {dietary.label}
                     </Chip>
                   ))}
                 </View>
@@ -341,7 +336,7 @@ export default function OnboardingScreen() {
             style={styles.finishButton}
             contentStyle={styles.buttonContent}
           >
-            {selectedCuisines.length > 0 || selectedDietary.length > 0 ? 'Continuar' : 'Pular por Agora'}
+            {selectedCuisines.length > 0 || selectedDietary.length > 0 ? t('onboarding.preferences.continue') : t('onboarding.preferences.skip_for_now')}
           </Button>
         </View>
       </View>
@@ -376,16 +371,17 @@ export default function OnboardingScreen() {
       </View>
 
       <View style={styles.navigation}>
-        <Button mode="text" onPress={handleSkip} textColor={colors.foregroundMuted} style={styles.skipButton}>
-          Pular
+        <Button mode="text" onPress={handleSkip} textColor={colors.foregroundMuted} style={styles.skipButton} accessibilityLabel={t('onboarding.skip')}>
+          {t('onboarding.skip')}
         </Button>
         <Button
           mode="contained"
           onPress={handleNext}
           style={[styles.nextButton, { backgroundColor: slides[currentIndex].color }]}
           contentStyle={styles.buttonContent}
+          accessibilityLabel={currentIndex === slides.length - 1 ? t('onboarding.start') : t('onboarding.next')}
         >
-          {currentIndex === slides.length - 1 ? 'Começar' : 'Próximo'}
+          {currentIndex === slides.length - 1 ? t('onboarding.start') : t('onboarding.next')}
         </Button>
       </View>
     </View>

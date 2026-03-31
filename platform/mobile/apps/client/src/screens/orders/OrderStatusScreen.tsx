@@ -33,6 +33,8 @@ import { useI18n } from '@/shared/hooks/useI18n';
 import { useWebSocket } from '@/shared/hooks/useWebSocket';
 import { useScreenTracking } from '@/shared/hooks/useAnalytics';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { Portal, Modal, TouchableRipple } from 'react-native-paper';
+import * as Haptics from 'expo-haptics';
 import type { RootStackParamList } from '../../types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -99,6 +101,35 @@ export default function OrderStatusScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [pulseAnim] = useState(new Animated.Value(1));
+  const [showReviewPrompt, setShowReviewPrompt] = useState(false);
+  const [reviewRating, setReviewRating] = useState(0);
+  const reviewPromptShownRef = useRef(false);
+
+  // Show review prompt when order is completed
+  useEffect(() => {
+    if (order && (order.status === 'delivered' || order.status === 'completed') && !reviewPromptShownRef.current) {
+      reviewPromptShownRef.current = true;
+      setTimeout(() => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        setShowReviewPrompt(true);
+      }, 1500);
+    }
+  }, [order?.status]);
+
+  const handleSubmitReview = async () => {
+    if (reviewRating === 0 || !order) return;
+    try {
+      await ApiService.post('/reviews', {
+        restaurant_id: order.restaurant_id,
+        order_id: order.id,
+        rating: reviewRating,
+      });
+      setShowReviewPrompt(false);
+      Alert.alert(t('common.success'), t('reviews.thankYou'));
+    } catch {
+      setShowReviewPrompt(false);
+    }
+  };
 
   /**
    * Dynamic status color mapping based on theme
@@ -448,7 +479,7 @@ export default function OrderStatusScreen() {
   if (!order) {
     return (
       <View style={styles.loadingContainer}>
-        <IconButton icon="receipt-text-remove" size={64} iconColor={colors.foregroundMuted} />
+        <IconButton icon="receipt-text-remove" size={64} iconColor={colors.foregroundMuted} accessibilityLabel={t('orders.notFound')} />
         <Text variant="titleLarge" style={{ color: colors.foreground }}>{t('orders.notFound')}</Text>
       </View>
     );
@@ -516,6 +547,7 @@ export default function OrderStatusScreen() {
                   icon="close-circle"
                   size={64}
                   iconColor={colors.error}
+                  accessibilityLabel={t('orders.status.cancelled')}
                 />
                 <Text variant="titleLarge" style={styles.cancelledText}>
                   {t('orders.status.cancelled')}
@@ -550,6 +582,7 @@ export default function OrderStatusScreen() {
                             size={24}
                             iconColor={isActive ? colors.primaryForeground : colors.foregroundMuted}
                             style={styles.statusIcon}
+                            accessibilityLabel={t(status.labelKey)}
                           />
                         </Animated.View>
                         <Text
@@ -608,6 +641,7 @@ export default function OrderStatusScreen() {
                           { backgroundColor: getItemStatusColor(item.status) + '20' },
                         ]}
                         textStyle={{ color: getItemStatusColor(item.status) }}
+                        accessibilityLabel={`${item.menu_item.name}: ${t(`orders.itemStatus.${item.status}`)}`}
                       >
                         {t(`orders.itemStatus.${item.status}`)}
                       </Chip>
@@ -635,6 +669,7 @@ export default function OrderStatusScreen() {
               onPress={handleCallWaiter}
               icon="hand-wave"
               style={styles.actionButton}
+              accessibilityLabel={t('orders.callWaiter')}
             >
               {t('orders.callWaiter')}
             </Button>
@@ -645,6 +680,7 @@ export default function OrderStatusScreen() {
               onPress={handleViewReceipt}
               icon="receipt"
               style={styles.actionButton}
+              accessibilityLabel={t('orders.viewReceipt')}
             >
               {t('orders.viewReceipt')}
             </Button>
@@ -654,7 +690,7 @@ export default function OrderStatusScreen() {
         {/* Real-time Updates Notice */}
         <Card style={styles.noticeCard}>
           <Card.Content style={styles.noticeContent}>
-            <IconButton icon="wifi" size={20} iconColor={colors.primary} />
+            <IconButton icon="wifi" size={20} iconColor={colors.primary} accessibilityLabel={connected ? t('orders.realtimeEnabled') : t('orders.realtimeDisabled')} />
             <Text variant="bodySmall" style={styles.noticeText}>
               {connected
                 ? t('orders.realtimeEnabled')
@@ -666,6 +702,62 @@ export default function OrderStatusScreen() {
           </Card.Content>
         </Card>
       </ScrollView>
+
+      {/* Review Prompt Modal */}
+      <Portal>
+        <Modal
+          visible={showReviewPrompt}
+          onDismiss={() => setShowReviewPrompt(false)}
+          contentContainerStyle={{
+            backgroundColor: colors.card,
+            margin: 24,
+            borderRadius: 16,
+            padding: 24,
+            alignItems: 'center',
+          }}
+        >
+          <Text variant="titleLarge" style={{ color: colors.foreground, fontWeight: '700', marginBottom: 8 }}>
+            {t('reviews.rateYourMeal')}
+          </Text>
+          <Text variant="bodyMedium" style={{ color: colors.foregroundMuted, textAlign: 'center', marginBottom: 20 }}>
+            {t('reviews.howWasExperience')}
+          </Text>
+          <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <IconButton
+                key={star}
+                icon={star <= reviewRating ? 'star' : 'star-outline'}
+                size={36}
+                iconColor={star <= reviewRating ? '#FFD700' : colors.foregroundMuted}
+                onPress={() => {
+                  setReviewRating(star);
+                  Haptics.selectionAsync();
+                }}
+                accessibilityLabel={`${star} ${t('reviews.stars')}`}
+              />
+            ))}
+          </View>
+          <View style={{ flexDirection: 'row', gap: 12, width: '100%' }}>
+            <Button
+              mode="outlined"
+              onPress={() => setShowReviewPrompt(false)}
+              style={{ flex: 1 }}
+              accessibilityLabel={t('common.cancel')}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              mode="contained"
+              onPress={handleSubmitReview}
+              disabled={reviewRating === 0}
+              style={{ flex: 1 }}
+              accessibilityLabel={t('reviews.submit')}
+            >
+              {t('reviews.submit')}
+            </Button>
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 }

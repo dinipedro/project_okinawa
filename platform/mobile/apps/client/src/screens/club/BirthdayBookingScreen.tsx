@@ -303,15 +303,17 @@ export default function BirthdayBookingScreen({ route }: BirthdayBookingScreenPr
   const [selectedDate, setSelectedDate] = useState('');
   const [bookingResult, setBookingResult] = useState<BookingConfirmation | null>(null);
 
-  // Fetch packages
+  // Fetch packages with dynamic pricing based on party size and date
   const {
     data: packages,
     isLoading,
   } = useQuery<BirthdayPackage[]>({
-    queryKey: ['birthday-packages', restaurantId],
+    queryKey: ['birthday-packages', restaurantId, partySize, selectedDate],
     queryFn: async () => {
+      const params = new URLSearchParams({ partySize: String(partySize) });
+      if (selectedDate) params.append('date', selectedDate);
       const response = await ApiService.get(
-        `/clubs/birthday-packages/${restaurantId}`,
+        `/clubs/birthday-packages/${restaurantId}?${params.toString()}`,
       );
       return response.data || [];
     },

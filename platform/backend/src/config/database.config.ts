@@ -29,4 +29,7 @@ export default new DataSource({
   migrations: [join(__dirname, '../database/migrations/*{.ts,.js}')],
   synchronize: false,
   logging: process.env.NODE_ENV === 'development',
+  extra: {
+    options: '-c statement_timeout=30000 -c idle_in_transaction_session_timeout=60000',
+  },
 });

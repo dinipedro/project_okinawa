@@ -6,12 +6,15 @@ import { QrCodeController } from './qr-code.controller';
 import { TableQrCode } from '../tables/entities/table-qr-code.entity';
 import { TableSession } from '../tables/entities/table-session.entity';
 import { QrScanLog } from '../tables/entities/qr-scan-log.entity';
+import { RestaurantTable } from '../tables/entities/restaurant-table.entity';
 import { TablesModule } from '../tables/tables.module';
+import { EventsModule } from '@/modules/events/events.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TableQrCode, TableSession, QrScanLog]),
+    TypeOrmModule.forFeature([TableQrCode, TableSession, QrScanLog, RestaurantTable]),
     TablesModule,
+    EventsModule,
   ],
   controllers: [QrCodeController],
   providers: [QrCodeService, QrCodeSecurityService],

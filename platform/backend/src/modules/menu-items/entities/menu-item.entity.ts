@@ -12,6 +12,7 @@ import {
 import { Restaurant } from '../../restaurants/entities/restaurant.entity';
 import { OrderItem } from '../../orders/entities/order-item.entity';
 import { MenuCategory } from './menu-category.entity';
+import { CookStation } from '../../kds-brain/entities/cook-station.entity';
 
 @Entity('menu_items')
 @Index('idx_menu_item_restaurant', ['restaurant_id'])
@@ -61,6 +62,27 @@ export class MenuItem {
   @Column({ type: 'int', default: 0 })
   display_order: number;
 
+  @Column('uuid', { nullable: true })
+  station_id: string;
+
+  @Column({ type: 'int', default: 10 })
+  estimated_prep_minutes: number;
+
+  @Column({ type: 'varchar', length: 20, default: 'main' })
+  course: string;
+
+  // ─── Fiscal Data (NFC-e) ─────────────────────────────────────────────────
+
+  @Column({ type: 'varchar', length: 8, default: '00000000' })
+  ncm: string;
+  // NCM: "00000000" for prepared food served in restaurant
+  // Other items (industrialized beverages, etc.) need the real NCM
+
+  @Column({ type: 'varchar', length: 4, default: '5102' })
+  cfop: string;
+  // CFOP: "5102" = sale of goods acquired from third parties (restaurant default)
+  // "5101" = sale of own production (less common in restaurants)
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -77,6 +99,10 @@ export class MenuItem {
   })
   @JoinColumn({ name: 'category_id' })
   category: MenuCategory;
+
+  @ManyToOne(() => CookStation, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'station_id' })
+  station: CookStation;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.menu_item, { cascade: true })
   order_items: OrderItem[];

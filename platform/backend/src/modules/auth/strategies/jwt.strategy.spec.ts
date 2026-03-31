@@ -59,6 +59,7 @@ describe('JwtStrategy', () => {
     expect(result).toEqual(mockUser);
     expect(mockProfileRepository.findOne).toHaveBeenCalledWith({
       where: { id: 'user-1' },
+      select: ['id', 'email', 'full_name', 'avatar_url', 'phone', 'is_active', 'marketing_consent'],
       relations: ['roles'],
     });
     expect(mockTokenBlacklistService.isTokenBlacklisted).toHaveBeenCalledWith('test-jti-123');

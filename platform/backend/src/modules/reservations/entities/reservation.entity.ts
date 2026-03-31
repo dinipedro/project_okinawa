@@ -111,6 +111,21 @@ export class Reservation {
 
   // ========== END GROUP BOOKING FIELDS ==========
 
+  // ========== REMINDER & NO-SHOW FIELDS (GAP Sprint 3) ==========
+
+  @Column({ type: 'timestamp', nullable: true })
+  reminder_sent_at: Date | null;
+
+  // ========== CHEF APPROVAL (Chef's Table) ==========
+
+  @Column({ type: 'timestamp', nullable: true })
+  chef_approved_at: Date | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  chef_approved_by: string | null;
+
+  // ========== END REMINDER FIELDS ==========
+
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 

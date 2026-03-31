@@ -8,14 +8,13 @@ import { CircuitBreakerService } from '@common/utils/circuit-breaker.module';
 import { WebhookSubscription, WebhookEvent } from './entities/webhook-subscription.entity';
 import { WebhookDelivery, DeliveryStatus } from './entities/webhook-delivery.entity';
 
-// Mock axios
-jest.mock('axios', () => ({
-  __esModule: true,
-  default: {
-    post: jest.fn(),
-  },
+// Mock createTracedAxios to return an object with a mock post method
+const mockAxiosPost = jest.fn();
+jest.mock('@common/utils/traced-http-client', () => ({
+  createTracedAxios: jest.fn(() => ({
+    post: mockAxiosPost,
+  })),
 }));
-import axios from 'axios';
 
 describe('WebhookDeliveryService', () => {
   let service: WebhookDeliveryService;
@@ -109,7 +108,7 @@ describe('WebhookDeliveryService', () => {
       mockDeliveryRepository.create.mockReturnValue({ ...mockDelivery });
       mockDeliveryRepository.save.mockResolvedValue([{ ...mockDelivery }]);
       mockDeliveryRepository.findOne.mockResolvedValue({ ...mockDelivery, subscription: mockSubscription });
-      (axios.post as jest.Mock).mockResolvedValue({ status: 200, data: { ok: true } });
+      mockAxiosPost.mockResolvedValue({ status: 200, data: { ok: true } });
 
       await service.triggerEvent('restaurant-1', WebhookEvent.ORDER_CREATED, { id: 'order-1' });
 
@@ -150,14 +149,14 @@ describe('WebhookDeliveryService', () => {
       mockDeliveryRepository.findOne.mockResolvedValue({ ...mockDelivery, subscription: mockSubscription });
       mockDeliveryRepository.save.mockImplementation((d) => Promise.resolve(d));
       mockSubscriptionRepository.save.mockImplementation((s) => Promise.resolve(s));
-      (axios.post as jest.Mock).mockResolvedValue({ status: 200, data: { ok: true } });
+      mockAxiosPost.mockResolvedValue({ status: 200, data: { ok: true } });
 
       await service.deliverWebhook('delivery-1');
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(mockAxiosPost).toHaveBeenCalledWith(
         mockSubscription.url,
         mockDelivery.payload,
-        expect.objectContaining({ timeout: 10000 }),
+        expect.objectContaining({ headers: expect.any(Object) }),
       );
       expect(mockSignatureService.generateSignature).toHaveBeenCalledWith(
         mockDelivery.payload,
@@ -177,7 +176,7 @@ describe('WebhookDeliveryService', () => {
 
       await service.deliverWebhook('delivery-1');
 
-      expect(axios.post).not.toHaveBeenCalled();
+      expect(mockAxiosPost).not.toHaveBeenCalled();
     });
 
     it('should skip if subscription is inactive', async () => {
@@ -188,7 +187,7 @@ describe('WebhookDeliveryService', () => {
 
       await service.deliverWebhook('delivery-1');
 
-      expect(axios.post).not.toHaveBeenCalled();
+      expect(mockAxiosPost).not.toHaveBeenCalled();
     });
 
     it('should handle delivery not found gracefully', async () => {
@@ -201,7 +200,7 @@ describe('WebhookDeliveryService', () => {
       mockDeliveryRepository.findOne.mockResolvedValue({ ...mockDelivery, subscription: mockSubscription });
       mockDeliveryRepository.save.mockImplementation((d) => Promise.resolve(d));
       mockSubscriptionRepository.save.mockImplementation((s) => Promise.resolve(s));
-      (axios.post as jest.Mock).mockResolvedValue({ status: 200, data: {} });
+      mockAxiosPost.mockResolvedValue({ status: 200, data: {} });
 
       await service.deliverWebhook('delivery-1');
 
@@ -221,7 +220,7 @@ describe('WebhookDeliveryService', () => {
         .mockResolvedValueOnce({ ...failedDelivery, status: DeliveryStatus.PENDING, subscription: mockSubscription });
       mockDeliveryRepository.save.mockImplementation((d) => Promise.resolve(d));
       mockSubscriptionRepository.save.mockImplementation((s) => Promise.resolve(s));
-      (axios.post as jest.Mock).mockResolvedValue({ status: 200, data: {} });
+      mockAxiosPost.mockResolvedValue({ status: 200, data: {} });
 
       const result = await service.retryDelivery('delivery-1');
 
@@ -262,7 +261,7 @@ describe('WebhookDeliveryService', () => {
         status: DeliveryStatus.SUCCESS,
       });
       mockSubscriptionRepository.save.mockImplementation((s) => Promise.resolve(s));
-      (axios.post as jest.Mock).mockResolvedValue({ status: 200, data: { ok: true } });
+      mockAxiosPost.mockResolvedValue({ status: 200, data: { ok: true } });
 
       const result = await service.testWebhook(mockSubscription as any);
 
@@ -288,7 +287,7 @@ describe('WebhookDeliveryService', () => {
       mockDeliveryRepository.findOne.mockResolvedValue(retryable);
       mockDeliveryRepository.save.mockImplementation((d) => Promise.resolve(d));
       mockSubscriptionRepository.save.mockImplementation((s) => Promise.resolve(s));
-      (axios.post as jest.Mock).mockResolvedValue({ status: 200, data: {} });
+      mockAxiosPost.mockResolvedValue({ status: 200, data: {} });
 
       await service.processRetries();
 
@@ -306,7 +305,7 @@ describe('WebhookDeliveryService', () => {
 
       await service.processRetries();
 
-      expect(axios.post).not.toHaveBeenCalled();
+      expect(mockAxiosPost).not.toHaveBeenCalled();
     });
   });
 });

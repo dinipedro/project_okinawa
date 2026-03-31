@@ -6,9 +6,13 @@ import { MenuItem } from './entities/menu-item.entity';
 import { MenuCategory } from './entities/menu-category.entity';
 import { MenuItemCustomizationGroup } from './entities/menu-item-customization-group.entity';
 import { UserRole } from '@/modules/user-roles/entities/user-role.entity';
+import { EventsModule } from '@/modules/events/events.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MenuItem, MenuCategory, MenuItemCustomizationGroup, UserRole])],
+  imports: [
+    TypeOrmModule.forFeature([MenuItem, MenuCategory, MenuItemCustomizationGroup, UserRole]),
+    EventsModule,
+  ],
   controllers: [MenuItemsController],
   providers: [MenuItemsService],
   exports: [MenuItemsService],

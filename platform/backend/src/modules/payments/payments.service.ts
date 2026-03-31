@@ -11,6 +11,16 @@ import { UpdatePaymentMethodDto } from './dto/update-payment-method.dto';
 import { ProcessPaymentDto } from './dto/process-payment.dto';
 import { WalletType, TransactionType } from '@common/enums';
 import { Order } from '@/modules/orders/entities/order.entity';
+import { CashbackService } from '@/modules/loyalty/cashback.service';
+import { EventsGateway } from '@/modules/events/events.gateway';
+import {
+  FinancialTransactionService,
+} from '@/modules/financial/financial-transaction.service';
+import {
+  TransactionType as FinancialTransactionType,
+  TransactionCategory,
+  ReferenceType,
+} from '@/modules/financial/entities/financial-transaction.entity';
 
 @Injectable()
 export class PaymentsService {
@@ -26,6 +36,9 @@ export class PaymentsService {
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
     private dataSource: DataSource,
+    private cashbackService: CashbackService,
+    private eventsGateway: EventsGateway,
+    private financialTransactionService: FinancialTransactionService,
   ) {}
 
   /**
@@ -383,6 +396,18 @@ export class PaymentsService {
 
       await queryRunner.commitTransaction();
 
+      // Process loyalty cashback & points (fire-and-forget, non-blocking)
+      if (paymentStatus === 'completed' && order.restaurant_id) {
+        this.processLoyaltyRewards(userId, order.restaurant_id, processDto.amount).catch(
+          (err) => this.logger.warn(`Loyalty rewards processing failed: ${err.message}`),
+        );
+      }
+
+      // FIX-9: Push notification placeholder — payment received
+      this.logger.log(
+        `TODO: Push notification to restaurant ${order.restaurant_id} — payment received R$${processDto.amount.toFixed(2)} for order #${order.id.substring(0, 8)}`,
+      );
+
       const duration = Date.now() - startTime;
       this.logger.log({
         message: 'Payment processed successfully',
@@ -395,6 +420,20 @@ export class PaymentsService {
         status: paymentStatus,
         duration,
       });
+
+      // Emit WebSocket event after successful payment
+      if (paymentStatus === 'completed' && order.restaurant_id) {
+        const paymentEventData = {
+          type: 'payment:completed',
+          orderId: order.id,
+          amount: processDto.amount,
+          payment_method: processDto.payment_method,
+          transactionId,
+        };
+
+        this.eventsGateway.notifyRestaurant(order.restaurant_id, paymentEventData);
+        this.eventsGateway.notifyUser(userId, paymentEventData);
+      }
 
       return {
         success: true,
@@ -421,6 +460,146 @@ export class PaymentsService {
       throw error;
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  /**
+   * Process a refund for a paid order.
+   * Supports full and partial refunds via optional amount parameter.
+   */
+  async refundPayment(orderId: string, amount?: number): Promise<{ success: boolean; refund_amount: number }> {
+    const refundCorrelationId = `ref_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    this.logger.log({
+      message: 'Refund processing initiated',
+      correlationId: refundCorrelationId,
+      orderId,
+      requestedAmount: amount,
+    });
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // 1. Find order and verify it exists
+      const order = await this.orderRepository.findOne({ where: { id: orderId } });
+
+      if (!order) {
+        throw new NotFoundException('Order not found');
+      }
+
+      const orderTotal = Math.round(Number(order.total_amount) * 100) / 100;
+      const refundAmount = amount
+        ? Math.round(amount * 100) / 100
+        : orderTotal;
+
+      if (refundAmount <= 0) {
+        throw new BadRequestException('Refund amount must be greater than zero');
+      }
+
+      if (refundAmount > orderTotal) {
+        throw new BadRequestException('Refund amount cannot exceed order total');
+      }
+
+      // 2. Get or create wallet for the user and credit the refund
+      const wallet = await this.getWallet(order.user_id);
+      const balanceBefore = Number(wallet.balance);
+      const balanceAfter = balanceBefore + refundAmount;
+
+      wallet.balance = balanceAfter;
+      await queryRunner.manager.save(wallet);
+
+      // 3. Create WalletTransaction (type: REFUND)
+      const walletTransaction = this.transactionRepository.create({
+        wallet_id: wallet.id,
+        transaction_type: TransactionType.REFUND,
+        amount: refundAmount,
+        balance_before: balanceBefore,
+        balance_after: balanceAfter,
+        description: `Refund for order #${order.id.substring(0, 8)}${amount ? ' (partial)' : ''}`,
+        order_id: order.id,
+      });
+      await queryRunner.manager.save(walletTransaction);
+
+      await queryRunner.commitTransaction();
+
+      // 5. Create FinancialTransaction (type: REFUND) — fire-and-forget
+      if (order.restaurant_id) {
+        this.financialTransactionService.createTransaction({
+          restaurant_id: order.restaurant_id,
+          type: FinancialTransactionType.REFUND,
+          category: TransactionCategory.FOOD_SALES,
+          amount: -refundAmount,
+          description: `Refund for order #${order.id.substring(0, 8)}`,
+          reference_id: order.id,
+          reference_type: ReferenceType.REFUND,
+          metadata: { correlationId: refundCorrelationId, partial: !!amount },
+        }).catch((err) => this.logger.warn(`Financial transaction recording failed: ${err.message}`));
+      }
+
+      // 6. Emit WebSocket event 'payment:refunded'
+      if (order.restaurant_id) {
+        const refundEventData = {
+          type: 'payment:refunded',
+          orderId: order.id,
+          refund_amount: refundAmount,
+          partial: !!amount,
+        };
+
+        this.eventsGateway.notifyRestaurant(order.restaurant_id, refundEventData);
+        this.eventsGateway.notifyUser(order.user_id, refundEventData);
+      }
+
+      // 7. Log with correlation ID
+      this.logger.log({
+        message: 'Refund processed successfully',
+        correlationId: refundCorrelationId,
+        orderId: order.id,
+        refundAmount,
+        partial: !!amount,
+      });
+
+      return { success: true, refund_amount: refundAmount };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      const err = error as Error;
+      this.logger.error({
+        message: 'Refund processing failed',
+        correlationId: refundCorrelationId,
+        orderId,
+        error: err.message,
+      });
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  /**
+   * Process loyalty cashback and points after successful payment.
+   * Runs asynchronously — failures are logged but don't affect payment.
+   */
+  private async processLoyaltyRewards(
+    userId: string,
+    restaurantId: string,
+    amount: number,
+  ): Promise<void> {
+    const [cashbackResult, pointsResult] = await Promise.allSettled([
+      this.cashbackService.processOrderCashback(userId, restaurantId, amount),
+      this.cashbackService.processOrderPoints(userId, restaurantId, amount),
+    ]);
+
+    if (cashbackResult.status === 'fulfilled' && cashbackResult.value.credited) {
+      this.logger.log(
+        `Cashback R$ ${cashbackResult.value.cashback_amount.toFixed(2)} credited to user ${userId.slice(0, 8)}`,
+      );
+    }
+
+    if (pointsResult.status === 'fulfilled' && pointsResult.value.credited) {
+      this.logger.log(
+        `${pointsResult.value.points_earned} loyalty points credited to user ${userId.slice(0, 8)}`,
+      );
     }
   }
 }

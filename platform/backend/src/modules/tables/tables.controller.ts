@@ -114,6 +114,16 @@ export class TablesController {
     return this.tablesService.assignToReservation(id, reservationId);
   }
 
+  @Patch(':id/assign-waiter')
+  @Roles(UserRole.OWNER, UserRole.MANAGER, UserRole.MAITRE)
+  @ApiOperation({ summary: 'Assign waiter to table' })
+  assignWaiter(
+    @Param('id') id: string,
+    @Body('waiter_id') waiterId: string,
+  ) {
+    return this.tablesService.assignWaiter(id, waiterId);
+  }
+
   @Patch(':id/notes')
   @Roles(UserRole.OWNER, UserRole.MANAGER, UserRole.WAITER, UserRole.MAITRE)
   @ApiOperation({ summary: 'Update table notes' })

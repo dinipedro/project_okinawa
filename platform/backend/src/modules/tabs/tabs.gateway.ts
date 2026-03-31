@@ -104,22 +104,69 @@ export class TabsGateway implements OnGatewayConnection, OnGatewayDisconnect, Be
     return { event: 'left', tabId };
   }
 
+  @SubscribeMessage('joinRestaurant')
+  handleJoinRestaurant(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { restaurantId: string },
+  ) {
+    if (!client.user) {
+      return { event: 'error', data: { message: 'Unauthorized' } };
+    }
+    client.join(`restaurant:${data.restaurantId}`);
+    return { event: 'joined', data: { restaurantId: data.restaurantId } };
+  }
+
+  @SubscribeMessage('leaveRestaurant')
+  handleLeaveRestaurant(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody() data: { restaurantId: string },
+  ) {
+    if (!client.user) {
+      return { event: 'error', data: { message: 'Unauthorized' } };
+    }
+    client.leave(`restaurant:${data.restaurantId}`);
+    return { event: 'left', data: { restaurantId: data.restaurantId } };
+  }
+
   /**
-   * Notify all members of a tab about an update
+   * Notify all members of a tab about an update (tab room)
    */
   notifyTabUpdate(tabId: string, eventType: string, data: Record<string, unknown>) {
-    this.server.to(`tab:${tabId}`).emit('tabUpdate', {
+    const payload = {
       type: eventType,
       data,
+      timestamp: new Date().toISOString(),
+    };
+    this.server.to(`tab:${tabId}`).emit('tabUpdate', payload);
+  }
+
+  /**
+   * Notify restaurant staff about a tab event (restaurant room)
+   */
+  notifyRestaurant(restaurantId: string, eventType: string, data: Record<string, unknown>) {
+    this.server.to(`restaurant:${restaurantId}`).emit(`tab:${eventType}`, {
+      ...data,
       timestamp: new Date().toISOString(),
     });
   }
 
   /**
-   * Notify about new item added
+   * Notify a specific user about a tab event
    */
-  notifyItemAdded(tabId: string, item: TabItemPayload) {
+  notifyUser(userId: string, eventType: string, data: Record<string, unknown>) {
+    this.server.to(`user:${userId}`).emit(`tab:${eventType}`, {
+      ...data,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  /**
+   * Notify about new item added — emits to tab, restaurant, and host user rooms
+   */
+  notifyItemAdded(tabId: string, restaurantId: string, hostUserId: string, item: TabItemPayload) {
     this.notifyTabUpdate(tabId, 'item_added', item);
+    this.notifyRestaurant(restaurantId, 'item_added', { tabId, ...item });
+    this.notifyUser(hostUserId, 'item_added', { tabId, ...item });
   }
 
   /**
@@ -137,17 +184,22 @@ export class TabsGateway implements OnGatewayConnection, OnGatewayDisconnect, Be
   }
 
   /**
-   * Notify about payment made
+   * Notify about payment made — emits to tab, restaurant, and host user rooms
    */
-  notifyPaymentMade(tabId: string, payment: TabPaymentPayload) {
+  notifyPaymentMade(tabId: string, restaurantId: string, hostUserId: string, payment: TabPaymentPayload) {
     this.notifyTabUpdate(tabId, 'payment_made', payment);
+    this.notifyRestaurant(restaurantId, 'payment_processed', { tabId, ...payment });
+    this.notifyUser(hostUserId, 'payment_processed', { tabId, ...payment });
   }
 
   /**
-   * Notify about tab closed
+   * Notify about tab closed — emits to tab, restaurant, and host user rooms
    */
-  notifyTabClosed(tabId: string) {
-    this.notifyTabUpdate(tabId, 'tab_closed', { closedAt: new Date() });
+  notifyTabClosed(tabId: string, restaurantId: string, hostUserId: string) {
+    const data = { closedAt: new Date() };
+    this.notifyTabUpdate(tabId, 'tab_closed', data);
+    this.notifyRestaurant(restaurantId, 'closed', { tabId, ...data });
+    this.notifyUser(hostUserId, 'closed', { tabId, ...data });
   }
 
   async beforeApplicationShutdown() {
