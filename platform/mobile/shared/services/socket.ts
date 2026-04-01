@@ -1,6 +1,7 @@
 import { ordersSocketService } from './orders-socket';
 import { reservationsSocketService } from './reservations-socket';
 import { notificationsSocketService } from './notifications-socket';
+import { waitlistSocketService } from './waitlist-socket';
 
 class SocketManager {
   async connectAll() {
@@ -9,6 +10,7 @@ class SocketManager {
         ordersSocketService.connect(),
         reservationsSocketService.connect(),
         notificationsSocketService.connect(),
+        waitlistSocketService.connect(),
       ]);
       console.log('All sockets connected');
     } catch (error) {
@@ -20,6 +22,7 @@ class SocketManager {
     ordersSocketService.disconnect();
     reservationsSocketService.disconnect();
     notificationsSocketService.disconnect();
+    waitlistSocketService.disconnect();
     console.log('All sockets disconnected');
   }
 
@@ -34,7 +37,11 @@ class SocketManager {
   getNotificationsSocket() {
     return notificationsSocketService;
   }
+
+  getWaitlistSocket() {
+    return waitlistSocketService;
+  }
 }
 
 export const socketManager = new SocketManager();
-export { ordersSocketService, reservationsSocketService, notificationsSocketService };
+export { ordersSocketService, reservationsSocketService, notificationsSocketService, waitlistSocketService };

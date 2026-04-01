@@ -129,6 +129,19 @@ class ReservationsSocketService {
     }
   }
 
+  // Event: Reservation reminder (upcoming reservation alert for customer)
+  onReservationReminder(callback: (data: { reservation_id: string; reservation_time: string; restaurant_name?: string; minutes_until?: number }) => void) {
+    if (this.socket) {
+      this.socket.on('reservation:reminder', callback);
+    }
+  }
+
+  offReservationReminder(callback?: (data: any) => void) {
+    if (this.socket) {
+      this.socket.off('reservation:reminder', callback);
+    }
+  }
+
   // Send: Join reservation room to receive updates for a specific reservation
   joinReservationRoom(reservationId: string) {
     if (this.socket && this.connected) {

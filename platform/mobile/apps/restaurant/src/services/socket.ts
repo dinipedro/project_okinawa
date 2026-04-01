@@ -128,6 +128,91 @@ class SocketService {
     this.socket.on('notification', (data: NotificationPayload) => {
       this.emit('notification', data);
     });
+
+    // Table status changes
+    this.socket.on('table:status_changed', (data: { table_id: string; status: string; previous_status?: string }) => {
+      this.emit('table:status_changed', data);
+    });
+
+    this.socket.on('table:waiter_assigned', (data: { table_id: string; waiter_id: string; waiter_name?: string }) => {
+      this.emit('table:waiter_assigned', data);
+    });
+
+    this.socket.on('table:occupied', (data: { table_id: string; party_size?: number }) => {
+      this.emit('table:occupied', data);
+    });
+
+    this.socket.on('table:cleaning_started', (data: { table_id: string; started_by?: string }) => {
+      this.emit('table:cleaning_started', data);
+    });
+
+    this.socket.on('table:freed', (data: { table_id: string }) => {
+      this.emit('table:freed', data);
+    });
+
+    // Waitlist updates
+    this.socket.on('waitlist:update', (data: { waitlist_id: string; position?: number; status?: string }) => {
+      this.emit('waitlist:update', data);
+    });
+
+    this.socket.on('waitlist:called', (data: { waitlist_id: string; table_id?: string; customer_name?: string }) => {
+      this.emit('waitlist:called', data);
+    });
+
+    this.socket.on('waitlist:queueRefresh', (data: { entries: unknown[] }) => {
+      this.emit('waitlist:queueRefresh', data);
+    });
+
+    // Tab updates
+    this.socket.on('tabUpdate', (data: { tab_id: string; total?: number; status?: string }) => {
+      this.emit('tabUpdate', data);
+    });
+
+    // Notification sync events
+    this.socket.on('notification:read', (data: { notification_id: string }) => {
+      this.emit('notification:read', data);
+    });
+
+    this.socket.on('notification:all_read', (data: { user_id?: string }) => {
+      this.emit('notification:all_read', data);
+    });
+
+    this.socket.on('notification:unread_count', (data: { count: number }) => {
+      this.emit('notification:unread_count', data);
+    });
+
+    // Approval events
+    this.socket.on('approval:new', (data: { approval_id: string; type: string; requested_by?: string }) => {
+      this.emit('approval:new', data);
+    });
+
+    this.socket.on('approval:resolved', (data: { approval_id: string; status: string; resolved_by?: string }) => {
+      this.emit('approval:resolved', data);
+    });
+
+    // Stock alerts
+    this.socket.on('stock:low', (data: { item_id: string; item_name: string; current_quantity: number; threshold: number }) => {
+      this.emit('stock:low', data);
+    });
+
+    // Config updates
+    this.socket.on('config:updated', (data: { config_key: string; value: unknown }) => {
+      this.emit('config:updated', data);
+    });
+
+    // Reservation confirmed/cancelled
+    this.socket.on('reservation:confirmed', (data: ReservationPayload) => {
+      this.emit('reservation:confirmed', data);
+    });
+
+    this.socket.on('reservation:cancelled', (data: { reservation_id: string; reason?: string }) => {
+      this.emit('reservation:cancelled', data);
+    });
+
+    // Fiscal errors
+    this.socket.on('fiscal:error', (data: { error_code: string; message: string; order_id?: string }) => {
+      this.emit('fiscal:error', data);
+    });
   }
 
   disconnect() {
