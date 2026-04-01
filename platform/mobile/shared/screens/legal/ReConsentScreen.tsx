@@ -413,7 +413,7 @@ const createStyles = (colors: any) =>
       borderRadius: 8,
     },
     offlineBanner: {
-      backgroundColor: colors.warning ?? '#FFF3CD',
+      backgroundColor: colors.warning ?? colors.warningBackground,
     },
   });
 

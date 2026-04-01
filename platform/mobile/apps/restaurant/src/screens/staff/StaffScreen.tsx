@@ -104,7 +104,7 @@ export default function StaffScreen({ navigation }: any) {
       backgroundColor: colors.backgroundSecondary,
     },
     searchbar: {
-      margin: 15,
+      margin: 16,
       elevation: 2,
       backgroundColor: colors.card,
     },
@@ -118,7 +118,7 @@ export default function StaffScreen({ navigation }: any) {
       marginRight: 8,
     },
     list: {
-      padding: 15,
+      padding: 16,
     },
     card: {
       marginBottom: 15,
@@ -200,13 +200,13 @@ export default function StaffScreen({ navigation }: any) {
           <View style={styles.badges}>
             <Chip
               style={{ backgroundColor: getRoleColor(item.role) }}
-              textStyle={{ color: colors.primaryForeground, fontSize: 11 }}
+              textStyle={{ color: colors.primaryForeground, fontSize: 12 }}
             >
               {(t(`staff.roles.${item.role}`) || item.role).toUpperCase()}
             </Chip>
             <Chip
               style={{ backgroundColor: getStatusColor(item.status) }}
-              textStyle={{ color: colors.primaryForeground, fontSize: 11 }}
+              textStyle={{ color: colors.primaryForeground, fontSize: 12 }}
             >
               {(t(`staff.status.${item.status}`) || item.status.replace('_', ' ')).toUpperCase()}
             </Chip>

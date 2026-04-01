@@ -94,7 +94,7 @@ export default function MenuScreen({ navigation }: any) {
       backgroundColor: colors.backgroundSecondary,
     },
     searchbar: {
-      margin: 15,
+      margin: 16,
       elevation: 2,
       backgroundColor: colors.card,
     },
@@ -108,7 +108,7 @@ export default function MenuScreen({ navigation }: any) {
       marginRight: 8,
     },
     list: {
-      padding: 15,
+      padding: 16,
     },
     card: {
       marginBottom: 15,
@@ -201,7 +201,7 @@ export default function MenuScreen({ navigation }: any) {
               style={{
                 backgroundColor: item.is_available ? colors.success : colors.error,
               }}
-              textStyle={{ color: '#fff', fontSize: 11 }}
+              textStyle={{ color: colors.premiumCardForeground, fontSize: 12 }}
             >
               {item.is_available ? t('menu.available') : t('menu.unavailable')}
             </Chip>

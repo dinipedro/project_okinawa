@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: 12,
     borderWidth: 2,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -534,7 +534,7 @@ const styles = StyleSheet.create({
   atDoorBtnLabel: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: colors.premiumCardForeground,
   },
   leaveBtn: {
     borderRadius: 12,

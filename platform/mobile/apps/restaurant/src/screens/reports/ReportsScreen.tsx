@@ -167,12 +167,12 @@ function KpiCard({
           marginBottom: 10,
         }}
       >
-        <MaterialCommunityIcons name={iconName as any} size={20} color="#FFFFFF" />
+        <MaterialCommunityIcons name={iconName as any} size={20} color={colors.premiumCardForeground} />
       </LinearGradient>
       <Text style={{ fontSize: 20, fontWeight: '700', color: colors.foreground }}>
         {value}
       </Text>
-      <Text style={{ fontSize: 11, color: colors.foregroundSecondary, marginTop: 2 }}>
+      <Text style={{ fontSize: 12, color: colors.foregroundSecondary, marginTop: 2 }}>
         {label}
       </Text>
     </View>
@@ -288,7 +288,7 @@ export default function ReportsScreen() {
       <ScrollView style={{ flex: 1, backgroundColor: colors.backgroundSecondary }}>
         {/* Skeleton header */}
         <View style={{ marginHorizontal: 16, marginTop: 16, marginBottom: 8 }}>
-          <View style={{ backgroundColor: '#1F2937', borderRadius: 20, padding: 16, overflow: 'hidden', position: 'relative' }}>
+          <View style={{ backgroundColor: colors.premiumCard, borderRadius: 20, padding: 16, overflow: 'hidden', position: 'relative' }}>
             <View style={{ position: 'absolute', right: -32, top: -32, width: 128, height: 128, borderRadius: 64, backgroundColor: `${colors.primary}1A` }} />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.1)' }} />
@@ -363,7 +363,7 @@ export default function ReportsScreen() {
             marginHorizontal: 16,
             marginTop: 16,
             marginBottom: 12,
-            backgroundColor: '#1F2937',
+            backgroundColor: colors.premiumCard,
             borderRadius: 20,
             padding: 16,
             overflow: 'hidden',
@@ -378,10 +378,10 @@ export default function ReportsScreen() {
                   <MaterialCommunityIcons name="chart-bar" size={22} color={colors.primary} />
                 </View>
                 <View>
-                  <Text style={{ color: '#FFFFFF', fontSize: 15, fontWeight: '700' }}>
+                  <Text style={{ color: colors.premiumCardForeground, fontSize: 16, fontWeight: '700' }}>
                     {t('reports.title')}
                   </Text>
-                  <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 1 }}>
+                  <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 1 }}>
                     {t(`reports.dateRange.${dateRange}`)}
                   </Text>
                 </View>
@@ -400,8 +400,8 @@ export default function ReportsScreen() {
                   backgroundColor: 'rgba(255,255,255,0.15)',
                 }}
               >
-                <MaterialCommunityIcons name="export-variant" size={14} color="#FFFFFF" />
-                <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '600' }}>
+                <MaterialCommunityIcons name="export-variant" size={14} color={colors.premiumCardForeground} />
+                <Text style={{ color: colors.premiumCardForeground, fontSize: 12, fontWeight: '600' }}>
                   {t('reports.export')}
                 </Text>
               </TouchableOpacity>
@@ -422,7 +422,7 @@ export default function ReportsScreen() {
                 borderRadius: 10,
                 backgroundColor: dateRange === r ? colors.card : 'transparent',
                 ...(dateRange === r ? {
-                  shadowColor: '#000',
+                  shadowColor: colors.shadowColor,
                   shadowOffset: { width: 0, height: 1 },
                   shadowOpacity: 0.08,
                   shadowRadius: 4,
@@ -450,7 +450,7 @@ export default function ReportsScreen() {
             iconName="receipt"
             label={t('reports.orders')}
             value={ordersData?.total ?? 0}
-            gradientColors={[colors.secondary ?? '#0D9488', colors.secondaryLight ?? '#14B8A6']}
+            gradientColors={[colors.secondary ?? colors.secondary, colors.secondaryLight ?? colors.secondaryLight]}
             colors={colors}
           />
           <KpiCard
@@ -464,7 +464,7 @@ export default function ReportsScreen() {
             iconName="clock-outline"
             label={t('reports.peakHour') ?? 'Pico'}
             value={peakHourLabel}
-            gradientColors={[colors.info, '#6366F1']}
+            gradientColors={[colors.info, colors.statusDelivering]}
             colors={colors}
           />
         </View>
@@ -482,7 +482,7 @@ export default function ReportsScreen() {
                 <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.primary}1A`, alignItems: 'center', justifyContent: 'center' }}>
                   <MaterialCommunityIcons name="trending-up" size={14} color={colors.primary} />
                 </View>
-                <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>
                   {formatCurrency(salesData?.total_revenue ?? 0, getLanguage())}
                 </Text>
               </View>
@@ -494,7 +494,7 @@ export default function ReportsScreen() {
                   backgroundColor: salesData.wow_comparison >= 0 ? colors.successBackground : colors.errorBackground,
                 }}>
                   <Text style={{
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: '600',
                     color: salesData.wow_comparison >= 0 ? colors.success : colors.error,
                   }}>
@@ -534,7 +534,7 @@ export default function ReportsScreen() {
               <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.info}1A`, alignItems: 'center', justifyContent: 'center' }}>
                 <MaterialCommunityIcons name="clipboard-list-outline" size={14} color={colors.info} />
               </View>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>
                 {ordersData?.total ?? 0} {t('roleDashboard.totalOrders')}
               </Text>
             </View>
@@ -548,7 +548,7 @@ export default function ReportsScreen() {
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {ordersData.by_status.map((s) => (
                     <View key={s.status} style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 9999, backgroundColor: colors.backgroundTertiary }}>
-                      <Text style={{ fontSize: 11, fontWeight: '600', color: colors.foreground }}>
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.foreground }}>
                         {s.status}: {s.count}
                       </Text>
                     </View>
@@ -566,7 +566,7 @@ export default function ReportsScreen() {
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {ordersData.by_service_type.map((s) => (
                     <View key={s.type} style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 9999, backgroundColor: colors.backgroundTertiary }}>
-                      <Text style={{ fontSize: 11, fontWeight: '600', color: colors.foreground }}>
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: colors.foreground }}>
                         {s.type}: {s.count}
                       </Text>
                     </View>
@@ -588,7 +588,7 @@ export default function ReportsScreen() {
               <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.success}1A`, alignItems: 'center', justifyContent: 'center' }}>
                 <MaterialCommunityIcons name="fire" size={14} color={colors.success} />
               </View>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>{t('reports.menu')}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>{t('reports.menu')}</Text>
             </View>
 
             {/* Table header */}
@@ -624,7 +624,7 @@ export default function ReportsScreen() {
                     {idx + 1}
                   </Text>
                 </View>
-                <Text style={{ flex: 1, fontSize: 13, color: colors.foreground, fontWeight: '500' }} numberOfLines={1}>
+                <Text style={{ flex: 1, fontSize: 14, color: colors.foreground, fontWeight: '500' }} numberOfLines={1}>
                   {item.name}
                 </Text>
                 <Text style={{ width: 50, fontSize: 12, color: colors.foregroundSecondary, textAlign: 'right' }}>
@@ -637,7 +637,7 @@ export default function ReportsScreen() {
             ))}
             {menuItems.length === 0 && (
               <View style={{ padding: 20, alignItems: 'center' }}>
-                <Text style={{ fontSize: 13, color: colors.foregroundSecondary }}>{t('common.noResults')}</Text>
+                <Text style={{ fontSize: 14, color: colors.foregroundSecondary }}>{t('common.noResults')}</Text>
               </View>
             )}
           </View>
@@ -654,7 +654,7 @@ export default function ReportsScreen() {
               <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.warning}1A`, alignItems: 'center', justifyContent: 'center' }}>
                 <MaterialCommunityIcons name="account-group" size={14} color={colors.warning} />
               </View>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>{t('reports.staff')}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>{t('reports.staff')}</Text>
             </View>
 
             {/* Table header */}
@@ -667,7 +667,7 @@ export default function ReportsScreen() {
 
             {staffList.map((s) => (
               <View key={s.id} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }}>
-                <Text style={{ flex: 1, fontSize: 13, color: colors.foreground, fontWeight: '500' }} numberOfLines={1}>{s.name}</Text>
+                <Text style={{ flex: 1, fontSize: 14, color: colors.foreground, fontWeight: '500' }} numberOfLines={1}>{s.name}</Text>
                 <Text style={{ width: 60, fontSize: 12, color: colors.foregroundSecondary, textAlign: 'right' }}>{s.orders_handled}</Text>
                 <Text style={{ width: 60, fontSize: 12, color: colors.foregroundSecondary, textAlign: 'right' }}>{formatCurrency(s.tips, getLanguage(), { showCents: false })}</Text>
                 <Text style={{ width: 60, fontSize: 12, color: colors.accent, fontWeight: '600', textAlign: 'right' }}>{s.rating.toFixed(1)}</Text>
@@ -675,7 +675,7 @@ export default function ReportsScreen() {
             ))}
             {staffList.length === 0 && (
               <View style={{ padding: 20, alignItems: 'center' }}>
-                <Text style={{ fontSize: 13, color: colors.foregroundSecondary }}>{t('common.noResults')}</Text>
+                <Text style={{ fontSize: 14, color: colors.foregroundSecondary }}>{t('common.noResults')}</Text>
               </View>
             )}
           </View>
@@ -694,13 +694,13 @@ export default function ReportsScreen() {
           borderRadius: 20,
           alignItems: 'center',
           zIndex: 10,
-          shadowColor: '#000',
+          shadowColor: colors.shadowColor,
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.15,
           shadowRadius: 12,
           elevation: 8,
         }}>
-          <Text style={{ color: colors.background, fontWeight: '600', fontSize: 13 }}>
+          <Text style={{ color: colors.background, fontWeight: '600', fontSize: 14 }}>
             {t('reports.exporting')}
           </Text>
         </View>

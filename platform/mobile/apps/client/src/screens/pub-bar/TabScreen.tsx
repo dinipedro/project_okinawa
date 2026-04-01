@@ -705,11 +705,11 @@ export default function TabScreen() {
           </Text>
           <View style={{
             width: 180, height: 180, borderRadius: 12,
-            backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
+            backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center',
             marginBottom: 16, borderWidth: 2, borderColor: colors.border,
           }}>
             <Text style={{ fontSize: 48 }}>📱</Text>
-            <Text variant="headlineSmall" style={{ color: '#000', fontWeight: '800', marginTop: 8 }}>
+            <Text variant="headlineSmall" style={{ color: colors.foreground, fontWeight: '800', marginTop: 8 }}>
               {inviteCode}
             </Text>
           </View>

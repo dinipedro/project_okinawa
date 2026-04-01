@@ -217,7 +217,7 @@ function TabSelector({
         flexDirection: 'row',
         backgroundColor: `${colors.foreground}0D`,
         borderRadius: 12,
-        padding: 3,
+        padding: 4,
         marginHorizontal: 16,
         marginVertical: 12,
       }}
@@ -235,7 +235,7 @@ function TabSelector({
             activeTab === tab.id && {
               backgroundColor: colors.card,
               elevation: 2,
-              shadowColor: '#000',
+              shadowColor: colors.shadowColor,
               shadowOffset: { width: 0, height: 1 },
               shadowOpacity: 0.1,
               shadowRadius: 2,
@@ -245,7 +245,7 @@ function TabSelector({
         >
           <Text
             style={{
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: '600',
               color: activeTab === tab.id ? colors.foreground : colors.foregroundMuted,
             }}
@@ -538,7 +538,7 @@ export default function CallsManagementScreen() {
               label={t('calls.resolve')}
               icon="check-all"
               bgColor={colors.success}
-              textColor="#FFFFFF"
+              textColor={colors.premiumCardForeground}
               loading={resolveMutation.isPending}
               disabled={resolveMutation.isPending}
               onPress={() => resolveMutation.mutate(call.id)}
@@ -589,10 +589,10 @@ export default function CallsManagementScreen() {
             <IconButton
               icon="bell-ring"
               size={24}
-              iconColor="#FFFFFF"
+              iconColor={colors.premiumCardForeground}
               style={{ margin: 0 }}
             />
-            <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: '700' }}>
+            <Text style={{ color: colors.premiumCardForeground, fontSize: 24, fontWeight: '700' }}>
               {t('calls.title')}
             </Text>
           </View>
@@ -652,10 +652,10 @@ export default function CallsManagementScreen() {
           <IconButton
             icon="bell-ring"
             size={24}
-            iconColor="#FFFFFF"
+            iconColor={colors.premiumCardForeground}
             style={{ margin: 0 }}
           />
-          <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: '700', flex: 1 }}>
+          <Text style={{ color: colors.premiumCardForeground, fontSize: 24, fontWeight: '700', flex: 1 }}>
             {t('calls.title')}
           </Text>
           {(stats?.pendingCount ?? 0) > 0 && (
@@ -670,7 +670,7 @@ export default function CallsManagementScreen() {
                 paddingHorizontal: 6,
               }}
             >
-              <Text style={{ color: '#FFFFFF', fontWeight: '700', fontSize: 11 }}>
+              <Text style={{ color: colors.premiumCardForeground, fontWeight: '700', fontSize: 12 }}>
                 {stats?.pendingCount}
               </Text>
             </View>
@@ -690,28 +690,28 @@ export default function CallsManagementScreen() {
           }}
         >
           <View style={{ alignItems: 'center', flex: 1 }}>
-            <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: '700' }}>
+            <Text style={{ color: colors.premiumCardForeground, fontSize: 24, fontWeight: '700' }}>
               {stats?.pendingCount ?? 0}
             </Text>
-            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2, textAlign: 'center' }}>
+            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2, textAlign: 'center' }}>
               {t('calls.pendingTab')}
             </Text>
           </View>
           <View style={{ width: 1, height: 32, backgroundColor: 'rgba(255,255,255,0.2)' }} />
           <View style={{ alignItems: 'center', flex: 1 }}>
-            <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: '700' }}>
+            <Text style={{ color: colors.premiumCardForeground, fontSize: 24, fontWeight: '700' }}>
               {formatResponseTime(stats?.avgResponseTimeMs ?? null)}
             </Text>
-            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2, textAlign: 'center' }}>
+            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2, textAlign: 'center' }}>
               {t('calls.avgResponseTime')}
             </Text>
           </View>
           <View style={{ width: 1, height: 32, backgroundColor: 'rgba(255,255,255,0.2)' }} />
           <View style={{ alignItems: 'center', flex: 1 }}>
-            <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: '700' }}>
+            <Text style={{ color: colors.premiumCardForeground, fontSize: 24, fontWeight: '700' }}>
               {stats?.resolvedTodayCount ?? 0}
             </Text>
-            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, marginTop: 2, textAlign: 'center' }}>
+            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2, textAlign: 'center' }}>
               {t('calls.resolvedTab')}
             </Text>
           </View>
@@ -810,7 +810,7 @@ function TouchableButton({
         iconColor={textColor}
         style={{ margin: 0, padding: 0, width: 14, height: 14, marginRight: 4 }}
       />
-      <Text style={{ fontSize: 13, fontWeight: '600', color: textColor }}>
+      <Text style={{ fontSize: 14, fontWeight: '600', color: textColor }}>
         {label}
       </Text>
     </Pressable>

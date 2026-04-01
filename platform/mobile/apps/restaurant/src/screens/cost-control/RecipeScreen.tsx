@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   recipeStatLabel: {
-    fontSize: 11,
+    fontSize: 12,
     marginBottom: 2,
   },
   recipeStatValue: {
@@ -668,7 +668,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   fieldLabel: {
-    fontSize: 13,
+    fontSize: 14,
     marginBottom: 8,
     fontWeight: '500',
   },
@@ -690,7 +690,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   noItems: {
-    fontSize: 13,
+    fontSize: 14,
     textAlign: 'center',
     marginTop: 16,
   },
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statLabel: {
-    fontSize: 11,
+    fontSize: 12,
     marginBottom: 4,
   },
   statValue: {
@@ -733,7 +733,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   alertText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '500',
     flex: 1,
   },

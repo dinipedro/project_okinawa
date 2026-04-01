@@ -75,7 +75,7 @@ function TableCell({
     table.status === 'available'
       ? colors.success
       : table.status === 'reserved'
-      ? '#F59E0B'
+      ? colors.warning
       : colors.error;
 
   const statusLabel =
@@ -381,7 +381,7 @@ export default function VipTableScreen({ route }: VipTableScreenProps) {
           </Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#F59E0B' }]} />
+          <View style={[styles.legendDot, { backgroundColor: colors.warning }]} />
           <Text variant="bodySmall" style={{ color: colors.foregroundMuted }}>
             {t('club.vip.status.reserved')}
           </Text>

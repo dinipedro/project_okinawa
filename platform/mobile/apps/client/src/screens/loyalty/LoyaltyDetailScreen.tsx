@@ -73,10 +73,10 @@ interface StampCard {
 // Note: TIER_CONFIG uses brand/material colors that are intentionally static
 // as they represent real-world medal colors, not theme-dependent UI elements
 const TIER_CONFIG: Record<string, { color: string; icon: string }> = {
-  bronze: { color: '#CD7F32', icon: 'shield-star' },
-  silver: { color: '#C0C0C0', icon: 'shield-star' },
-  gold: { color: '#FFD700', icon: 'shield-star' },
-  platinum: { color: '#E5E4E2', icon: 'shield-crown' },
+  bronze: { color: colors.tierBronze, icon: 'shield-star' },
+  silver: { color: colors.tierSilver, icon: 'shield-star' },
+  gold: { color: colors.tierGold, icon: 'shield-star' },
+  platinum: { color: colors.tierPlatinum, icon: 'shield-crown' },
 };
 
 // ============================================
@@ -465,7 +465,7 @@ const createStyles = (colors: any) =>
       marginTop: 16,
     },
     tierChipText: {
-      color: '#000',
+      color: colors.foreground,
       fontWeight: 'bold',
     },
     progressSection: {

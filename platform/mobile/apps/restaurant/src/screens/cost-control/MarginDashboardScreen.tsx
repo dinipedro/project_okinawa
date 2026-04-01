@@ -507,11 +507,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   cardValue: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '800',
   },
   cardLabel: {
-    fontSize: 11,
+    fontSize: 12,
     textAlign: 'center',
   },
   statusChip: {
@@ -553,11 +553,11 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   marginName: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
   },
   marginCategory: {
-    fontSize: 11,
+    fontSize: 12,
     marginTop: 2,
   },
   marginBadge: {
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   detailValue: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
   },
   // Alerts
@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   alertSectionTitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
     marginBottom: 10,
   },

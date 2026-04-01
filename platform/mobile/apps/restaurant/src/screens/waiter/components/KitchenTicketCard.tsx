@@ -82,7 +82,7 @@ function KitchenTicketCard({ dish, isPickedUp, onPickup }: KitchenTicketCardProp
           flex: 1,
         },
         dishName: {
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: '700',
           color: colors.foreground,
         },
@@ -107,7 +107,7 @@ function KitchenTicketCard({ dish, isPickedUp, onPickup }: KitchenTicketCardProp
           borderRadius: 3,
         },
         slaText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
           marginTop: 2,
         },
@@ -118,7 +118,7 @@ function KitchenTicketCard({ dish, isPickedUp, onPickup }: KitchenTicketCardProp
           backgroundColor: colors.error,
         },
         pickupText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
           color: '#FFFFFF',
         },

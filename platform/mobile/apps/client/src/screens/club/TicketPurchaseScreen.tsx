@@ -382,7 +382,7 @@ export default function TicketPurchaseScreen({ route }: TicketPurchaseScreenProp
                   />
                 </View>
                 <Text style={{
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: isSelected ? '700' : '500',
                   color: isSelected ? colors.primary : colors.foreground,
                   textAlign: 'center',

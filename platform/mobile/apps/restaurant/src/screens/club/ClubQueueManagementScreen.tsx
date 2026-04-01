@@ -185,7 +185,7 @@ function QueueEntryCard({
               onPress={() => onAdmit(entry.id)}
               disabled={isActioning}
               style={[styles.actionBtn, { backgroundColor: colors.success }]}
-              labelStyle={{ color: colors.primaryForeground, fontSize: 11 }}
+              labelStyle={{ color: colors.primaryForeground, fontSize: 12 }}
               accessibilityRole="button"
               accessibilityLabel={`Admit ${entry.customerName}`}
             >
@@ -197,7 +197,7 @@ function QueueEntryCard({
               onPress={() => onNoShow(entry.id)}
               disabled={isActioning}
               style={styles.actionBtn}
-              labelStyle={{ fontSize: 11 }}
+              labelStyle={{ fontSize: 12 }}
               textColor={colors.error}
               accessibilityRole="button"
               accessibilityLabel={`Mark ${entry.customerName} as no-show`}

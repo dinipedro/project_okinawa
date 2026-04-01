@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   addButton: { margin: 0 },
   allergens: { flexDirection: 'row', alignItems: 'center', marginTop: 8, backgroundColor: '#FFF3E0', padding: 8, borderRadius: 4 },
   allergenIcon: { margin: 0, padding: 0 },
-  allergenText: { flex: 1, color: '#E65100', fontSize: 11 },
+  allergenText: { flex: 1, color: '#E65100', fontSize: 12 },
   unavailableChip: { backgroundColor: '#EF5350', marginTop: 4 },
   unavailableText: { color: '#fff', fontSize: 10 },
 });

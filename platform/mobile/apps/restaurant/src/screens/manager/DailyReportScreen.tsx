@@ -156,7 +156,7 @@ export default function DailyReportScreen() {
           marginHorizontal: 16,
           marginTop: 16,
           marginBottom: 12,
-          backgroundColor: '#1F2937',
+          backgroundColor: colors.premiumCard,
           borderRadius: 20,
           padding: 16,
           overflow: 'hidden',
@@ -170,17 +170,17 @@ export default function DailyReportScreen() {
               <MaterialCommunityIcons name="file-chart" size={22} color={colors.primary} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: '#FFFFFF', fontSize: 15, fontWeight: '700' }}>
+              <Text style={{ color: colors.premiumCardForeground, fontSize: 16, fontWeight: '700' }}>
                 {t('dailyReport.title')}
               </Text>
-              <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 1 }}>
+              <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 1 }}>
                 {reportData?.date || today}
               </Text>
             </View>
           </View>
 
           {/* Revenue highlight */}
-          <Text style={{ color: '#FFFFFF', fontSize: 28, fontWeight: '700', marginBottom: 6 }}>
+          <Text style={{ color: colors.premiumCardForeground, fontSize: 28, fontWeight: '700', marginBottom: 6 }}>
             {formatCurrency(reportData?.totalRevenue || 0)}
           </Text>
 
@@ -200,13 +200,13 @@ export default function DailyReportScreen() {
             <MaterialCommunityIcons
               name={isPositiveChange ? 'trending-up' : 'trending-down'}
               size={14}
-              color={isPositiveChange ? '#22c55e' : '#ef4444'}
+              color={isPositiveChange ? colors.success : colors.error}
             />
             <Text
               style={{
                 fontWeight: '600',
                 fontSize: 12,
-                color: isPositiveChange ? '#22c55e' : '#ef4444',
+                color: isPositiveChange ? colors.success : colors.error,
               }}
             >
               {isPositiveChange
@@ -239,12 +239,12 @@ export default function DailyReportScreen() {
             colors={[colors.primary, colors.accent]}
             style={{ width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}
           >
-            <MaterialCommunityIcons name="cash-multiple" size={20} color="#FFFFFF" />
+            <MaterialCommunityIcons name="cash-multiple" size={20} color={colors.premiumCardForeground} />
           </LinearGradient>
           <Text style={{ fontSize: 20, fontWeight: '700', color: colors.primary }}>
             {formatCurrency(reportData?.totalRevenue || 0)}
           </Text>
-          <Text style={{ fontSize: 11, color: colors.foregroundSecondary, marginTop: 2 }}>
+          <Text style={{ fontSize: 12, color: colors.foregroundSecondary, marginTop: 2 }}>
             {t('dailyReport.kpiRevenue')}
           </Text>
         </View>
@@ -262,15 +262,15 @@ export default function DailyReportScreen() {
           }}
         >
           <LinearGradient
-            colors={[colors.secondary ?? '#0D9488', colors.secondaryLight ?? '#14B8A6']}
+            colors={[colors.secondary ?? colors.secondary, colors.secondaryLight ?? colors.secondaryLight]}
             style={{ width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}
           >
-            <MaterialCommunityIcons name="receipt" size={20} color="#FFFFFF" />
+            <MaterialCommunityIcons name="receipt" size={20} color={colors.premiumCardForeground} />
           </LinearGradient>
           <Text style={{ fontSize: 20, fontWeight: '700', color: colors.foreground }}>
             {reportData?.totalOrders || 0}
           </Text>
-          <Text style={{ fontSize: 11, color: colors.foregroundSecondary, marginTop: 2 }}>
+          <Text style={{ fontSize: 12, color: colors.foregroundSecondary, marginTop: 2 }}>
             {t('dailyReport.kpiOrders')}
           </Text>
         </View>
@@ -291,12 +291,12 @@ export default function DailyReportScreen() {
             colors={[colors.accent, colors.warning]}
             style={{ width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}
           >
-            <MaterialCommunityIcons name="ticket-percent" size={20} color="#FFFFFF" />
+            <MaterialCommunityIcons name="ticket-percent" size={20} color={colors.premiumCardForeground} />
           </LinearGradient>
           <Text style={{ fontSize: 20, fontWeight: '700', color: colors.foreground }}>
             {formatCurrency(reportData?.avgTicket || 0)}
           </Text>
-          <Text style={{ fontSize: 11, color: colors.foregroundSecondary, marginTop: 2 }}>
+          <Text style={{ fontSize: 12, color: colors.foregroundSecondary, marginTop: 2 }}>
             {t('dailyReport.kpiAvgTicket')}
           </Text>
         </View>
@@ -314,15 +314,15 @@ export default function DailyReportScreen() {
           }}
         >
           <LinearGradient
-            colors={[colors.info, '#6366F1']}
+            colors={[colors.info, colors.statusDelivering]}
             style={{ width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}
           >
-            <MaterialCommunityIcons name="emoticon-happy-outline" size={20} color="#FFFFFF" />
+            <MaterialCommunityIcons name="emoticon-happy-outline" size={20} color={colors.premiumCardForeground} />
           </LinearGradient>
           <Text style={{ fontSize: 20, fontWeight: '700', color: colors.foreground }}>
             {(reportData?.customerSatisfaction || 0).toFixed(1)}
           </Text>
-          <Text style={{ fontSize: 11, color: colors.foregroundSecondary, marginTop: 2 }}>
+          <Text style={{ fontSize: 12, color: colors.foregroundSecondary, marginTop: 2 }}>
             {t('dailyReport.kpiSatisfaction')}
           </Text>
         </View>
@@ -340,7 +340,7 @@ export default function DailyReportScreen() {
               <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.success}1A`, alignItems: 'center', justifyContent: 'center' }}>
                 <MaterialCommunityIcons name="fire" size={14} color={colors.success} />
               </View>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>{t('dailyReport.topSellers')}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>{t('dailyReport.topSellers')}</Text>
             </View>
 
             {reportData.topItems.slice(0, 5).map((item, index) => (
@@ -376,10 +376,10 @@ export default function DailyReportScreen() {
                   </Text>
                 </View>
                 <View style={{ flex: 1, marginLeft: 12 }}>
-                  <Text style={{ fontSize: 13, color: colors.foreground, fontWeight: '500' }}>{item.name}</Text>
-                  <Text style={{ fontSize: 11, color: colors.foregroundSecondary }}>{item.quantity}x</Text>
+                  <Text style={{ fontSize: 14, color: colors.foreground, fontWeight: '500' }}>{item.name}</Text>
+                  <Text style={{ fontSize: 12, color: colors.foregroundSecondary }}>{item.quantity}x</Text>
                 </View>
-                <Text style={{ fontSize: 13, color: colors.foreground, fontWeight: '600' }}>{formatCurrency(item.revenue)}</Text>
+                <Text style={{ fontSize: 14, color: colors.foreground, fontWeight: '600' }}>{formatCurrency(item.revenue)}</Text>
               </View>
             ))}
           </View>
@@ -398,7 +398,7 @@ export default function DailyReportScreen() {
               <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.info}1A`, alignItems: 'center', justifyContent: 'center' }}>
                 <MaterialCommunityIcons name="account-group" size={14} color={colors.info} />
               </View>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>{t('dailyReport.staffPerformance')}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>{t('dailyReport.staffPerformance')}</Text>
             </View>
 
             {reportData.staffPerformance
@@ -430,12 +430,12 @@ export default function DailyReportScreen() {
                     </Text>
                   </View>
                   <View style={{ flex: 1, marginLeft: 12 }}>
-                    <Text style={{ fontSize: 13, color: colors.foreground, fontWeight: '500' }}>{member.name}</Text>
-                    <Text style={{ fontSize: 11, color: colors.foregroundSecondary }}>{member.role}</Text>
+                    <Text style={{ fontSize: 14, color: colors.foreground, fontWeight: '500' }}>{member.name}</Text>
+                    <Text style={{ fontSize: 12, color: colors.foregroundSecondary }}>{member.role}</Text>
                   </View>
                   <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={{ fontSize: 13, color: colors.foreground, fontWeight: '600' }}>{formatCurrency(member.sales)}</Text>
-                    <Text style={{ fontSize: 11, color: colors.success }}>+{formatCurrency(member.tips)}</Text>
+                    <Text style={{ fontSize: 14, color: colors.foreground, fontWeight: '600' }}>{formatCurrency(member.sales)}</Text>
+                    <Text style={{ fontSize: 12, color: colors.success }}>+{formatCurrency(member.tips)}</Text>
                   </View>
                 </View>
               ))}
@@ -454,7 +454,7 @@ export default function DailyReportScreen() {
               <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.accent}1A`, alignItems: 'center', justifyContent: 'center' }}>
                 <MaterialCommunityIcons name="clock-outline" size={14} color={colors.accent} />
               </View>
-              <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>{t('dailyReport.hourlyRevenue')}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>{t('dailyReport.hourlyRevenue')}</Text>
             </View>
             <View style={{ padding: 12 }}>
               <BarChart
@@ -503,11 +503,11 @@ export default function DailyReportScreen() {
           }}
         >
           {exporting ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
+            <ActivityIndicator size="small" color={colors.premiumCardForeground} />
           ) : (
-            <MaterialCommunityIcons name="file-pdf-box" size={18} color="#FFFFFF" />
+            <MaterialCommunityIcons name="file-pdf-box" size={18} color={colors.premiumCardForeground} />
           )}
-          <Text style={{ color: '#FFFFFF', fontSize: 14, fontWeight: '600' }}>
+          <Text style={{ color: colors.premiumCardForeground, fontSize: 14, fontWeight: '600' }}>
             {t('dailyReport.exportButton')}
           </Text>
         </LinearGradient>

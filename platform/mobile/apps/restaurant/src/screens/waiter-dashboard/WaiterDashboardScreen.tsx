@@ -129,7 +129,7 @@ export default function WaiterDashboardScreen() {
     },
     statsContainer: {
       flexDirection: 'row',
-      padding: 15,
+      padding: 16,
       gap: 10,
     },
     statCard: {
@@ -163,7 +163,7 @@ export default function WaiterDashboardScreen() {
       flex: 1,
     },
     scrollContent: {
-      padding: 15,
+      padding: 16,
       paddingBottom: 80,
     },
     sectionTitle: {
@@ -302,7 +302,7 @@ export default function WaiterDashboardScreen() {
           <Card style={styles.statCard}>
             <Card.Content style={styles.statContent}>
               <View style={styles.statIcon}>
-                <Icon name="table-furniture" size={24} color="#2196F3" />
+                <Icon name="table-furniture" size={24} color=colors.info />
               </View>
               <Text variant="bodySmall" style={styles.statLabel}>
                 Mesas
@@ -316,7 +316,7 @@ export default function WaiterDashboardScreen() {
           <Card style={styles.statCard}>
             <Card.Content style={styles.statContent}>
               <View style={styles.statIcon}>
-                <Icon name="receipt" size={24} color="#4CAF50" />
+                <Icon name="receipt" size={24} color=colors.success />
               </View>
               <Text variant="bodySmall" style={styles.statLabel}>
                 Pedidos Ativos
@@ -330,7 +330,7 @@ export default function WaiterDashboardScreen() {
           <Card style={styles.statCard}>
             <Card.Content style={styles.statContent}>
               <View style={styles.statIcon}>
-                <Icon name="cash-multiple" size={24} color="#FF9800" />
+                <Icon name="cash-multiple" size={24} color=colors.warning />
               </View>
               <Text variant="bodySmall" style={styles.statLabel}>
                 Gorjetas Hoje
@@ -379,7 +379,7 @@ export default function WaiterDashboardScreen() {
 
         {myTables.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Icon name="table-furniture" size={80} color="#ccc" />
+            <Icon name="table-furniture" size={80} color=colors.border />
             <Text variant="headlineSmall" style={styles.emptyTitle}>
               Nenhuma Mesa Atribuída
             </Text>
@@ -420,14 +420,14 @@ export default function WaiterDashboardScreen() {
                                 Mesa {table.number}
                               </Text>
                               <View style={styles.tableMetaRow}>
-                                <Icon name="account-group" size={14} color="#666" />
+                                <Icon name="account-group" size={14} color=colors.foregroundSecondary />
                                 <Text variant="bodySmall" style={styles.tableMetaText}>
                                   {table.guests} pessoas
                                 </Text>
                                 <Text variant="bodySmall" style={styles.separator}>
                                   •
                                 </Text>
-                                <Icon name="clock-outline" size={14} color="#666" />
+                                <Icon name="clock-outline" size={14} color=colors.foregroundSecondary />
                                 <Text variant="bodySmall" style={styles.tableMetaText}>
                                   {getSeatedTime(table.seated_at)}
                                 </Text>

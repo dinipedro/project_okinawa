@@ -94,16 +94,16 @@ function GuestCard({ guest, allOrders, onOrder, onCharge }: GuestCardProps) {
           marginTop: 2,
         },
         metaText: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.foregroundMuted,
         },
         activeText: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.warning,
           fontWeight: '500',
         },
         paidText: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.success,
         },
         rightSide: {

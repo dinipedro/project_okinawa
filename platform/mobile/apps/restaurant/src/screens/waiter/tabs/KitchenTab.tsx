@@ -102,7 +102,7 @@ export default function KitchenTab({ pickedUpIds, onPickup }: KitchenTabProps) {
           color: colors.foreground,
         },
         emptySubtitle: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.foregroundMuted,
           marginTop: 4,
         },

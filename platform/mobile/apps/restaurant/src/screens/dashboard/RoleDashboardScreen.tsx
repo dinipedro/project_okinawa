@@ -476,7 +476,7 @@ export default function RoleDashboardScreen() {
             paddingHorizontal: 20,
           }}
         >
-          <Text style={{ color: colors.primaryForeground, fontSize: 22, fontWeight: '700' }}>
+          <Text style={{ color: colors.primaryForeground, fontSize: 24, fontWeight: '700' }}>
             {t('roleDashboard.title')}
           </Text>
         </LinearGradient>
@@ -538,13 +538,13 @@ export default function RoleDashboardScreen() {
             iconColor={colors.primaryForeground}
             style={{ margin: 0, padding: 0, width: 24, height: 24, marginRight: 10 }}
           />
-          <Text style={{ color: colors.primaryForeground, fontSize: 22, fontWeight: '700', flex: 1 }}>
+          <Text style={{ color: colors.primaryForeground, fontSize: 24, fontWeight: '700', flex: 1 }}>
             {t('roleDashboard.title')}
           </Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
           <PulsingDot color={colors.primaryForeground} />
-          <Text style={{ color: colors.glassStrong, fontSize: 13 }}>
+          <Text style={{ color: colors.glassStrong, fontSize: 14 }}>
             Online - {roleLabelMap[userRole]}
           </Text>
         </View>
@@ -596,7 +596,7 @@ export default function RoleDashboardScreen() {
               </View>
               <Text
                 style={{
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: '700',
                   color: colors.foreground,
                 }}

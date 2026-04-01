@@ -145,7 +145,7 @@ function TableDetailScreen({
           paddingTop: 12,
         },
         backText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.primary,
         },
@@ -197,7 +197,7 @@ function TableDetailScreen({
           borderRadius: 3,
         },
         progressText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
           color: colors.foregroundMuted,
         },
@@ -217,7 +217,7 @@ function TableDetailScreen({
         subTabActive: {
           backgroundColor: colors.card,
           elevation: 1,
-          shadowColor: '#000',
+          shadowColor: colors.shadowColor,
           shadowOffset: { width: 0, height: 1 },
           shadowOpacity: 0.1,
           shadowRadius: 2,
@@ -251,7 +251,7 @@ function TableDetailScreen({
           marginTop: 8,
         },
         addGuestLabel: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -262,7 +262,7 @@ function TableDetailScreen({
           backgroundColor: colors.background,
           paddingHorizontal: 12,
           paddingVertical: 8,
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foreground,
         },
         addGuestActions: {
@@ -280,9 +280,9 @@ function TableDetailScreen({
           opacity: 0.4,
         },
         addBtnText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         cancelBtn: {
           paddingVertical: 8,
@@ -293,7 +293,7 @@ function TableDetailScreen({
           alignItems: 'center',
         },
         cancelBtnText: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.foreground,
         },
         addGuestButton: {
@@ -309,7 +309,7 @@ function TableDetailScreen({
           marginTop: 8,
         },
         addGuestButtonText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.foregroundMuted,
         },
@@ -350,7 +350,7 @@ function TableDetailScreen({
           borderRadius: 3,
         },
         sectionText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
           textTransform: 'uppercase',
           letterSpacing: 0.5,
@@ -373,9 +373,9 @@ function TableDetailScreen({
           backgroundColor: colors.primary,
         },
         openMenuBtnText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         addItemsBtn: {
           paddingVertical: 10,
@@ -387,7 +387,7 @@ function TableDetailScreen({
           marginTop: 12,
         },
         addItemsText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.primary,
         },
@@ -414,12 +414,12 @@ function TableDetailScreen({
           marginTop: 4,
         },
         orderingForName: {
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: '700',
           color: colors.foreground,
         },
         orderingForChange: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.primary,
           textDecorationLine: 'underline',
         },
@@ -477,12 +477,12 @@ function TableDetailScreen({
           marginTop: 2,
         },
         menuItemPrice: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
           color: colors.primary,
         },
         menuItemTime: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.foregroundMuted,
         },
         addToCartBtn: {
@@ -509,10 +509,10 @@ function TableDetailScreen({
         qtyBtnText: {
           fontSize: 14,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         qtyText: {
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: '700',
           color: colors.foreground,
           width: 16,
@@ -532,7 +532,7 @@ function TableDetailScreen({
           alignItems: 'center',
         },
         cartInfo: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -557,7 +557,7 @@ function TableDetailScreen({
         sendBtnText: {
           fontSize: 14,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         // Charge sub-tab
         chargeBanner: {
@@ -569,7 +569,7 @@ function TableDetailScreen({
           marginBottom: 12,
         },
         chargeBannerTitle: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -597,7 +597,7 @@ function TableDetailScreen({
           justifyContent: 'center',
         },
         chargeAvatarText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
         },
         chargeGuestBody: {
@@ -609,7 +609,7 @@ function TableDetailScreen({
           color: colors.foreground,
         },
         chargeGuestStatus: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.foregroundMuted,
           marginTop: 1,
         },
@@ -626,9 +626,9 @@ function TableDetailScreen({
           marginLeft: 4,
         },
         chargeBtnText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         appBadge: {
           paddingHorizontal: 6,
@@ -696,11 +696,11 @@ function TableDetailScreen({
         toastTitle: {
           fontSize: 12,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         toastSubtitle: {
           fontSize: 10,
-          color: '#FFFFFFCC',
+          color: colors.premiumCardMuted,
         },
       }),
     [colors],
@@ -721,7 +721,7 @@ function TableDetailScreen({
       {/* Toast */}
       {orderSentToast && (
         <View style={styles.toast}>
-          <Icon name="check-circle" size={20} color="#FFFFFF" />
+          <Icon name="check-circle" size={20} color={colors.premiumCardForeground} />
           <View>
             <Text style={styles.toastTitle}>{t('waiter.menu.toast_sent')}</Text>
             <Text style={styles.toastSubtitle}>{t('waiter.menu.toast_sent_detail')}</Text>
@@ -1028,7 +1028,7 @@ function TableDetailScreen({
                       styles.categoryPillText,
                       {
                         color:
-                          menuCategory === c.cat ? '#FFFFFF' : colors.foregroundMuted,
+                          menuCategory === c.cat ? colors.premiumCardForeground : colors.foregroundMuted,
                       },
                     ]}
                   >
@@ -1121,7 +1121,7 @@ function TableDetailScreen({
                         style={[
                           styles.addToCartText,
                           {
-                            color: orderingForGuest ? '#FFFFFF' : colors.foregroundMuted,
+                            color: orderingForGuest ? colors.premiumCardForeground : colors.foregroundMuted,
                           },
                         ]}
                       >
@@ -1281,7 +1281,7 @@ function TableDetailScreen({
             accessibilityLabel={t('waiter.menu.send_to_kitchen')}
             accessibilityRole="button"
           >
-            <Icon name="chef-hat" size={16} color="#FFFFFF" />
+            <Icon name="chef-hat" size={16} color={colors.premiumCardForeground} />
             <Text style={styles.sendBtnText}>{t('waiter.menu.send_to_kitchen')}</Text>
           </TouchableOpacity>
         </View>

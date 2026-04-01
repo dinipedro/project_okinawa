@@ -416,7 +416,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderRadius: spacing.sm,
   },
   matchText: {
-    color: '#fff',
+    color: colors.premiumCardForeground,
     fontSize: fontSize.xs,
     fontWeight: fontWeight.bold as any,
   },

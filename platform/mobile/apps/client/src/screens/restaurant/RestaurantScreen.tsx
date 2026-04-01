@@ -382,7 +382,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   chips: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    padding: 15,
+    padding: 16,
     gap: 8,
     backgroundColor: colors.card,
   },
@@ -390,7 +390,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginRight: 5,
   },
   card: {
-    margin: 15,
+    margin: 16,
     marginTop: 0,
     backgroundColor: colors.card,
   },
@@ -418,7 +418,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.foregroundMuted,
   },
   actions: {
-    padding: 15,
+    padding: 16,
     gap: 10,
     paddingBottom: 30,
   },

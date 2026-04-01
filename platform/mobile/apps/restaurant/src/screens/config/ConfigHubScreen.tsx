@@ -314,10 +314,10 @@ export default function ConfigHubScreen() {
               <MaterialCommunityIcons name="cog" size={22} color={colors.primary} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: colors.premiumCardForeground, fontSize: 15, fontWeight: '700' }}>
+              <Text style={{ color: colors.premiumCardForeground, fontSize: 16, fontWeight: '700' }}>
                 {t('config.hub.title')}
               </Text>
-              <Text style={{ color: colors.premiumCardMuted, fontSize: 11, marginTop: 1 }}>
+              <Text style={{ color: colors.premiumCardMuted, fontSize: 12, marginTop: 1 }}>
                 {t('config.hub.setupCompletion', {
                   percentage: Math.round(completionPercentage),
                 })}
@@ -389,7 +389,7 @@ export default function ConfigHubScreen() {
           <View style={{ flex: 1, minWidth: 0 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
               <Text
-                style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}
+                style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}
                 numberOfLines={1}
               >
                 {t(section.titleKey)}
@@ -397,7 +397,7 @@ export default function ConfigHubScreen() {
               <SectionStatusIcon section={section} colors={colors} completion={completion} />
             </View>
             <Text
-              style={{ fontSize: 11, color: colors.foregroundSecondary }}
+              style={{ fontSize: 12, color: colors.foregroundSecondary }}
               numberOfLines={1}
             >
               {t(section.descriptionKey)}

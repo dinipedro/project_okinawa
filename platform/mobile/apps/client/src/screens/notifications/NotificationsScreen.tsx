@@ -550,7 +550,7 @@ const createStyles = (colors: any) =>
     },
     notificationTime: {
       color: colors.foregroundMuted,
-      fontSize: 11,
+      fontSize: 12,
     },
     notificationBody: {
       color: colors.foregroundSecondary,

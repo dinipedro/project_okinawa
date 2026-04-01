@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   itemName: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
   },
   itemCategory: {
@@ -477,11 +477,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   statusText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
   },
   statusPct: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '700',
   },
 
@@ -504,10 +504,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing[2],
   },
   detailLabel: {
-    fontSize: 13,
+    fontSize: 14,
   },
   detailValue: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
   },
   notesText: {
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing[4],
   },
   modalLabel: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     marginBottom: spacing[1],
     marginTop: spacing[3],

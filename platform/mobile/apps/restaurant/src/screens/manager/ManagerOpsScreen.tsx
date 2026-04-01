@@ -57,10 +57,10 @@ const getElapsedMinutes = (dateStr: string): number => {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  cancel: '#ef4444',
-  courtesy: '#3b82f6',
-  refund: '#f59e0b',
-  discount: '#6b7280',
+  cancel: colors.error,
+  courtesy: colors.info,
+  refund: colors.warning,
+  discount: colors.foregroundSecondary,
 };
 
 export default function ManagerOpsScreen({ navigation }: any) {
@@ -214,8 +214,8 @@ export default function ManagerOpsScreen({ navigation }: any) {
           borderRadius: 6,
         },
         typeBadgeText: {
-          color: '#fff',
-          fontSize: 11,
+          color: colors.premiumCardForeground,
+          fontSize: 12,
           fontWeight: '600',
         },
         approvalInfo: {
@@ -270,7 +270,7 @@ export default function ManagerOpsScreen({ navigation }: any) {
           borderRadius: 4,
         },
         statusText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '500',
         },
         emptyText: {
@@ -294,7 +294,7 @@ export default function ManagerOpsScreen({ navigation }: any) {
           marginLeft: 8,
         },
         pendingBadgeText: {
-          color: '#fff',
+          color: colors.premiumCardForeground,
           fontSize: 12,
           fontWeight: '700',
         },

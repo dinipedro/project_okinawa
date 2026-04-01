@@ -736,7 +736,7 @@ export default function OrderStatusScreen() {
                 key={star}
                 icon={star <= reviewRating ? 'star' : 'star-outline'}
                 size={36}
-                iconColor={star <= reviewRating ? '#FFD700' : colors.foregroundMuted}
+                iconColor={star <= reviewRating ? colors.tierGold : colors.foregroundMuted}
                 onPress={() => {
                   setReviewRating(star);
                   Haptics.selectionAsync();

@@ -117,12 +117,12 @@ function LiveEventCard({ event, onAction, onDismiss }: LiveEventCardProps) {
           borderRadius: 4,
         },
         tableBadgeText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
           color: colors.primary,
         },
         timeText: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.foregroundMuted,
         },
         nowBadge: {
@@ -160,7 +160,7 @@ function LiveEventCard({ event, onAction, onDismiss }: LiveEventCardProps) {
                 : colors.backgroundSecondary,
         },
         actionText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
           color:
             event.urgency === 'critical'

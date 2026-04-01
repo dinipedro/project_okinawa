@@ -129,7 +129,7 @@ export default function SetupHubScreen() {
       backgroundColor: colors.backgroundSecondary,
     },
     headerCard: {
-      margin: 15,
+      margin: 16,
       marginBottom: 20,
       backgroundColor: colors.card,
     },
@@ -240,7 +240,7 @@ export default function SetupHubScreen() {
       lineHeight: 18,
     },
     quickActionsCard: {
-      margin: 15,
+      margin: 16,
       backgroundColor: colors.backgroundSecondary,
     },
     quickActionsTitle: {

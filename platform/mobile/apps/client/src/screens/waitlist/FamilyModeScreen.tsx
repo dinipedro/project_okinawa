@@ -189,7 +189,7 @@ export default function FamilyModeScreen({ route }: FamilyModeScreenProps) {
         activatedTitle: {
           fontSize: 20,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
           marginBottom: 4,
         },
         activatedIcon: {
@@ -210,12 +210,12 @@ export default function FamilyModeScreen({ route }: FamilyModeScreenProps) {
           marginLeft: 12,
         },
         featureTitle: {
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: '600',
           color: colors.foreground,
         },
         featureDesc: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
         },
         sectionTitle: {
@@ -237,12 +237,12 @@ export default function FamilyModeScreen({ route }: FamilyModeScreenProps) {
           width: 40,
           height: 40,
           borderRadius: 20,
-          backgroundColor: '#9333EA',
+          backgroundColor: colors.statusDelivering,
           alignItems: 'center',
           justifyContent: 'center',
         },
         childAvatarText: {
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
           fontWeight: '600',
           fontSize: 16,
         },
@@ -251,12 +251,12 @@ export default function FamilyModeScreen({ route }: FamilyModeScreenProps) {
           marginLeft: 12,
         },
         childNameText: {
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: '600',
           color: colors.foreground,
         },
         childAgeText: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
         },
         childAllergies: {
@@ -358,7 +358,7 @@ export default function FamilyModeScreen({ route }: FamilyModeScreenProps) {
           <IconButton
             icon="baby-face-outline"
             size={32}
-            iconColor="#FFFFFF"
+            iconColor={colors.premiumCardForeground}
             style={styles.activatedIcon}
             accessibilityLabel={t('familyMode.title')}
           />

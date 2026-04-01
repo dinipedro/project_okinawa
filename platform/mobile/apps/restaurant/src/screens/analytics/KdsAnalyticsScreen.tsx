@@ -288,7 +288,7 @@ export default function KdsAnalyticsScreen() {
           marginBottom: 8,
         },
         stationEmoji: {
-          fontSize: 22,
+          fontSize: 24,
         },
         stationName: {
           fontSize: 16,
@@ -304,7 +304,7 @@ export default function KdsAnalyticsScreen() {
           flex: 1,
         },
         metricLabel: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.foregroundMuted,
           marginBottom: 2,
         },
@@ -336,7 +336,7 @@ export default function KdsAnalyticsScreen() {
         },
         bottleneckName: {
           flex: 1,
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -380,7 +380,7 @@ export default function KdsAnalyticsScreen() {
         throughputValue: {
           fontSize: 12,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         // Platform cards
         platformCard: {
@@ -395,7 +395,7 @@ export default function KdsAnalyticsScreen() {
         },
         platformName: {
           flex: 1,
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -403,7 +403,7 @@ export default function KdsAnalyticsScreen() {
           alignItems: 'flex-end',
         },
         platformMetricText: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
         },
         platformLatePct: {
@@ -436,9 +436,9 @@ export default function KdsAnalyticsScreen() {
           paddingVertical: 2,
         },
         confidenceText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         suggestionTimes: {
           flexDirection: 'row',
@@ -446,7 +446,7 @@ export default function KdsAnalyticsScreen() {
           marginBottom: 12,
         },
         suggestionTimeText: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
         },
         suggestionActions: {
@@ -658,7 +658,7 @@ export default function KdsAnalyticsScreen() {
                     loading={acceptMutation.isPending}
                     compact
                     buttonColor={colors.success}
-                    textColor="#FFFFFF"
+                    textColor={colors.premiumCardForeground}
                   >
                     {t('kds.analytics.accept')}
                   </Button>

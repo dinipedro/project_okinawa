@@ -136,7 +136,7 @@ export default function PromoterDashboardScreen({ route }: PromoterDashboardScre
               {item.ticketType.toUpperCase()}
             </Chip>
           </View>
-          <Chip mode="flat" compact textStyle={{ color: colors.primaryForeground, fontSize: 11 }} style={{ backgroundColor: checked ? colors.success : colors.foregroundMuted }}>
+          <Chip mode="flat" compact textStyle={{ color: colors.primaryForeground, fontSize: 12 }} style={{ backgroundColor: checked ? colors.success : colors.foregroundMuted }}>
             {checked ? t('club.promoter.checkedIn') : t('club.promoter.waiting')}
           </Chip>
         </Card.Content>

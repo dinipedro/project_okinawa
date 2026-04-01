@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 import ApiService from '@/shared/services/api';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
 import logger from '@okinawa/shared/utils/logger';
 import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
 
@@ -289,13 +290,13 @@ export default function ReviewsScreen() {
               </View>
 
               <TextInput
-                label="Your Review (Optional)"
+                label={t('formLabels.yourReviewOptional')}
                 value={editComment}
                 onChangeText={setEditComment}
                 mode="outlined"
                 multiline
                 numberOfLines={4}
-                placeholder="Share your experience..."
+                placeholder={t('placeholders.shareExperience')}
                 style={styles.commentInput}
                 accessibilityLabel="Your review comment"
               />
@@ -322,7 +323,7 @@ export default function ReviewsScreen() {
         icon="plus"
         style={[styles.fab, { backgroundColor: colors.primary }]}
         onPress={() => navigation.navigate('Orders' as never)}
-        label="Write Review"
+        label={t('formLabels.writeReview')}
       />
     </View>
   
@@ -346,7 +347,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.foregroundMuted,
   },
   listContent: {
-    padding: 15,
+    padding: 16,
   },
   card: {
     marginBottom: 15,

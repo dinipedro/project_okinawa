@@ -36,6 +36,14 @@ import { formatCurrency as fmtCurrencyUtil } from '@okinawa/shared/utils/formatt
 import { getLanguage } from '@okinawa/shared/i18n';
 import type { RootStackParamList, PaymentSuccessParams } from '../../types';
 import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
+import {
+  validateCardNumber,
+  validateExpiry,
+  validateCVV,
+  getCardBrand,
+  formatCardNumber,
+  formatExpiry,
+} from '@okinawa/shared/utils/card-validation';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -85,37 +93,6 @@ interface LoyaltyInfo {
   points_balance: number;
   points_value: number; // monetary value of redeemable points
 }
-
-/**
- * Luhn algorithm for card number validation
- */
-const isValidCardNumber = (cardNumber: string): boolean => {
-  const cleaned = cardNumber.replace(/\s/g, '');
-  if (!/^\d{13,19}$/.test(cleaned)) return false;
-  let sum = 0;
-  let isEven = false;
-  for (let i = cleaned.length - 1; i >= 0; i--) {
-    let digit = parseInt(cleaned[i], 10);
-    if (isEven) {
-      digit *= 2;
-      if (digit > 9) digit -= 9;
-    }
-    sum += digit;
-    isEven = !isEven;
-  }
-  return sum % 10 === 0;
-};
-
-const getCardBrand = (cardNumber: string): string => {
-  const cleaned = cardNumber.replace(/\s/g, '');
-  if (/^4/.test(cleaned)) return 'Visa';
-  if (/^5[1-5]/.test(cleaned)) return 'Mastercard';
-  if (/^3[47]/.test(cleaned)) return 'Amex';
-  if (/^6011|65|64[4-9]/.test(cleaned)) return 'Discover';
-  if (/^36|38|30[0-5]/.test(cleaned)) return 'Diners';
-  if (/^35/.test(cleaned)) return 'JCB';
-  return 'Unknown';
-};
 
 // Skeleton component
 const SkeletonBlock = ({ width, height, style }: { width: number | string; height: number; style?: any }) => {
@@ -280,27 +257,9 @@ export default function UnifiedPaymentScreen() {
 
   const formatCurrency = useCallback((value: number) => fmtCurrencyUtil(value, getLanguage()), []);
 
-  const formatCardNumber = (text: string) => {
-    const cleaned = text.replace(/\D/g, '');
-    const formatted = cleaned.replace(/(\d{4})/g, '$1 ').trim();
-    return formatted.substring(0, 19);
-  };
-
-  const formatExpiry = (text: string) => {
-    const cleaned = text.replace(/\D/g, '');
-    if (cleaned.length >= 2) {
-      return cleaned.substring(0, 2) + '/' + cleaned.substring(2, 4);
-    }
-    return cleaned;
-  };
-
   const validateNewCard = useCallback((): boolean => {
     const cleanedNumber = cardNumber.replace(/\s/g, '');
-    if (!cleanedNumber || cleanedNumber.length < 13 || cleanedNumber.length > 19) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
-    if (!isValidCardNumber(cleanedNumber)) {
+    if (!cleanedNumber || !validateCardNumber(cleanedNumber)) {
       Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
@@ -313,21 +272,12 @@ export default function UnifiedPaymentScreen() {
       return false;
     }
     const [month, year] = cardExpiry.split('/');
-    const monthNum = parseInt(month, 10);
-    if (monthNum < 1 || monthNum > 12) {
+    if (!validateExpiry(month, year)) {
       Alert.alert(t('common.error'), t('payment.cardExpiry'));
       return false;
     }
-    const expDate = new Date(2000 + parseInt(year), monthNum - 1);
-    const now = new Date();
-    now.setDate(1);
-    if (expDate < now) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
     const brand = getCardBrand(cleanedNumber);
-    const expectedCVV = brand === 'Amex' ? 4 : 3;
-    if (!cardCVV || cardCVV.length !== expectedCVV) {
+    if (!validateCVV(cardCVV, brand)) {
       Alert.alert(t('common.error'), t('payment.cardCvv'));
       return false;
     }
@@ -558,7 +508,7 @@ export default function UnifiedPaymentScreen() {
         },
         methodLabel: {
           marginTop: 4,
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
         },
         methodBadge: {
@@ -571,12 +521,12 @@ export default function UnifiedPaymentScreen() {
           paddingVertical: 1,
         },
         methodBadgeText: {
-          color: '#fff',
+          color: colors.premiumCardForeground,
           fontSize: 8,
           fontWeight: 'bold',
         },
         walletBalance: {
-          fontSize: 9,
+          fontSize: 10,
           marginTop: 2,
         },
         // Tip section

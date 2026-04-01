@@ -400,9 +400,9 @@ const createStyles = (colors: any) =>
       alignItems: 'center',
     },
     badgeText: {
-      color: '#FFFFFF',
+      color: colors.premiumCardForeground,
       fontWeight: 'bold',
-      fontSize: 11,
+      fontSize: 12,
     },
     tabContainer: {
       paddingHorizontal: 16,
@@ -471,7 +471,7 @@ const createStyles = (colors: any) =>
     },
     resolvedChipText: {
       color: colors.success,
-      fontSize: 11,
+      fontSize: 12,
     },
     // States
     errorContainer: {

@@ -19,6 +19,7 @@ import { otpAuthService, OTPChannel } from '@/shared/services/otp-auth';
 import { socialAuthService } from '@/shared/services/social-auth';
 import Haptic from '@/shared/utils/haptics';
 import { useScreenTracking } from '@/shared/hooks/useAnalytics';
+import { validatePhone } from '@okinawa/shared/utils/phone-validation';
 
 type AuthStep = 'phone' | 'otp' | 'register';
 
@@ -69,7 +70,7 @@ export const PhoneAuthScreen: React.FC<PhoneAuthScreenProps> = ({
   }, []);
 
   const handleSendOTP = async () => {
-    if (!fullPhoneNumber || fullPhoneNumber.length < 10) {
+    if (!fullPhoneNumber || !validatePhone(fullPhoneNumber)) {
       setError(t('auth.invalidPhoneNumber') || 'Please enter a valid phone number');
       shake();
       return;

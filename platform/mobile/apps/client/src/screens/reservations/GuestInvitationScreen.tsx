@@ -36,10 +36,10 @@ interface Contact {
 }
 
 const STATUS_COLORS = {
-  pending: '#FFA726',
-  accepted: '#66BB6A',
-  declined: '#EF5350',
-  cancelled: '#757575',
+  pending: colors.statusPending,
+  accepted: colors.success,
+  declined: colors.error,
+  cancelled: colors.foregroundMuted,
 };
 
 const getGuestStatusLabel = (status: string, t: (key: string) => string): string =>
@@ -69,7 +69,7 @@ export default function GuestInvitationScreen() {
     container: {
       flex: 1,
       backgroundColor: colors.backgroundSecondary,
-      padding: 15,
+      padding: 16,
     },
     loadingContainer: {
       flex: 1,
@@ -97,7 +97,7 @@ export default function GuestInvitationScreen() {
     summaryNumber: {
       fontSize: 28,
       fontWeight: 'bold',
-      color: '#fff',
+      color: colors.premiumCardForeground,
     },
     summaryLabel: {
       fontSize: 12,
@@ -110,7 +110,7 @@ export default function GuestInvitationScreen() {
       backgroundColor: 'rgba(255,255,255,0.3)',
     },
     warningText: {
-      color: '#FFEB3B',
+      color: colors.accent,
     },
     card: {
       marginBottom: 15,
@@ -154,7 +154,7 @@ export default function GuestInvitationScreen() {
       marginTop: 4,
     },
     statusText: {
-      color: '#fff',
+      color: colors.premiumCardForeground,
       fontSize: 10,
     },
     emptyText: {
@@ -468,7 +468,7 @@ export default function GuestInvitationScreen() {
                     {guest.guest_user?.full_name || guest.guest_name}
                   </Text>
                   {guest.is_host && (
-                    <Chip compact style={styles.hostChip} textStyle={{ color: '#fff', fontSize: 10 }}>Host</Chip>
+                    <Chip compact style={styles.hostChip} textStyle={{ color: colors.premiumCardForeground, fontSize: 10 }}>Host</Chip>
                   )}
                 </View>
                 <Text variant="bodySmall" style={styles.guestContact}>

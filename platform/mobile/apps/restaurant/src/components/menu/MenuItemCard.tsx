@@ -70,7 +70,7 @@ export default function MenuItemCard({
     },
     categoryText: {
       color: '#1976D2',
-      fontSize: 11,
+      fontSize: 12,
     },
     allergenChip: {
       height: 24,
@@ -78,7 +78,7 @@ export default function MenuItemCard({
     },
     allergenText: {
       color: '#C62828',
-      fontSize: 11,
+      fontSize: 12,
     },
     vegChip: {
       height: 24,
@@ -86,7 +86,7 @@ export default function MenuItemCard({
     },
     vegText: {
       color: '#2E7D32',
-      fontSize: 11,
+      fontSize: 12,
     },
     veganChip: {
       height: 24,
@@ -94,7 +94,7 @@ export default function MenuItemCard({
     },
     veganText: {
       color: '#558B2F',
-      fontSize: 11,
+      fontSize: 12,
     },
     allergensList: {
       flexDirection: 'row',

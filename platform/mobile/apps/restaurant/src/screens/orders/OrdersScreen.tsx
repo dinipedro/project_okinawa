@@ -198,7 +198,7 @@ export default function OrdersScreen() {
       height: 28,
     },
     chipText: { 
-      color: '#fff', 
+      color: colors.premiumCardForeground, 
       fontSize: 12,
     },
     divider: { 

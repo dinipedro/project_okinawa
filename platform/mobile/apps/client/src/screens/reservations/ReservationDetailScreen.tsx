@@ -56,19 +56,19 @@ interface Reservation {
 }
 
 const STATUS_CONFIG = {
-  pending: { color: '#FFA726', label: 'Aguardando confirmação', icon: 'clock-outline' },
-  confirmed: { color: '#66BB6A', label: 'Confirmada', icon: 'check-circle' },
-  seated: { color: '#42A5F5', label: 'Sentado', icon: 'chair-rolling' },
-  completed: { color: '#4CAF50', label: 'Concluída', icon: 'check-all' },
-  cancelled: { color: '#EF5350', label: 'Cancelada', icon: 'close-circle' },
-  no_show: { color: '#757575', label: 'Não compareceu', icon: 'account-off' },
+  pending: { color: colors.statusPending, label: 'Aguardando confirmação', icon: 'clock-outline' },
+  confirmed: { color: colors.success, label: 'Confirmada', icon: 'check-circle' },
+  seated: { color: colors.statusConfirmed, label: 'Sentado', icon: 'chair-rolling' },
+  completed: { color: colors.success, label: 'Concluída', icon: 'check-all' },
+  cancelled: { color: colors.error, label: 'Cancelada', icon: 'close-circle' },
+  no_show: { color: colors.foregroundMuted, label: 'Não compareceu', icon: 'account-off' },
 };
 
 const GUEST_STATUS_COLORS = {
-  pending: '#FFA726',
-  accepted: '#66BB6A',
-  declined: '#EF5350',
-  cancelled: '#757575',
+  pending: colors.statusPending,
+  accepted: colors.success,
+  declined: colors.error,
+  cancelled: colors.foregroundMuted,
 };
 
 export default function ReservationDetailScreen() {
@@ -102,7 +102,7 @@ export default function ReservationDetailScreen() {
       color: colors.foregroundMuted,
     },
     statusCard: {
-      margin: 15,
+      margin: 16,
       marginBottom: 10,
     },
     statusHeader: {
@@ -113,7 +113,7 @@ export default function ReservationDetailScreen() {
       flex: 1,
     },
     statusLabel: {
-      color: '#fff',
+      color: colors.premiumCardForeground,
       fontSize: 18,
       fontWeight: 'bold',
     },
@@ -233,16 +233,16 @@ export default function ReservationDetailScreen() {
       height: 22,
     },
     hostChipText: {
-      color: '#fff',
+      color: colors.premiumCardForeground,
       fontSize: 10,
     },
     arrivedChip: {
-      backgroundColor: '#E8F5E9',
+      backgroundColor: colors.successBackground,
       height: 22,
       marginTop: 4,
     },
     arrivedText: {
-      color: '#2E7D32',
+      color: colors.success,
       fontSize: 10,
     },
     guestDivider: {
@@ -257,7 +257,7 @@ export default function ReservationDetailScreen() {
       color: colors.foregroundMuted,
     },
     pendingChip: {
-      backgroundColor: '#FFF3E0',
+      backgroundColor: colors.warningBackground,
       height: 22,
     },
     emptyGuests: {
@@ -266,7 +266,7 @@ export default function ReservationDetailScreen() {
       paddingVertical: 15,
     },
     actions: {
-      padding: 15,
+      padding: 16,
       gap: 10,
     },
     actionButton: {
@@ -276,16 +276,16 @@ export default function ReservationDetailScreen() {
       backgroundColor: colors.primary,
     },
     cancelButton: {
-      borderColor: '#EF5350',
+      borderColor: colors.error,
     },
     cancelledCard: {
       marginHorizontal: 15,
       marginBottom: 15,
-      backgroundColor: '#FFEBEE',
+      backgroundColor: colors.errorBackground,
     },
     cancelledLabel: {
       fontWeight: '600',
-      color: '#C62828',
+      color: colors.error,
       marginBottom: 5,
     },
   }), [colors]);
@@ -421,7 +421,7 @@ export default function ReservationDetailScreen() {
       <Card style={[styles.statusCard, { backgroundColor: statusConfig.color }]}>
         <Card.Content>
           <View style={styles.statusHeader}>
-            <IconButton icon={statusConfig.icon} size={32} iconColor="#fff" />
+            <IconButton icon={statusConfig.icon} size={32} iconColor={colors.premiumCardForeground} />
             <View style={styles.statusInfo}>
               <Text style={styles.statusLabel}>{statusConfig.label}</Text>
               {isUpcoming && minutesUntil > 0 && (
@@ -436,7 +436,7 @@ export default function ReservationDetailScreen() {
           </View>
           {reservation.status === 'confirmed' && (
             <View style={styles.progressContainer}>
-              <ProgressBar progress={minutesUntil <= 0 ? 1 : Math.max(0, 1 - minutesUntil / 60)} color="#fff" />
+              <ProgressBar progress={minutesUntil <= 0 ? 1 : Math.max(0, 1 - minutesUntil / 60)} color={colors.premiumCardForeground} />
             </View>
           )}
         </Card.Content>
@@ -590,7 +590,7 @@ export default function ReservationDetailScreen() {
                   <Avatar.Text
                     size={36}
                     label={(guest.guest_name || '?').substring(0, 2).toUpperCase()}
-                    style={[styles.guestAvatar, { backgroundColor: '#FFA726' }]}
+                    style={[styles.guestAvatar, { backgroundColor: colors.statusPending }]}
                   />
                   <View style={styles.guestInfo}>
                     <Text variant="bodyMedium" style={{ color: colors.foreground }}>{guest.guest_name}</Text>
@@ -598,7 +598,7 @@ export default function ReservationDetailScreen() {
                       {guest.guest_phone || guest.guest_email}
                     </Text>
                   </View>
-                  <Chip compact style={styles.pendingChip} textStyle={{ color: '#F57C00', fontSize: 10 }}>{t('reservations.status.pending')}</Chip>
+                  <Chip compact style={styles.pendingChip} textStyle={{ color: colors.warning, fontSize: 10 }}>{t('reservations.status.pending')}</Chip>
                 </View>
               ))}
             </>
@@ -652,7 +652,7 @@ export default function ReservationDetailScreen() {
             loading={cancelling}
             disabled={cancelling}
             style={styles.cancelButton}
-            textColor="#EF5350"
+            textColor=colors.error
             icon="close"
           >
             Cancelar Reserva
@@ -667,7 +667,7 @@ export default function ReservationDetailScreen() {
             <Text variant="bodyMedium" style={styles.cancelledLabel}>
               Motivo do cancelamento:
             </Text>
-            <Text variant="bodySmall" style={{ color: '#C62828' }}>{reservation.cancellation_reason}</Text>
+            <Text variant="bodySmall" style={{ color: colors.error }}>{reservation.cancellation_reason}</Text>
           </Card.Content>
         </Card>
       )}

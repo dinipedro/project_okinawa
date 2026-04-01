@@ -94,15 +94,15 @@ function OrderItemCard({
           marginTop: 2,
         },
         guestText: {
-          fontSize: 9,
+          fontSize: 10,
           color: hasApp ? colors.info : colors.warning,
         },
         timeText: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.foregroundMuted,
         },
         priceText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
           color: colors.foreground,
         },
@@ -114,7 +114,7 @@ function OrderItemCard({
           marginLeft: 4,
         },
         serveText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
           color: '#FFFFFF',
         },

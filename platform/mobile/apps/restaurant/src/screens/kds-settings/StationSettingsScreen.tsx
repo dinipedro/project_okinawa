@@ -276,7 +276,7 @@ export default function StationSettingsScreen() {
           color: colors.foreground,
         },
         stationMeta: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundMuted,
           marginTop: 2,
         },

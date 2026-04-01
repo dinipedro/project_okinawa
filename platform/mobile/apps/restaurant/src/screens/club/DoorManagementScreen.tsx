@@ -432,7 +432,7 @@ export default function DoorManagementScreen({ route }: DoorManagementScreenProp
             paddingHorizontal: 20,
           }}
         >
-          <Text style={{ color: colors.primaryForeground, fontSize: 22, fontWeight: '700' }}>
+          <Text style={{ color: colors.primaryForeground, fontSize: 24, fontWeight: '700' }}>
             {t('club.door.title')}
           </Text>
         </LinearGradient>
@@ -458,10 +458,10 @@ export default function DoorManagementScreen({ route }: DoorManagementScreenProp
       >
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ color: colors.primaryForeground, fontSize: 22, fontWeight: '700' }}>
+            <Text style={{ color: colors.primaryForeground, fontSize: 24, fontWeight: '700' }}>
               {t('club.door.title')}
             </Text>
-            <Text style={{ color: colors.glassStrong, fontSize: 13, marginTop: 4 }}>
+            <Text style={{ color: colors.glassStrong, fontSize: 14, marginTop: 4 }}>
               {t('club.door.waiting')}: {waitingCount}
             </Text>
           </View>

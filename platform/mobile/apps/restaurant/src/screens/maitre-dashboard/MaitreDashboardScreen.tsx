@@ -76,7 +76,7 @@ export default function MaitreDashboardScreen() {
     },
     statsContainer: {
       flexDirection: 'row',
-      padding: 15,
+      padding: 16,
       gap: 10,
     },
     statCard: {
@@ -103,7 +103,7 @@ export default function MaitreDashboardScreen() {
       marginBottom: 15,
     },
     scrollContent: {
-      padding: 15,
+      padding: 16,
       paddingBottom: 80,
     },
     sectionTitle: {

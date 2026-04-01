@@ -8,56 +8,14 @@ import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import { t } from '@okinawa/shared/i18n';
 import logger from '@okinawa/shared/utils/logger';
 import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
-
-/**
- * Luhn algorithm for card number validation
- * https://en.wikipedia.org/wiki/Luhn_algorithm
- */
-const isValidCardNumber = (cardNumber: string): boolean => {
-  const cleaned = cardNumber.replace(/\s/g, '');
-
-  // Must be 13-19 digits (standard card lengths)
-  if (!/^\d{13,19}$/.test(cleaned)) {
-    return false;
-  }
-
-  // Luhn algorithm
-  let sum = 0;
-  let isEven = false;
-
-  for (let i = cleaned.length - 1; i >= 0; i--) {
-    let digit = parseInt(cleaned[i], 10);
-
-    if (isEven) {
-      digit *= 2;
-      if (digit > 9) {
-        digit -= 9;
-      }
-    }
-
-    sum += digit;
-    isEven = !isEven;
-  }
-
-  return sum % 10 === 0;
-};
-
-/**
- * Detect card brand from number
- */
-const getCardBrand = (cardNumber: string): string => {
-  const cleaned = cardNumber.replace(/\s/g, '');
-
-  if (/^4/.test(cleaned)) return 'Visa';
-  if (/^5[1-5]/.test(cleaned)) return 'Mastercard';
-  if (/^3[47]/.test(cleaned)) return 'Amex';
-  if (/^6011|65|64[4-9]/.test(cleaned)) return 'Discover';
-  if (/^36|38|30[0-5]/.test(cleaned)) return 'Diners';
-  if (/^35/.test(cleaned)) return 'JCB';
-  if (/^50|5[6-9]|6/.test(cleaned)) return 'Maestro';
-
-  return 'Unknown';
-};
+import {
+  validateCardNumber,
+  validateExpiry,
+  validateCVV,
+  getCardBrand,
+  formatCardNumber,
+  formatExpiry,
+} from '@okinawa/shared/utils/card-validation';
 
 interface Order {
   id: string;
@@ -161,31 +119,11 @@ export default function PaymentScreen() {
     }
   };
 
-  const formatCardNumber = (text: string) => {
-    const cleaned = text.replace(/\D/g, '');
-    const formatted = cleaned.replace(/(\d{4})/g, '$1 ').trim();
-    return formatted.substring(0, 19); // Max 16 digits + 3 spaces
-  };
-
-  const formatExpiry = (text: string) => {
-    const cleaned = text.replace(/\D/g, '');
-    if (cleaned.length >= 2) {
-      return cleaned.substring(0, 2) + '/' + cleaned.substring(2, 4);
-    }
-    return cleaned;
-  };
-
   const validateNewCard = () => {
     const cleanedNumber = cardNumber.replace(/\s/g, '');
 
-    // Validate card number length (13-19 digits depending on brand)
-    if (!cleanedNumber || cleanedNumber.length < 13 || cleanedNumber.length > 19) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
-
-    // Validate card number with Luhn algorithm
-    if (!isValidCardNumber(cleanedNumber)) {
+    // Validate card number with Luhn algorithm (also checks length)
+    if (!cleanedNumber || !validateCardNumber(cleanedNumber)) {
       Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
@@ -208,38 +146,20 @@ export default function PaymentScreen() {
       return false;
     }
 
-    // Validate expiry format
+    // Validate expiry format and date
     if (!cardExpiry || !/^\d{2}\/\d{2}$/.test(cardExpiry)) {
       Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
-    // Validate month is valid (01-12)
     const [month, year] = cardExpiry.split('/');
-    const monthNum = parseInt(month, 10);
-    if (monthNum < 1 || monthNum > 12) {
+    if (!validateExpiry(month, year)) {
       Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
-    // Validate expiry date is not in the past
-    const expDate = new Date(2000 + parseInt(year), monthNum - 1);
-    const now = new Date();
-    now.setDate(1); // Compare by month only
-    if (expDate < now) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
-
-    // Validate CVV (3 digits for most cards, 4 for Amex)
-    const expectedCVVLength = brand === 'Amex' ? 4 : 3;
-    if (!cardCVV || cardCVV.length !== expectedCVVLength) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
-
-    // CVV should only contain digits
-    if (!/^\d+$/.test(cardCVV)) {
+    // Validate CVV
+    if (!validateCVV(cardCVV, brand)) {
       Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
@@ -368,7 +288,7 @@ export default function PaymentScreen() {
     container: {
       flex: 1,
       backgroundColor: colors.backgroundSecondary,
-      padding: 15,
+      padding: 16,
     },
     loadingContainer: {
       flex: 1,
@@ -686,7 +606,7 @@ export default function PaymentScreen() {
                   maxLength={5}
                   mode="outlined"
                   style={[styles.input, styles.halfInput]}
-                  placeholder="MM/YY"
+                  placeholder={t('placeholders.cardExpiry')}
                   accessibilityLabel="Card expiry date"
                 />
 

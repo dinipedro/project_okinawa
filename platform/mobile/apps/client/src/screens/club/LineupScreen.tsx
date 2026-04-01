@@ -164,7 +164,7 @@ function SlotCard({
               {slot.isNowPlaying && (
                 <Chip
                   mode="flat"
-                  textStyle={{ color: '#fff', fontSize: 10, fontWeight: '700' }}
+                  textStyle={{ color: colors.premiumCardForeground, fontSize: 10, fontWeight: '700' }}
                   style={[styles.nowPlayingChip, { backgroundColor: colors.primary }]}
                   compact
                 >
@@ -184,7 +184,7 @@ function SlotCard({
                 <Chip
                   mode="outlined"
                   compact
-                  textStyle={{ fontSize: 11 }}
+                  textStyle={{ fontSize: 12 }}
                   style={styles.genreChip}
                 >
                   {slot.genre}
@@ -210,7 +210,7 @@ function SlotCard({
             <Button
               mode="text"
               compact
-              labelStyle={{ fontSize: 11 }}
+              labelStyle={{ fontSize: 12 }}
               onPress={() => {
                 // Calendar integration placeholder
               }}

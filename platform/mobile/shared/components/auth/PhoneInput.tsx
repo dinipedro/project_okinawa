@@ -10,6 +10,7 @@ import { View, StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-nativ
 import { TextInput, Text, IconButton } from 'react-native-paper';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import Haptic from '@/shared/utils/haptics';
+import { validatePhone } from '@okinawa/shared/utils/phone-validation';
 
 interface Country {
   code: string;
@@ -82,10 +83,8 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   }, [onChange]);
 
   const isValid = useMemo(() => {
-    const digits = value.replace(/\D/g, '');
-    const expectedDigits = country.mask.replace(/\D/g, '').length;
-    return digits.length === expectedDigits;
-  }, [value, country.mask]);
+    return validatePhone(value, country.dial);
+  }, [value, country.dial]);
 
   return (
     <View style={styles.container}>

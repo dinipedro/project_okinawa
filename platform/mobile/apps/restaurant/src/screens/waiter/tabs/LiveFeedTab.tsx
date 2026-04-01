@@ -151,7 +151,7 @@ export default function LiveFeedTab({
           color: colors.success,
         },
         emptySubtitle: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.foregroundMuted,
           marginTop: 4,
         },

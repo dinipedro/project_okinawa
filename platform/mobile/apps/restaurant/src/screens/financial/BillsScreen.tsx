@@ -68,13 +68,13 @@ interface Bill {
 // ────────── Category Colors ──────────
 
 const CATEGORY_COLORS: Record<BillCategory, string> = {
-  rent: '#6366F1',
-  utilities: '#F59E0B',
-  supplies: '#10B981',
-  staff: '#3B82F6',
-  marketing: '#EC4899',
-  maintenance: '#8B5CF6',
-  other: '#6B7280',
+  rent: colors.statusDelivering,
+  utilities: colors.warning,
+  supplies: colors.success,
+  staff: colors.info,
+  marketing: colors.errorLight,
+  maintenance: colors.statusDelivering,
+  other: colors.foregroundSecondary,
 };
 
 // ────────── Main Component ──────────
@@ -350,7 +350,7 @@ export default function BillsScreen() {
                     }}
                     textStyle={{
                       color: CATEGORY_COLORS[bill.category],
-                      fontSize: 11,
+                      fontSize: 12,
                     }}
                   >
                     {getCategoryLabel(bill.category)}
@@ -405,7 +405,7 @@ export default function BillsScreen() {
       <FAB
         icon="plus"
         style={[styles.fab, { backgroundColor: colors.primary }]}
-        color="#FFFFFF"
+        color={colors.premiumCardForeground}
         onPress={openCreateModal}
         label={t('financial.bills.create')}
       />
@@ -471,7 +471,7 @@ export default function BillsScreen() {
                         backgroundColor: CATEGORY_COLORS[cat] + '30',
                       },
                     ]}
-                    textStyle={{ fontSize: 11 }}
+                    textStyle={{ fontSize: 12 }}
                   >
                     {getCategoryLabel(cat)}
                   </Chip>

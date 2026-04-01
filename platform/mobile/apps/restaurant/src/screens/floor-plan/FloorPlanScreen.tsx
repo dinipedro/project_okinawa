@@ -114,7 +114,7 @@ export default function FloorPlanScreen({ navigation }: any) {
     legend: {
       flexDirection: 'row',
       justifyContent: 'space-around',
-      padding: 15,
+      padding: 16,
       backgroundColor: colors.card,
       elevation: 2,
     },

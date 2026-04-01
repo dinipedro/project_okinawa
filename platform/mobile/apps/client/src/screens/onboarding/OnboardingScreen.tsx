@@ -34,10 +34,10 @@ interface OnboardingSlide {
 }
 
 const slideConfigs = [
-  { id: '1', icon: 'compass', titleKey: 'onboarding.slides.explore_title', descKey: 'onboarding.slides.explore_desc', color: '#FF6B6B' },
-  { id: '2', icon: 'qrcode-scan', titleKey: 'onboarding.slides.orders_title', descKey: 'onboarding.slides.orders_desc', color: '#4ECDC4' },
-  { id: '3', icon: 'calendar-check', titleKey: 'onboarding.slides.reserve_title', descKey: 'onboarding.slides.reserve_desc', color: '#FFB84D' },
-  { id: '4', icon: 'star', titleKey: 'onboarding.slides.rate_title', descKey: 'onboarding.slides.rate_desc', color: '#9B59B6' },
+  { id: '1', icon: 'compass', titleKey: 'onboarding.slides.explore_title', descKey: 'onboarding.slides.explore_desc', color: colors.onboardingSlide1 },
+  { id: '2', icon: 'qrcode-scan', titleKey: 'onboarding.slides.orders_title', descKey: 'onboarding.slides.orders_desc', color: colors.onboardingSlide2 },
+  { id: '3', icon: 'calendar-check', titleKey: 'onboarding.slides.reserve_title', descKey: 'onboarding.slides.reserve_desc', color: colors.onboardingSlide3 },
+  { id: '4', icon: 'star', titleKey: 'onboarding.slides.rate_title', descKey: 'onboarding.slides.rate_desc', color: colors.onboardingSlide4 },
 ];
 
 const cuisineKeys = [
@@ -78,7 +78,7 @@ export default function OnboardingScreen() {
       justifyContent: 'center', 
       alignItems: 'center',
       marginBottom: 40, 
-      shadowColor: '#000', 
+      shadowColor: colors.shadowColor, 
       shadowOffset: { width: 0, height: 10 },
       shadowOpacity: 0.2, 
       shadowRadius: 20, 
@@ -252,7 +252,7 @@ export default function OnboardingScreen() {
   const renderSlide = ({ item }: { item: typeof slides[0] }) => (
     <View style={[styles.slide, { width }]} accessibilityLabel={item.title}>
       <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
-        <Icon name={item.icon} size={100} color="#fff" />
+        <Icon name={item.icon} size={100} color={colors.premiumCardForeground} />
       </View>
       <Text variant="displaySmall" style={styles.title}>
         {item.title}

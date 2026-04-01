@@ -116,10 +116,10 @@ function ScanResultDisplay({
       bgColor: colors.error + '15',
     },
     already_used: {
-      color: '#F59E0B',
+      color: colors.warning,
       label: t('club.door.alreadyUsed'),
       icon: '!',
-      bgColor: '#F59E0B15',
+      bgColor: colors.statusPendingBackground,
     },
   };
 
@@ -184,8 +184,8 @@ function ScanResultDisplay({
             {result.data.isBirthday && (
               <Chip
                 mode="flat"
-                style={{ backgroundColor: '#F59E0B20', alignSelf: 'flex-start', marginTop: 4 }}
-                textStyle={{ color: '#F59E0B' }}
+                style={{ backgroundColor: colors.statusPendingBackground, alignSelf: 'flex-start', marginTop: 4 }}
+                textStyle={{ color: colors.warning }}
                 compact
               >
                 🎂 {t('club.birthday.title')}
@@ -199,7 +199,7 @@ function ScanResultDisplay({
               loading={isCheckingIn}
               disabled={isCheckingIn}
               style={[styles.checkInBtn, { backgroundColor: colors.success }]}
-              labelStyle={{ color: '#fff', fontWeight: '700' }}
+              labelStyle={{ color: colors.premiumCardForeground, fontWeight: '700' }}
               accessibilityRole="button"
               accessibilityLabel="Confirm guest check-in"
             >
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
   occupancyDivider: {
     width: 1,
     height: 40,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: colors.muted,
     marginHorizontal: 16,
   },
   scanBtn: {
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statusIcon: {
-    color: '#fff',
+    color: colors.premiumCardForeground,
     fontSize: 32,
     fontWeight: '800',
   },
@@ -547,7 +547,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e020',
+    borderTopColor: colors.borderLight,
   },
   guestRow: {
     flexDirection: 'row',

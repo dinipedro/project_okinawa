@@ -263,7 +263,7 @@ export default function BirthdayEntryRequestScreen({ route }: BirthdayEntryReque
           label={t('club.birthday.dateOfBirth')}
           value={dateOfBirth}
           onChangeText={setDateOfBirth}
-          placeholder="DD/MM/AAAA"
+          placeholder={t('placeholders.dateFormatBR')}
           mode="outlined"
           style={styles.input}
           keyboardType="number-pad"

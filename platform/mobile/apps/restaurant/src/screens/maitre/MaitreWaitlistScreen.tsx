@@ -313,7 +313,7 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
           color: colors.foreground,
         },
         entryMeta: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
           marginTop: 2,
         },
@@ -331,7 +331,7 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
           borderRadius: 8,
         },
         kidsBadgeText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.secondary,
           marginLeft: 2,
@@ -345,13 +345,13 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
           borderRadius: 8,
         },
         barOrdersBadgeText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.primary,
           marginLeft: 2,
         },
         waitTimeText: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundMuted,
         },
         // Actions
@@ -384,13 +384,13 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
           borderTopColor: colors.border,
         },
         kidsInfoTitle: {
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: '600',
           color: colors.secondary,
           marginBottom: 4,
         },
         kidsInfoText: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
         },
         // Called status
@@ -401,7 +401,7 @@ export default function MaitreWaitlistScreen({ route }: MaitreWaitlistScreenProp
           borderRadius: 8,
         },
         calledBadgeText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.warning,
         },

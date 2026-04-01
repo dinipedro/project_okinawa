@@ -122,7 +122,7 @@ export default function ServiceConfigScreen() {
       backgroundColor: colors.backgroundSecondary,
     },
     scrollContent: {
-      padding: 15,
+      padding: 16,
       paddingBottom: 100,
     },
     section: {
@@ -178,7 +178,7 @@ export default function ServiceConfigScreen() {
       bottom: 0,
       left: 0,
       right: 0,
-      padding: 15,
+      padding: 16,
       backgroundColor: colors.card,
       borderTopWidth: 1,
       borderTopColor: colors.border,

@@ -593,10 +593,10 @@ const createStyles = (colors: any) =>
     },
     tableOccupants: {
       fontWeight: '600',
-      fontSize: 9,
+      fontSize: 10,
     },
     tableTime: {
-      fontSize: 9,
+      fontSize: 10,
     },
     legend: {
       paddingHorizontal: 16,

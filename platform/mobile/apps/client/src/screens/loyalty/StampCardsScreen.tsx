@@ -130,7 +130,7 @@ const StampGrid = ({
                     <IconButton
                       icon="check"
                       size={12}
-                      iconColor="#FFFFFF"
+                      iconColor={colors.premiumCardForeground}
                       style={{ margin: 0 }}
                     />
                   )}
@@ -270,9 +270,9 @@ export default function StampCardsScreen() {
           borderBottomLeftRadius: 12,
         },
         completedOverlayText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         cardHeader: {
           flexDirection: 'row',
@@ -286,7 +286,7 @@ export default function StampCardsScreen() {
           marginLeft: 4,
         },
         cardCounter: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
           marginTop: 4,
         },
@@ -297,7 +297,7 @@ export default function StampCardsScreen() {
           fontStyle: 'italic',
         },
         cyclesText: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.foregroundMuted,
           marginTop: 6,
         },

@@ -181,7 +181,7 @@ export default function WaiterCommandCenter() {
           position: 'relative',
         },
         tabText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
         },
         tabBadge: {

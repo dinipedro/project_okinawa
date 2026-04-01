@@ -584,7 +584,7 @@ export default function VirtualQueueScreen() {
                     </View>
                     <Chip
                       style={[styles.statusChip, { backgroundColor: chipProps.backgroundColor }]}
-                      textStyle={{ color: colors.primaryForeground, fontSize: 11 }}
+                      textStyle={{ color: colors.primaryForeground, fontSize: 12 }}
                     >
                       {chipProps.label}
                     </Chip>

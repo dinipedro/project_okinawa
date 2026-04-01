@@ -43,10 +43,10 @@ interface GeneratedQR {
 }
 
 const styleConfigs = [
-  { id: 'minimal', name: 'Minimal', color: '#000000' },
-  { id: 'premium', name: 'Premium', color: '#EA580C' },
-  { id: 'bold', name: 'Bold', color: '#18181B' },
-  { id: 'elegant', name: 'Elegant', color: '#374151' },
+  { id: 'minimal', name: 'Minimal', color: colors.foreground },
+  { id: 'premium', name: 'Premium', color: colors.primary },
+  { id: 'bold', name: 'Bold', color: colors.foreground },
+  { id: 'elegant', name: 'Elegant', color: colors.foregroundSecondary },
 ];
 
 export default function QRCodeBatchScreen() {
@@ -436,7 +436,7 @@ const createStyles = (colors: any) =>
       borderRadius: 6,
     },
     styleChipText: {
-      fontSize: 13,
+      fontSize: 14,
       color: colors.foreground,
     },
     styleChipTextSelected: {

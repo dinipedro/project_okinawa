@@ -66,9 +66,9 @@ interface ConnectionData {
 // ============================================
 
 const PLATFORMS: PlatformConfig[] = [
-  { key: 'ifood', name: 'iFood', icon: 'food', color: '#EA1D2C' },
-  { key: 'rappi', name: 'Rappi', icon: 'moped', color: '#FF441F' },
-  { key: 'ubereats', name: 'Uber Eats', icon: 'car', color: '#06C167' },
+  { key: 'ifood', name: 'iFood', icon: 'food', color: colors.error },
+  { key: 'rappi', name: 'Rappi', icon: 'moped', color: colors.primary },
+  { key: 'ubereats', name: 'Uber Eats', icon: 'car', color: colors.success },
 ];
 
 // ============================================
@@ -251,7 +251,7 @@ export default function IntegrationSettingsScreen() {
           borderRadius: 4,
         },
         statusText: {
-          fontSize: 13,
+          fontSize: 14,
         },
         configureButton: {
           marginTop: 12,

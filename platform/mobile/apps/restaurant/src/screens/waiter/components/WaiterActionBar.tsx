@@ -310,7 +310,7 @@ export default function WaiterActionBar({
           justifyContent: 'center',
         },
         actionLabel: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.foregroundSecondary,
           textAlign: 'center',

@@ -592,7 +592,7 @@ const createStyles = (colors: any) =>
     },
     defaultChipText: {
       color: colors.success,
-      fontSize: 11,
+      fontSize: 12,
       fontWeight: '600',
     },
     addressText: {

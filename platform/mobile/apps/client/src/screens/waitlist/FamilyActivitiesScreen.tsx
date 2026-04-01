@@ -167,7 +167,7 @@ export default function FamilyActivitiesScreen({ route }: FamilyActivitiesScreen
           color: colors.foreground,
         },
         activityDesc: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
           marginTop: 2,
         },

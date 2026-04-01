@@ -386,7 +386,7 @@ const createStyles = (colors: ReturnType<typeof useColors>) =>
     },
     chipText: {
       color: colors.error,
-      fontSize: 13,
+      fontSize: 14,
     },
     profitNote: {
       color: colors.foregroundMuted,

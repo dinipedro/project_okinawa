@@ -112,11 +112,11 @@ export default function HRScreen({ navigation }: any) {
 
   const getLeaveTypeColor = (type: string) => {
     const typeColors: Record<string, string> = {
-      vacation: '#4CAF50',
-      sick: '#F44336',
-      personal: '#FF9800',
+      vacation: colors.success,
+      sick: colors.error,
+      personal: colors.warning,
     };
-    return typeColors[type] || '#9E9E9E';
+    return typeColors[type] || colors.foregroundMuted;
   };
 
   const styles = useMemo(() => StyleSheet.create({
@@ -125,12 +125,12 @@ export default function HRScreen({ navigation }: any) {
       backgroundColor: colors.backgroundSecondary,
     },
     segmentedButtons: {
-      margin: 15,
+      margin: 16,
     },
     grid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      padding: 15,
+      padding: 16,
       paddingTop: 0,
       gap: 15,
     },
@@ -152,7 +152,7 @@ export default function HRScreen({ navigation }: any) {
       fontWeight: 'bold' as const,
     },
     card: {
-      margin: 15,
+      margin: 16,
       marginTop: 0,
       backgroundColor: colors.card,
     },
@@ -326,7 +326,7 @@ export default function HRScreen({ navigation }: any) {
               <View key={request.id} style={styles.leaveRequest}>
                 <View style={styles.leaveHeader}>
                   <Text variant="titleMedium">{request.staff_member.name}</Text>
-                  <Chip style={{ backgroundColor: getLeaveTypeColor(request.leave_type) }} textStyle={{ color: '#fff', fontSize: 11 }} accessibilityLabel={`Leave type: ${request.leave_type}`}>
+                  <Chip style={{ backgroundColor: getLeaveTypeColor(request.leave_type) }} textStyle={{ color: colors.premiumCardForeground, fontSize: 12 }} accessibilityLabel={`Leave type: ${request.leave_type}`}>
                     {request.leave_type.toUpperCase()}
                   </Chip>
                 </View>

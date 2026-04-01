@@ -58,11 +58,11 @@ export const LoyaltyLeaderboardScreen: React.FC<{ navigation: any }> = ({ naviga
    */
   const getTierColor = useCallback((tier: string): string => {
     const tierColors: Record<string, string> = {
-      bronze: '#CD7F32',
-      silver: '#C0C0C0',
-      gold: '#FFD700',
-      platinum: '#E5E4E2',
-      diamond: '#B9F2FF',
+      bronze: colors.tierBronze,
+      silver: colors.tierSilver,
+      gold: colors.tierGold,
+      platinum: colors.tierPlatinum,
+      diamond: colors.info,
     };
     return tierColors[tier] || colors.foregroundMuted;
   }, [colors]);

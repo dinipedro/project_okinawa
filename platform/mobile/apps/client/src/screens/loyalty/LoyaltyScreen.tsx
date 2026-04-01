@@ -41,10 +41,10 @@ interface PointsTransaction {
 // Note: TIER_CONFIG uses brand/material colors that are intentionally static
 // as they represent real-world medal colors, not theme-dependent UI elements
 const TIER_CONFIG = {
-  bronze: { name: 'Bronze', color: '#CD7F32', nextTier: 'Silver', pointsRequired: 500 },
-  silver: { name: 'Silver', color: '#C0C0C0', nextTier: 'Gold', pointsRequired: 1000 },
-  gold: { name: 'Gold', color: '#FFD700', nextTier: 'Platinum', pointsRequired: 2500 },
-  platinum: { name: 'Platinum', color: '#E5E4E2', nextTier: null, pointsRequired: 5000 },
+  bronze: { name: 'Bronze', color: colors.tierBronze, nextTier: 'Silver', pointsRequired: 500 },
+  silver: { name: 'Silver', color: colors.tierSilver, nextTier: 'Gold', pointsRequired: 1000 },
+  gold: { name: 'Gold', color: colors.tierGold, nextTier: 'Platinum', pointsRequired: 2500 },
+  platinum: { name: 'Platinum', color: colors.tierPlatinum, nextTier: null, pointsRequired: 5000 },
 };
 
 export default function LoyaltyScreen() {
@@ -428,13 +428,13 @@ const createStyles = (colors: any) => StyleSheet.create({
     textAlign: 'center',
   },
   programSelector: {
-    padding: 15,
+    padding: 16,
   },
   programChip: {
     marginRight: 10,
   },
   headerCard: {
-    margin: 15,
+    margin: 16,
     backgroundColor: colors.card,
   },
   restaurantName: {
@@ -463,7 +463,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   tierChip: {},
   tierText: {
-    color: '#000',
+    color: colors.foreground,
     fontWeight: 'bold',
   },
   progressContainer: {
@@ -482,7 +482,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderRadius: 4,
   },
   card: {
-    margin: 15,
+    margin: 16,
     marginTop: 0,
     backgroundColor: colors.card,
   },

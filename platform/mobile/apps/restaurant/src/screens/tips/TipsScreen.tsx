@@ -57,12 +57,12 @@ export default function TipsScreen() {
       backgroundColor: colors.background,
     },
     segmentedButtons: {
-      margin: 15,
+      margin: 16,
     },
     grid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      padding: 15,
+      padding: 16,
       paddingTop: 0,
       gap: 15,
     },
@@ -92,7 +92,7 @@ export default function TipsScreen() {
       backgroundColor: colors.primary,
     },
     staffCard: {
-      margin: 15,
+      margin: 16,
       marginTop: 0,
       backgroundColor: colors.card,
     },
@@ -102,7 +102,7 @@ export default function TipsScreen() {
       color: colors.foreground,
     },
     list: {
-      padding: 15,
+      padding: 16,
       paddingTop: 0,
     },
     card: {
@@ -136,11 +136,11 @@ export default function TipsScreen() {
       backgroundColor: colors.warning,
     },
     chipText: {
-      fontSize: 11,
+      fontSize: 12,
     },
     chipTextWhite: {
       color: colors.cardForeground,
-      fontSize: 11,
+      fontSize: 12,
     },
     staffName: {
       marginTop: 10,

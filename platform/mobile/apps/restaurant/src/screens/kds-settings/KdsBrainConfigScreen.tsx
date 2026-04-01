@@ -161,7 +161,7 @@ export default function KdsBrainConfigScreen() {
           elevation: 1,
         },
         cardTitle: {
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: '600',
           color: colors.foreground,
           marginBottom: 12,
@@ -173,7 +173,7 @@ export default function KdsBrainConfigScreen() {
           paddingVertical: 8,
         },
         switchLabel: {
-          fontSize: 15,
+          fontSize: 16,
           color: colors.foreground,
           flex: 1,
         },
@@ -342,7 +342,7 @@ export default function KdsBrainConfigScreen() {
           loading={saveMutation.isPending}
           style={styles.saveButton}
           buttonColor={colors.primary}
-          textColor="#FFFFFF"
+          textColor={colors.premiumCardForeground}
           icon="content-save"
         >
           {t('common.save')}

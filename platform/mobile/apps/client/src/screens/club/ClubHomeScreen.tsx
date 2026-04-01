@@ -175,7 +175,7 @@ function EventCard({
             borderRadius: 9999,
             backgroundColor: statusBgColor,
           }}>
-            <Text style={{ color: statusColor, fontSize: 11, fontWeight: '600' }}>
+            <Text style={{ color: statusColor, fontSize: 12, fontWeight: '600' }}>
               {statusLabel}
             </Text>
           </View>
@@ -247,7 +247,7 @@ function EventCard({
                 paddingHorizontal: 16,
               }}
             >
-              <Text style={{ color: colors.primaryForeground, fontWeight: '700', fontSize: 13 }}>
+              <Text style={{ color: colors.primaryForeground, fontWeight: '700', fontSize: 14 }}>
                 {t('club.buyTicket')}
               </Text>
             </LinearGradient>

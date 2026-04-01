@@ -17,12 +17,12 @@ type RouteParams = {
 };
 
 const STATUS_COLORS: Record<ReservationStatus, string> = {
-  pending: '#FFA726',
-  confirmed: '#42A5F5',
-  seated: '#00C853',
-  completed: '#66BB6A',
-  cancelled: '#EF5350',
-  no_show: '#9E9E9E',
+  pending: colors.statusPending,
+  confirmed: colors.statusConfirmed,
+  seated: colors.success,
+  completed: colors.success,
+  cancelled: colors.error,
+  no_show: colors.foregroundMuted,
 };
 
 export default function ReservationDetailScreen() {
@@ -100,7 +100,7 @@ export default function ReservationDetailScreen() {
       alignSelf: 'flex-start',
     },
     chipText: {
-      color: '#fff',
+      color: colors.premiumCardForeground,
       fontSize: 12,
     },
     info: {
@@ -270,7 +270,7 @@ export default function ReservationDetailScreen() {
               mode="outlined"
               onPress={() => handleStatusChange('no_show')}
               style={styles.actionButton}
-              textColor="#9E9E9E"
+              textColor=colors.foregroundMuted
               icon="account-off"
               accessibilityRole="button"
               accessibilityLabel={t('reservations.markNoShow')}
@@ -281,7 +281,7 @@ export default function ReservationDetailScreen() {
               mode="outlined"
               onPress={() => handleStatusChange('cancelled')}
               style={styles.cancelButton}
-              textColor="#d32f2f"
+              textColor=colors.error
               icon="close-circle"
               accessibilityRole="button"
               accessibilityLabel={t('reservations.cancelReservation')}

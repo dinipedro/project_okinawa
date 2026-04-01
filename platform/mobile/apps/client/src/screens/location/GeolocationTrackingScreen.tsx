@@ -154,7 +154,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
     },
     statusBadgeText: {
       ...typography.bodyMedium,
-      color: '#FFF',
+      color: colors.premiumCardForeground,
       fontWeight: '600',
     },
     statsRow: {
@@ -222,7 +222,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
     },
     primaryButtonText: {
       ...typography.bodyLarge,
-      color: '#FFF',
+      color: colors.premiumCardForeground,
       fontWeight: '600',
     },
     arrivalButton: {
@@ -502,7 +502,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
             <Ionicons 
               name={hasArrived ? 'checkmark-circle' : 'navigate'} 
               size={20} 
-              color="#FFF" 
+              color={colors.premiumCardForeground} 
             />
             <Text style={styles.statusBadgeText}>{getStatusMessage()}</Text>
           </View>
@@ -561,7 +561,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
             accessibilityRole="button"
             accessibilityLabel="Start location tracking"
           >
-            <Ionicons name="locate" size={24} color="#FFF" />
+            <Ionicons name="locate" size={24} color={colors.premiumCardForeground} />
             <Text style={styles.primaryButtonText}>Iniciar Rastreamento</Text>
           </TouchableOpacity>
         ) : hasArrived ? (
@@ -571,7 +571,7 @@ export const GeolocationTrackingScreen: React.FC = () => {
             accessibilityRole="button"
             accessibilityLabel="Confirm arrival"
           >
-            <Ionicons name="checkmark-circle" size={24} color="#FFF" />
+            <Ionicons name="checkmark-circle" size={24} color={colors.premiumCardForeground} />
             <Text style={styles.primaryButtonText}>Confirmar Chegada</Text>
           </TouchableOpacity>
         ) : (

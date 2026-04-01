@@ -167,7 +167,7 @@ export default function MenuScreen() {
       backgroundColor: colors.background,
     },
     searchbar: {
-      margin: 15,
+      margin: 16,
       elevation: 2,
       backgroundColor: colors.card,
     },
@@ -192,7 +192,7 @@ export default function MenuScreen() {
       bottom: 0,
       left: 0,
       right: 0,
-      padding: 15,
+      padding: 16,
       elevation: 8,
       flexDirection: 'row',
       justifyContent: 'space-between',

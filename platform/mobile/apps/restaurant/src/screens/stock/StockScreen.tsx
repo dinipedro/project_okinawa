@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   filterTabText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
   },
 
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemName: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
   },
   itemCategory: {
@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   minText: {
-    fontSize: 11,
+    fontSize: 12,
     marginTop: 2,
   },
 
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
   },
 
   restockedText: {
-    fontSize: 11,
+    fontSize: 12,
     marginTop: spacing[1],
   },
 
@@ -813,7 +813,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing[4],
   },
   modalLabel: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     marginBottom: spacing[1],
     marginTop: spacing[3],

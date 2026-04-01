@@ -205,9 +205,9 @@ function PackageCard({
   onSelect: (pkg: BirthdayPackage) => void;
 }) {
   const tierColors: Record<string, string> = {
-    basic: '#6B7280',
-    premium: '#F59E0B',
-    vip: '#8B5CF6',
+    basic: colors.foregroundSecondary,
+    premium: colors.warning,
+    vip: colors.statusDelivering,
   };
 
   return (
@@ -235,7 +235,7 @@ function PackageCard({
               <Chip
                 mode="flat"
                 compact
-                textStyle={{ color: '#fff', fontSize: 10, fontWeight: '700' }}
+                textStyle={{ color: colors.premiumCardForeground, fontSize: 10, fontWeight: '700' }}
                 style={{ backgroundColor: tierColors[pkg.tier] || colors.primary, alignSelf: 'flex-start', marginBottom: 8 }}
               >
                 {pkg.tier.toUpperCase()}
@@ -277,7 +277,7 @@ function PackageCard({
 
           {isSelected && (
             <View style={[styles.selectedBadge, { backgroundColor: colors.primary }]}>
-              <Text style={{ color: '#fff', fontSize: 12, fontWeight: '600' }}>
+              <Text style={{ color: colors.premiumCardForeground, fontSize: 12, fontWeight: '600' }}>
                 {t('club.birthday.selected')}
               </Text>
             </View>
@@ -482,7 +482,7 @@ export default function BirthdayBookingScreen({ route }: BirthdayBookingScreenPr
               <Text
                 variant="bodySmall"
                 style={{
-                  color: selectedDate === d.value ? '#fff' : colors.foreground,
+                  color: selectedDate === d.value ? colors.premiumCardForeground : colors.foreground,
                   fontWeight: selectedDate === d.value ? '700' : '400',
                 }}
               >

@@ -101,7 +101,7 @@ export default function ReservationsScreen({ navigation }: any) {
       backgroundColor: colors.backgroundSecondary,
     },
     searchbar: {
-      margin: 15,
+      margin: 16,
       elevation: 2,
       backgroundColor: colors.card,
     },
@@ -115,7 +115,7 @@ export default function ReservationsScreen({ navigation }: any) {
       marginRight: 5,
     },
     list: {
-      padding: 15,
+      padding: 16,
     },
     card: {
       marginBottom: 15,

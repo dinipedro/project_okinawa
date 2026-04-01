@@ -82,12 +82,12 @@ export default function FinancialScreen() {
       backgroundColor: colors.background,
     },
     segmentedButtons: {
-      margin: 15,
+      margin: 16,
     },
     grid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      padding: 15,
+      padding: 16,
       gap: 15,
     },
     summaryCard: {
@@ -108,7 +108,7 @@ export default function FinancialScreen() {
       fontWeight: 'bold',
     },
     card: {
-      margin: 15,
+      margin: 16,
       marginTop: 0,
       backgroundColor: colors.card,
     },
@@ -159,7 +159,7 @@ export default function FinancialScreen() {
     actionsRow: {
       flexDirection: 'row',
       gap: 8,
-      padding: 15,
+      padding: 16,
       paddingTop: 0,
     },
     actionButton: {

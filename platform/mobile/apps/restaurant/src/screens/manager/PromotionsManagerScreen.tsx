@@ -61,10 +61,10 @@ const PROMOTION_TYPES = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  active: '#10B981',
-  inactive: '#6B7280',
-  expired: '#9CA3AF',
-  scheduled: '#3B82F6',
+  active: colors.success,
+  inactive: colors.foregroundSecondary,
+  expired: colors.foregroundMuted,
+  scheduled: colors.info,
 };
 
 // Skeleton Components
@@ -423,9 +423,9 @@ export default function PromotionsManagerScreen() {
           borderRadius: 12,
         },
         statusBadgeText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         promoTitle: {
           fontSize: 14,
@@ -445,7 +445,7 @@ export default function PromotionsManagerScreen() {
           backgroundColor: colors.backgroundTertiary,
         },
         typeBadgeText: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.foregroundSecondary,
         },
         promoDates: {
@@ -579,7 +579,7 @@ export default function PromotionsManagerScreen() {
         },
         dayChipTextActive: {
           fontSize: 12,
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
           fontWeight: '600',
         },
         modalActions: {
@@ -988,7 +988,7 @@ export default function PromotionsManagerScreen() {
           resetForm();
           setShowCreateModal(true);
         }}
-        color="#FFFFFF"
+        color={colors.premiumCardForeground}
         accessibilityRole="button"
         accessibilityLabel={t('promotions.create')}
       />

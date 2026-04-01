@@ -86,7 +86,7 @@ function TableSummaryCard({ table, pickedUpIds, onPress }: TableSummaryCardProps
           flex: 1,
         },
         customerName: {
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -100,7 +100,7 @@ function TableSummaryCard({ table, pickedUpIds, onPress }: TableSummaryCardProps
         },
         totalText: {
           fontWeight: '700',
-          fontSize: 13,
+          fontSize: 14,
           color: colors.primary,
         },
         badgeRow: {
@@ -135,7 +135,7 @@ function TableSummaryCard({ table, pickedUpIds, onPress }: TableSummaryCardProps
           fontWeight: '700',
         },
         overflowText: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.foregroundMuted,
         },
         progressBarContainer: {
@@ -152,7 +152,7 @@ function TableSummaryCard({ table, pickedUpIds, onPress }: TableSummaryCardProps
           borderRadius: 3,
         },
         progressText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
           color: colors.foregroundMuted,
           marginLeft: 4,

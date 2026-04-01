@@ -158,7 +158,7 @@ function TierBadge({ tier, colors }: { tier: string; colors: ReturnType<typeof u
 
   return (
     <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 9999, backgroundColor: bg }}>
-      <Text style={{ fontSize: 11, fontWeight: '600', color: textColor }}>{tier}</Text>
+      <Text style={{ fontSize: 12, fontWeight: '600', color: textColor }}>{tier}</Text>
     </View>
   );
 }
@@ -320,10 +320,10 @@ export default function LoyaltyManagementScreen() {
             <MaterialCommunityIcons name="heart" size={22} color={colors.primary} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ color: colors.premiumCardForeground, fontSize: 15, fontWeight: '700' }}>
+            <Text style={{ color: colors.premiumCardForeground, fontSize: 16, fontWeight: '700' }}>
               {t('loyaltyMgmt.title')}
             </Text>
-            <Text style={{ color: colors.premiumCardMuted, fontSize: 11, marginTop: 1 }}>
+            <Text style={{ color: colors.premiumCardMuted, fontSize: 12, marginTop: 1 }}>
               {stats?.total_members ?? 0} {t('loyaltyMgmt.members')}
             </Text>
           </View>
@@ -399,7 +399,7 @@ export default function LoyaltyManagementScreen() {
             <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.primary}1A`, alignItems: 'center', justifyContent: 'center' }}>
               <MaterialCommunityIcons name="magnify" size={14} color={colors.primary} />
             </View>
-            <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>
               {t('loyaltyMgmt.selectCustomer')}
             </Text>
           </View>
@@ -411,7 +411,7 @@ export default function LoyaltyManagementScreen() {
               padding: 12,
               color: colors.foreground,
               backgroundColor: colors.backgroundTertiary,
-              fontSize: 13,
+              fontSize: 14,
               marginBottom: 12,
             }}
             placeholder={t('loyaltyMgmt.searchPlaceholder')}
@@ -498,7 +498,7 @@ export default function LoyaltyManagementScreen() {
                 </Text>
               </View>
               <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 9999, backgroundColor: `${colors.primary}1A` }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: colors.primary }}>
                   {card.stamps_required}x
                 </Text>
               </View>
@@ -561,7 +561,7 @@ export default function LoyaltyManagementScreen() {
           <View style={{ width: 24, height: 24, borderRadius: 8, backgroundColor: `${colors.accent}1A`, alignItems: 'center', justifyContent: 'center' }}>
             <MaterialCommunityIcons name="cash" size={14} color={colors.accent} />
           </View>
-          <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>{t('loyaltyMgmt.pointsConfig')}</Text>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>{t('loyaltyMgmt.pointsConfig')}</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 }}>
           <Text style={{ fontSize: 12, color: colors.foregroundSecondary }}>{t('loyaltyMgmt.pointsPerReal')}</Text>

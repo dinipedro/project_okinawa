@@ -120,7 +120,7 @@ export default function CartScreen() {
       backgroundColor: colors.background,
     },
     list: {
-      padding: 15,
+      padding: 16,
       paddingBottom: 100,
     },
     title: {
@@ -239,7 +239,7 @@ export default function CartScreen() {
       bottom: 0,
       left: 0,
       right: 0,
-      padding: 15,
+      padding: 16,
       elevation: 8,
       flexDirection: 'row',
       justifyContent: 'space-between',

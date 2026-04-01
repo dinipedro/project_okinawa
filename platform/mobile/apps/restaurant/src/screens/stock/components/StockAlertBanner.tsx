@@ -108,11 +108,11 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.badge,
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
   },
   viewLink: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
   },
 });

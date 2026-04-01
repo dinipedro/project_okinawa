@@ -392,7 +392,7 @@ export default function ExploreScreen() {
         {item.cuisine_type && item.cuisine_type.length > 0 && (
           <View style={styles.cuisineChips}>
             {item.cuisine_type.slice(0, 3).map((cuisine, index) => (
-              <Chip key={index} style={styles.chip} textStyle={{ fontSize: 11 }}>
+              <Chip key={index} style={styles.chip} textStyle={{ fontSize: 12 }}>
                 {cuisine}
               </Chip>
             ))}
@@ -458,7 +458,7 @@ export default function ExploreScreen() {
           >
             <View style={styles.markerContainer}>
               <View style={styles.marker}>
-                <IconButton icon="silverware-fork-knife" size={16} iconColor="#fff" />
+                <IconButton icon="silverware-fork-knife" size={16} iconColor={colors.premiumCardForeground} />
               </View>
             </View>
           </Marker>

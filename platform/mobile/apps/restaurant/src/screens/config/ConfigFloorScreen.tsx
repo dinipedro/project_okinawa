@@ -70,7 +70,7 @@ export default function ConfigFloorScreen() {
 
   // Form fields
   const [sectionName, setSectionName] = useState('');
-  const [sectionColor, setSectionColor] = useState('#EA580C');
+  const [sectionColor, setSectionColor] = useState(colors.primary);
   const [sectionCapacity, setSectionCapacity] = useState('');
   const [tableNumber, setTableNumber] = useState('');
   const [tableSeats, setTableSeats] = useState('4');
@@ -87,7 +87,7 @@ export default function ConfigFloorScreen() {
   const openAddSection = useCallback(() => {
     setEditingSection(null);
     setSectionName('');
-    setSectionColor('#EA580C');
+    setSectionColor(colors.primary);
     setSectionCapacity('');
     setShowSectionModal(true);
   }, []);
@@ -95,7 +95,7 @@ export default function ConfigFloorScreen() {
   const openEditSection = useCallback((section: FloorSection) => {
     setEditingSection(section);
     setSectionName(section.name);
-    setSectionColor(section.color || '#EA580C');
+    setSectionColor(section.color || colors.primary);
     setSectionCapacity(section.capacity?.toString() || '');
     setShowSectionModal(true);
   }, []);

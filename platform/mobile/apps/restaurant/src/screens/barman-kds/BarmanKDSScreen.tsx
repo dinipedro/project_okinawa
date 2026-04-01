@@ -47,9 +47,9 @@ interface DrinkOrder {
 
 /** Platform brand colors for delivery source badges */
 const PLATFORM_COLORS: Record<string, string> = {
-  ifood: '#EA1D2C',
-  rappi: '#FF441F',
-  ubereats: '#06C167',
+  ifood: colors.error,
+  rappi: colors.primary,
+  ubereats: colors.success,
 };
 
 export default function BarmanKDSScreen() {
@@ -67,14 +67,14 @@ export default function BarmanKDSScreen() {
     },
     header: {
       flexDirection: 'row',
-      padding: 15,
+      padding: 16,
       gap: 10,
     },
     statCard: {
       flex: 1,
       backgroundColor: colors.card,
       borderRadius: 12,
-      padding: 15,
+      padding: 16,
       alignItems: 'center',
       elevation: 2,
     },
@@ -92,7 +92,7 @@ export default function BarmanKDSScreen() {
       marginBottom: 15,
     },
     scrollContent: {
-      padding: 15,
+      padding: 16,
     },
     emptyContainer: {
       alignItems: 'center',
@@ -240,10 +240,10 @@ export default function BarmanKDSScreen() {
     sourceBadgeText: {
       fontSize: 10,
       fontWeight: '700' as const,
-      color: '#FFFFFF',
+      color: colors.premiumCardForeground,
     },
     riderEta: {
-      fontSize: 11,
+      fontSize: 12,
       color: colors.info,
       marginTop: 4,
     },

@@ -368,12 +368,12 @@ export default function WaitlistScreen({ route }: WaitlistScreenProps) {
         calledTitle: {
           fontSize: 20,
           fontWeight: '700',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
           marginBottom: 4,
         },
         calledDesc: {
           fontSize: 14,
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         whileWaitingTitle: {
           fontSize: 16,
@@ -395,12 +395,12 @@ export default function WaitlistScreen({ route }: WaitlistScreenProps) {
           marginLeft: 12,
         },
         actionTitle: {
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: '600',
           color: colors.foreground,
         },
         actionDesc: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
         },
         leaveButton: {

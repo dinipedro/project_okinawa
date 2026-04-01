@@ -179,7 +179,7 @@ export default function ChefViewScreen() {
         },
         metricNumber: {
           fontWeight: 'bold',
-          fontSize: 22,
+          fontSize: 24,
           color: colors.foreground,
           marginTop: 6,
         },
@@ -229,7 +229,7 @@ export default function ChefViewScreen() {
           gap: 6,
         },
         stationActiveText: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
         },
         lateBadge: {

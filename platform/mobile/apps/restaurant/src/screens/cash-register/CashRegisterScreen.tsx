@@ -326,7 +326,7 @@ export default function CashRegisterScreen() {
         balanceAmount: {
           fontSize: 36,
           fontWeight: 'bold',
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
           marginBottom: 4,
         },
         openingInfo: {
@@ -383,7 +383,7 @@ export default function CashRegisterScreen() {
           fontWeight: 'bold',
         },
         movementTime: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.mutedForeground,
           marginTop: 2,
           textAlign: 'right',
@@ -485,11 +485,11 @@ export default function CashRegisterScreen() {
           paddingVertical: 4,
         },
         historyLabel: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.mutedForeground,
         },
         historyValue: {
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: '500',
           color: colors.foreground,
         },
@@ -654,7 +654,7 @@ export default function CashRegisterScreen() {
               <Text style={styles.movementsTitle}>
                 {t('financial.cash_register.movements')}
               </Text>
-              <Text style={{ color: colors.mutedForeground, fontSize: 13 }}>
+              <Text style={{ color: colors.mutedForeground, fontSize: 14 }}>
                 {movements.length}
               </Text>
             </View>
@@ -843,7 +843,7 @@ export default function CashRegisterScreen() {
             ]}
             onStateChange={({ open }) => setFabOpen(open)}
             fabStyle={{ backgroundColor: colors.primary }}
-            color="#FFFFFF"
+            color={colors.premiumCardForeground}
           />
         </Portal>
       )}

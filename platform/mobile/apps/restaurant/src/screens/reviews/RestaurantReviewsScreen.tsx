@@ -252,7 +252,7 @@ export default function RestaurantReviewsScreen() {
       <ScreenContainer hasKeyboard>
       <ScrollView style={{ flex: 1, backgroundColor: colors.backgroundSecondary }}>
         <View style={{ marginHorizontal: 16, marginTop: 16, marginBottom: 8 }}>
-          <View style={{ backgroundColor: '#1F2937', borderRadius: 20, padding: 16, overflow: 'hidden', position: 'relative' }}>
+          <View style={{ backgroundColor: colors.premiumCard, borderRadius: 20, padding: 16, overflow: 'hidden', position: 'relative' }}>
             <View style={{ position: 'absolute', right: -32, top: -32, width: 128, height: 128, borderRadius: 64, backgroundColor: `${colors.accent}1A` }} />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.1)' }} />
@@ -304,7 +304,7 @@ export default function RestaurantReviewsScreen() {
             marginHorizontal: 16,
             marginTop: 16,
             marginBottom: 12,
-            backgroundColor: '#1F2937',
+            backgroundColor: colors.premiumCard,
             borderRadius: 20,
             padding: 16,
             overflow: 'hidden',
@@ -317,16 +317,16 @@ export default function RestaurantReviewsScreen() {
               <MaterialCommunityIcons name="star" size={22} color={colors.accent} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: '#FFFFFF', fontSize: 15, fontWeight: '700' }}>
+              <Text style={{ color: colors.premiumCardForeground, fontSize: 16, fontWeight: '700' }}>
                 {t('reviews.title')}
               </Text>
-              <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 1 }}>
+              <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 1 }}>
                 {stats?.total_reviews ?? 0} {t('reviews.total')}
               </Text>
             </View>
             {/* Average rating badge */}
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: '700' }}>
+              <Text style={{ color: colors.premiumCardForeground, fontSize: 24, fontWeight: '700' }}>
                 {(stats?.avg_rating ?? 0).toFixed(1)}
               </Text>
               <StarRow rating={Math.round(stats?.avg_rating ?? 0)} size={12} color={colors.accent} />
@@ -352,7 +352,7 @@ export default function RestaurantReviewsScreen() {
                     width: `${d.percent}%`,
                   }} />
                 </View>
-                <Text style={{ width: 38, textAlign: 'right', fontSize: 11, color: colors.foregroundSecondary }}>{d.percent.toFixed(0)}%</Text>
+                <Text style={{ width: 38, textAlign: 'right', fontSize: 12, color: colors.foregroundSecondary }}>{d.percent.toFixed(0)}%</Text>
               </View>
             ))}
             {/* Stats highlights */}
@@ -382,7 +382,7 @@ export default function RestaurantReviewsScreen() {
             flexDirection: 'row',
             backgroundColor: `${colors.backgroundTertiary}4D`,
             borderRadius: 14,
-            padding: 3,
+            padding: 4,
             gap: 3,
           }}>
             {filters.map((f) => (
@@ -398,7 +398,7 @@ export default function RestaurantReviewsScreen() {
                   borderRadius: 11,
                   backgroundColor: filter === f.value ? colors.card : 'transparent',
                   ...(filter === f.value ? {
-                    shadowColor: '#000',
+                    shadowColor: colors.shadowColor,
                     shadowOffset: { width: 0, height: 1 },
                     shadowOpacity: 0.08,
                     shadowRadius: 4,
@@ -407,7 +407,7 @@ export default function RestaurantReviewsScreen() {
                 }}
               >
                 <Text style={{
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: filter === f.value ? '600' : '500',
                   color: filter === f.value ? colors.foreground : colors.foregroundSecondary,
                 }}>
@@ -448,12 +448,12 @@ export default function RestaurantReviewsScreen() {
                   <Avatar.Text size={40} label={review.user_name.slice(0, 2).toUpperCase()} />
                 )}
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 13, fontWeight: '600', color: colors.foreground }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: colors.foreground }}>
                     {review.user_name}
                   </Text>
                   <StarRow rating={review.rating} size={14} color={colors.accent} />
                 </View>
-                <Text style={{ fontSize: 11, color: colors.foregroundSecondary }}>
+                <Text style={{ fontSize: 12, color: colors.foregroundSecondary }}>
                   {review.created_at
                     ? new Date(review.created_at).toLocaleDateString('pt-BR')
                     : ''}
@@ -461,7 +461,7 @@ export default function RestaurantReviewsScreen() {
               </View>
 
               {/* Comment */}
-              <Text style={{ fontSize: 13, color: colors.foreground, lineHeight: 19, marginBottom: 10 }}>
+              <Text style={{ fontSize: 14, color: colors.foreground, lineHeight: 19, marginBottom: 10 }}>
                 {review.comment}
               </Text>
 
@@ -470,7 +470,7 @@ export default function RestaurantReviewsScreen() {
                 <View style={{ backgroundColor: `${colors.primary}0D`, padding: 12, borderRadius: 14, borderWidth: 1, borderColor: `${colors.primary}1A` }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                     <MaterialCommunityIcons name="reply" size={12} color={colors.primary} />
-                    <Text style={{ fontSize: 11, fontWeight: '600', color: colors.primary }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: colors.primary }}>
                       {t('reviews.response')}
                     </Text>
                   </View>
@@ -518,7 +518,7 @@ export default function RestaurantReviewsScreen() {
                       textAlignVertical: 'top',
                       marginBottom: 8,
                       backgroundColor: colors.backgroundTertiary,
-                      fontSize: 13,
+                      fontSize: 14,
                     }}
                     placeholder={t('reviews.responsePlaceholder')}
                     placeholderTextColor={colors.foregroundSecondary}
@@ -556,7 +556,7 @@ export default function RestaurantReviewsScreen() {
                         end={{ x: 1, y: 0 }}
                         style={{ paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12 }}
                       >
-                        <Text style={{ fontSize: 12, fontWeight: '600', color: '#FFFFFF' }}>
+                        <Text style={{ fontSize: 12, fontWeight: '600', color: colors.premiumCardForeground }}>
                           {submitting ? '...' : t('reviews.sendResponse')}
                         </Text>
                       </LinearGradient>

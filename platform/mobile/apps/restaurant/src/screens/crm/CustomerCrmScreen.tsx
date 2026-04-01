@@ -357,7 +357,7 @@ export default function CustomerCrmScreen() {
                     { backgroundColor: segColor },
                   ]}
                 >
-                  <Text style={[styles.segmentBadgeText, { color: '#fff' }]}>
+                  <Text style={[styles.segmentBadgeText, { color: colors.premiumCardForeground }]}>
                     {t(`crm.segment_${customer.segment}`)}
                   </Text>
                 </View>
@@ -684,11 +684,11 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.card,
   },
   segmentCount: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
   },
   segmentLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     marginTop: spacing[0.5],
     textTransform: 'uppercase',
@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   customerName: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
   },
   customerSegment: {
@@ -746,11 +746,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   statsValue: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '700',
   },
   statsLabel: {
-    fontSize: 11,
+    fontSize: 12,
     marginTop: 2,
   },
   customerMeta: {
@@ -839,7 +839,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   statBoxLabel: {
-    fontSize: 11,
+    fontSize: 12,
     marginTop: spacing[0.5],
   },
 

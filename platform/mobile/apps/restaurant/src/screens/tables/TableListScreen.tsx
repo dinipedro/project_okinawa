@@ -141,7 +141,7 @@ export default function TableListScreen() {
             <View style={styles.tableInfo}>
               <View style={styles.tableHeader}>
                 <Text style={styles.tableNumber}>{item.table_number}</Text>
-                <Chip compact style={{ height: 24 }} textStyle={{ fontSize: 11 }}>
+                <Chip compact style={{ height: 24 }} textStyle={{ fontSize: 12 }}>
                   {config.label}
                 </Chip>
               </View>
@@ -422,7 +422,7 @@ const createStyles = (colors: any) =>
       gap: 4,
     },
     detailText: {
-      fontSize: 13,
+      fontSize: 14,
       color: colors.foregroundMuted,
     },
     qrBadge: {

@@ -129,7 +129,7 @@ export default function StaffDetailScreen() {
     },
     chipText: {
       color: colors.cardForeground,
-      fontSize: 13,
+      fontSize: 14,
     },
     sectionTitle: {
       marginBottom: 12,

@@ -49,7 +49,7 @@ export default function CreateReservationScreen() {
     container: {
       flex: 1,
       backgroundColor: colors.backgroundSecondary,
-      padding: 15,
+      padding: 16,
     },
     loadingContainer: {
       flex: 1,

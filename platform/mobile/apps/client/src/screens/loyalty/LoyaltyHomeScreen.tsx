@@ -70,10 +70,10 @@ interface PromotionPreview {
 // Note: Tier colors represent real-world medal colors and are intentionally static
 // Using theme gradient tokens where applicable
 const TIER_GRADIENTS: Record<string, string[]> = {
-  bronze: ['#CD7F32', '#B87333'],
-  silver: ['#C0C0C0', '#A8A8A8'],
+  bronze: [colors.tierBronze, colors.tierBronze],
+  silver: [colors.tierSilver, colors.tierSilver],
   gold: gradients.accent,
-  platinum: ['#E5E4E2', '#B0C4DE'],
+  platinum: [colors.tierPlatinum, colors.tierPlatinum],
 };
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -386,7 +386,7 @@ export default function LoyaltyHomeScreen() {
           color: colors.foreground,
         },
         stampCardCounter: {
-          fontSize: 13,
+          fontSize: 14,
           color: colors.foregroundSecondary,
           marginTop: 4,
         },
@@ -465,7 +465,7 @@ export default function LoyaltyHomeScreen() {
           paddingVertical: 4,
         },
         completedBadgeText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '700',
           color: colors.success,
         },

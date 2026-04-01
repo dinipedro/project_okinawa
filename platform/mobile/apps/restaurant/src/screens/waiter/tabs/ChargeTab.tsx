@@ -86,7 +86,7 @@ export default function ChargeTab({ tables }: ChargeTabProps) {
           flex: 1,
         },
         tableCustomer: {
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -107,7 +107,7 @@ export default function ChargeTab({ tables }: ChargeTabProps) {
           justifyContent: 'center',
         },
         progressText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
           color: colors.foreground,
         },
@@ -137,16 +137,16 @@ export default function ChargeTab({ tables }: ChargeTabProps) {
           flex: 1,
         },
         guestName: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '500',
           color: colors.foreground,
         },
         guestStatus: {
-          fontSize: 9,
+          fontSize: 10,
           color: colors.foregroundMuted,
         },
         guestTotal: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -158,7 +158,7 @@ export default function ChargeTab({ tables }: ChargeTabProps) {
           marginLeft: 4,
         },
         chargeBtnText: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: '700',
           color: '#FFFFFF',
         },

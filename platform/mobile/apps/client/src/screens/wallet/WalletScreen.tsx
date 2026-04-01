@@ -143,7 +143,7 @@ export default function WalletScreen() {
       color: colors.foregroundSecondary,
     },
     balanceCard: {
-      margin: 15,
+      margin: 16,
       elevation: 4,
       backgroundColor: colors.card,
     },
@@ -185,7 +185,7 @@ export default function WalletScreen() {
       marginRight: 0,
     },
     transactionsList: {
-      padding: 15,
+      padding: 16,
       paddingTop: 5,
     },
     transactionCard: {

@@ -97,7 +97,7 @@ export default function PaymentMethodSelector({
           marginBottom: 12,
         },
         backText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.primary,
         },
@@ -133,7 +133,7 @@ export default function PaymentMethodSelector({
           flex: 1,
         },
         methodLabel: {
-          fontSize: 13,
+          fontSize: 14,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -195,7 +195,7 @@ export default function PaymentMethodSelector({
           color: colors.foreground,
         },
         processingSubtitle: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.foregroundMuted,
           marginTop: 4,
           textAlign: 'center',
@@ -279,7 +279,7 @@ export default function PaymentMethodSelector({
           borderColor: colors.border,
         },
         printText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: colors.foreground,
         },
@@ -290,7 +290,7 @@ export default function PaymentMethodSelector({
           backgroundColor: colors.primary,
         },
         nextText: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '600',
           color: '#FFFFFF',
         },

@@ -138,7 +138,7 @@ export default function TipsScreen() {
       backgroundColor: colors.infoBackground,
     },
     chipText: {
-      fontSize: 11,
+      fontSize: 12,
       color: colors.info,
     },
     emptyContainer: {

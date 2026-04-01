@@ -12,6 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
 import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
 
 interface FAQItem {
@@ -83,13 +84,13 @@ export default function SupportScreen() {
 
           <TextInput
             mode="outlined"
-            label="Sua mensagem"
+            label={t('formLabels.yourMessage')}
             value={contactMessage}
             onChangeText={setContactMessage}
             multiline
             numberOfLines={8}
             style={styles.messageInput}
-            placeholder="Descreva detalhadamente sua dúvida ou problema..."
+            placeholder={t('placeholders.describeIssue')}
             accessibilityLabel="Your support message"
           />
 
@@ -112,7 +113,7 @@ export default function SupportScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.searchContainer}>
         <Searchbar
-          placeholder="Buscar nas perguntas frequentes..."
+          placeholder={t('placeholders.searchFaq')}
           onChangeText={setSearchQuery}
           value={searchQuery}
           style={styles.searchBar}
@@ -198,26 +199,26 @@ export default function SupportScreen() {
 
 const createStyles = (colors: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  searchContainer: { padding: 15 },
+  searchContainer: { padding: 16 },
   searchBar: { elevation: 2, backgroundColor: colors.card },
   categoriesContainer: { marginBottom: 15 },
   categoriesContent: { paddingHorizontal: 15, paddingBottom: 5 },
   categoryChip: { marginRight: 8 },
-  quickContactCard: { margin: 15, marginBottom: 20, backgroundColor: colors.card },
+  quickContactCard: { margin: 16, marginBottom: 20, backgroundColor: colors.card },
   quickContactTitle: { marginBottom: 15, fontWeight: 'bold', color: colors.foreground },
   quickContactButtons: { flexDirection: 'row', justifyContent: 'space-between', gap: 8 },
   quickContactButton: { flex: 1 },
-  faqContainer: { padding: 15 },
+  faqContainer: { padding: 16 },
   faqTitle: { fontWeight: 'bold', marginBottom: 15, color: colors.foreground },
   accordion: { marginBottom: 8, borderRadius: 8 },
-  answerContainer: { padding: 15 },
+  answerContainer: { padding: 16 },
   answerText: { color: colors.foregroundMuted, lineHeight: 22, marginBottom: 10 },
   categoryTag: { alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12 },
   categoryTagText: {},
   emptyContainer: { alignItems: 'center', paddingVertical: 60 },
   emptyText: { marginTop: 15, color: colors.foregroundMuted },
   emptySubtext: { marginTop: 5, color: colors.foregroundMuted },
-  stillNeedHelpCard: { margin: 15, marginTop: 20, marginBottom: 30, backgroundColor: colors.card },
+  stillNeedHelpCard: { margin: 16, marginTop: 20, marginBottom: 30, backgroundColor: colors.card },
   stillNeedHelpContent: { alignItems: 'center', paddingVertical: 20 },
   stillNeedHelpTitle: { marginTop: 15, marginBottom: 10, fontWeight: 'bold', color: colors.foreground },
   stillNeedHelpText: { color: colors.foregroundMuted, marginBottom: 20, textAlign: 'center' },

@@ -85,9 +85,9 @@ export default function KDSScreen() {
 
   /** Platform brand colors for delivery source badges */
   const platformColors: Record<string, string> = useMemo(() => ({
-    ifood: '#EA1D2C',
-    rappi: '#FF441F',
-    ubereats: '#06C167',
+    ifood: colors.error,
+    rappi: colors.primary,
+    ubereats: colors.success,
   }), []);
 
   const styles = useMemo(() => StyleSheet.create({
@@ -209,10 +209,10 @@ export default function KDSScreen() {
     sourceBadgeText: {
       fontSize: 10,
       fontWeight: '700' as const,
-      color: '#FFFFFF',
+      color: colors.premiumCardForeground,
     },
     riderEta: {
-      fontSize: 11,
+      fontSize: 12,
       color: colors.info,
       marginTop: 4,
     },

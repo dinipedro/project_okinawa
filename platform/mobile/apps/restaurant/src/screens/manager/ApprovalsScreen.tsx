@@ -227,12 +227,12 @@ export default function ApprovalsScreen() {
         },
         headerTitle: {
           color: colors.primaryForeground,
-          fontSize: 22,
+          fontSize: 24,
           fontWeight: '700',
         },
         headerSubtitle: {
           color: colors.primaryForeground + 'CC',
-          fontSize: 13,
+          fontSize: 14,
           marginTop: 4,
         },
         // Stats row
@@ -268,7 +268,7 @@ export default function ApprovalsScreen() {
         },
         statLabel: {
           color: colors.foregroundSecondary,
-          fontSize: 11,
+          fontSize: 12,
           marginTop: 4,
           textAlign: 'center',
         },
@@ -324,11 +324,11 @@ export default function ApprovalsScreen() {
         itemName: {
           color: colors.foreground,
           fontWeight: '600',
-          fontSize: 15,
+          fontSize: 16,
         },
         reasonText: {
           color: colors.foregroundSecondary,
-          fontSize: 13,
+          fontSize: 14,
           marginTop: 4,
         },
         requesterRow: {

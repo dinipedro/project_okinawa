@@ -113,9 +113,9 @@ const STATION_CONFIG: Record<Station, StationConfig> = {
 
 /** Platform brand colors for delivery source badges */
 const PLATFORM_COLORS: Record<string, string> = {
-  ifood: '#EA1D2C',
-  rappi: '#FF441F',
-  ubereats: '#06C167',
+  ifood: colors.error,
+  rappi: colors.primary,
+  ubereats: colors.success,
 };
 
 /** Delay threshold in minutes for late order highlighting */
@@ -459,7 +459,7 @@ export default function CookStationScreen() {
           fontWeight: 'bold',
           marginTop: 6,
           color: colors.foreground,
-          fontSize: 22,
+          fontSize: 24,
         },
         statLabel: {
           color: colors.foregroundMuted,
@@ -546,7 +546,7 @@ export default function CookStationScreen() {
           color: colors.warning,
           marginTop: 4,
           fontStyle: 'italic',
-          fontSize: 13,
+          fontSize: 14,
         },
         // Action Buttons
         actionButton: {
@@ -614,10 +614,10 @@ export default function CookStationScreen() {
         sourceBadgeText: {
           fontSize: 10,
           fontWeight: '700' as const,
-          color: '#FFFFFF',
+          color: colors.premiumCardForeground,
         },
         riderEta: {
-          fontSize: 11,
+          fontSize: 12,
           color: colors.info,
           marginTop: 4,
         },

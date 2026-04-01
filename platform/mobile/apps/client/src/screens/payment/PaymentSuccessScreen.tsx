@@ -247,7 +247,7 @@ export default function PaymentSuccessScreen() {
         },
         badgeLabel: {
           color: colors.foregroundSecondary,
-          fontSize: 11,
+          fontSize: 12,
         },
         badgeText: {
           color: colors.accent,

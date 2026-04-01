@@ -352,7 +352,7 @@ export default function CheckoutScreen() {
           fontSize: 14,
         },
         tipOptionAmount: {
-          fontSize: 11,
+          fontSize: 12,
           marginTop: 2,
         },
         confirmButton: {
