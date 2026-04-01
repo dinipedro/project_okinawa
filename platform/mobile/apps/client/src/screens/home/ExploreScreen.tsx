@@ -495,7 +495,7 @@ export default function ExploreScreen() {
 
   if (loading && restaurants.length === 0) {
     return (
-      <ScreenContainer>
+      <ScreenContainer edges={['top']}>
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>

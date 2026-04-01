@@ -261,7 +261,7 @@ export default function ProfileScreen() {
 
   if (loading) {
     return (
-      <ScreenContainer>
+      <ScreenContainer edges={['top']}>
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>

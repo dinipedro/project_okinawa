@@ -17,6 +17,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'rea
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useColors, useOkinawaTheme } from '@okinawa/shared/contexts/ThemeContext';
 import { useI18n } from '@/shared/hooks/useI18n';
+import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
 
 import LiveFeedTab from './tabs/LiveFeedTab';
 import TablesTab from './tabs/TablesTab';
@@ -240,18 +241,21 @@ export default function WaiterCommandCenter() {
   // ---- Loading state (first fetch only) ----
   if (waiterTables.isLoading) {
     return (
+      <ScreenContainer>
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={[styles.statLabel, { marginTop: 12, fontSize: 14 }]}>
           {t('waiter.loading')}
         </Text>
       </View>
+      </ScreenContainer>
     );
   }
 
   // ---- Error state ----
   if (waiterTables.isError) {
     return (
+      <ScreenContainer>
       <View style={styles.centered}>
         <Icon name="wifi-off" size={40} color={colors.error} />
         <Text style={[styles.errorText, { marginTop: 12 }]}>
@@ -265,10 +269,12 @@ export default function WaiterCommandCenter() {
           <Text style={styles.retryBtnText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
+      </ScreenContainer>
     );
   }
 
   return (
+    <ScreenContainer>
     <View style={styles.container}>
       {/* ====== HEADER ====== */}
       <View style={styles.header}>
@@ -442,5 +448,6 @@ export default function WaiterCommandCenter() {
         )}
       </View>
     </View>
+    </ScreenContainer>
   );
 }

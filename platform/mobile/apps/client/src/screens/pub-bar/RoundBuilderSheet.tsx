@@ -23,11 +23,10 @@ import {
   TouchableOpacity,
   Animated,
   Dimensions,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   Alert,
 } from 'react-native';
+import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
 import {
   Text,
   Button,
@@ -499,10 +498,7 @@ export default function RoundBuilderSheet({
       onRequestClose={handleClose}
       statusBarTranslucent
     >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <ScreenContainer hasKeyboard noPadding>
         <TouchableOpacity
           activeOpacity={1}
           style={styles.overlay}
@@ -613,7 +609,7 @@ export default function RoundBuilderSheet({
             </TouchableOpacity>
           </Animated.View>
         </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </ScreenContainer>
     </Modal>
   );
 }

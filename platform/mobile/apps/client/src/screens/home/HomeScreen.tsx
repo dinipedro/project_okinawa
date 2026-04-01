@@ -438,7 +438,7 @@ export default function HomeScreen() {
 
   if (loading) {
     return (
-      <ScreenContainer>
+      <ScreenContainer edges={['top']}>
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>{t('common.loading')}</Text>
