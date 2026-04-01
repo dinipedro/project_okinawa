@@ -16,8 +16,6 @@ import {
   RefreshControl,
   TouchableOpacity,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
 } from 'react-native';
 import {
@@ -379,7 +377,7 @@ export default function AddressesScreen() {
             {t('addresses.addNew')}
           </Dialog.Title>
           <Dialog.ScrollArea>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+            <View>
               <ScrollView style={styles.formScroll}>
                 {/* Label Selector */}
                 <View style={styles.labelRow}>
@@ -497,7 +495,7 @@ export default function AddressesScreen() {
                   accessibilityHint="Enter the postal ZIP code"
                 />
               </ScrollView>
-            </KeyboardAvoidingView>
+            </View>
           </Dialog.ScrollArea>
           <Dialog.Actions>
             <Button

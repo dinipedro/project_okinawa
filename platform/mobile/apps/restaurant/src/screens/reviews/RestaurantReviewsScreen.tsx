@@ -21,8 +21,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   RefreshControl,
   TouchableOpacity,
   TextInput,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import { Text, Avatar, Button, Snackbar } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -288,10 +286,7 @@ export default function RestaurantReviewsScreen() {
 
   return (
     <ScreenContainer hasKeyboard>
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <View style={{ flex: 1 }}>
       <ScrollView
         style={{ flex: 1, backgroundColor: colors.backgroundSecondary }}
         refreshControl={
@@ -590,7 +585,7 @@ export default function RestaurantReviewsScreen() {
       >
         {t('reviews.newReviewReceived') || 'Nova avaliacao recebida!'}
       </Snackbar>
-    </KeyboardAvoidingView>
+    </View>
     </ScreenContainer>
   );
 }

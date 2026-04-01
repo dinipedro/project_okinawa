@@ -8,8 +8,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   TouchableOpacity,
   TextInput,
   Modal,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import { Text, Card, ActivityIndicator, FAB } from 'react-native-paper';
 import ApiService from '@/shared/services/api';
@@ -458,10 +456,7 @@ export default function StockScreen({ navigation }: { navigation: any }) {
         animationType="slide"
         onRequestClose={() => setSelectedItem(null)}
       >
-        <KeyboardAvoidingView
-          style={styles.modalOverlay}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
+        <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
             <Text style={[styles.modalTitle, { color: colors.foreground }]}>
               {t('stock.updateLevelTitle')}
@@ -566,7 +561,7 @@ export default function StockScreen({ navigation }: { navigation: any }) {
               </TouchableOpacity>
             </View>
           </View>
-        </KeyboardAvoidingView>
+        </View>
       </Modal>
     );
   };

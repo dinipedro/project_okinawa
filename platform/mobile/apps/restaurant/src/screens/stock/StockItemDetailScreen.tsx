@@ -7,8 +7,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   TouchableOpacity,
   TextInput,
   Modal,
-  KeyboardAvoidingView,
-  Platform,
   Alert,
 } from 'react-native';
 import { Text, Card, ActivityIndicator, IconButton } from 'react-native-paper';
@@ -319,10 +317,7 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
         animationType="slide"
         onRequestClose={() => setRestockModalVisible(false)}
       >
-        <KeyboardAvoidingView
-          style={styles.modalOverlay}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
+        <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
             <Text style={[styles.modalTitle, { color: colors.foreground }]}>
               {t('stock.restockTitle')}
@@ -417,7 +412,7 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
               </TouchableOpacity>
             </View>
           </View>
-        </KeyboardAvoidingView>
+        </View>
       </Modal>
     </View>
     </ScreenContainer>

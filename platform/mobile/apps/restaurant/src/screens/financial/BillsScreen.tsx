@@ -17,8 +17,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   RefreshControl,
   Alert,
   Modal,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import {
   Text,
@@ -419,10 +417,7 @@ export default function BillsScreen() {
         transparent
         onRequestClose={closeModal}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.modalOverlay}
-        >
+        <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
             <View style={styles.modalHeader}>
               <Text variant="titleLarge" style={{ color: colors.foreground }}>
@@ -542,7 +537,7 @@ export default function BillsScreen() {
               {t('common.save')}
             </Button>
           </View>
-        </KeyboardAvoidingView>
+        </View>
       </Modal>
     </View>
     </ScreenContainer>

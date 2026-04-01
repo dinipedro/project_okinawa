@@ -15,8 +15,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   FlatList,
   RefreshControl,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
 } from 'react-native';
 import {
@@ -234,9 +232,8 @@ export default function RecipeScreen() {
     const marginColor = getMarginColor(margin);
 
     return (
-      <KeyboardAvoidingView
+      <View
         style={[styles.container, { backgroundColor: colors.background }]}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           {/* Header */}
@@ -400,7 +397,7 @@ export default function RecipeScreen() {
             </View>
           </Modal>
         </Portal>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 

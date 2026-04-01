@@ -9,7 +9,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   Modal,
   ScrollView,
   TextInput as RNTextInput,
-  KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
 } from 'react-native';
@@ -691,10 +690,7 @@ export default function PromotionsManagerScreen() {
       animationType="slide"
       onRequestClose={() => setShowCreateModal(false)}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.modalOverlay}
-      >
+      <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{t('promotions.create')}</Text>
@@ -908,7 +904,7 @@ export default function PromotionsManagerScreen() {
             </Button>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 

@@ -16,8 +16,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   StyleSheet,
   Alert,
   RefreshControl,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import {
   Text,
@@ -416,7 +414,7 @@ export default function IntegrationSettingsScreen() {
           onDismiss={() => setModalVisible(false)}
           contentContainerStyle={styles.modalContainer}
         >
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View>
             <View style={styles.modalHeader}>
               <Text variant="titleLarge" style={styles.modalTitle}>
                 {editingPlatform?.name}
@@ -559,7 +557,7 @@ export default function IntegrationSettingsScreen() {
                 {t('integrations.save')}
               </Button>
             </View>
-          </KeyboardAvoidingView>
+          </View>
         </Modal>
       </Portal>
     </View>

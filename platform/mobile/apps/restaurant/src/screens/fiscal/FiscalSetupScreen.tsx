@@ -17,8 +17,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   StyleSheet,
   ScrollView,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import {
   Text,
@@ -198,10 +196,7 @@ export default function FiscalSetupScreen() {
 
   return (
     <ScreenContainer hasKeyboard>
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: colors.background }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.content}
@@ -469,7 +464,7 @@ export default function FiscalSetupScreen() {
           </Text>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
     </ScreenContainer>
   );
 }

@@ -4,8 +4,6 @@ import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
   View,
   StyleSheet,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
   Alert,
 } from 'react-native';
 import {
@@ -156,10 +154,7 @@ export default function TableFormScreen() {
 
   return (
     <ScreenContainer hasKeyboard>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -269,7 +264,7 @@ export default function TableFormScreen() {
           {isEditing ? 'Salvar Alterações' : 'Criar Mesa'}
         </Button>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
     </ScreenContainer>
   );
 }
