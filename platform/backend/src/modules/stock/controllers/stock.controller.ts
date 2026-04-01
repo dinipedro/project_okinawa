@@ -230,6 +230,19 @@ export class StockController {
     return this.inventoryCountService.cancelCount(id, user.id);
   }
 
+  // ─── Inventory Stats (replaces legacy /inventory/stats) ────────
+
+  @Get('inventory-stats')
+  @Roles(UserRole.OWNER, UserRole.MANAGER)
+  @ApiOperation({
+    summary: 'Get aggregate inventory stats (total, ok, low, critical, estimatedStockValue)',
+    description: 'Replacement for the deprecated GET /inventory/stats endpoint.',
+  })
+  @ApiQuery({ name: 'restaurant_id', required: true, type: String })
+  getInventoryStats(@Query('restaurant_id') restaurantId: string) {
+    return this.stockService.getInventoryStats(restaurantId);
+  }
+
   // ─── Dashboard & Suggestions ───────────────────────────────────
 
   @Get('dashboard')

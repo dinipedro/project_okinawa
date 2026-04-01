@@ -560,6 +560,68 @@ export class StockService {
   }
 
   /**
+   * Get aggregate inventory stats for a restaurant — mirrors the legacy
+   * InventoryService.getStats() response so callers can migrate from
+   * /inventory/stats to /stock/inventory-stats seamlessly.
+   */
+  async getInventoryStats(
+    restaurantId: string,
+  ): Promise<{
+    total: number;
+    ok: number;
+    low: number;
+    critical: number;
+    estimatedStockValue: number | null;
+  }> {
+    const items = await this.stockRepo.find({
+      where: { restaurant_id: restaurantId },
+      relations: ['ingredient'],
+    });
+
+    let ok = 0;
+    let low = 0;
+    let critical = 0;
+
+    for (const item of items) {
+      const current = Number(item.current_quantity);
+      const min = item.min_quantity !== null ? Number(item.min_quantity) : null;
+
+      if (min === null || min === 0) {
+        ok++;
+      } else {
+        const pct = (current / min) * 100;
+        if (pct < 20) {
+          critical++;
+        } else if (pct < 50) {
+          low++;
+        } else {
+          ok++;
+        }
+      }
+    }
+
+    // Calculate estimated stock value from last_purchase_price
+    let estimatedStockValue: number | null = null;
+    const valuableItems = items.filter((i) => i.last_purchase_price != null);
+    if (valuableItems.length > 0) {
+      estimatedStockValue = valuableItems.reduce(
+        (sum, i) =>
+          sum + Number(i.current_quantity) * Number(i.last_purchase_price),
+        0,
+      );
+      estimatedStockValue = Math.round(estimatedStockValue * 100) / 100;
+    }
+
+    return {
+      total: items.length,
+      ok,
+      low,
+      critical,
+      estimatedStockValue,
+    };
+  }
+
+  /**
    * Create a stock movement record.
    */
   private async createMovement(
