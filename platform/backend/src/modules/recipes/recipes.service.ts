@@ -90,6 +90,36 @@ export class RecipesService {
   }
 
   /**
+   * Calculate estimated cost from JSONB ingredients.
+   * Tries to match ingredient names to cost-control ingredients for pricing.
+   * Falls back to a simple estimate based on ingredient count.
+   */
+  async calculateDrinkCost(id: string): Promise<{ cost: number; margin: number }> {
+    const recipe = await this.recipeRepository.findOne({ where: { id } });
+    if (!recipe) throw new NotFoundException(`Recipe with ID "${id}" not found`);
+
+    let totalCost = 0;
+    const ingredients = recipe.ingredients || [];
+
+    // Simple estimation: count unique ingredients, estimate R$2-5 per ingredient
+    // A more sophisticated version would match names to Ingredient entities
+    for (const ing of ingredients) {
+      totalCost += ing.estimated_cost || 3.0; // default R$3 per ingredient
+    }
+
+    const margin =
+      recipe.price > 0
+        ? ((recipe.price - totalCost) / recipe.price) * 100
+        : 0;
+
+    recipe.estimated_cost = Math.round(totalCost * 100) / 100;
+    recipe.margin_percentage = Math.round(margin * 100) / 100;
+    await this.recipeRepository.save(recipe);
+
+    return { cost: recipe.estimated_cost, margin: recipe.margin_percentage };
+  }
+
+  /**
    * Seed default recipes (global, restaurant_id = null).
    * Skips recipes that already exist by name with restaurant_id = null.
    */

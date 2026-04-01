@@ -56,6 +56,15 @@ export class RecipesController {
     return this.recipesService.findDefaults(pagination);
   }
 
+  @Post(':id/calculate-cost')
+  @Roles(UserRole.BARMAN, UserRole.OWNER, UserRole.MANAGER)
+  @ApiOperation({ summary: 'Calculate estimated cost and margin for a drink recipe' })
+  @ApiResponse({ status: 200, description: 'Returns cost and margin percentage' })
+  @ApiResponse({ status: 404, description: 'Recipe not found' })
+  calculateCost(@Param('id') id: string) {
+    return this.recipesService.calculateDrinkCost(id);
+  }
+
   @Get(':id')
   @Roles(UserRole.BARMAN, UserRole.OWNER, UserRole.MANAGER)
   @ApiOperation({ summary: 'Get single recipe by ID' })

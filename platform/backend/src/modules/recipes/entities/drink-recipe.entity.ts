@@ -59,7 +59,13 @@ export class DrinkRecipe {
   serving_temp: string;
 
   @Column({ type: 'jsonb' })
-  ingredients: { name: string; amount: string; unit: string }[];
+  ingredients: { name: string; amount: string; unit: string; estimated_cost?: number }[];
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  estimated_cost: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  margin_percentage: number;
 
   @Column({ type: 'jsonb' })
   steps: string[];
