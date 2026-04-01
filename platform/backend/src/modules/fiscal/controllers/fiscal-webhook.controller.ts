@@ -6,7 +6,9 @@ import {
   Logger,
   HttpCode,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
+import * as crypto from 'crypto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -64,11 +66,47 @@ export class FiscalWebhookController {
     const webhookToken = headers['x-webhook-token'] || headers['authorization'];
     if (!webhookToken) {
       this.logger.warn('[Focus NFe Webhook] Missing authentication token');
-      return { received: true, processed: false, reason: 'missing_token' };
+      throw new UnauthorizedException('Missing webhook authentication token');
     }
 
     // 2. Extract data from Focus NFe callback
     const ref = body.ref || body.external_ref;
+
+    // Validate token against stored focus_nfe_token in FiscalConfig
+    // The ref contains the document reference which links to a restaurant
+    if (ref) {
+      const doc = await this.fiscalDocRepo.findOne({
+        where: { external_ref: ref },
+        select: ['restaurant_id'],
+      });
+      if (doc?.restaurant_id) {
+        const config = await this.fiscalConfigRepo.findOne({
+          where: { restaurant_id: doc.restaurant_id, is_active: true },
+        });
+        if (config?.focus_nfe_token) {
+          const tokenStr = webhookToken.replace(/^Bearer\s+/i, '');
+          try {
+            const receivedBuf = Buffer.from(tokenStr);
+            const expectedBuf = Buffer.from(config.focus_nfe_token);
+            const isValid =
+              receivedBuf.length === expectedBuf.length &&
+              crypto.timingSafeEqual(receivedBuf, expectedBuf);
+            if (!isValid) {
+              this.logger.warn(
+                `[Focus NFe Webhook] Token mismatch for restaurant ${doc.restaurant_id}`,
+              );
+              throw new UnauthorizedException('Invalid webhook token');
+            }
+          } catch (err) {
+            if (err instanceof UnauthorizedException) throw err;
+            this.logger.warn(
+              `[Focus NFe Webhook] Token validation error: ${err instanceof Error ? err.message : 'unknown'}`,
+            );
+            throw new UnauthorizedException('Invalid webhook token');
+          }
+        }
+      }
+    }
     const status = body.status; // 'autorizado', 'cancelado', 'erro_autorizacao'
     const accessKey = body.chave_nfe || body.access_key;
     const protocol = body.protocolo || body.protocol;

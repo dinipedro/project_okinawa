@@ -2,11 +2,13 @@ import {
   Injectable,
   Logger,
   BadRequestException,
+  UnauthorizedException,
   Inject,
   Optional,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as crypto from 'crypto';
 import { GatewayTransaction } from '../entities/gateway-transaction.entity';
 import { GatewayConfig } from '../entities/gateway-config.entity';
 import { PAYMENT_GATEWAY_MESSAGES } from '../i18n/payment-gateway.i18n';
@@ -71,21 +73,19 @@ export class PaymentWebhookService {
       `Asaas webhook received | event=${event} | paymentId=${paymentId}`,
     );
 
-    // Validate webhook signature (via access_token header)
+    // Validate webhook signature (via access_token header) — REQUIRED
     const webhookToken = headers['asaas-access-token'] || headers['access_token'];
-    if (webhookToken) {
-      const isValid = await this.validateAsaasSignature(
-        webhookToken,
-        paymentId,
+    const isValid = await this.validateAsaasSignature(
+      webhookToken,
+      paymentId,
+    );
+    if (!isValid) {
+      this.logger.warn(
+        `${PAYMENT_GATEWAY_MESSAGES.WEBHOOK_SIGNATURE_INVALID} | paymentId=${paymentId}`,
       );
-      if (!isValid) {
-        this.logger.warn(
-          `${PAYMENT_GATEWAY_MESSAGES.WEBHOOK_SIGNATURE_INVALID} | paymentId=${paymentId}`,
-        );
-        throw new BadRequestException(
-          PAYMENT_GATEWAY_MESSAGES.WEBHOOK_SIGNATURE_INVALID,
-        );
-      }
+      throw new UnauthorizedException(
+        PAYMENT_GATEWAY_MESSAGES.WEBHOOK_SIGNATURE_INVALID,
+      );
     }
 
     // Find the GatewayTransaction by external_id
@@ -153,25 +153,69 @@ export class PaymentWebhookService {
 
   /**
    * Validate Asaas webhook signature.
-   * Asaas uses a webhook_token configured per GatewayConfig.
    *
-   * TODO: Implement actual signature validation against stored webhook_token.
-   * For now, logs the validation attempt.
+   * Asaas sends a webhook_token (configured in the Asaas dashboard) in the
+   * 'asaas-access-token' header. We compare it against the token stored in
+   * the GatewayConfig credentials for the restaurant.
+   *
+   * Lookup strategy: first try finding the transaction to get restaurant_id,
+   * then load the GatewayConfig for that restaurant's Asaas provider.
+   * If no config exists, reject the webhook.
    */
   private async validateAsaasSignature(
     receivedToken: string,
     paymentId: string,
   ): Promise<boolean> {
-    this.logger.log(
-      `[TODO] Validating Asaas webhook signature | ` +
-        `receivedToken=${receivedToken ? '***present' : 'MISSING'} | ` +
-        `paymentId=${paymentId}`,
-    );
+    if (!receivedToken) {
+      this.logger.warn(
+        `Asaas webhook signature validation failed: no token received | paymentId=${paymentId}`,
+      );
+      return false;
+    }
 
-    // TODO: Look up the GatewayConfig for this payment's restaurant
-    // and compare the receivedToken against config.credentials.webhook_token
-    // For now, accept all webhooks in development
-    return true;
+    // Find the transaction to get restaurant_id
+    const tx = await this.transactionRepository.findOne({
+      where: { external_id: paymentId, provider: 'asaas' },
+      select: ['restaurant_id'],
+    });
+
+    // If we can't find the transaction, try matching against all Asaas configs
+    let expectedToken: string | undefined;
+
+    if (tx?.restaurant_id) {
+      const config = await this.configRepository.findOne({
+        where: { restaurant_id: tx.restaurant_id, provider: 'asaas', is_active: true },
+      });
+      expectedToken = config?.credentials?.webhook_token;
+    }
+
+    if (!expectedToken) {
+      // Fallback: try to find any active Asaas config with matching token
+      const configs = await this.configRepository.find({
+        where: { provider: 'asaas', is_active: true },
+      });
+      const match = configs.find((c) => c.credentials?.webhook_token === receivedToken);
+      if (match) {
+        expectedToken = match.credentials.webhook_token;
+      }
+    }
+
+    if (!expectedToken) {
+      this.logger.warn(
+        `Asaas webhook: no webhook_token configured for payment ${paymentId}. Rejecting.`,
+      );
+      return false;
+    }
+
+    // Timing-safe comparison to prevent timing attacks
+    try {
+      const receivedBuf = Buffer.from(receivedToken);
+      const expectedBuf = Buffer.from(expectedToken);
+      if (receivedBuf.length !== expectedBuf.length) return false;
+      return crypto.timingSafeEqual(receivedBuf, expectedBuf);
+    } catch {
+      return false;
+    }
   }
 
   // ─── Stripe Webhooks ──────────────────────────────────────────────────────────
@@ -202,22 +246,20 @@ export class PaymentWebhookService {
       `Stripe webhook received | type=${eventType} | paymentIntentId=${paymentIntentId}`,
     );
 
-    // Validate Stripe webhook signature
+    // Validate Stripe webhook signature — REQUIRED
     const signature = headers['stripe-signature'];
-    if (signature) {
-      const isValid = await this.validateStripeSignature(
-        signature,
-        body,
-        paymentIntentId,
+    const isValid = await this.validateStripeSignature(
+      signature,
+      body,
+      paymentIntentId,
+    );
+    if (!isValid) {
+      this.logger.warn(
+        `${PAYMENT_GATEWAY_MESSAGES.WEBHOOK_SIGNATURE_INVALID} | paymentIntentId=${paymentIntentId}`,
       );
-      if (!isValid) {
-        this.logger.warn(
-          `${PAYMENT_GATEWAY_MESSAGES.WEBHOOK_SIGNATURE_INVALID} | paymentIntentId=${paymentIntentId}`,
-        );
-        throw new BadRequestException(
-          PAYMENT_GATEWAY_MESSAGES.WEBHOOK_SIGNATURE_INVALID,
-        );
-      }
+      throw new UnauthorizedException(
+        PAYMENT_GATEWAY_MESSAGES.WEBHOOK_SIGNATURE_INVALID,
+      );
     }
 
     // Find the GatewayTransaction by external_id
@@ -297,25 +339,89 @@ export class PaymentWebhookService {
   /**
    * Validate Stripe webhook signature.
    *
-   * TODO: Implement actual Stripe signature verification using
-   * stripe.webhooks.constructEvent(rawBody, signature, webhookSecret).
-   * Requires the raw body buffer and the endpoint secret from GatewayConfig.
+   * Stripe sends a 'Stripe-Signature' header with format:
+   *   t=<timestamp>,v1=<signature>
+   *
+   * Verification: HMAC-SHA256 of "<timestamp>.<rawBody>" with the webhook
+   * endpoint secret stored in GatewayConfig credentials.
+   *
+   * Includes timestamp tolerance check (5 minutes) for replay protection.
    */
   private async validateStripeSignature(
     signature: string,
-    _body: any,
+    body: any,
     paymentIntentId: string,
   ): Promise<boolean> {
-    this.logger.log(
-      `[TODO] Validating Stripe webhook signature | ` +
-        `signature=${signature ? '***present' : 'MISSING'} | ` +
-        `paymentIntentId=${paymentIntentId}`,
-    );
+    if (!signature) {
+      this.logger.warn(
+        `Stripe webhook signature validation failed: no signature | paymentIntentId=${paymentIntentId}`,
+      );
+      return false;
+    }
 
-    // TODO: Look up the GatewayConfig for this payment's restaurant
-    // and verify using stripe.webhooks.constructEvent()
-    // For now, accept all webhooks in development
-    return true;
+    // Parse Stripe-Signature header: t=<ts>,v1=<sig>
+    const parts = signature.split(',');
+    const tsEntry = parts.find((p) => p.startsWith('t='));
+    const sigEntry = parts.find((p) => p.startsWith('v1='));
+
+    if (!tsEntry || !sigEntry) {
+      this.logger.warn('Stripe webhook: malformed Stripe-Signature header');
+      return false;
+    }
+
+    const timestamp = tsEntry.replace('t=', '');
+    const receivedSig = sigEntry.replace('v1=', '');
+
+    // Replay protection: reject webhooks older than 5 minutes
+    const TOLERANCE_SECONDS = 300;
+    const tsNum = parseInt(timestamp, 10);
+    const now = Math.floor(Date.now() / 1000);
+    if (isNaN(tsNum) || Math.abs(now - tsNum) > TOLERANCE_SECONDS) {
+      this.logger.warn(
+        `Stripe webhook: timestamp out of tolerance | t=${timestamp} | now=${now}`,
+      );
+      return false;
+    }
+
+    // Find transaction to get restaurant_id
+    const tx = await this.transactionRepository.findOne({
+      where: { external_id: paymentIntentId, provider: 'stripe_terminal' },
+      select: ['restaurant_id'],
+    });
+
+    let webhookSecret: string | undefined;
+
+    if (tx?.restaurant_id) {
+      const config = await this.configRepository.findOne({
+        where: { restaurant_id: tx.restaurant_id, provider: 'stripe_terminal', is_active: true },
+      });
+      webhookSecret = config?.credentials?.webhook_secret;
+    }
+
+    if (!webhookSecret) {
+      this.logger.warn(
+        `Stripe webhook: no webhook_secret configured for paymentIntent ${paymentIntentId}. Rejecting.`,
+      );
+      return false;
+    }
+
+    // Compute expected signature: HMAC-SHA256("<timestamp>.<rawBody>")
+    const rawBody = typeof body === 'string' ? body : JSON.stringify(body);
+    const signedPayload = `${timestamp}.${rawBody}`;
+    const expectedSig = crypto
+      .createHmac('sha256', webhookSecret)
+      .update(signedPayload)
+      .digest('hex');
+
+    // Timing-safe comparison
+    try {
+      const receivedBuf = Buffer.from(receivedSig, 'hex');
+      const expectedBuf = Buffer.from(expectedSig, 'hex');
+      if (receivedBuf.length !== expectedBuf.length) return false;
+      return crypto.timingSafeEqual(receivedBuf, expectedBuf);
+    } catch {
+      return false;
+    }
   }
 
   // ─── Event Emission ───────────────────────────────────────────────────────────
