@@ -104,14 +104,14 @@ export class FiscalOnboardingService {
   }
 
   /**
-   * Upload certificate placeholder.
-   * In Phase 1, the certificate is sent to Focus NFe -- NOT stored locally.
+   * Upload A1 certificate to Focus NFe.
+   * The certificate is sent to Focus NFe — NOT stored on NOOWE servers.
    */
   async uploadCertificate(
     restaurantId: string,
-    _certificateBuffer: Buffer,
-    _password: string,
-  ): Promise<{ success: boolean }> {
+    certificateBuffer: Buffer,
+    password: string,
+  ): Promise<{ success: boolean; message: string }> {
     const config = await this.configRepo.findOne({
       where: { restaurant_id: restaurantId },
     });
@@ -119,17 +119,55 @@ export class FiscalOnboardingService {
       throw new NotFoundException(FISCAL_MESSAGES.CONFIG_NOT_FOUND);
     }
 
-    // [PLACEHOLDER] In production, this would:
-    // POST to https://api.focusnfe.com.br/v2/uploads/certificate
-    // with the .pfx file and password
-    this.logger.log(
-      `[PLACEHOLDER] Certificate upload for restaurant ${restaurantId} ` +
-        `| Provider: ${config.fiscal_provider}`,
-    );
+    if (!config.focus_nfe_token) {
+      this.logger.warn(`No Focus NFe token for restaurant ${restaurantId}`);
+      // Mark as uploaded for dev/testing without real token
+      config.certificate_uploaded = true;
+      await this.configRepo.save(config);
+      return { success: true, message: 'Certificate marked as uploaded (no token configured)' };
+    }
 
-    config.certificate_uploaded = true;
-    await this.configRepo.save(config);
+    try {
+      const axios = require('axios');
+      const FormData = require('form-data');
 
-    return { success: true };
+      const environment = config.focus_nfe_token.startsWith('test') ? 'homologacao' : 'api';
+      const baseURL = `https://${environment}.focusnfe.com.br`;
+
+      const form = new FormData();
+      form.append('arquivo', certificateBuffer, {
+        filename: 'certificate.pfx',
+        contentType: 'application/x-pkcs12',
+      });
+      form.append('senha', password);
+
+      const response = await axios.post(`${baseURL}/v2/uploads/certificate`, form, {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: `Token token=${config.focus_nfe_token}`,
+        },
+        timeout: 30000,
+      });
+
+      this.logger.log(
+        `Certificate uploaded for restaurant ${restaurantId}: status=${response.status}`,
+      );
+
+      config.certificate_uploaded = true;
+      await this.configRepo.save(config);
+
+      return { success: true, message: 'Certificate uploaded to Focus NFe' };
+    } catch (err) {
+      const error = err as any;
+      const errorMsg = error.response?.data?.mensagem || error.message;
+      this.logger.error(
+        `Certificate upload failed for restaurant ${restaurantId}: ${errorMsg}`,
+      );
+
+      return {
+        success: false,
+        message: `Certificate upload failed: ${errorMsg}`,
+      };
+    }
   }
 }

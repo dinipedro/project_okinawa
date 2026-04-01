@@ -13,11 +13,14 @@ import { SefazDirectAdapter } from './adapters/sefaz-direct/sefaz-direct.adapter
 // Services
 import { FiscalEmissionService } from './services/fiscal-emission.service';
 import { FiscalOnboardingService } from './services/fiscal-onboarding.service';
-import { FiscalEventService } from './services/fiscal-event.service';
+
+// Listeners
+import { FiscalEventListener } from './listeners/fiscal-event.listener';
 
 // Controllers
 import { FiscalController } from './controllers/fiscal.controller';
 import { FiscalWebhookController } from './controllers/fiscal-webhook.controller';
+import { EventsModule } from '../events/events.module';
 
 /**
  * FiscalModule -- NFC-e emission with adapter pattern.
@@ -31,6 +34,7 @@ import { FiscalWebhookController } from './controllers/fiscal-webhook.controller
 @Module({
   imports: [
     TypeOrmModule.forFeature([FiscalDocument, FiscalConfig, Order]),
+    EventsModule,
   ],
   controllers: [FiscalController, FiscalWebhookController],
   providers: [
@@ -47,7 +51,9 @@ import { FiscalWebhookController } from './controllers/fiscal-webhook.controller
     // Services
     FiscalEmissionService,
     FiscalOnboardingService,
-    FiscalEventService,
+
+    // Event listener — auto-emit NFC-e on payment confirmed
+    FiscalEventListener,
   ],
   exports: [FiscalEmissionService, FiscalOnboardingService],
 })

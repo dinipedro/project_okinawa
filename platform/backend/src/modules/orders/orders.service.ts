@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { UserRole as UserRoleEnum } from '@/common/enums';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Repository, In, DataSource } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
@@ -49,6 +50,7 @@ export class OrdersService {
     private orderCalculator: OrderCalculatorHelper,
     private stockService: StockService,
     private customerCrmService: CustomerCrmService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(userId: string, createOrderDto: CreateOrderDto) {
@@ -274,6 +276,12 @@ export class OrdersService {
           err.stack,
         );
       }
+
+      // Emit event for COGS recording + NFC-e emission (via EventEmitter2)
+      this.eventEmitter.emit('order.payment.confirmed', {
+        orderId: order.id,
+        restaurantId: order.restaurant_id,
+      });
 
       // GAP Sprint 2: CRM — record customer visit
       try {
@@ -513,6 +521,12 @@ export class OrdersService {
         err.stack,
       );
     }
+
+    // Emit event for COGS recording + NFC-e emission (via EventEmitter2)
+    this.eventEmitter.emit('order.payment.confirmed', {
+      orderId: order.id,
+      restaurantId: order.restaurant_id,
+    });
 
     // Free table if dine-in
     if (order.table_id) {

@@ -104,6 +104,9 @@ export class FiscalEmissionService {
     // 4. Build emission params
     const params = this.buildEmitParams(order, config);
 
+    // Pass token to adapter for authentication
+    (params as any).focus_nfe_token = config.focus_nfe_token;
+
     // 5. Call adapter
     let fiscalDoc: FiscalDocument;
     try {

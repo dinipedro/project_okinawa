@@ -1,19 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Ingredient } from '../entities/ingredient.entity';
 import { IngredientPrice } from '../entities/ingredient-price.entity';
+import { RecipeIngredient } from '../entities/recipe-ingredient.entity';
 import { CreateIngredientDto } from '../dto/create-ingredient.dto';
 import { UpdateIngredientDto } from '../dto/update-ingredient.dto';
 import { CreateIngredientPriceDto } from '../dto/create-ingredient-price.dto';
 
 @Injectable()
 export class IngredientService {
+  private readonly logger = new Logger(IngredientService.name);
+
   constructor(
     @InjectRepository(Ingredient)
     private readonly ingredientRepo: Repository<Ingredient>,
     @InjectRepository(IngredientPrice)
     private readonly priceRepo: Repository<IngredientPrice>,
+    @InjectRepository(RecipeIngredient)
+    private readonly recipeIngredientRepo: Repository<RecipeIngredient>,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -71,7 +78,32 @@ export class IngredientService {
       supplier: dto.supplier,
       effective_date: dto.effective_date,
     });
-    return this.priceRepo.save(price);
+    const savedPrice = await this.priceRepo.save(price);
+
+    // Trigger recalculation of all recipes using this ingredient
+    try {
+      const recipeIngredients = await this.recipeIngredientRepo.find({
+        where: { ingredient_id: ingredientId },
+      });
+
+      if (recipeIngredients.length > 0) {
+        const recipeIds = [...new Set(recipeIngredients.map((ri) => ri.recipe_id))];
+        this.eventEmitter.emit('ingredient.price.updated', {
+          ingredientId,
+          newPrice: dto.price_per_unit,
+          affectedRecipeIds: recipeIds,
+        });
+        this.logger.log(
+          `Price updated for ingredient ${ingredientId}: ${dto.price_per_unit} — ` +
+            `${recipeIds.length} recipe(s) queued for recalculation`,
+        );
+      }
+    } catch (err) {
+      const error = err as Error;
+      this.logger.error(`Failed to trigger recipe recalculation: ${error.message}`);
+    }
+
+    return savedPrice;
   }
 
   /**

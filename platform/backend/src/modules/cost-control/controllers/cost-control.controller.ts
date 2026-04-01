@@ -17,11 +17,14 @@ import { UserRole } from '@/common/enums/user-role.enum';
 import { IngredientService } from '../services/ingredient.service';
 import { RecipeService } from '../services/recipe.service';
 import { MarginTrackerService } from '../services/margin-tracker.service';
+import { SupplierService } from '../services/supplier.service';
 import { CreateIngredientDto } from '../dto/create-ingredient.dto';
 import { UpdateIngredientDto } from '../dto/update-ingredient.dto';
 import { CreateIngredientPriceDto } from '../dto/create-ingredient-price.dto';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { AddRecipeIngredientDto } from '../dto/add-recipe-ingredient.dto';
+import { CreateSupplierDto } from '../dto/create-supplier.dto';
+import { UpdateSupplierDto } from '../dto/update-supplier.dto';
 
 @ApiTags('cost-control')
 @Controller('cost-control')
@@ -32,6 +35,7 @@ export class CostControlController {
     private readonly ingredientService: IngredientService,
     private readonly recipeService: RecipeService,
     private readonly marginTrackerService: MarginTrackerService,
+    private readonly supplierService: SupplierService,
   ) {}
 
   // ────────── INGREDIENTS ──────────
@@ -151,5 +155,52 @@ export class CostControlController {
   ) {
     const periodDays = period ? parseInt(period, 10) : 30;
     return this.marginTrackerService.getFoodCost(restaurantId, periodDays);
+  }
+
+  // ────────── SUPPLIERS ──────────
+
+  @Post('suppliers')
+  @Roles(UserRole.OWNER, UserRole.MANAGER)
+  @ApiOperation({ summary: 'Create supplier' })
+  createSupplier(@Body() dto: CreateSupplierDto) {
+    return this.supplierService.create(dto);
+  }
+
+  @Get('suppliers')
+  @Roles(UserRole.OWNER, UserRole.MANAGER)
+  @ApiOperation({ summary: 'List suppliers for a restaurant' })
+  @ApiQuery({ name: 'restaurant_id', required: true, type: String })
+  listSuppliers(@Query('restaurant_id') restaurantId: string) {
+    return this.supplierService.findAll(restaurantId);
+  }
+
+  @Patch('suppliers/:id')
+  @Roles(UserRole.OWNER, UserRole.MANAGER)
+  @ApiOperation({ summary: 'Update supplier' })
+  updateSupplier(@Param('id') id: string, @Body() dto: UpdateSupplierDto) {
+    return this.supplierService.update(id, dto);
+  }
+
+  @Post('suppliers/:supplierId/ingredients/:ingredientId')
+  @Roles(UserRole.OWNER, UserRole.MANAGER)
+  @ApiOperation({ summary: 'Link supplier to ingredient' })
+  linkSupplierIngredient(
+    @Param('supplierId') supplierId: string,
+    @Param('ingredientId') ingredientId: string,
+    @Body() body: { is_preferred?: boolean; last_price?: number },
+  ) {
+    return this.supplierService.linkIngredient(
+      supplierId,
+      ingredientId,
+      body.is_preferred ?? false,
+      body.last_price,
+    );
+  }
+
+  @Get('ingredients/:ingredientId/suppliers')
+  @Roles(UserRole.OWNER, UserRole.MANAGER)
+  @ApiOperation({ summary: 'List suppliers for an ingredient' })
+  getIngredientSuppliers(@Param('ingredientId') ingredientId: string) {
+    return this.supplierService.getIngredientSuppliers(ingredientId);
   }
 }

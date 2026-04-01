@@ -27,6 +27,8 @@ import { SelfLearningService } from './services/self-learning.service';
 import { KdsBrainConfigService } from './services/kds-brain-config.service';
 import { CookStationController } from './controllers/cook-station.controller';
 import { KdsBrainController } from './controllers/kds-brain.controller';
+import { StockDepletionListener } from './listeners/stock-depletion.listener';
+import { RecipeIngredient } from '@/modules/cost-control/entities/recipe-ingredient.entity';
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { KdsBrainController } from './controllers/kds-brain.controller';
       Restaurant,
       PlatformConnection,
       ExternalMenuMapping,
+      RecipeIngredient,
     ]),
     JwtModule.registerAsync({
       inject: [ConfigService],
@@ -67,6 +70,7 @@ import { KdsBrainController } from './controllers/kds-brain.controller';
     AnalyticsService,
     SelfLearningService,
     KdsBrainConfigService,
+    StockDepletionListener,
   ],
   exports: [
     CookStationService,

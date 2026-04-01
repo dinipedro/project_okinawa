@@ -35,6 +35,9 @@ export class StockItem {
   min_quantity: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 4, nullable: true })
+  max_quantity: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 4, nullable: true })
   last_purchase_price: number;
 
   @Column({ type: 'date', nullable: true })

@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { I18nModule } from 'nestjs-i18n';
 import { typeOrmConfig } from './config/typeorm.config';
 import { redisConfig } from './config/redis.config';
@@ -88,6 +89,9 @@ import { CustomerCrmModule } from './modules/customer-crm/customer-crm.module';
     BullModule.forRootAsync({
       useFactory: redisConfig,
     }),
+
+    // Event-driven communication between modules
+    EventEmitterModule.forRoot(),
 
     // Rate limiting
     ThrottlerModule.forRootAsync({

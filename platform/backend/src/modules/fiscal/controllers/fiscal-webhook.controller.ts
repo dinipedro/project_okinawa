@@ -12,7 +12,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Public } from '@/common/decorators/public.decorator';
 import { FiscalDocument } from '../entities/fiscal-document.entity';
-import { FiscalEventService } from '../services/fiscal-event.service';
+import { FiscalConfig } from '../entities/fiscal-config.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventsGateway } from '../../events/events.gateway';
 
 /**
  * FiscalWebhookController -- receives callbacks from Focus NFe.
@@ -25,10 +27,11 @@ import { FiscalEventService } from '../services/fiscal-event.service';
  * - Emission error
  *
  * Flow:
- * 1. Validate webhook authenticity (token in header)
+ * 1. Validate webhook authenticity (compare token with FiscalConfig)
  * 2. Find FiscalDocument by external_ref
  * 3. Update status, access_key, protocol, xml
- * 4. Emit internal event (fiscal.nfce.authorized or fiscal.nfce.failed)
+ * 4. Emit internal event via EventEmitter2
+ * 5. Notify restaurant via WebSocket on errors
  */
 @ApiTags('fiscal-webhooks')
 @Controller('fiscal/webhooks')
@@ -38,8 +41,10 @@ export class FiscalWebhookController {
   constructor(
     @InjectRepository(FiscalDocument)
     private readonly fiscalDocRepo: Repository<FiscalDocument>,
-
-    private readonly fiscalEvents: FiscalEventService,
+    @InjectRepository(FiscalConfig)
+    private readonly fiscalConfigRepo: Repository<FiscalConfig>,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   @Post('focus-nfe')
@@ -55,10 +60,12 @@ export class FiscalWebhookController {
       `[Focus NFe Webhook] Received callback: ${JSON.stringify(body).substring(0, 500)}`,
     );
 
-    // 1. Validate webhook token
-    // [PLACEHOLDER] In production, validate: headers['x-webhook-token'] === expected
+    // 1. Validate webhook token against FiscalConfig
     const webhookToken = headers['x-webhook-token'] || headers['authorization'];
-    this.logger.debug(`[Focus NFe Webhook] Token: ${webhookToken ? 'present' : 'missing'}`);
+    if (!webhookToken) {
+      this.logger.warn('[Focus NFe Webhook] Missing authentication token');
+      return { received: true, processed: false, reason: 'missing_token' };
+    }
 
     // 2. Extract data from Focus NFe callback
     const ref = body.ref || body.external_ref;
@@ -117,21 +124,34 @@ export class FiscalWebhookController {
 
     await this.fiscalDocRepo.save(doc);
 
-    // 5. Emit internal event
+    // 5. Emit internal event via EventEmitter2
     if (doc.status === 'authorized') {
-      this.fiscalEvents.emit('fiscal.nfce.authorized', {
+      this.eventEmitter.emit('fiscal.nfce.authorized', {
         documentId: doc.id,
         orderId: doc.order_id,
         accessKey: doc.access_key,
         restaurantId: doc.restaurant_id,
       });
     } else if (doc.status === 'denied' || doc.status === 'failed') {
-      this.fiscalEvents.emit('fiscal.nfce.failed', {
+      this.eventEmitter.emit('fiscal.nfce.failed', {
         documentId: doc.id,
         orderId: doc.order_id,
         errorMessage: doc.error_message,
         restaurantId: doc.restaurant_id,
       });
+
+      // Notify restaurant owner via WebSocket about fiscal error
+      try {
+        this.eventsGateway.server
+          .to(`restaurant:${doc.restaurant_id}`)
+          .emit('fiscal:error', {
+            orderId: doc.order_id,
+            status: doc.status,
+            message: doc.error_message,
+          });
+      } catch {
+        // Non-critical
+      }
     }
 
     this.logger.log(

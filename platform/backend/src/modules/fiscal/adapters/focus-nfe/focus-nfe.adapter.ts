@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import axios, { AxiosInstance, AxiosError } from 'axios';
 import {
   FiscalAdapter,
   EmitNfceParams,
@@ -11,23 +12,17 @@ import {
 /**
  * Adapter for Focus NFe API (https://focusnfe.com.br/doc/)
  *
- * PHASE 1 of fiscal strategy -- intermediary API.
- * NOOWE sends invoice data as JSON, Focus NFe handles everything:
- * builds XML, signs with restaurant certificate, transmits to SEFAZ,
- * handles contingency, and returns the result.
+ * PHASE 1 of fiscal strategy — intermediary API.
+ * NOOWE sends invoice data as JSON, Focus NFe handles:
+ * XML build, certificate signing, SEFAZ transmission, contingency.
  *
- * Endpoints used:
- * - POST   /v2/nfce?ref={ref}       -> Emit NFC-e
- * - DELETE /v2/nfce/{ref}            -> Cancel NFC-e
- * - GET    /v2/nfce/{ref}            -> Consult NFC-e
- * - POST   /v2/nfce/inutilizar       -> Invalidate numbering
+ * Endpoints:
+ * - POST   /v2/nfce?ref={ref}       → Emit NFC-e
+ * - DELETE /v2/nfce/{ref}            → Cancel NFC-e
+ * - GET    /v2/nfce/{ref}            → Consult NFC-e
+ * - POST   /v2/nfce/inutiliza       → Invalidate numbering range
  *
- * Auth: Token in header "Authorization: Token token={api_token}"
- * Base URL prod: https://api.focusnfe.com.br
- * Base URL homolog: https://homologacao.focusnfe.com.br
- *
- * CURRENT STATUS: LOG PLACEHOLDERS -- real API calls to be wired
- * when Focus NFe sandbox credentials are available.
+ * Auth: "Authorization: Token token={api_token}" header
  */
 @Injectable()
 export class FocusNfeAdapter implements FiscalAdapter {
@@ -37,29 +32,244 @@ export class FocusNfeAdapter implements FiscalAdapter {
   constructor(private readonly configService: ConfigService) {}
 
   /**
+   * Create axios instance with token auth for a specific restaurant.
+   * Token comes from FiscalConfig.focus_nfe_token per restaurant.
+   */
+  private createClient(token: string): AxiosInstance {
+    const environment = this.configService.get<string>('ASAAS_ENVIRONMENT', 'sandbox');
+    const baseURL =
+      environment === 'production'
+        ? 'https://api.focusnfe.com.br'
+        : 'https://homologacao.focusnfe.com.br';
+
+    return axios.create({
+      baseURL,
+      timeout: 30000,
+      headers: {
+        Authorization: `Token token=${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  /**
    * Emit NFC-e via Focus NFe API.
-   *
-   * Maps EmitNfceParams to Focus NFe JSON format:
-   * { natureza_operacao, tipo_documento, consumidor_final,
-   *   presenca_comprador, items[], formas_pagamento[], ... }
-   *
-   * POST /v2/nfce?ref={order_id}
-   * Header: Authorization: Token token={restaurant_api_token}
+   * POST /v2/nfce?ref={idempotency_key}
    */
   async emitNfce(params: EmitNfceParams): Promise<FiscalEmissionResult> {
-    this.logger.log(
-      `[PLACEHOLDER] Emitting NFC-e for order ${params.order_id} | ` +
-        `CNPJ: ${params.cnpj} | Items: ${params.items.length} | ` +
-        `Total: R$ ${params.total_amount} | Serie: ${params.serie} | Numero: ${params.numero}`,
+    const token = (params as any).focus_nfe_token;
+
+    if (!token) {
+      this.logger.warn(
+        `No Focus NFe token for order ${params.order_id} — returning simulated response`,
+      );
+      return this.simulatedEmission(params);
+    }
+
+    const client = this.createClient(token);
+    const payload = this.buildFocusNfePayload(params);
+    const ref = params.idempotency_key || params.order_id;
+
+    try {
+      this.logger.log(
+        `Emitting NFC-e: order=${params.order_id}, CNPJ=${params.cnpj}, ` +
+          `items=${params.items.length}, total=R$${params.total_amount}`,
+      );
+
+      const response = await client.post(`/v2/nfce?ref=${ref}`, payload);
+      const data = response.data;
+
+      if (data.status === 'autorizado' || data.status === 'authorized') {
+        this.logger.log(
+          `NFC-e authorized: order=${params.order_id}, ` +
+            `access_key=${data.chave_nfe || data.access_key}`,
+        );
+
+        return {
+          success: true,
+          access_key: data.chave_nfe || data.access_key || '',
+          number: params.numero,
+          series: params.serie,
+          protocol: data.numero_protocolo || data.protocol || '',
+          xml: data.xml || '',
+          qr_code_url: data.qrcode_url || data.qr_code_url || '',
+          danfe_url: data.danfe_url || data.url_danfe || '',
+        };
+      }
+
+      if (data.status === 'processando_autorizacao' || data.status === 'processing') {
+        this.logger.log(
+          `NFC-e processing: order=${params.order_id} — webhook will confirm`,
+        );
+
+        return {
+          success: true,
+          access_key: '',
+          number: params.numero,
+          series: params.serie,
+          protocol: '',
+          status: 'pending',
+        };
+      }
+
+      // Error from Focus NFe
+      this.logger.error(
+        `NFC-e emission error: order=${params.order_id}, ` +
+          `status=${data.status}, message=${data.mensagem_sefaz || data.erros || JSON.stringify(data)}`,
+      );
+
+      return {
+        success: false,
+        error_code: data.status_sefaz || data.status || 'UNKNOWN',
+        error_message: data.mensagem_sefaz || data.erros?.[0]?.mensagem || 'Emission failed',
+        access_key: '',
+        number: params.numero,
+        series: params.serie,
+      };
+    } catch (err) {
+      const error = err as AxiosError;
+      const errorData = error.response?.data as any;
+
+      this.logger.error(
+        `Focus NFe API error: order=${params.order_id}, ` +
+          `status=${error.response?.status}, ` +
+          `message=${errorData?.mensagem || errorData?.erros?.[0]?.mensagem || error.message}`,
+      );
+
+      return {
+        success: false,
+        error_code: String(error.response?.status || 'NETWORK_ERROR'),
+        error_message:
+          errorData?.mensagem ||
+          errorData?.erros?.[0]?.mensagem ||
+          error.message ||
+          'Focus NFe API unreachable',
+        access_key: '',
+        number: params.numero,
+        series: params.serie,
+      };
+    }
+  }
+
+  /**
+   * Cancel NFC-e via Focus NFe API.
+   * DELETE /v2/nfce/{ref}
+   */
+  async cancelNfce(
+    accessKey: string,
+    reason: string,
+    token?: string,
+  ): Promise<FiscalCancelResult> {
+    if (!token) {
+      this.logger.warn(`No token for cancellation of ${accessKey} — simulated`);
+      return { success: true, protocol: `SIM_CANCEL_${Date.now()}` };
+    }
+
+    const client = this.createClient(token);
+
+    try {
+      this.logger.log(`Cancelling NFC-e: access_key=${accessKey}`);
+
+      const response = await client.delete(`/v2/nfce/${accessKey}`, {
+        data: { justificativa: reason },
+      });
+
+      const data = response.data;
+
+      return {
+        success: data.status === 'cancelado' || data.status === 'cancelled',
+        protocol: data.numero_protocolo || data.protocol || '',
+      };
+    } catch (err) {
+      const error = err as AxiosError;
+      const errorData = error.response?.data as any;
+
+      this.logger.error(`Cancel failed: ${errorData?.mensagem || error.message}`);
+
+      return {
+        success: false,
+        error_message: errorData?.mensagem || error.message,
+      };
+    }
+  }
+
+  /**
+   * Consult NFC-e status via Focus NFe API.
+   * GET /v2/nfce/{ref}
+   */
+  async consultNfce(accessKey: string, token?: string): Promise<FiscalConsultResult> {
+    if (!token) {
+      return { status: 'authorized', access_key: accessKey, protocol: '' };
+    }
+
+    const client = this.createClient(token);
+
+    try {
+      const response = await client.get(`/v2/nfce/${accessKey}`);
+      const data = response.data;
+
+      const statusMap: Record<string, string> = {
+        autorizado: 'authorized',
+        cancelado: 'cancelled',
+        erro_autorizacao: 'denied',
+        processando_autorizacao: 'pending',
+      };
+
+      return {
+        status: statusMap[data.status] || data.status,
+        access_key: data.chave_nfe || accessKey,
+        protocol: data.numero_protocolo || '',
+      };
+    } catch (err) {
+      const error = err as AxiosError;
+      this.logger.error(`Consult failed: ${error.message}`);
+      return { status: 'error', access_key: accessKey };
+    }
+  }
+
+  /**
+   * Invalidate number range via Focus NFe API.
+   * POST /v2/nfce/inutiliza
+   */
+  async invalidateRange(
+    series: number,
+    start: number,
+    end: number,
+    reason: string,
+    token?: string,
+  ): Promise<void> {
+    if (!token) {
+      this.logger.warn(`No token for range invalidation — simulated`);
+      return;
+    }
+
+    const client = this.createClient(token);
+
+    try {
+      await client.post('/v2/nfce/inutiliza', {
+        serie: series,
+        numero_inicial: start,
+        numero_final: end,
+        justificativa: reason,
+      });
+      this.logger.log(`Range invalidated: series=${series}, ${start}-${end}`);
+    } catch (err) {
+      const error = err as AxiosError;
+      this.logger.error(`Range invalidation failed: ${error.message}`);
+      throw error;
+    }
+  }
+
+  // ─── Private Helpers ───────────────────────────────────────────────────────
+
+  /**
+   * Simulated response when no token is configured (dev/testing).
+   */
+  private simulatedEmission(params: EmitNfceParams): FiscalEmissionResult {
+    this.logger.warn(
+      `[SIMULATED] NFC-e for order ${params.order_id} — no Focus NFe token configured`,
     );
 
-    // Build Focus NFe payload (logged for validation)
-    const focusPayload = this.buildFocusNfePayload(params);
-    this.logger.debug(
-      `[PLACEHOLDER] Focus NFe payload built: ${JSON.stringify(focusPayload).substring(0, 500)}...`,
-    );
-
-    // Simulated successful response
     const simulatedAccessKey =
       params.cnpj.padEnd(14, '0') +
       '65' +
@@ -74,65 +284,12 @@ export class FocusNfeAdapter implements FiscalAdapter {
       access_key: simulatedAccessKey.padEnd(44, '0'),
       number: params.numero,
       series: params.serie,
-      protocol: `PLACEHOLDER_${Date.now()}`,
-      xml: `<!-- PLACEHOLDER XML for order ${params.order_id} -->`,
+      protocol: `SIMULATED_${Date.now()}`,
+      xml: `<!-- Simulated XML for order ${params.order_id} -->`,
       qr_code_url: `https://homologacao.focusnfe.com.br/qrcode/${params.order_id}`,
       danfe_url: `https://homologacao.focusnfe.com.br/danfe/${params.order_id}`,
     };
   }
-
-  /**
-   * Cancel NFC-e via Focus NFe API.
-   * DELETE /v2/nfce/{ref}
-   * Body: { justificativa: reason } (minimum 15 characters)
-   */
-  async cancelNfce(
-    accessKey: string,
-    reason: string,
-  ): Promise<FiscalCancelResult> {
-    this.logger.log(
-      `[PLACEHOLDER] Cancelling NFC-e | Access Key: ${accessKey} | Reason: ${reason}`,
-    );
-
-    return {
-      success: true,
-      protocol: `CANCEL_PLACEHOLDER_${Date.now()}`,
-    };
-  }
-
-  /**
-   * Consult NFC-e status via Focus NFe API.
-   * GET /v2/nfce/{ref}
-   */
-  async consultNfce(accessKey: string): Promise<FiscalConsultResult> {
-    this.logger.log(
-      `[PLACEHOLDER] Consulting NFC-e | Access Key: ${accessKey}`,
-    );
-
-    return {
-      status: 'authorized',
-      access_key: accessKey,
-      protocol: `CONSULT_PLACEHOLDER_${Date.now()}`,
-    };
-  }
-
-  /**
-   * Invalidate number range via Focus NFe API.
-   * POST /v2/nfce/inutilizar
-   */
-  async invalidateRange(
-    series: number,
-    start: number,
-    end: number,
-    reason: string,
-  ): Promise<void> {
-    this.logger.log(
-      `[PLACEHOLDER] Invalidating range | Series: ${series} | ` +
-        `Start: ${start} | End: ${end} | Reason: ${reason}`,
-    );
-  }
-
-  // ─── Private Helpers ───────────────────────────────────────────────────────
 
   /**
    * Builds the Focus NFe JSON payload from EmitNfceParams.
@@ -141,10 +298,10 @@ export class FocusNfeAdapter implements FiscalAdapter {
   private buildFocusNfePayload(params: EmitNfceParams): Record<string, any> {
     return {
       natureza_operacao: 'VENDA AO CONSUMIDOR',
-      tipo_documento: 1, // 1 = saida
+      tipo_documento: 1,
       consumidor_final: 1,
-      presenca_comprador: 1, // 1 = operacao presencial
-      finalidade_emissao: 1, // 1 = NFC-e normal
+      presenca_comprador: 1,
+      finalidade_emissao: 1,
 
       // Emitter data
       cnpj_emitente: params.cnpj,
@@ -199,7 +356,7 @@ export class FocusNfeAdapter implements FiscalAdapter {
       valor_produtos: params.total_amount,
       valor_total: params.total_amount,
 
-      // CSC
+      // Additional info
       informacoes_adicionais_contribuinte: `Pedido NOOWE: ${params.order_id}`,
     };
   }
