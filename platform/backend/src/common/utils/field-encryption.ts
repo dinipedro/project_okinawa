@@ -100,3 +100,28 @@ export const encryptedArrayTransformer = {
     }
   },
 };
+
+/**
+ * TypeORM transformer for encrypted JSONB objects (e.g., API credentials).
+ * Serializes object to JSON string, encrypts, then stores as text.
+ * Reads back: decrypts, parses JSON.
+ * Falls back gracefully for legacy unencrypted JSONB data.
+ */
+export const encryptedJsonTransformer = {
+  to(value: Record<string, any> | null): string | null {
+    if (!value || Object.keys(value).length === 0) return null;
+    const json = JSON.stringify(value);
+    return encryptField(json);
+  },
+  from(value: string | Record<string, any> | null): Record<string, any> | null {
+    if (!value) return null;
+    // Already a parsed object (legacy unencrypted JSONB) — return as-is
+    if (typeof value === 'object') return value;
+    const decrypted = decryptField(value);
+    try {
+      return JSON.parse(decrypted);
+    } catch {
+      return {};
+    }
+  },
+};

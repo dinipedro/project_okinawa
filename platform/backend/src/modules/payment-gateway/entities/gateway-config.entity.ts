@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Restaurant } from '@/modules/restaurants/entities/restaurant.entity';
+import { encryptedJsonTransformer } from '../../../common/utils/field-encryption';
 
 /**
  * GatewayConfig — per-restaurant gateway credentials and settings.
@@ -39,7 +40,7 @@ export class GatewayConfig {
   provider: string;
 
   /** Encrypted credentials (API keys, secrets) */
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'text', nullable: true, transformer: encryptedJsonTransformer })
   credentials: Record<string, any>;
 
   /** Whether this gateway is active for the restaurant */

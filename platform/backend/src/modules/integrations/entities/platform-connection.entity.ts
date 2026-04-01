@@ -7,6 +7,10 @@ import {
   Unique,
   Index,
 } from 'typeorm';
+import {
+  encryptedTransformer,
+  encryptedJsonTransformer,
+} from '../../../common/utils/field-encryption';
 
 @Entity('platform_connections')
 @Unique(['restaurant_id', 'platform'])
@@ -21,10 +25,10 @@ export class PlatformConnection {
   @Column({ type: 'varchar', length: 20 })
   platform: string;
 
-  @Column({ type: 'jsonb', default: {} })
+  @Column({ type: 'text', nullable: true, transformer: encryptedJsonTransformer })
   credentials: Record<string, any>;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true, transformer: encryptedTransformer })
   webhook_secret: string;
 
   @Column({ type: 'boolean', default: true })

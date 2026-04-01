@@ -9,6 +9,10 @@ import {
   Index,
 } from 'typeorm';
 import { Restaurant } from '../../restaurants/entities/restaurant.entity';
+import {
+  encryptedTransformer,
+  encryptedJsonTransformer,
+} from '../../../common/utils/field-encryption';
 
 /**
  * FiscalConfig -- fiscal configuration per restaurant.
@@ -63,7 +67,7 @@ export class FiscalConfig {
   @Column({ type: 'varchar', length: 10, nullable: true })
   csc_id: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true, transformer: encryptedTransformer })
   csc_token: string;
 
   // ─── Numbering ───────────────────────────────────────────────────────────
@@ -81,7 +85,7 @@ export class FiscalConfig {
   // 'focus_nfe' | 'sefaz_direct' | 'none'
 
   // Focus NFe specific
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true, transformer: encryptedTransformer })
   focus_nfe_token: string;
 
   @Column({ type: 'boolean', default: false })
@@ -91,7 +95,7 @@ export class FiscalConfig {
   @Column({ type: 'text', nullable: true })
   certificate_base64: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true, transformer: encryptedTransformer })
   certificate_password: string;
 
   // ─── Behavior ────────────────────────────────────────────────────────────
