@@ -9,10 +9,11 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, LessThan } from 'typeorm';
 import { CashRegisterSession } from '../entities/cash-register-session.entity';
 import { CashRegisterMovement, MovementType } from '../entities/cash-register-movement.entity';
 import { PaginationDto, PaginatedResponseDto, toPaginationDto } from '@/common/dto/pagination.dto';
+import { Cron } from '@nestjs/schedule';
 import { TipsService } from '@/modules/tips/tips.service';
 
 @Injectable()
@@ -258,5 +259,27 @@ export class CashRegisterService {
         total_sales: totalSales,
       },
     };
+  }
+
+  /**
+   * Cron: Detect cash register sessions that have been open for more than 24 hours.
+   * Runs daily at 6 AM.
+   */
+  @Cron('0 6 * * *')
+  async detectOrphanedSessions() {
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    // Find sessions open for more than 24 hours
+    const orphaned = await this.sessionRepo.find({
+      where: {
+        status: 'open',
+        opened_at: LessThan(twentyFourHoursAgo),
+      },
+    });
+
+    for (const session of orphaned) {
+      this.logger.warn(
+        `CashRegister session ${session.id} open for >24h (opened at ${session.opened_at})`,
+      );
+    }
   }
 }

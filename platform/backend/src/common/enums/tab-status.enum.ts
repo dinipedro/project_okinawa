@@ -4,6 +4,7 @@
 export enum TabStatus {
   OPEN = 'open',
   PENDING_PAYMENT = 'pending_payment',
+  REQUESTED_CLOSE = 'requested_close',
   CLOSED = 'closed',
 }
 
