@@ -13,6 +13,8 @@ import { ReservationStatus } from '@common/enums';
 import { PaginationDto, paginate, toPaginationDto } from '@/common/dto/pagination.dto';
 import { ORDERS } from '@common/constants/limits';
 import { ReservationsGateway } from './reservations.gateway';
+import { TablesService } from '@/modules/tables/tables.service';
+import { TableStatus } from '@/modules/tables/entities/restaurant-table.entity';
 
 /** Minimum party size to qualify as a group booking */
 const GROUP_BOOKING_MIN_SIZE = ORDERS.GROUP_BOOKING_MIN_SIZE;
@@ -28,6 +30,7 @@ export class ReservationsService {
     private restaurantRepository: Repository<Restaurant>,
     private dataSource: DataSource,
     private reservationsGateway: ReservationsGateway,
+    private tablesService: TablesService,
   ) {}
 
   async create(userId: string, createReservationDto: CreateReservationDto) {
@@ -71,6 +74,17 @@ export class ReservationsService {
       await queryRunner.commitTransaction();
 
       this.logger.log(`Reservation created: ${savedReservation.id}`);
+
+      // If a table was assigned, mark it as reserved
+      if (savedReservation.table_id) {
+        try {
+          await this.tablesService.assignToReservation(savedReservation.table_id, savedReservation.id);
+          this.logger.log(`Table ${savedReservation.table_id} marked as reserved for reservation ${savedReservation.id}`);
+        } catch (tableErr) {
+          const tErr = tableErr as Error;
+          this.logger.warn(`Failed to reserve table ${savedReservation.table_id}: ${tErr.message}`);
+        }
+      }
 
       // Emit WebSocket event to restaurant staff
       this.reservationsGateway.notifyReservationCreated({
@@ -173,6 +187,17 @@ export class ReservationsService {
 
     if (updateStatusDto.status === ReservationStatus.CANCELLED) {
       reservation.cancelled_at = new Date();
+
+      // Free the table if one was assigned
+      if (reservation.table_id) {
+        try {
+          await this.tablesService.updateStatus(reservation.table_id, { status: TableStatus.AVAILABLE });
+          this.logger.log(`Table ${reservation.table_id} freed after reservation ${id} cancelled`);
+        } catch (tableErr) {
+          const tErr = tableErr as Error;
+          this.logger.warn(`Failed to free table ${reservation.table_id}: ${tErr.message}`);
+        }
+      }
     }
 
     const updated = await this.reservationRepository.save(reservation);
@@ -249,6 +274,17 @@ export class ReservationsService {
 
       if (updateReservationDto.status === ReservationStatus.CANCELLED) {
         reservation.cancelled_at = new Date();
+
+        // Free the table if one was assigned
+        if (reservation.table_id) {
+          try {
+            await this.tablesService.updateStatus(reservation.table_id, { status: TableStatus.AVAILABLE });
+            this.logger.log(`Table ${reservation.table_id} freed after reservation ${id} cancelled (update)`);
+          } catch (tableErr) {
+            const tErr = tableErr as Error;
+            this.logger.warn(`Failed to free table ${reservation.table_id}: ${tErr.message}`);
+          }
+        }
       }
     }
 

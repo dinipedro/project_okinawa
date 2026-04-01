@@ -12,6 +12,7 @@ import { ReservationGuestsService } from './reservation-guests.service';
 import { ReservationGuestsController } from './reservation-guests.controller';
 import { GoogleReserveAdapter } from './adapters/google-reserve.adapter';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { TablesModule } from '../tables/tables.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
       }),
     }),
     NotificationsModule,
+    TablesModule,
   ],
   controllers: [ReservationsController, ReservationGuestsController],
   providers: [ReservationsService, ReservationsGateway, ReservationGuestsService, GoogleReserveAdapter],

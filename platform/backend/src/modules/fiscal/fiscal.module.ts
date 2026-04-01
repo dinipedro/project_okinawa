@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FiscalDocument } from './entities/fiscal-document.entity';
 import { FiscalConfig } from './entities/fiscal-config.entity';
 import { Order } from '../orders/entities/order.entity';
+import { Restaurant } from '../restaurants/entities/restaurant.entity';
 
 // Adapters
 import { FocusNfeAdapter } from './adapters/focus-nfe/focus-nfe.adapter';
@@ -13,14 +14,17 @@ import { SefazDirectAdapter } from './adapters/sefaz-direct/sefaz-direct.adapter
 // Services
 import { FiscalEmissionService } from './services/fiscal-emission.service';
 import { FiscalOnboardingService } from './services/fiscal-onboarding.service';
+import { FiscalEventService } from './services/fiscal-event.service';
 
 // Listeners
 import { FiscalEventListener } from './listeners/fiscal-event.listener';
+import { FiscalNotificationListener } from './listeners/fiscal-notification.listener';
 
 // Controllers
 import { FiscalController } from './controllers/fiscal.controller';
 import { FiscalWebhookController } from './controllers/fiscal-webhook.controller';
 import { EventsModule } from '../events/events.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 /**
  * FiscalModule -- NFC-e emission with adapter pattern.
@@ -33,8 +37,9 @@ import { EventsModule } from '../events/events.module';
  */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([FiscalDocument, FiscalConfig, Order]),
+    TypeOrmModule.forFeature([FiscalDocument, FiscalConfig, Order, Restaurant]),
     EventsModule,
+    NotificationsModule,
   ],
   controllers: [FiscalController, FiscalWebhookController],
   providers: [
@@ -51,9 +56,11 @@ import { EventsModule } from '../events/events.module';
     // Services
     FiscalEmissionService,
     FiscalOnboardingService,
+    FiscalEventService,
 
-    // Event listener — auto-emit NFC-e on payment confirmed
+    // Event listeners
     FiscalEventListener,
+    FiscalNotificationListener,
   ],
   exports: [FiscalEmissionService, FiscalOnboardingService],
 })

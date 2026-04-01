@@ -10,6 +10,8 @@ import { Repository, In } from 'typeorm';
 import { WaitlistEntry, WaitlistStatus, SeatingPreference, WaitlistBarOrder } from './entities';
 import { JoinWaitlistDto, CallGuestDto, AddBarOrderDto, UpdateWaitlistEntryDto } from './dto';
 import { ORDERS } from '@common/constants/limits';
+import { TablesService } from '@/modules/tables/tables.service';
+import { Logger } from '@nestjs/common';
 
 export interface WaitlistStats {
   totalWaiting: number;
@@ -20,11 +22,13 @@ export interface WaitlistStats {
 
 @Injectable()
 export class WaitlistService {
+  private readonly logger = new Logger(WaitlistService.name);
   private readonly BASE_WAIT_PER_GROUP = ORDERS.WAITLIST_WAIT_PER_GROUP_MINUTES; // minutes per group ahead
 
   constructor(
     @InjectRepository(WaitlistEntry)
     private readonly waitlistRepository: Repository<WaitlistEntry>,
+    private readonly tablesService: TablesService,
   ) {}
 
   /**
@@ -168,6 +172,22 @@ export class WaitlistService {
     entry.seated_at = new Date();
 
     const savedEntry = await this.waitlistRepository.save(entry);
+
+    // Mark the assigned table as occupied
+    if (entry.table_number && entry.restaurant_id) {
+      try {
+        const table = await this.tablesService.findByNumber(entry.restaurant_id, entry.table_number);
+        if (table) {
+          await this.tablesService.markAsOccupied(table.id);
+          this.logger.log(`Table ${entry.table_number} marked as occupied for seated guest ${entry.id}`);
+        } else {
+          this.logger.warn(`Table ${entry.table_number} not found for restaurant ${entry.restaurant_id}`);
+        }
+      } catch (tableErr) {
+        const tErr = tableErr as Error;
+        this.logger.warn(`Failed to mark table ${entry.table_number} as occupied: ${tErr.message}`);
+      }
+    }
 
     // Recalculate positions for remaining WAITING entries
     await this.recalculatePositions(entry.restaurant_id);

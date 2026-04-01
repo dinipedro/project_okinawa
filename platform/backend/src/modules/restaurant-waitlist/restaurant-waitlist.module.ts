@@ -6,6 +6,7 @@ import { WaitlistEntry } from './entities';
 import { WaitlistService } from './waitlist.service';
 import { WaitlistController } from './waitlist.controller';
 import { WaitlistGateway } from './waitlist.gateway';
+import { TablesModule } from '../tables/tables.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { WaitlistGateway } from './waitlist.gateway';
         },
       }),
     }),
+    TablesModule,
   ],
   controllers: [WaitlistController],
   providers: [WaitlistService, WaitlistGateway],

@@ -1,21 +1,22 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 /**
- * FiscalEventService -- lightweight event emitter for fiscal events.
+ * FiscalEventService -- event emitter for fiscal events.
  *
- * Replaces EventEmitter2 dependency until @nestjs/event-emitter is installed.
- * Logs all events for auditability. In production, integrate with
- * EventEmitter2, Redis PubSub, or a message queue.
+ * Delegates to EventEmitter2 so that @OnEvent listeners can react
+ * to fiscal.nfce.authorized / fiscal.nfce.failed / fiscal.nfce.cancelled.
  */
 @Injectable()
 export class FiscalEventService {
   private readonly logger = new Logger(FiscalEventService.name);
 
+  constructor(private readonly eventEmitter: EventEmitter2) {}
+
   emit(event: string, payload: Record<string, any>): void {
     this.logger.log(
       `[FISCAL EVENT] ${event} | ${JSON.stringify(payload)}`,
     );
-    // TODO: Emit via EventEmitter2 when @nestjs/event-emitter is added.
-    // this.eventEmitter.emit(event, payload);
+    this.eventEmitter.emit(event, payload);
   }
 }

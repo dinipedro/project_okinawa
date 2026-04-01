@@ -309,4 +309,17 @@ export class TablesService {
 
     return updatedTable;
   }
+
+  /**
+   * Find a table by restaurant_id and table_number.
+   * Returns null if not found.
+   */
+  async findByNumber(restaurantId: string, tableNumber: string): Promise<RestaurantTable | null> {
+    return this.tableRepository.findOne({
+      where: {
+        restaurant_id: restaurantId,
+        table_number: tableNumber,
+      },
+    });
+  }
 }

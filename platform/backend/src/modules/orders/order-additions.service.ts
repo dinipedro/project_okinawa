@@ -61,11 +61,19 @@ export class OrderAdditionsService {
     order.status = OrderStatus.OPEN_FOR_ADDITIONS;
     const updatedOrder = await this.orderRepository.save(order);
 
-    this.eventsGateway.notifyOrderUpdate(orderId, {
+    const updatePayload = {
       order_id: orderId,
       status: OrderStatus.OPEN_FOR_ADDITIONS,
       message: this.orderCalculator.getStatusMessage(OrderStatus.OPEN_FOR_ADDITIONS),
-    });
+    };
+    this.eventsGateway.notifyOrderUpdate(orderId, updatePayload);
+
+    // Notify restaurant room so KDS sees the status change
+    if (order.restaurant_id) {
+      this.eventsGateway.server
+        .to(`restaurant:${order.restaurant_id}`)
+        .emit('order:update', updatePayload);
+    }
 
     this.logger.log(`Order ${orderId} opened for additions`);
     return updatedOrder;
@@ -172,13 +180,21 @@ export class OrderAdditionsService {
       await queryRunner.commitTransaction();
 
       try {
-        this.eventsGateway.notifyOrderUpdate(orderId, {
+        const additionPayload = {
           order_id: orderId,
           status: order.status,
           message: `${addItemsDto.items.length} item(s) added`,
           items_added: addItemsDto.items.length,
           new_total: totalAmount,
-        });
+        };
+        this.eventsGateway.notifyOrderUpdate(orderId, additionPayload);
+
+        // Notify restaurant room so KDS sees new items on open orders
+        if (order.restaurant_id) {
+          this.eventsGateway.server
+            .to(`restaurant:${order.restaurant_id}`)
+            .emit('order:update', additionPayload);
+        }
       } catch (notifyError) {
         const err = notifyError as Error;
         this.logger.warn(`Failed to notify items added: ${err.message}`);
