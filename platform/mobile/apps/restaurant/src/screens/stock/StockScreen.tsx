@@ -484,7 +484,7 @@ export default function StockScreen({ navigation }: { navigation: any }) {
               keyboardType="numeric"
               value={newLevel}
               onChangeText={setNewLevel}
-              placeholder="0"
+              placeholder={t('placeholders.zero')}
               placeholderTextColor={colors.inputPlaceholder}
               accessibilityLabel={t('stock.newLevelLabel')}
             />

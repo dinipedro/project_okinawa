@@ -56,17 +56,18 @@ const getElapsedMinutes = (dateStr: string): number => {
   return Math.floor((now.getTime() - created.getTime()) / 60000);
 };
 
-const TYPE_COLORS: Record<string, string> = {
+const getTYPE_COLORS = (colors: any): Record<string, string> => ({
   cancel: colors.error,
   courtesy: colors.info,
   refund: colors.warning,
   discount: colors.foregroundSecondary,
-};
+});
 
 export default function ManagerOpsScreen({ navigation }: any) {
   const { t } = useI18n();
   const { isDark } = useOkinawaTheme();
   const colors = useColors();
+  const TYPE_COLORS = getTYPE_COLORS(colors);
 
   const [metrics, setMetrics] = useState<RealTimeMetrics | null>(null);
   const [activeOrders, setActiveOrders] = useState<ActiveOrder[]>([]);

@@ -65,11 +65,11 @@ interface ConnectionData {
 // CONSTANTS
 // ============================================
 
-const PLATFORMS: PlatformConfig[] = [
+const getPLATFORMS = (colors: any): PlatformConfig[] => ([
   { key: 'ifood', name: 'iFood', icon: 'food', color: colors.error },
   { key: 'rappi', name: 'Rappi', icon: 'moped', color: colors.primary },
   { key: 'ubereats', name: 'Uber Eats', icon: 'car', color: colors.success },
-];
+]);
 
 // ============================================
 // COMPONENT
@@ -78,6 +78,7 @@ const PLATFORMS: PlatformConfig[] = [
 export default function IntegrationSettingsScreen() {
   const { t } = useI18n();
   const colors = useColors();
+  const PLATFORMS = getPLATFORMS(colors);
   const queryClient = useQueryClient();
   const { user } = useAuth();
 

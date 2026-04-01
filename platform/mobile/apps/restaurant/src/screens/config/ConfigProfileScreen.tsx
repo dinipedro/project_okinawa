@@ -420,7 +420,7 @@ export default function ConfigProfileScreen() {
                     style={styles.timeInput}
                     value={dayData.open}
                     onChangeText={(val) => updateDayHours(day, 'open', val)}
-                    placeholder="08:00"
+                    placeholder={t('placeholders.openTime')}
                     placeholderTextColor={colors.inputPlaceholder}
                     accessibilityLabel={`${dayLabels[day]} ${t('config.profile.openTime') || 'open time'}`}
                   />
@@ -429,7 +429,7 @@ export default function ConfigProfileScreen() {
                     style={styles.timeInput}
                     value={dayData.close}
                     onChangeText={(val) => updateDayHours(day, 'close', val)}
-                    placeholder="22:00"
+                    placeholder={t('placeholders.closeTime')}
                     placeholderTextColor={colors.inputPlaceholder}
                     accessibilityLabel={`${dayLabels[day]} ${t('config.profile.closeTime') || 'close time'}`}
                   />

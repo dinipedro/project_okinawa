@@ -271,7 +271,7 @@ export const PhoneRegisterScreen: React.FC<PhoneRegisterScreenProps> = ({
           style={styles.input}
           outlineStyle={styles.inputOutline}
           error={!!fieldErrors.birthDate}
-          placeholder="DD/MM/YYYY"
+          placeholder={t('placeholders.dateFormatBR')}
           keyboardType="numeric"
         />
         {fieldErrors.birthDate && (

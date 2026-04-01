@@ -60,12 +60,12 @@ const PROMOTION_TYPES = [
   { value: 'happy_hour', labelKey: 'promotions.types.happyHour' },
 ];
 
-const STATUS_COLORS: Record<string, string> = {
+const getSTATUS_COLORS = (colors: any): Record<string, string> => ({
   active: colors.success,
   inactive: colors.foregroundSecondary,
   expired: colors.foregroundMuted,
   scheduled: colors.info,
-};
+});
 
 // Skeleton Components
 const SkeletonCard = ({ colors }: { colors: any }) => (
@@ -91,6 +91,7 @@ const SkeletonLoader = ({ colors }: { colors: any }) => (
 
 export default function PromotionsManagerScreen() {
   const colors = useColors();
+  const STATUS_COLORS = getSTATUS_COLORS(colors);
 
   // State
   const [promotions, setPromotions] = useState<Promotion[]>([]);
@@ -710,7 +711,7 @@ export default function PromotionsManagerScreen() {
               style={styles.formInput}
               value={formCode}
               onChangeText={(text) => setFormCode(text.toUpperCase().replace(/\s/g, ''))}
-              placeholder="WELCOME10"
+              placeholder={t('placeholders.promoCode')}
               placeholderTextColor={colors.inputPlaceholder}
               autoCapitalize="characters"
               maxLength={20}
@@ -777,7 +778,7 @@ export default function PromotionsManagerScreen() {
               value={formMinOrder}
               onChangeText={setFormMinOrder}
               keyboardType="numeric"
-              placeholder="5000"
+              placeholder={t('placeholders.minOrderValue')}
               placeholderTextColor={colors.inputPlaceholder}
               accessibilityLabel={t('promotions.minOrder')}
             />
@@ -788,7 +789,7 @@ export default function PromotionsManagerScreen() {
               style={styles.formInput}
               value={formValidFrom}
               onChangeText={setFormValidFrom}
-              placeholder="2026-04-01"
+              placeholder={t('placeholders.dateFormatISO')}
               placeholderTextColor={colors.inputPlaceholder}
               accessibilityLabel={t('promotions.validFrom')}
             />
@@ -799,7 +800,7 @@ export default function PromotionsManagerScreen() {
               style={styles.formInput}
               value={formValidUntil}
               onChangeText={setFormValidUntil}
-              placeholder="2026-06-30"
+              placeholder={t('placeholders.dateFormatEndISO')}
               placeholderTextColor={colors.inputPlaceholder}
               accessibilityLabel={t('promotions.validUntil', { date: '' })}
             />
@@ -860,7 +861,7 @@ export default function PromotionsManagerScreen() {
                   style={styles.formInput}
                   value={formHoursFrom}
                   onChangeText={setFormHoursFrom}
-                  placeholder="17:00"
+                  placeholder={t('placeholders.happyHourStart')}
                   placeholderTextColor={colors.inputPlaceholder}
                   accessibilityLabel={t('promotions.happyHour.hoursFrom')}
                 />
@@ -872,7 +873,7 @@ export default function PromotionsManagerScreen() {
                   style={styles.formInput}
                   value={formHoursUntil}
                   onChangeText={setFormHoursUntil}
-                  placeholder="19:00"
+                  placeholder={t('placeholders.happyHourEnd')}
                   placeholderTextColor={colors.inputPlaceholder}
                   accessibilityLabel={t('promotions.happyHour.hoursUntil')}
                 />

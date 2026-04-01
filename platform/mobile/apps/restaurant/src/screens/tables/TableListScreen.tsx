@@ -22,6 +22,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
 import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import ApiService from '@/shared/services/api';
 import { Card, Badge } from '@okinawa/shared/components';
@@ -220,7 +221,7 @@ export default function TableListScreen() {
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Searchbar
-          placeholder="Buscar mesas..."
+          placeholder={t('placeholders.searchTables')}
           value={searchQuery}
           onChangeText={setSearchQuery}
           style={styles.searchbar}

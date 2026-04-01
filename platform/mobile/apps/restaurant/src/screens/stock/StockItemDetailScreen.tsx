@@ -341,7 +341,7 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
               keyboardType="numeric"
               value={restockLevel}
               onChangeText={setRestockLevel}
-              placeholder="0"
+              placeholder={t('placeholders.zero')}
               placeholderTextColor={colors.inputPlaceholder}
               accessibilityLabel={t('stock.newQuantity')}
             />

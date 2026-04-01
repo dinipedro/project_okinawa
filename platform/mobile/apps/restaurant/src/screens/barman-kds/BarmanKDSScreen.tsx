@@ -46,14 +46,15 @@ interface DrinkOrder {
 }
 
 /** Platform brand colors for delivery source badges */
-const PLATFORM_COLORS: Record<string, string> = {
+const getPLATFORM_COLORS = (colors: any): Record<string, string> => ({
   ifood: colors.error,
   rappi: colors.primary,
   ubereats: colors.success,
-};
+});
 
 export default function BarmanKDSScreen() {
   const colors = useColors();
+  const PLATFORM_COLORS = getPLATFORM_COLORS(colors);
   const [orders, setOrders] = useState<DrinkOrder[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'preparing' | 'ready'>('all');

@@ -112,11 +112,11 @@ const STATION_CONFIG: Record<Station, StationConfig> = {
 };
 
 /** Platform brand colors for delivery source badges */
-const PLATFORM_COLORS: Record<string, string> = {
+const getPLATFORM_COLORS = (colors: any): Record<string, string> => ({
   ifood: colors.error,
   rappi: colors.primary,
   ubereats: colors.success,
-};
+});
 
 /** Delay threshold in minutes for late order highlighting */
 const KITCHEN_LATE_MINUTES = 15;
@@ -176,6 +176,7 @@ export default function CookStationScreen() {
   const { t } = useI18n();
   const { isDark } = useOkinawaTheme();
   const colors = useColors();
+  const PLATFORM_COLORS = getPLATFORM_COLORS(colors);
   const { width: screenWidth } = useWindowDimensions();
   const { user } = useAuth();
 

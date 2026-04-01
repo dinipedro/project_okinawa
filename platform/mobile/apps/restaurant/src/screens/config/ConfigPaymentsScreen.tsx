@@ -292,7 +292,7 @@ export default function ConfigPaymentsScreen() {
             value={newTipValue}
             onChangeText={setNewTipValue}
             keyboardType="numeric"
-            placeholder="%"
+            placeholder={t('placeholders.percent')}
             placeholderTextColor={colors.inputPlaceholder}
             accessibilityLabel={t('config.payments.addTipOption')}
           />

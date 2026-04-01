@@ -45,7 +45,7 @@ interface StyleConfig {
   secondaryColor: string;
 }
 
-const styleConfigs: StyleConfig[] = [
+const getStyleConfigs = (colors: any): StyleConfig[] => ([
   {
     id: 'minimal',
     name: 'Minimal',
@@ -78,12 +78,13 @@ const styleConfigs: StyleConfig[] = [
     primaryColor: colors.foregroundSecondary,
     secondaryColor: colors.backgroundSecondary,
   },
-];
+]);
 
 export default function QRCodeGeneratorScreen() {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RouteParams, 'QRCodeGenerator'>>();
   const colors = useColors();
+  const styleConfigs = getStyleConfigs(colors);
   const { restaurantId, restaurant } = useRestaurant();
 
   const tableId = route.params?.tableId;

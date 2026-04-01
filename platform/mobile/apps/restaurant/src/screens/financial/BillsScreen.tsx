@@ -67,7 +67,7 @@ interface Bill {
 
 // ────────── Category Colors ──────────
 
-const CATEGORY_COLORS: Record<BillCategory, string> = {
+const getCATEGORY_COLORS = (colors: any): Record<BillCategory, string> => ({
   rent: colors.statusDelivering,
   utilities: colors.warning,
   supplies: colors.success,
@@ -75,13 +75,14 @@ const CATEGORY_COLORS: Record<BillCategory, string> = {
   marketing: colors.errorLight,
   maintenance: colors.statusDelivering,
   other: colors.foregroundSecondary,
-};
+});
 
 // ────────── Main Component ──────────
 
 export default function BillsScreen() {
   const { t } = useI18n();
   const colors = useColors();
+  const CATEGORY_COLORS = getCATEGORY_COLORS(colors);
   const { restaurantId } = useRestaurant();
   const queryClient = useQueryClient();
 
@@ -493,7 +494,7 @@ export default function BillsScreen() {
                 value={formDueDate}
                 onChangeText={setFormDueDate}
                 mode="outlined"
-                placeholder="2026-04-01"
+                placeholder={t('placeholders.dateFormatISO')}
                 style={styles.input}
               />
 

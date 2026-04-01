@@ -40,15 +40,16 @@ interface PointsTransaction {
 
 // Note: TIER_CONFIG uses brand/material colors that are intentionally static
 // as they represent real-world medal colors, not theme-dependent UI elements
-const TIER_CONFIG = {
+const getTIER_CONFIG = (colors: any) => ({
   bronze: { name: 'Bronze', color: colors.tierBronze, nextTier: 'Silver', pointsRequired: 500 },
   silver: { name: 'Silver', color: colors.tierSilver, nextTier: 'Gold', pointsRequired: 1000 },
   gold: { name: 'Gold', color: colors.tierGold, nextTier: 'Platinum', pointsRequired: 2500 },
   platinum: { name: 'Platinum', color: colors.tierPlatinum, nextTier: null, pointsRequired: 5000 },
-};
+});
 
 export default function LoyaltyScreen() {
   const colors = useColors();
+  const TIER_CONFIG = getTIER_CONFIG(colors);
   const [programs, setPrograms] = useState<LoyaltyProgram[]>([]);
   const [selectedProgram, setSelectedProgram] = useState<LoyaltyProgram | null>(null);
   const [rewards, setRewards] = useState<Reward[]>([]);

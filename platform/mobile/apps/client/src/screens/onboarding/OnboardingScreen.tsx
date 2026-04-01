@@ -33,12 +33,12 @@ interface OnboardingSlide {
   color: string;
 }
 
-const slideConfigs = [
+const getSlideConfigs = (colors: any) => ([
   { id: '1', icon: 'compass', titleKey: 'onboarding.slides.explore_title', descKey: 'onboarding.slides.explore_desc', color: colors.onboardingSlide1 },
   { id: '2', icon: 'qrcode-scan', titleKey: 'onboarding.slides.orders_title', descKey: 'onboarding.slides.orders_desc', color: colors.onboardingSlide2 },
   { id: '3', icon: 'calendar-check', titleKey: 'onboarding.slides.reserve_title', descKey: 'onboarding.slides.reserve_desc', color: colors.onboardingSlide3 },
   { id: '4', icon: 'star', titleKey: 'onboarding.slides.rate_title', descKey: 'onboarding.slides.rate_desc', color: colors.onboardingSlide4 },
-];
+]);
 
 const cuisineKeys = [
   'italian', 'japanese', 'brazilian', 'french', 'mexican', 'chinese',
@@ -54,6 +54,7 @@ const dietaryKeys = [
 export default function OnboardingScreen() {
   const navigation = useNavigation();
   const colors = useColors();
+  const slideConfigs = getSlideConfigs(colors);
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);

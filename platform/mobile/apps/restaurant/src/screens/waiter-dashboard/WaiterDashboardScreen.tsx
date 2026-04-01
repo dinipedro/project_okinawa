@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ApiService from '@/shared/services/api';
 import { useColors } from '@/shared/theme';
+import { t } from '@okinawa/shared/i18n';
 
 interface Table {
   id: string;
@@ -551,7 +552,7 @@ export default function WaiterDashboardScreen() {
       {/* Floating Action Button */}
       <FAB
         icon="plus"
-        label="Novo Pedido"
+        label={t('formLabels.newOrder')}
         style={styles.fab}
         onPress={() => navigation.navigate('Orders' as never)}
         accessibilityRole="button"

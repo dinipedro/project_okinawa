@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ApiService from '@/shared/services/api';
 import FavoriteCard from './FavoriteCard';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
 import logger from '@okinawa/shared/utils/logger';
 import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
 
@@ -121,7 +122,7 @@ export default function FavoritesScreen() {
     <ScreenContainer>
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Searchbar
-        placeholder="Buscar nos favoritos..."
+        placeholder={t('placeholders.searchFavorites')}
         onChangeText={setSearchQuery}
         value={searchQuery}
         style={[styles.searchBar, { backgroundColor: colors.card }]}

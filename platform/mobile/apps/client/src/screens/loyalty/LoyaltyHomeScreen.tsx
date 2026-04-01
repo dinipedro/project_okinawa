@@ -69,12 +69,12 @@ interface PromotionPreview {
 
 // Note: Tier colors represent real-world medal colors and are intentionally static
 // Using theme gradient tokens where applicable
-const TIER_GRADIENTS: Record<string, string[]> = {
+const getTIER_GRADIENTS = (colors: any): Record<string, string[]> => ({
   bronze: [colors.tierBronze, colors.tierBronze],
   silver: [colors.tierSilver, colors.tierSilver],
   gold: gradients.accent,
   platinum: [colors.tierPlatinum, colors.tierPlatinum],
-};
+});
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const STAMP_CARD_WIDTH = SCREEN_WIDTH * 0.7;
@@ -135,6 +135,7 @@ const StampDots = ({
 
 export default function LoyaltyHomeScreen() {
   const colors = useColors();
+  const TIER_GRADIENTS = getTIER_GRADIENTS(colors);
   const navigation = useNavigation();
 
   // State

@@ -16,18 +16,19 @@ type RouteParams = {
   };
 };
 
-const STATUS_COLORS: Record<ReservationStatus, string> = {
+const getSTATUS_COLORS = (colors: any): Record<ReservationStatus, string> => ({
   pending: colors.statusPending,
   confirmed: colors.statusConfirmed,
   seated: colors.success,
   completed: colors.success,
   cancelled: colors.error,
   no_show: colors.foregroundMuted,
-};
+});
 
 export default function ReservationDetailScreen() {
   const { t } = useI18n();
   const colors = useColors();
+  const STATUS_COLORS = getSTATUS_COLORS(colors);
   const route = useRoute<RouteProp<RouteParams, 'ReservationDetail'>>();
   const navigation = useNavigation();
   const { reservationId } = route.params;

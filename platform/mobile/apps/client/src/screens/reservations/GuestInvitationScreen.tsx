@@ -35,12 +35,12 @@ interface Contact {
   isAppUser: boolean;
 }
 
-const STATUS_COLORS = {
+const getSTATUS_COLORS = (colors: any) => ({
   pending: colors.statusPending,
   accepted: colors.success,
   declined: colors.error,
   cancelled: colors.foregroundMuted,
-};
+});
 
 const getGuestStatusLabel = (status: string, t: (key: string) => string): string =>
   t(`reservations.guestStatus.${status}`);
@@ -49,6 +49,7 @@ export default function GuestInvitationScreen() {
   useScreenTracking('Guest Invitation');
   const { t } = useI18n();
   const colors = useColors();
+  const STATUS_COLORS = getSTATUS_COLORS(colors);
   const route = useRoute();
   const navigation = useNavigation();
   const analytics = useAnalytics();
@@ -511,7 +512,7 @@ export default function GuestInvitationScreen() {
             value={searchQuery}
             onChangeText={setSearchQuery}
             mode="outlined"
-            placeholder="Buscar contatos..."
+            placeholder={t('placeholders.searchContacts')}
             left={<TextInput.Icon icon="magnify" />}
             style={styles.searchInput}
             textColor={colors.foreground}
@@ -563,7 +564,7 @@ export default function GuestInvitationScreen() {
                 value={manualName}
                 onChangeText={setManualName}
                 mode="outlined"
-                label="Nome *"
+                label={t('formLabels.nameRequired')}
                 style={styles.input}
                 textColor={colors.foreground}
               />
@@ -571,7 +572,7 @@ export default function GuestInvitationScreen() {
                 value={manualPhone}
                 onChangeText={setManualPhone}
                 mode="outlined"
-                label="Telefone"
+                label={t('formLabels.phone')}
                 keyboardType="phone-pad"
                 style={styles.input}
                 textColor={colors.foreground}
@@ -580,7 +581,7 @@ export default function GuestInvitationScreen() {
                 value={manualEmail}
                 onChangeText={setManualEmail}
                 mode="outlined"
-                label="Email"
+                label={t('formLabels.email')}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 style={styles.input}

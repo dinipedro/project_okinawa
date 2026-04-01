@@ -16,6 +16,7 @@ import {
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
+import { t } from '@okinawa/shared/i18n';
 import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import ApiService from '@/shared/services/api';
 import { Card } from '@okinawa/shared/components';
@@ -163,10 +164,10 @@ export default function TableFormScreen() {
         <Card style={styles.section}>
           <Text style={styles.sectionTitle}>Identificação</Text>
           <TextInput
-            label="Número/Nome da Mesa"
+            label={t('formLabels.tableNameLabel')}
             value={tableNumber}
             onChangeText={setTableNumber}
-            placeholder="Ex: T-01, Mesa VIP 1"
+            placeholder={t('placeholders.tableNameExample')}
             mode="outlined"
             error={!!errors.tableNumber}
             style={styles.input}
@@ -233,10 +234,10 @@ export default function TableFormScreen() {
         <Card style={styles.section}>
           <Text style={styles.sectionTitle}>Observações</Text>
           <TextInput
-            label="Notas (opcional)"
+            label={t('formLabels.notesOptional')}
             value={notes}
             onChangeText={setNotes}
-            placeholder="Ex: Próxima à janela, acessível para cadeirantes"
+            placeholder={t('placeholders.tableNotesExample')}
             mode="outlined"
             multiline
             numberOfLines={3}

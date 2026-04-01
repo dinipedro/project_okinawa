@@ -425,7 +425,7 @@ export default function ConfigFloorScreen() {
               value={sectionCapacity}
               onChangeText={setSectionCapacity}
               keyboardType="numeric"
-              placeholder="0"
+              placeholder={t('placeholders.zero')}
               placeholderTextColor={colors.inputPlaceholder}
               accessibilityLabel={t('config.floor.sectionCapacity')}
             />
@@ -453,7 +453,7 @@ export default function ConfigFloorScreen() {
               style={styles.input}
               value={tableNumber}
               onChangeText={setTableNumber}
-              placeholder="1"
+              placeholder={t('placeholders.one')}
               placeholderTextColor={colors.inputPlaceholder}
               accessibilityLabel={t('config.floor.tableNumber')}
             />
@@ -463,7 +463,7 @@ export default function ConfigFloorScreen() {
               value={tableSeats}
               onChangeText={setTableSeats}
               keyboardType="numeric"
-              placeholder="4"
+              placeholder={t('placeholders.defaultSeats')}
               placeholderTextColor={colors.inputPlaceholder}
               accessibilityLabel={t('config.floor.tableSeats')}
             />

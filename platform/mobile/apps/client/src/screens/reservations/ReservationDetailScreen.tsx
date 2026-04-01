@@ -55,26 +55,28 @@ interface Reservation {
   guests: Guest[];
 }
 
-const STATUS_CONFIG = {
+const getSTATUS_CONFIG = (colors: any) => ({
   pending: { color: colors.statusPending, label: 'Aguardando confirmação', icon: 'clock-outline' },
   confirmed: { color: colors.success, label: 'Confirmada', icon: 'check-circle' },
   seated: { color: colors.statusConfirmed, label: 'Sentado', icon: 'chair-rolling' },
   completed: { color: colors.success, label: 'Concluída', icon: 'check-all' },
   cancelled: { color: colors.error, label: 'Cancelada', icon: 'close-circle' },
   no_show: { color: colors.foregroundMuted, label: 'Não compareceu', icon: 'account-off' },
-};
+});
 
-const GUEST_STATUS_COLORS = {
+const getGUEST_STATUS_COLORS = (colors: any) => ({
   pending: colors.statusPending,
   accepted: colors.success,
   declined: colors.error,
   cancelled: colors.foregroundMuted,
-};
+});
 
 export default function ReservationDetailScreen() {
   useScreenTracking('Reservation Detail');
   const { t } = useI18n();
   const colors = useColors();
+  const STATUS_CONFIG = getSTATUS_CONFIG(colors);
+  const GUEST_STATUS_COLORS = getGUEST_STATUS_COLORS(colors);
   const route = useRoute();
   const navigation = useNavigation<any>();
   const analytics = useAnalytics();

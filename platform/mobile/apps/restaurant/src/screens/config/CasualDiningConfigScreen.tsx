@@ -185,11 +185,11 @@ export default function CasualDiningConfigScreen({ route }: CasualDiningConfigSc
         <SectionHeader title={t('casualDining.config.happyHour')} colors={colors} />
         <View style={styles.row}>
           <Text variant="bodyLarge" style={{ color: colors.foreground, flex: 1 }}>{t('casualDining.config.start')}</Text>
-          <TextInput mode="outlined" value={config.happyHourStart} onChangeText={(v) => updateField('happyHourStart', v)} placeholder="HH:MM" style={styles.timeInput} dense accessibilityLabel="Happy hour start time" />
+          <TextInput mode="outlined" value={config.happyHourStart} onChangeText={(v) => updateField('happyHourStart', v)} placeholder={t('placeholders.timeFormat')} style={styles.timeInput} dense accessibilityLabel="Happy hour start time" />
         </View>
         <View style={styles.row}>
           <Text variant="bodyLarge" style={{ color: colors.foreground, flex: 1 }}>{t('casualDining.config.end')}</Text>
-          <TextInput mode="outlined" value={config.happyHourEnd} onChangeText={(v) => updateField('happyHourEnd', v)} placeholder="HH:MM" style={styles.timeInput} dense accessibilityLabel="Happy hour end time" />
+          <TextInput mode="outlined" value={config.happyHourEnd} onChangeText={(v) => updateField('happyHourEnd', v)} placeholder={t('placeholders.timeFormat')} style={styles.timeInput} dense accessibilityLabel="Happy hour end time" />
         </View>
         <NumberRow label={t('casualDining.config.discount')} value={String(config.happyHourDiscount)} onChange={(v) => parseNum(v, 'happyHourDiscount')} colors={colors} />
 

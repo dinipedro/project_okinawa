@@ -912,7 +912,7 @@ export default function UnifiedPaymentScreen() {
                       maxLength={5}
                       mode="outlined"
                       style={[styles.input, styles.halfInput]}
-                      placeholder="MM/YY"
+                      placeholder={t('placeholders.cardExpiry')}
                       accessibilityLabel={t('payment.cardExpiry')}
                     />
                     <TextInput

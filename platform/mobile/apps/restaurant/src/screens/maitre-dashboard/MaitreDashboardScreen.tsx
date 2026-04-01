@@ -680,7 +680,7 @@ export default function MaitreDashboardScreen() {
       {/* FAB */}
       <FAB
         icon="plus"
-        label="Nova Reserva"
+        label={t('formLabels.newReservation')}
         style={styles.fab}
         onPress={() => navigation.navigate('Reservations' as never)}
         accessibilityLabel="Create new reservation"

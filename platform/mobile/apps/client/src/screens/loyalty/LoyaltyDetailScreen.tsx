@@ -72,12 +72,12 @@ interface StampCard {
 
 // Note: TIER_CONFIG uses brand/material colors that are intentionally static
 // as they represent real-world medal colors, not theme-dependent UI elements
-const TIER_CONFIG: Record<string, { color: string; icon: string }> = {
+const getTIER_CONFIG = (colors: any): Record<string, { color: string; icon: string }> => ({
   bronze: { color: colors.tierBronze, icon: 'shield-star' },
   silver: { color: colors.tierSilver, icon: 'shield-star' },
   gold: { color: colors.tierGold, icon: 'shield-star' },
   platinum: { color: colors.tierPlatinum, icon: 'shield-crown' },
-};
+});
 
 // ============================================
 // SKELETON
@@ -116,6 +116,7 @@ function LoyaltyDetailSkeleton({ colors }: { colors: any }) {
 export default function LoyaltyDetailScreen() {
   const { t } = useI18n();
   const colors = useColors();
+  const TIER_CONFIG = getTIER_CONFIG(colors);
   const route = useRoute<any>();
   const navigation = useNavigation();
 

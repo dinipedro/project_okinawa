@@ -249,7 +249,7 @@ export default function FiscalSetupScreen() {
           />
 
           <TextInput
-            label="Razao Social"
+            label={t('formLabels.razaoSocial')}
             value={config.razaoSocial}
             onChangeText={(v) => updateField('razaoSocial', v)}
             mode="outlined"
@@ -259,7 +259,7 @@ export default function FiscalSetupScreen() {
           />
 
           <TextInput
-            label="Nome Fantasia"
+            label={t('formLabels.nomeFantasia')}
             value={config.nomeFantasia}
             onChangeText={(v) => updateField('nomeFantasia', v)}
             mode="outlined"
@@ -269,7 +269,7 @@ export default function FiscalSetupScreen() {
           />
 
           <TextInput
-            label="UF (Estado)"
+            label={t('formLabels.stateCode')}
             value={config.stateCode}
             onChangeText={(v) =>
               updateField('stateCode', v.toUpperCase().substring(0, 2))

@@ -42,16 +42,17 @@ interface GeneratedQR {
   qr_code_data: string;
 }
 
-const styleConfigs = [
+const getStyleConfigs = (colors: any) => ([
   { id: 'minimal', name: 'Minimal', color: colors.foreground },
   { id: 'premium', name: 'Premium', color: colors.primary },
   { id: 'bold', name: 'Bold', color: colors.foreground },
   { id: 'elegant', name: 'Elegant', color: colors.foregroundSecondary },
-];
+]);
 
 export default function QRCodeBatchScreen() {
   const navigation = useNavigation();
   const colors = useColors();
+  const styleConfigs = getStyleConfigs(colors);
   const { restaurantId, restaurant } = useRestaurant();
 
   const [loading, setLoading] = useState(true);
