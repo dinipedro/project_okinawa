@@ -53,6 +53,9 @@ export class WalletTransaction {
   @Column({ type: 'jsonb', nullable: true })
   metadata: Record<string, any>;
 
+  @Column({ type: 'varchar', length: 255, nullable: true, unique: true })
+  idempotency_key: string;
+
   @CreateDateColumn()
   created_at: Date;
 

@@ -4,6 +4,15 @@ import { Type, Transform } from 'class-transformer';
 
 export class RechargeWalletDto {
   @ApiProperty({
+    description: 'Idempotency key to prevent duplicate recharges on retry',
+    example: 'rch_2026-04-01_abc123',
+  })
+  @IsNotEmpty({ message: 'Idempotency key is required' })
+  @IsString({ message: 'Idempotency key must be a string' })
+  @MaxLength(255, { message: 'Idempotency key cannot exceed 255 characters' })
+  idempotency_key: string;
+
+  @ApiProperty({
     description: 'Amount to recharge in wallet',
     example: 100.00,
     minimum: 1,

@@ -133,6 +133,17 @@ export class PaymentsService {
   }
 
   async rechargeWallet(userId: string, rechargeDto: RechargeWalletDto) {
+    // Idempotency check: if this key was already processed, return existing transaction
+    if (rechargeDto.idempotency_key) {
+      const existing = await this.transactionRepository.findOne({
+        where: { idempotency_key: rechargeDto.idempotency_key },
+      });
+      if (existing) {
+        const wallet = await this.getWallet(userId);
+        return { wallet, transaction: existing, idempotent: true };
+      }
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -171,6 +182,7 @@ export class PaymentsService {
         balance_after: balanceAfter,
         description: rechargeDto.description || 'Wallet recharge',
         payment_method_id: rechargeDto.payment_method_id,
+        idempotency_key: rechargeDto.idempotency_key,
       });
 
       await queryRunner.manager.save(transaction);
@@ -186,6 +198,17 @@ export class PaymentsService {
   }
 
   async withdrawWallet(userId: string, withdrawDto: WithdrawWalletDto) {
+    // Idempotency check: if this key was already processed, return existing transaction
+    if (withdrawDto.idempotency_key) {
+      const existing = await this.transactionRepository.findOne({
+        where: { idempotency_key: withdrawDto.idempotency_key },
+      });
+      if (existing) {
+        const wallet = await this.getWallet(userId);
+        return { wallet, transaction: existing, idempotent: true };
+      }
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -223,6 +246,7 @@ export class PaymentsService {
         balance_before: balanceBefore,
         balance_after: balanceAfter,
         description: withdrawDto.description || 'Wallet withdrawal',
+        idempotency_key: withdrawDto.idempotency_key,
       });
 
       await queryRunner.manager.save(transaction);
