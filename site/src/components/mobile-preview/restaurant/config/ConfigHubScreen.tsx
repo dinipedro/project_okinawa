@@ -72,8 +72,8 @@ export const ConfigHubScreen: FC = () => {
               <div className="flex-1 text-left min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <span className="font-semibold text-sm text-foreground truncate">{section.title}</span>
-                  {dc === 100 && <Check className="w-3.5 h-3.5 text-green-500" />}
-                  {dc != null && dc < 50 && <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />}
+                  {dc === 100 && <Check className="w-3.5 h-3.5 text-green-500/90" />}
+                  {dc != null && dc < 50 && <AlertTriangle className="w-3.5 h-3.5 text-amber-500/90" />}
                 </div>
                 <p className="text-xs text-muted-foreground truncate">{section.desc}</p>
                 {dc != null && (
