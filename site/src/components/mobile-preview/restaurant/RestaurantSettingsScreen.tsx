@@ -47,6 +47,7 @@ export const RestaurantSettingsScreen = () => {
           {settings.filter(s => s.category === 'business').map((setting) => (
             <button 
               key={setting.label} 
+              onClick={() => (setting as any).screen && navigate((setting as any).screen)}
               className="w-full p-4 rounded-xl bg-card border border-border flex items-center justify-between hover:bg-muted/50 transition-colors"
             >
               <div className="flex items-center gap-3">
