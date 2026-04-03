@@ -77,8 +77,8 @@ export const ItemIcon: React.FC<{
 export const PhoneShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="relative mx-auto shrink-0" style={{ width: 375, height: 812 }}>
     <div className="absolute inset-0 rounded-[3rem] bg-foreground/90 shadow-2xl" />
-    <div className="absolute inset-[3px] rounded-[2.8rem] bg-background overflow-hidden">
-      <div className="h-12 flex items-center justify-between px-8 text-xs font-semibold text-foreground">
+    <div className="absolute inset-[3px] rounded-[2.8rem] bg-background overflow-hidden flex flex-col">
+      <div className="h-12 flex items-center justify-between px-8 text-xs font-semibold text-foreground shrink-0">
         <span>9:41</span>
         <div className="absolute left-1/2 -translate-x-1/2 top-2 w-28 h-7 bg-foreground/90 rounded-full" />
         <div className="flex items-center gap-1">
@@ -88,7 +88,7 @@ export const PhoneShell: React.FC<{ children: React.ReactNode }> = ({ children }
           </div>
         </div>
       </div>
-      <div className="h-[calc(100%-48px-68px)] overflow-y-auto scrollbar-hide">
+      <div className="flex-1 overflow-y-auto scrollbar-hide">
         {children}
       </div>
     </div>

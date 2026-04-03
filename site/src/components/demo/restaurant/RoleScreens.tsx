@@ -9,7 +9,8 @@ import {
   Package, AlertCircle, CheckCircle2, XCircle, ChefHat, Wine,
   Timer, Flame, ArrowUp, ArrowDown, TrendingUp, UtensilsCrossed,
   BarChart3, Eye, Zap, Phone, UserCheck, X, BookOpen,
-  Droplets, CookingPot, Beer, Smartphone,
+  Droplets, CookingPot, Beer, Smartphone, QrCode, ShieldAlert,
+  Wheat, MessageSquare, Heart, Gift, Accessibility, Utensils, Info,
 } from 'lucide-react';
 import { useDemoContext, type OrderStatus } from '@/contexts/DemoContext';
 import { GuidedHint } from '@/components/demo/DemoShared';
@@ -1183,6 +1184,269 @@ export const DailyReportScreen: React.FC<{ onNavigate: (screen: string) => void 
           })}
         </div>
       </div>
+    </div>
+  );
+};
+
+// ============ WAITER ASSIST — Customer Assistance Hub ============
+
+export const WaiterAssistScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
+  const { tables } = useDemoContext();
+  const myTables = tables.filter(t => ['occupied', 'billing'].includes(t.status));
+  const [activeTab, setActiveTab] = useState<'qr' | 'allergens' | 'feedback' | 'special'>('qr');
+  const [qrShown, setQrShown] = useState<number | null>(null);
+  const [feedbackSent, setFeedbackSent] = useState<string[]>([]);
+  const [requestsSent, setRequestsSent] = useState<string[]>([]);
+
+  const ALLERGEN_INFO = [
+    { id: 'a1', name: 'Glúten', icon: Wheat, items: ['Pão artesanal', 'Risotto (molho)', 'Petit Gâteau', 'Tiramisu'], affected: 'Mesa 3 — Convidado 3, Mesa 8 — Juliana' },
+    { id: 'a2', name: 'Lactose', icon: Droplets, items: ['Risotto de Cogumelos', 'Crème Brûlée', 'Petit Gâteau', 'Burrata'], affected: 'Mesa 1 — Paulo R.' },
+    { id: 'a3', name: 'Frutos do Mar', icon: Utensils, items: ['Tartare de Atum', 'Salmão Grelhado', 'Polvo Grelhado', 'Ceviche'], affected: 'Nenhum reportado' },
+    { id: 'a4', name: 'Nozes', icon: ShieldAlert, items: ['Tiramisu', 'Petit Gâteau (decoração)'], affected: 'Mesa 5 — Mariana' },
+  ];
+
+  const SPECIAL_REQUESTS = [
+    { id: 'sr1', table: 8, type: 'birthday' as const, title: 'Aniversário', desc: 'Juliana faz aniversário — cortesia de sobremesa?', action: 'Solicitar cortesia', icon: Gift, color: 'text-info', bg: 'bg-info/10' },
+    { id: 'sr2', table: 3, type: 'accessibility' as const, title: 'Acessibilidade', desc: 'Convidado 3 precisa de cadeira especial e cardápio em letras grandes', action: 'Providenciar', icon: Accessibility, color: 'text-warning', bg: 'bg-warning/10' },
+    { id: 'sr3', table: 1, type: 'vip' as const, title: 'Cliente VIP', desc: 'Maria S. é cliente frequente (12ª visita) — atenção especial', action: 'Ativar protocolo VIP', icon: Star, color: 'text-primary', bg: 'bg-primary/10' },
+    { id: 'sr4', table: 5, type: 'dietary' as const, title: 'Restrição alimentar', desc: 'Mariana: alergia a nozes — verificar todos os pratos antes de servir', action: 'Alertar cozinha', icon: ShieldAlert, color: 'text-destructive', bg: 'bg-destructive/10' },
+    { id: 'sr5', table: 10, type: 'photo' as const, title: 'Foto do prato', desc: 'Carlos pediu foto do prato para redes sociais — preparar apresentação especial', action: 'Avisar chef', icon: Eye, color: 'text-secondary', bg: 'bg-secondary/10' },
+  ];
+
+  const FEEDBACK_TABLES = [
+    { id: 'fb1', table: 5, customer: 'Grupo Pedro', status: 'finishing' as const, sentiment: 'positive' as const, note: 'Elogiaram o filé e o atendimento' },
+    { id: 'fb2', table: 8, customer: 'Grupo Aniversário', status: 'finishing' as const, sentiment: 'neutral' as const, note: 'Acharam o tempo de espera longo' },
+    { id: 'fb3', table: 10, customer: 'Carlos M.', status: 'dessert' as const, sentiment: 'positive' as const, note: 'Quer recomendar o restaurante' },
+    { id: 'fb4', table: 1, customer: 'Maria & Paulo', status: 'main' as const, sentiment: 'neutral' as const, note: '' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <GuidedHint text="Hub de assistência — tudo que o garçom precisa para ser o gestor completo da experiência do cliente" />
+
+      {/* Tab navigation */}
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        {[
+          { id: 'qr' as const, label: '📱 QR / Onboarding', count: myTables.filter(t => t.status === 'occupied').length },
+          { id: 'allergens' as const, label: '⚠️ Alérgenos', count: ALLERGEN_INFO.length },
+          { id: 'feedback' as const, label: '💬 Feedback', count: FEEDBACK_TABLES.filter(f => !feedbackSent.includes(f.id)).length },
+          { id: 'special' as const, label: '⭐ Especiais', count: SPECIAL_REQUESTS.filter(r => !requestsSent.includes(r.id)).length },
+        ].map(tab => (
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
+              activeTab === tab.id ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}>
+            {tab.label}
+            {tab.count > 0 && <span className="ml-1.5 opacity-60">({tab.count})</span>}
+          </button>
+        ))}
+      </div>
+
+      {/* ═══ QR / ONBOARDING ═══ */}
+      {activeTab === 'qr' && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-info/5 border border-info/20 p-4">
+            <div className="flex items-center gap-3">
+              <QrCode className="w-6 h-6 text-info" />
+              <div>
+                <p className="text-sm font-bold text-info">Onboarding de Clientes</p>
+                <p className="text-xs text-muted-foreground">Ajude clientes sem app a se conectarem — mostre o QR code da mesa</p>
+              </div>
+            </div>
+          </div>
+
+          {myTables.map(table => {
+            const isShown = qrShown === table.number;
+            return (
+              <div key={table.id} className={`bg-card rounded-xl border-2 p-5 transition-all ${isShown ? 'border-success/30' : 'border-border'}`}>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center font-display text-lg font-bold text-primary">
+                    {table.number}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold">{table.customerName}</p>
+                    <p className="text-xs text-muted-foreground">{table.seats} pessoas</p>
+                  </div>
+                  <button onClick={() => setQrShown(isShown ? null : table.number)}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                      isShown ? 'bg-success text-success-foreground' : 'bg-primary text-primary-foreground'
+                    }`}>
+                    {isShown ? '✓ QR Exibido' : 'Mostrar QR'}
+                  </button>
+                </div>
+                {isShown && (
+                  <div className="mt-4 p-4 rounded-xl bg-muted/30 text-center">
+                    <div className="w-32 h-32 mx-auto bg-foreground/5 rounded-xl border-2 border-dashed border-foreground/20 flex items-center justify-center">
+                      <QrCode className="w-16 h-16 text-foreground/30" />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">QR Code da Mesa {table.number}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">O cliente escaneia para acessar o cardápio, fazer pedidos e pagar</p>
+                    <div className="flex gap-2 mt-3 justify-center">
+                      <button className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold">Compartilhar Link</button>
+                      <button className="px-3 py-1.5 rounded-lg border border-border text-xs font-semibold">Imprimir QR</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ═══ ALÉRGENOS ═══ */}
+      {activeTab === 'allergens' && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-warning/5 border border-warning/20 p-4">
+            <div className="flex items-center gap-3">
+              <ShieldAlert className="w-6 h-6 text-warning" />
+              <div>
+                <p className="text-sm font-bold text-warning">Alerta de Alérgenos</p>
+                <p className="text-xs text-muted-foreground">Consulte alérgenos por categoria e veja quais clientes reportaram restrições</p>
+              </div>
+            </div>
+          </div>
+
+          {ALLERGEN_INFO.map(allergen => {
+            const AllergenIcon = allergen.icon;
+            return (
+              <div key={allergen.id} className="bg-card rounded-xl border border-border p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center">
+                    <AllergenIcon className="w-5 h-5 text-warning" />
+                  </div>
+                  <div>
+                    <p className="font-semibold">{allergen.name}</p>
+                    <p className="text-xs text-muted-foreground">{allergen.items.length} itens no cardápio contêm</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {allergen.items.map(item => (
+                    <span key={item} className="px-2.5 py-1 rounded-full bg-warning/10 text-warning text-[10px] font-semibold">{item}</span>
+                  ))}
+                </div>
+                <div className="rounded-lg bg-muted/30 p-2.5">
+                  <p className="text-[10px] text-muted-foreground">
+                    <span className="font-semibold text-foreground">Clientes com restrição:</span> {allergen.affected}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ═══ FEEDBACK ═══ */}
+      {activeTab === 'feedback' && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-success/5 border border-success/20 p-4">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-6 h-6 text-success" />
+              <div>
+                <p className="text-sm font-bold text-success">Captura de Feedback</p>
+                <p className="text-xs text-muted-foreground">Pergunte ao cliente como está a experiência — registre observações antes que saiam</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 gap-4">
+            {[
+              { label: 'Positivos', value: FEEDBACK_TABLES.filter(f => f.sentiment === 'positive').length.toString(), color: 'text-success', bg: 'bg-success/10' },
+              { label: 'Neutros', value: FEEDBACK_TABLES.filter(f => f.sentiment === 'neutral').length.toString(), color: 'text-warning', bg: 'bg-warning/10' },
+              { label: 'Coletados', value: feedbackSent.length.toString(), color: 'text-info', bg: 'bg-info/10' },
+              { label: 'Pendentes', value: FEEDBACK_TABLES.filter(f => !feedbackSent.includes(f.id)).length.toString(), color: 'text-primary', bg: 'bg-primary/10' },
+            ].map((s, i) => (
+              <div key={i} className="bg-card rounded-xl border border-border p-4 text-center">
+                <p className={`font-display text-2xl font-bold ${s.color}`}>{s.value}</p>
+                <p className="text-[10px] text-muted-foreground mt-1">{s.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {FEEDBACK_TABLES.map(fb => {
+            const isSent = feedbackSent.includes(fb.id);
+            const statusLabel = fb.status === 'finishing' ? 'Finalizando' : fb.status === 'dessert' ? 'Sobremesa' : 'Prato principal';
+            return (
+              <div key={fb.id} className={`bg-card rounded-xl border-2 p-5 transition-all ${
+                isSent ? 'border-success/30 opacity-50' : fb.sentiment === 'positive' ? 'border-success/20' : 'border-warning/20'
+              }`}>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center font-display text-lg font-bold text-primary">
+                    {fb.table}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold">{fb.customer}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        fb.sentiment === 'positive' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'
+                      }`}>{fb.sentiment === 'positive' ? '😊 Positivo' : '😐 Neutro'}</span>
+                      <span className="text-[10px] text-muted-foreground">{statusLabel}</span>
+                    </div>
+                    {fb.note && <p className="text-xs text-muted-foreground mt-1 italic">"{fb.note}"</p>}
+                  </div>
+                  {!isSent ? (
+                    <button onClick={() => setFeedbackSent(prev => [...prev, fb.id])}
+                      className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold">
+                      Coletar
+                    </button>
+                  ) : (
+                    <span className="flex items-center gap-1 text-success text-sm font-semibold">
+                      <CheckCircle2 className="w-4 h-4" /> Coletado
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ═══ PEDIDOS ESPECIAIS ═══ */}
+      {activeTab === 'special' && (
+        <div className="space-y-4">
+          <div className="rounded-xl bg-primary/5 border border-primary/20 p-4">
+            <div className="flex items-center gap-3">
+              <Star className="w-6 h-6 text-primary" />
+              <div>
+                <p className="text-sm font-bold text-primary">Pedidos Especiais & Cortesias</p>
+                <p className="text-xs text-muted-foreground">Aniversários, VIPs, acessibilidade, restrições e requests especiais</p>
+              </div>
+            </div>
+          </div>
+
+          {SPECIAL_REQUESTS.map(req => {
+            const ReqIcon = req.icon;
+            const isSent = requestsSent.includes(req.id);
+            return (
+              <div key={req.id} className={`bg-card rounded-xl border-2 overflow-hidden transition-all ${
+                isSent ? 'border-success/30 opacity-50' : 'border-border'
+              }`}>
+                <div className="flex items-start gap-4 p-5">
+                  <div className={`w-12 h-12 rounded-xl ${req.bg} flex items-center justify-center shrink-0`}>
+                    <ReqIcon className={`w-6 h-6 ${req.color}`} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-display font-bold text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-lg">Mesa {req.table}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${req.bg} ${req.color}`}>{req.title}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">{req.desc}</p>
+                  </div>
+                </div>
+                {!isSent ? (
+                  <button onClick={() => setRequestsSent(prev => [...prev, req.id])}
+                    className={`w-full py-3 text-sm font-semibold border-t border-border ${req.bg} ${req.color}`}>
+                    {req.action} →
+                  </button>
+                ) : (
+                  <div className="px-5 py-3 border-t border-border flex items-center gap-2 text-success text-sm font-semibold">
+                    <CheckCircle2 className="w-4 h-4" /> Processado
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

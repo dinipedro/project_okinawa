@@ -28,7 +28,7 @@ const Toast: React.FC<{ message: string; type?: 'success' | 'error' | 'info'; on
   const icons = { success: <Check className="h-4 w-4" />, error: <X className="h-4 w-4" />, info: <Bell className="h-4 w-4" /> };
   React.useEffect(() => { const t = setTimeout(onClose, 2500); return () => clearTimeout(t); }, [onClose]);
   return (
-    <div className={`fixed top-4 left-4 right-4 z-50 ${colors[type]} rounded-xl px-3 py-2.5 flex items-center gap-2 shadow-lg animate-in slide-in-from-top-2`}>
+    <div className={`fixed top-4 left-4 right-4 z-[110] ${colors[type]} rounded-xl px-3 py-2.5 flex items-center gap-2 shadow-lg animate-in slide-in-from-top-2`}>
       {icons[type]}
       <span className="text-[11px] font-semibold flex-1">{message}</span>
       <button onClick={onClose}><X className="h-3 w-3 opacity-70" /></button>
@@ -49,18 +49,18 @@ const Modal: React.FC<{
 }> = ({ open, onClose, title, children }) => {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-[375px] max-h-[80vh] bg-card rounded-t-3xl border border-border shadow-2xl overflow-y-auto animate-in slide-in-from-bottom-4">
-        <div className="sticky top-0 bg-card z-10 px-4 pt-4 pb-2 border-b border-border">
+      <div className="relative w-full max-w-md max-h-[85vh] bg-card rounded-2xl border border-border shadow-2xl overflow-y-auto animate-in zoom-in-95 fade-in duration-200">
+        <div className="sticky top-0 bg-card z-10 px-5 pt-4 pb-3 border-b border-border">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-foreground">{title}</h3>
-            <button onClick={onClose} className="h-7 w-7 rounded-lg bg-muted flex items-center justify-center">
+            <button onClick={onClose} className="h-7 w-7 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors">
               <X className="h-3.5 w-3.5 text-muted-foreground" />
             </button>
           </div>
         </div>
-        <div className="p-4">{children}</div>
+        <div className="p-5">{children}</div>
       </div>
     </div>
   );
@@ -73,9 +73,9 @@ const ConfirmDialog: React.FC<{
   const { translateText } = useDemoI18n();
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-[320px] bg-card rounded-2xl border border-border shadow-2xl p-4 animate-in zoom-in-95">
+      <div className="relative w-full max-w-sm bg-card rounded-2xl border border-border shadow-2xl p-5 animate-in zoom-in-95 fade-in duration-200">
         <div className="flex items-center gap-2 mb-3">
           <div className="h-8 w-8 rounded-xl bg-destructive/10 flex items-center justify-center">
             <AlertTriangle className="h-4 w-4 text-destructive" />
@@ -84,10 +84,10 @@ const ConfirmDialog: React.FC<{
         </div>
         <p className="text-xs text-muted-foreground mb-4">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 rounded-xl bg-muted px-3 py-2.5 text-xs font-semibold text-foreground">
+          <button onClick={onClose} className="flex-1 rounded-xl bg-muted px-3 py-2.5 text-xs font-semibold text-foreground hover:bg-muted/80 transition-colors">
             {translateText('Cancelar')}
           </button>
-          <button onClick={() => { onConfirm(); onClose(); }} className="flex-1 rounded-xl bg-destructive px-3 py-2.5 text-xs font-semibold text-destructive-foreground">
+          <button onClick={() => { onConfirm(); onClose(); }} className="flex-1 rounded-xl bg-destructive px-3 py-2.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 transition-colors">
             {translateText('Excluir')}
           </button>
         </div>
@@ -97,12 +97,12 @@ const ConfirmDialog: React.FC<{
 };
 
 // ── Form Field ──
-const FormField: React.FC<{
+const FormField = React.forwardRef<HTMLDivElement, {
   label: string; value: string; onChange: (v: string) => void;
   placeholder?: string; type?: 'text' | 'number' | 'select';
   options?: { value: string; label: string }[];
-}> = ({ label, value, onChange, placeholder, type = 'text', options }) => (
-  <div className="mb-3">
+}>(({ label, value, onChange, placeholder, type = 'text', options }, ref) => (
+  <div className="mb-3" ref={ref}>
     <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">{label}</label>
     {type === 'select' && options ? (
       <select value={value} onChange={e => onChange(e.target.value)}
@@ -114,7 +114,8 @@ const FormField: React.FC<{
         className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30" />
     )}
   </div>
-);
+));
+FormField.displayName = 'FormField';
 
 // ── Shared UI Primitives ──
 const ConfigHeader: React.FC<{
@@ -1171,44 +1172,66 @@ export const ConfigMenu: React.FC<{ onNavigate: (screen: string) => void }> = ({
    6. TEAM — Full CRUD: add/edit/delete members
    ═══════════════════════════════════════════════════════════ */
 
-interface StaffMember { id: string; name: string; role: string; shift: string; status: 'online' | 'break' | 'offline'; }
+interface StaffMember { id: string; name: string; role: string; shift: string; email: string; status: 'online' | 'break' | 'offline'; invited?: boolean; }
 
-export const ConfigTeam: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
+// Role hierarchy: higher index = higher authority. Can only edit/delete roles below yours.
+const ROLE_HIERARCHY: Record<string, number> = { 'Dono': 100, 'Gerente': 80, 'Maitre': 60, 'Chef': 60, 'Sommelier': 50, 'Barman': 40, 'Cozinheiro': 40, 'Garçom': 30 };
+const canManageRole = (myRole: string, targetRole: string) => (ROLE_HIERARCHY[myRole] ?? 0) > (ROLE_HIERARCHY[targetRole] ?? 0);
+const canManageOrEqual = (myRole: string, targetRole: string) => (ROLE_HIERARCHY[myRole] ?? 0) >= (ROLE_HIERARCHY[targetRole] ?? 0);
+
+export const ConfigTeam: React.FC<{ onNavigate: (screen: string) => void; activeRole?: string }> = ({ onNavigate, activeRole = 'owner' }) => {
   const { translateText } = useDemoI18n();
   const toast = useToast();
+
+  // Map StaffRole ID to the Portuguese role name used in data
+  const ROLE_ID_TO_NAME: Record<string, string> = { owner: 'Dono', manager: 'Gerente', maitre: 'Maitre', chef: 'Chef', barman: 'Barman', cook: 'Cozinheiro', waiter: 'Garçom' };
+  const myRoleName = ROLE_ID_TO_NAME[activeRole] || 'Dono';
+
   const [staff, setStaff] = useState<StaffMember[]>([
-    { id: 'tm1', name: 'Ricardo Alves', role: 'Dono', shift: 'Integral', status: 'online' },
-    { id: 'tm2', name: 'Marina Costa', role: 'Gerente', shift: '14h-23h', status: 'online' },
-    { id: 'tm3', name: 'Felipe Santos', role: 'Chef', shift: '15h-23h', status: 'online' },
-    { id: 'tm4', name: 'Ana Rodrigues', role: 'Sommelier', shift: '18h-00h', status: 'online' },
-    { id: 'tm5', name: 'Bruno Oliveira', role: 'Garçom', shift: '18h-00h', status: 'online' },
-    { id: 'tm6', name: 'Carla Lima', role: 'Garçom', shift: '12h-18h', status: 'break' },
-    { id: 'tm7', name: 'Diego Martins', role: 'Barman', shift: 'Folga', status: 'offline' },
+    { id: 'tm1', name: 'Ricardo Alves', role: 'Dono', shift: 'Integral', email: 'ricardo@omakase.com', status: 'online', invited: true },
+    { id: 'tm2', name: 'Marina Costa', role: 'Gerente', shift: '14h-23h', email: 'marina@omakase.com', status: 'online', invited: true },
+    { id: 'tm3', name: 'Felipe Santos', role: 'Chef', shift: '15h-23h', email: 'felipe@omakase.com', status: 'online', invited: true },
+    { id: 'tm4', name: 'Ana Rodrigues', role: 'Sommelier', shift: '18h-00h', email: 'ana@omakase.com', status: 'online', invited: true },
+    { id: 'tm5', name: 'Bruno Oliveira', role: 'Garçom', shift: '18h-00h', email: 'bruno@omakase.com', status: 'online', invited: true },
+    { id: 'tm6', name: 'Carla Lima', role: 'Garçom', shift: '12h-18h', email: 'carla@omakase.com', status: 'break', invited: true },
+    { id: 'tm7', name: 'Diego Martins', role: 'Barman', shift: 'Folga', email: 'diego@omakase.com', status: 'offline', invited: true },
   ]);
   const [showAddMember, setShowAddMember] = useState(false);
   const [editingMember, setEditingMember] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [newMember, setNewMember] = useState({ name: '', role: 'Garçom', shift: '18h-00h' });
-  const [editData, setEditData] = useState({ name: '', role: '', shift: '' });
+  const [newMember, setNewMember] = useState({ name: '', role: 'Garçom', shift: '18h-00h', email: '' });
+  const [editData, setEditData] = useState({ name: '', role: '', shift: '', email: '' });
 
-  const roleOptions = [
+  const allRoleOptions = [
     { value: 'Dono', label: translateText('Dono') }, { value: 'Gerente', label: translateText('Gerente') },
     { value: 'Maitre', label: 'Maitre' }, { value: 'Chef', label: 'Chef' },
     { value: 'Barman', label: 'Barman' }, { value: 'Cozinheiro', label: translateText('Cozinheiro') },
     { value: 'Garçom', label: translateText('Garçom') }, { value: 'Sommelier', label: 'Sommelier' },
   ];
 
+  // Filter roles: can only assign roles below your own hierarchy level
+  const roleOptions = allRoleOptions.filter(r => canManageOrEqual(myRoleName, r.value) && r.value !== myRoleName || myRoleName === 'Dono');
+  const roleOptionsForAdd = myRoleName === 'Dono' ? allRoleOptions.filter(r => r.value !== 'Dono') : allRoleOptions.filter(r => canManageRole(myRoleName, r.value));
+  const roleOptionsForEdit = roleOptionsForAdd;
+
   const addMember = () => {
-    if (!newMember.name.trim()) return;
-    setStaff(prev => [...prev, { id: `tm${Date.now()}`, name: newMember.name, role: newMember.role, shift: newMember.shift, status: 'online' }]);
-    setShowAddMember(false); setNewMember({ name: '', role: 'Garçom', shift: '18h-00h' });
-    toast.show(translateText('Membro adicionado à equipe!'));
+    if (!newMember.name.trim() || !newMember.email.trim()) return;
+    setStaff(prev => [...prev, { id: `tm${Date.now()}`, name: newMember.name, role: newMember.role, shift: newMember.shift, email: newMember.email, status: 'offline', invited: false }]);
+    setShowAddMember(false);
+    const memberEmail = newMember.email;
+    const memberName = newMember.name;
+    setNewMember({ name: '', role: 'Garçom', shift: '18h-00h', email: '' });
+    toast.show(`${translateText('Convite enviado para')} ${memberEmail}`);
+    // Simulate invitation arriving after 2s
+    setTimeout(() => {
+      setStaff(prev => prev.map(m => m.email === memberEmail && !m.invited ? { ...m, invited: true } : m));
+    }, 2000);
   };
 
-  const startEdit = (m: StaffMember) => { setEditingMember(m.id); setEditData({ name: m.name, role: m.role, shift: m.shift }); };
+  const startEdit = (m: StaffMember) => { setEditingMember(m.id); setEditData({ name: m.name, role: m.role, shift: m.shift, email: m.email }); };
 
   const saveEdit = (id: string) => {
-    setStaff(prev => prev.map(m => m.id === id ? { ...m, name: editData.name, role: editData.role, shift: editData.shift } : m));
+    setStaff(prev => prev.map(m => m.id === id ? { ...m, name: editData.name, role: editData.role, shift: editData.shift, email: editData.email } : m));
     setEditingMember(null);
     toast.show(translateText('Membro atualizado!'));
   };
@@ -1250,8 +1273,9 @@ export const ConfigTeam: React.FC<{ onNavigate: (screen: string) => void }> = ({
             {editingMember === m.id ? (
               <div className="space-y-2">
                 <FormField label={translateText('Nome')} value={editData.name} onChange={v => setEditData(p => ({ ...p, name: v }))} />
+                <FormField label={translateText('E-mail')} value={editData.email} onChange={v => setEditData(p => ({ ...p, email: v }))} placeholder="email@exemplo.com" />
                 <div className="grid grid-cols-2 gap-2">
-                  <FormField label={translateText('Cargo')} value={editData.role} onChange={v => setEditData(p => ({ ...p, role: v }))} type="select" options={roleOptions} />
+                  <FormField label={translateText('Cargo')} value={editData.role} onChange={v => setEditData(p => ({ ...p, role: v }))} type="select" options={roleOptionsForEdit} />
                   <FormField label={translateText('Turno')} value={editData.shift} onChange={v => setEditData(p => ({ ...p, shift: v }))} placeholder="18h-00h" />
                 </div>
                 <div className="flex gap-2">
@@ -1268,13 +1292,23 @@ export const ConfigTeam: React.FC<{ onNavigate: (screen: string) => void }> = ({
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium text-foreground">{m.name}</p>
                   <p className="text-[10px] text-muted-foreground">{translateText(m.role)} · {m.shift}</p>
+                  <p className="text-[9px] text-muted-foreground/70 truncate">{m.email}</p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
+                  {!m.invited && (
+                    <span className="rounded-full bg-warning/10 px-1.5 py-0.5 text-[7px] font-bold text-warning animate-pulse">{translateText('Pendente')}</span>
+                  )}
                   <button onClick={() => toggleStatus(m.id)} className={`h-6 px-2 rounded-lg text-[8px] font-bold ${m.status === 'online' ? 'bg-success/10 text-success' : m.status === 'break' ? 'bg-warning/10 text-warning' : 'bg-muted text-muted-foreground'}`}>
                     {m.status === 'online' ? 'ON' : m.status === 'break' ? translateText('PAUSA') : 'OFF'}
                   </button>
-                  <button onClick={() => startEdit(m)}><Edit3 className="h-3.5 w-3.5 text-muted-foreground" /></button>
-                  <button onClick={() => setDeleteConfirm(m.id)}><Trash2 className="h-3.5 w-3.5 text-destructive/40" /></button>
+                  {canManageRole(myRoleName, m.role) ? (
+                    <>
+                      <button onClick={() => startEdit(m)}><Edit3 className="h-3.5 w-3.5 text-muted-foreground" /></button>
+                      <button onClick={() => setDeleteConfirm(m.id)}><Trash2 className="h-3.5 w-3.5 text-destructive/40" /></button>
+                    </>
+                  ) : (
+                    <Lock className="h-3.5 w-3.5 text-muted-foreground/30" />
+                  )}
                 </div>
               </div>
             )}
@@ -1282,11 +1316,19 @@ export const ConfigTeam: React.FC<{ onNavigate: (screen: string) => void }> = ({
         ))}
       </SectionCard>
 
-      <Modal open={showAddMember} onClose={() => setShowAddMember(false)} title={translateText('Novo Membro')}>
+      <Modal open={showAddMember} onClose={() => setShowAddMember(false)} title={translateText('Convidar Novo Membro')}>
+        <InfoBanner text={translateText('Um convite será enviado por e-mail para o novo membro acessar a plataforma do estabelecimento.')} tone="info" />
         <FormField label={translateText('Nome completo')} value={newMember.name} onChange={v => setNewMember(p => ({ ...p, name: v }))} placeholder="Ex: João Silva" />
-        <FormField label={translateText('Cargo')} value={newMember.role} onChange={v => setNewMember(p => ({ ...p, role: v }))} type="select" options={roleOptions} />
+        <FormField label={translateText('E-mail')} value={newMember.email} onChange={v => setNewMember(p => ({ ...p, email: v }))} placeholder="joao@email.com" />
+        <FormField label={translateText('Cargo')} value={newMember.role} onChange={v => setNewMember(p => ({ ...p, role: v }))} type="select" options={roleOptionsForAdd} />
         <FormField label={translateText('Turno')} value={newMember.shift} onChange={v => setNewMember(p => ({ ...p, shift: v }))} placeholder="18h-00h" />
-        <button onClick={addMember} className="w-full rounded-xl bg-primary px-3 py-2.5 text-xs font-semibold text-primary-foreground mt-2">{translateText('Adicionar Membro')}</button>
+        <button onClick={addMember} disabled={!newMember.name.trim() || !newMember.email.trim()}
+          className={`w-full rounded-xl px-3 py-2.5 text-xs font-semibold mt-2 flex items-center justify-center gap-2 transition-colors ${
+            newMember.name.trim() && newMember.email.trim() ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground cursor-not-allowed'
+          }`}>
+          <MessageSquare className="h-3.5 w-3.5" />
+          {translateText('Enviar Convite')}
+        </button>
       </Modal>
     </div>
   );
