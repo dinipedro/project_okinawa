@@ -81,6 +81,9 @@ import { TabManagementScreen, WaiterCallsScreen, HappyHourManagementScreen } fro
 // Restaurant Club screens
 import { DoorControlScreen, QueueManagementScreen, VipTableManagementScreen, BirthdayApprovalScreen, PromoterManagementScreen } from './restaurant/club';
 
+// Restaurant Config screens
+import { ConfigHubScreen, ConfigProfileScreen, ConfigServiceTypesConfigScreen, ConfigExperienceScreen, ConfigFloorScreen, ConfigKitchenScreen, ConfigPaymentsScreen, ConfigFeaturesScreen, ConfigTeamScreen, ConfigNotificationsScreen, ConfigLanguageScreen } from './restaurant/config';
+
 type AppMode = 'client' | 'restaurant';
 
 const screenComponents: Record<string, React.ComponentType> = {
