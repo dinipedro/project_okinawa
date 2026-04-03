@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cd site && npm run dev",
-    "build": "cd site && npm run build",
+    "dev": "cd site && npm install && npm run dev",
+    "build": "cd site && npm install && npm run build",
     "preview": "cd site && npm run preview"
   }
 }
