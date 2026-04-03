@@ -1,6 +1,8 @@
-import { Store, Clock, MapPin, Phone, Globe, Bell, Users, CreditCard, Shield, HelpCircle, ChevronRight, Camera } from "lucide-react";
+import { Store, Clock, MapPin, Phone, Globe, Bell, Users, CreditCard, Shield, HelpCircle, ChevronRight, Camera, Settings } from "lucide-react";
+import { useMobilePreview } from '../context/MobilePreviewContext';
 
 const settings = [
+  { icon: Settings, label: "Config Hub", value: "Centro de Configuração", category: "business", screen: "config-hub" },
   { icon: Clock, label: "Horário de Funcionamento", value: "11:00 - 23:00", category: "business" },
   { icon: MapPin, label: "Endereço", value: "Rua das Flores, 123", category: "business" },
   { icon: Phone, label: "Telefone", value: "(11) 99999-9999", category: "business" },
@@ -13,6 +15,7 @@ const settings = [
 ];
 
 export const RestaurantSettingsScreen = () => {
+  const { navigate } = useMobilePreview();
   return (
     <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-thin">
       {/* Header */}
