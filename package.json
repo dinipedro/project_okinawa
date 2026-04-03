@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cd site && npm install --legacy-peer-deps && npm run dev",
-    "build": "cd site && npm install && npm run build",
+    "build": "cd site && npm install --legacy-peer-deps && npm run build",
     "preview": "cd site && npm run preview"
   }
 }
