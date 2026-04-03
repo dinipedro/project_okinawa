@@ -19,6 +19,7 @@ import type {
   InventoryStatus,
   UpdateItemLevelPayload,
 } from '../../types/inventory';
+import { stockItemSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 const CATEGORY_LABEL_KEYS: Record<string, string> = {
   meats: 'stock.categoryMeats',
@@ -101,7 +102,21 @@ export default function StockItemDetailScreen({ navigation, route }: Props) {
   const handleRestock = async () => {
     if (!item) return;
     const level = parseFloat(restockLevel);
-    if (isNaN(level) || level < 0) return;
+
+    // Validate with Zod schema
+    const result = validateForm(stockItemSchema, {
+      name: item.name,
+      currentQuantity: isNaN(level) ? -1 : level,
+      unit: item.unit,
+      minQuantity: item.min_level ?? undefined,
+      maxQuantity: item.max_level ?? undefined,
+      unitCost: item.unit_cost ?? undefined,
+    });
+
+    if (!result.success) {
+      Alert.alert(t('common.error'), Object.values(result.errors)[0]);
+      return;
+    }
 
     setRestocking(true);
     try {

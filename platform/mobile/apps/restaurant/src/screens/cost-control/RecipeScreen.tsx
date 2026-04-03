@@ -40,6 +40,7 @@ import ApiService from '@/shared/services/api';
 import { Card } from '@okinawa/shared/components';
 import * as Haptics from 'expo-haptics';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { recipeIngredientSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 interface IngredientItem {
   id: string;
@@ -388,10 +389,21 @@ export default function RecipeScreen() {
                 disabled={!selectedIngredientId || !ingredientQuantity}
                 loading={addIngredientMutation.isPending}
                 onPress={() => {
+                  const qty = parseFloat(ingredientQuantity);
+                  const selectedIng = availableIngredients.find((i) => i.id === selectedIngredientId);
+                  const result = validateForm(recipeIngredientSchema, {
+                    ingredientId: selectedIngredientId,
+                    quantity: isNaN(qty) ? 0 : qty,
+                    unit: selectedIng?.unit || '',
+                  });
+                  if (!result.success) {
+                    Alert.alert(t('common.error'), Object.values(result.errors)[0]);
+                    return;
+                  }
                   addIngredientMutation.mutate({
                     recipeId: selectedRecipe.id,
                     ingredient_id: selectedIngredientId,
-                    quantity: parseFloat(ingredientQuantity),
+                    quantity: qty,
                   });
                 }}
                 buttonColor={colors.primary}

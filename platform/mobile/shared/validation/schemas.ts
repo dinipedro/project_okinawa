@@ -429,6 +429,118 @@ export const financialReportSchema = z.object({
 export type FinancialReportFormData = z.infer<typeof financialReportSchema>;
 
 // ============================================
+// FISCAL SCHEMAS
+// ============================================
+
+export const cnpjSchema = z
+  .string()
+  .trim()
+  .regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$|^\d{14}$/, { message: 'Invalid CNPJ format' });
+
+export const fiscalConfigSchema = z.object({
+  cnpj: cnpjSchema,
+  ie: z.string().max(15).optional(),
+  razaoSocial: z.string().min(2).max(200),
+  nomeFantasia: z.string().max(200).optional(),
+  stateCode: z.string().length(2),
+  regimeTributario: z.enum(['simples_nacional', 'lucro_presumido', 'lucro_real']),
+});
+export type FiscalConfigFormData = z.infer<typeof fiscalConfigSchema>;
+
+// ============================================
+// PAYMENT CARD SCHEMAS
+// ============================================
+
+export const cardNumberSchema = z
+  .string()
+  .trim()
+  .min(13, { message: 'Card number too short' })
+  .max(19, { message: 'Card number too long' })
+  .regex(/^[\d\s]+$/, { message: 'Card number must contain only digits' });
+
+export const cardSchema = z.object({
+  number: cardNumberSchema,
+  holderName: z.string().min(2).max(100),
+  expiryMonth: z.string().regex(/^(0[1-9]|1[0-2])$/, { message: 'Invalid month' }),
+  expiryYear: z.string().regex(/^\d{2,4}$/, { message: 'Invalid year' }),
+  cvv: z.string().regex(/^\d{3,4}$/, { message: 'Invalid CVV' }),
+});
+export type CardFormData = z.infer<typeof cardSchema>;
+
+// ============================================
+// ADDRESS SCHEMAS
+// ============================================
+
+export const addressSchema = z.object({
+  label: z.string().min(1).max(50).optional(),
+  street: z.string().min(3).max(200),
+  number: z.string().min(1).max(20),
+  complement: z.string().max(100).optional(),
+  neighborhood: z.string().min(2).max(100),
+  city: z.string().min(2).max(100),
+  state: z.string().length(2),
+  postalCode: z.string().regex(/^\d{5}-?\d{3}$/, { message: 'Invalid CEP format' }),
+});
+export type AddressFormData = z.infer<typeof addressSchema>;
+
+// ============================================
+// BILL/ACCOUNTS PAYABLE SCHEMAS
+// ============================================
+
+export const billSchema = z.object({
+  description: z.string().min(2).max(200),
+  supplier: z.string().min(1).max(200),
+  amount: z.number().positive({ message: 'Amount must be positive' }),
+  dueDate: z.string().min(1, { message: 'Due date is required' }),
+  category: z.string().min(1).optional(),
+  isRecurring: z.boolean().default(false),
+});
+export type BillFormData = z.infer<typeof billSchema>;
+
+// ============================================
+// TABLE FORM SCHEMAS
+// ============================================
+
+export const tableFormSchema = z.object({
+  tableNumber: z.number().int().min(1).max(999),
+  seats: z.number().int().min(1).max(50),
+  section: z.string().min(1).max(50).optional(),
+  shape: z.enum(['round', 'square', 'rectangle']).optional(),
+});
+export type TableFormData = z.infer<typeof tableFormSchema>;
+
+// ============================================
+// RECIPE SCHEMAS
+// ============================================
+
+export const recipeIngredientSchema = z.object({
+  ingredientId: z.string().min(1),
+  quantity: z.number().positive({ message: 'Quantity must be positive' }),
+  unit: z.string().min(1),
+});
+
+export const recipeSchema = z.object({
+  name: z.string().min(2).max(200),
+  menuItemId: z.string().optional(),
+  ingredients: z.array(recipeIngredientSchema).min(1, { message: 'At least one ingredient required' }),
+});
+export type RecipeFormData = z.infer<typeof recipeSchema>;
+
+// ============================================
+// STOCK ITEM SCHEMAS
+// ============================================
+
+export const stockItemSchema = z.object({
+  name: z.string().min(2).max(200),
+  currentQuantity: z.number().min(0),
+  unit: z.string().min(1).max(20),
+  minQuantity: z.number().min(0).optional(),
+  maxQuantity: z.number().min(0).optional(),
+  unitCost: z.number().min(0).optional(),
+});
+export type StockItemFormData = z.infer<typeof stockItemSchema>;
+
+// ============================================
 // UTILITY FUNCTIONS
 // ============================================
 
@@ -497,7 +609,31 @@ export default {
   staffMemberSchema,
   menuItemSchema,
   financialReportSchema,
-  
+
+  // Fiscal
+  cnpjSchema,
+  fiscalConfigSchema,
+
+  // Card
+  cardNumberSchema,
+  cardSchema,
+
+  // Address
+  addressSchema,
+
+  // Bill
+  billSchema,
+
+  // Table Form
+  tableFormSchema,
+
+  // Recipe
+  recipeIngredientSchema,
+  recipeSchema,
+
+  // Stock
+  stockItemSchema,
+
   // Utilities
   validateForm,
   getFirstError,

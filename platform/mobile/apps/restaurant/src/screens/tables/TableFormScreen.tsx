@@ -20,6 +20,7 @@ import { t } from '@okinawa/shared/i18n';
 import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import ApiService from '@/shared/services/api';
 import { Card } from '@okinawa/shared/components';
+import { tableFormSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 type RouteParams = {
   TableForm: {
@@ -77,21 +78,28 @@ export default function TableFormScreen() {
   }, [isEditing, fetchTable]);
 
   const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!tableNumber.trim()) {
-      newErrors.tableNumber = 'Número da mesa é obrigatório';
-    }
-
     const capacityNum = parseInt(capacity, 10);
-    if (isNaN(capacityNum) || capacityNum < 1) {
-      newErrors.capacity = 'Capacidade deve ser pelo menos 1';
-    } else if (capacityNum > 50) {
-      newErrors.capacity = 'Capacidade máxima é 50';
+    const tableNum = parseInt(tableNumber, 10);
+
+    const result = validateForm(tableFormSchema, {
+      tableNumber: isNaN(tableNum) ? 0 : tableNum,
+      seats: isNaN(capacityNum) ? 0 : capacityNum,
+      section: section || undefined,
+    });
+
+    if (!result.success) {
+      setErrors(result.errors);
+      return false;
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    // Also check if tableNumber string is provided (could be non-numeric label)
+    if (!tableNumber.trim()) {
+      setErrors({ tableNumber: 'Número da mesa é obrigatório' });
+      return false;
+    }
+
+    setErrors({});
+    return true;
   };
 
   const handleSave = async () => {

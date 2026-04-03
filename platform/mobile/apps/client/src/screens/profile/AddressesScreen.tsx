@@ -34,6 +34,7 @@ import { useI18n } from '@/shared/hooks/useI18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import ApiService from '@/shared/services/api';
 import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
+import { addressSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 // ============================================
 // TYPES
@@ -212,10 +213,22 @@ export default function AddressesScreen() {
   );
 
   const handleSaveAddress = useCallback(() => {
-    if (!formData.street || !formData.number || !formData.city || !formData.state || !formData.zip) {
-      Alert.alert(t('common.error'), t('common.required'));
+    const result = validateForm(addressSchema, {
+      label: formData.label || undefined,
+      street: formData.street,
+      number: formData.number,
+      complement: formData.complement || undefined,
+      neighborhood: formData.neighborhood,
+      city: formData.city,
+      state: formData.state,
+      postalCode: formData.zip,
+    });
+
+    if (!result.success) {
+      Alert.alert(t('common.error'), Object.values(result.errors)[0]);
       return;
     }
+
     addMutation.mutate(formData);
   }, [formData, addMutation, t]);
 

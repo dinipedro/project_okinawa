@@ -34,6 +34,7 @@ import { useRestaurant } from '@/shared/contexts/RestaurantContext';
 import ApiService from '@/shared/services/api';
 import { Card } from '@okinawa/shared/components';
 import * as Haptics from 'expo-haptics';
+import { fiscalConfigSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 interface FiscalConfigData {
   cnpj: string;
@@ -128,8 +129,18 @@ export default function FiscalSetupScreen() {
 
   const handleSave = useCallback(async () => {
     if (!restaurant?.id) return;
-    if (!config.cnpj || config.cnpj.length !== 14) {
-      Alert.alert(t('common.error'), 'CNPJ deve ter 14 digitos');
+
+    const result = validateForm(fiscalConfigSchema, {
+      cnpj: config.cnpj,
+      ie: config.ie || undefined,
+      razaoSocial: config.razaoSocial,
+      nomeFantasia: config.nomeFantasia || undefined,
+      stateCode: config.stateCode,
+      regimeTributario: config.regimeTributario,
+    });
+
+    if (!result.success) {
+      Alert.alert(t('common.error'), Object.values(result.errors)[0]);
       return;
     }
 

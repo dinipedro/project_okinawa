@@ -10,6 +10,7 @@ import { useI18n } from '@/shared/hooks/useI18n';
 import { useColors } from '@okinawa/shared/contexts/ThemeContext';
 import logger from '@okinawa/shared/utils/logger';
 import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
+import { createReservationSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 interface Restaurant {
   id: string;
@@ -223,15 +224,23 @@ export default function CreateReservationScreen() {
       time.getMinutes()
     );
 
-    // Check if reservation is in the past
-    if (reservationDateTime < new Date()) {
-      Alert.alert(t('common.error'), t('reservations.timeMustBeFuture'));
+    // Validate with Zod schema
+    const result = validateForm(createReservationSchema, {
+      restaurantId,
+      date: format(date, 'yyyy-MM-dd'),
+      time: format(time, 'HH:mm'),
+      partySize,
+      specialRequests: specialRequests || undefined,
+    });
+
+    if (!result.success) {
+      Alert.alert(t('common.error'), Object.values(result.errors)[0]);
       return false;
     }
 
-    // Check if party size is valid
-    if (partySize < 1 || partySize > 20) {
-      Alert.alert(t('common.error'), t('reservations.invalidPartySize'));
+    // Check if reservation is in the past
+    if (reservationDateTime < new Date()) {
+      Alert.alert(t('common.error'), t('reservations.timeMustBeFuture'));
       return false;
     }
 

@@ -44,6 +44,7 @@ import {
   formatCardNumber,
   formatExpiry,
 } from '@okinawa/shared/utils/card-validation';
+import { cardSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -259,28 +260,33 @@ export default function UnifiedPaymentScreen() {
 
   const validateNewCard = useCallback((): boolean => {
     const cleanedNumber = cardNumber.replace(/\s/g, '');
-    if (!cleanedNumber || !validateCardNumber(cleanedNumber)) {
+    const [expMonth, expYear] = (cardExpiry || '/').split('/');
+
+    const result = validateForm(cardSchema, {
+      number: cleanedNumber,
+      holderName: cardName,
+      expiryMonth: expMonth || '',
+      expiryYear: expYear || '',
+      cvv: cardCVV,
+    });
+
+    if (!result.success) {
+      Alert.alert(t('common.error'), Object.values(result.errors)[0]);
+      return false;
+    }
+
+    // Additional Luhn check
+    if (!validateCardNumber(cleanedNumber)) {
       Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
-    if (!cardName || cardName.length < 3) {
-      Alert.alert(t('common.error'), t('payment.cardName'));
-      return false;
-    }
-    if (!cardExpiry || !/^\d{2}\/\d{2}$/.test(cardExpiry)) {
+
+    // Additional expiry date check
+    if (!validateExpiry(expMonth, expYear)) {
       Alert.alert(t('common.error'), t('payment.cardExpiry'));
       return false;
     }
-    const [month, year] = cardExpiry.split('/');
-    if (!validateExpiry(month, year)) {
-      Alert.alert(t('common.error'), t('payment.cardExpiry'));
-      return false;
-    }
-    const brand = getCardBrand(cleanedNumber);
-    if (!validateCVV(cardCVV, brand)) {
-      Alert.alert(t('common.error'), t('payment.cardCvv'));
-      return false;
-    }
+
     return true;
   }, [cardNumber, cardName, cardExpiry, cardCVV, t]);
 

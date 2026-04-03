@@ -44,6 +44,8 @@ import { useColors } from '@/shared/contexts/ThemeContext';
 import { spacing, borderRadius } from '@/shared/theme/spacing';
 import { typography } from '@/shared/theme/typography';
 import { ScreenContainer } from '@okinawa/shared/components/ScreenContainer';
+import { createReservationSchema, validateForm } from '@okinawa/shared/validation/schemas';
+import { z } from 'zod';
 
 // ============================================
 // TYPES
@@ -172,8 +174,35 @@ export default function GroupBookingScreen() {
     return 0;
   }, [form.partySize]);
 
+  // Extended schema for group bookings (partySize up to 50)
+  const groupReservationSchema = useMemo(
+    () =>
+      createReservationSchema.extend({
+        partySize: z
+          .number()
+          .int()
+          .min(MIN_GROUP_SIZE, { message: `Party size must be at least ${MIN_GROUP_SIZE}` })
+          .max(MAX_GROUP_SIZE, { message: `Party size cannot exceed ${MAX_GROUP_SIZE}` }),
+      }),
+    [],
+  );
+
   // ---- Submit ----
   const handleSubmit = useCallback(async () => {
+    // Validate with extended Zod schema before submitting
+    const result = validateForm(groupReservationSchema, {
+      restaurantId,
+      date: format(form.date, 'yyyy-MM-dd'),
+      time: format(form.time, 'HH:mm'),
+      partySize: form.partySize,
+      specialRequests: form.additionalNotes.trim() || undefined,
+    });
+
+    if (!result.success) {
+      Alert.alert(t('common.error'), Object.values(result.errors)[0]);
+      return;
+    }
+
     setSubmitting(true);
     try {
       const payload = {
@@ -205,7 +234,7 @@ export default function GroupBookingScreen() {
     } finally {
       setSubmitting(false);
     }
-  }, [form, restaurantId, estimatedDeposit, t]);
+  }, [form, restaurantId, estimatedDeposit, t, groupReservationSchema]);
 
   // ---- Styles ----
   const styles = useMemo(

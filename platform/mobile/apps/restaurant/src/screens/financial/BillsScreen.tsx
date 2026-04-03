@@ -37,6 +37,7 @@ import { formatCurrency } from '@okinawa/shared/utils/formatters';
 import { getLanguage } from '@okinawa/shared/i18n';
 import { useColors } from '@/shared/theme';
 import { useRestaurant } from '@/shared/contexts/RestaurantContext';
+import { billSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 // ────────── Types ──────────
 
@@ -179,12 +180,28 @@ export default function BillsScreen() {
   }, []);
 
   const handleSubmit = useCallback(() => {
+    // Validate with Zod schema
+    const parsedAmount = parseFloat(formAmount);
+    const result = validateForm(billSchema, {
+      description: formDescription,
+      supplier: formSupplier || '',
+      amount: isNaN(parsedAmount) ? 0 : parsedAmount,
+      dueDate: formDueDate,
+      category: formCategory || undefined,
+      isRecurring: formIsRecurring,
+    });
+
+    if (!result.success) {
+      Alert.alert(t('common.error'), Object.values(result.errors)[0]);
+      return;
+    }
+
     const data = {
       restaurant_id: restaurantId!,
       description: formDescription,
       supplier: formSupplier || undefined,
       category: formCategory,
-      amount: parseFloat(formAmount),
+      amount: parsedAmount,
       due_date: formDueDate,
       is_recurring: formIsRecurring,
       recurrence: formIsRecurring ? formRecurrence : undefined,
@@ -206,6 +223,7 @@ export default function BillsScreen() {
     formIsRecurring,
     formRecurrence,
     editingBill,
+    t,
   ]);
 
   const handleMarkPaid = useCallback(

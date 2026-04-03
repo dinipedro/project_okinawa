@@ -16,6 +16,7 @@ import {
   formatCardNumber,
   formatExpiry,
 } from '@okinawa/shared/utils/card-validation';
+import { cardSchema, validateForm } from '@okinawa/shared/validation/schemas';
 
 interface Order {
   id: string;
@@ -121,45 +122,29 @@ export default function PaymentScreen() {
 
   const validateNewCard = () => {
     const cleanedNumber = cardNumber.replace(/\s/g, '');
+    const [expMonth, expYear] = (cardExpiry || '/').split('/');
 
-    // Validate card number with Luhn algorithm (also checks length)
-    if (!cleanedNumber || !validateCardNumber(cleanedNumber)) {
+    const result = validateForm(cardSchema, {
+      number: cleanedNumber,
+      holderName: cardName,
+      expiryMonth: expMonth || '',
+      expiryYear: expYear || '',
+      cvv: cardCVV,
+    });
+
+    if (!result.success) {
+      Alert.alert(t('common.error'), Object.values(result.errors)[0]);
+      return false;
+    }
+
+    // Additional Luhn check
+    if (!validateCardNumber(cleanedNumber)) {
       Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
 
-    // Detect and validate card brand
-    const brand = getCardBrand(cleanedNumber);
-    if (brand === 'Unknown') {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-    }
-
-    // Validate cardholder name
-    if (!cardName || cardName.length < 3) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
-
-    // Validate name contains only letters and spaces
-    if (!/^[a-zA-Z\s]+$/.test(cardName)) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
-
-    // Validate expiry format and date
-    if (!cardExpiry || !/^\d{2}\/\d{2}$/.test(cardExpiry)) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
-
-    const [month, year] = cardExpiry.split('/');
-    if (!validateExpiry(month, year)) {
-      Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
-      return false;
-    }
-
-    // Validate CVV
-    if (!validateCVV(cardCVV, brand)) {
+    // Additional expiry date check
+    if (!validateExpiry(expMonth, expYear)) {
       Alert.alert(t('common.error'), t('payment.errorInvalidCard'));
       return false;
     }
