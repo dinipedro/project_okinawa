@@ -200,6 +200,19 @@ const screenComponents: Record<string, React.ComponentType> = {
   'vip-table-management': VipTableManagementScreen,
   'birthday-approval': BirthdayApprovalScreen,
   'promoter-management': PromoterManagementScreen,
+
+  // Restaurant Config Hub
+  'config-hub': ConfigHubScreen,
+  'config-profile': ConfigProfileScreen,
+  'config-service-types': ConfigServiceTypesConfigScreen,
+  'config-experience': ConfigExperienceScreen,
+  'config-floor': ConfigFloorScreen,
+  'config-kitchen': ConfigKitchenScreen,
+  'config-payments': ConfigPaymentsScreen,
+  'config-features': ConfigFeaturesScreen,
+  'config-team': ConfigTeamScreen,
+  'config-notifications': ConfigNotificationsScreen,
+  'config-language': ConfigLanguageScreen,
 };
 
 function MobilePreviewContent({ mode }: { mode: AppMode }) {
