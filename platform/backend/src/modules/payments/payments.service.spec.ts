@@ -11,6 +11,7 @@ import { WalletType, TransactionType } from '@common/enums';
 import { CashbackService } from '@/modules/loyalty/cashback.service';
 import { EventsGateway } from '@/modules/events/events.gateway';
 import { FinancialTransactionService } from '@/modules/financial/financial-transaction.service';
+import { NotificationsService } from '@/modules/notifications/notifications.service';
 
 describe('PaymentsService', () => {
   let service: PaymentsService;
@@ -112,6 +113,10 @@ describe('PaymentsService', () => {
             processOrderCashback: jest.fn().mockResolvedValue({ credited: false }),
             processOrderPoints: jest.fn().mockResolvedValue({ credited: false }),
           },
+        },
+        {
+          provide: NotificationsService,
+          useValue: { create: jest.fn().mockResolvedValue({ id: 'notif-1' }) },
         },
       ],
     }).compile();

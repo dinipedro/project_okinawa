@@ -28,6 +28,8 @@ import { OrderCalculatorHelper } from './helpers';
 import { StockService } from '@/modules/stock/services/stock.service';
 import { CustomerCrmService } from '@/modules/customer-crm/services/customer-crm.service';
 import { PromotionsService } from '@/modules/promotions/promotions.service';
+import { NotificationsService } from '@/modules/notifications/notifications.service';
+import { NotificationType, RelatedType } from '@/modules/notifications/entities/notification.entity';
 
 @Injectable()
 export class OrdersService {
@@ -54,6 +56,7 @@ export class OrdersService {
     private customerCrmService: CustomerCrmService,
     private promotionsService: PromotionsService,
     private eventEmitter: EventEmitter2,
+    private notificationsService: NotificationsService,
   ) {}
 
   async create(userId: string, createOrderDto: CreateOrderDto) {
@@ -284,10 +287,20 @@ export class OrdersService {
     if (updateStatusDto.status === OrderStatus.READY) {
       order.actual_ready_at = new Date();
 
-      // FIX-7: Push notification placeholder — order ready
-      this.logger.debug(
-        `[PUSH_PENDING] Notification to user ${order.user_id} — requires FCM integration`,
-      );
+      // Notify customer that their order is ready
+      try {
+        await this.notificationsService.create({
+          user_id: order.user_id,
+          title: 'Order Ready',
+          message: `Your order #${order.id.slice(-6).toUpperCase()} is ready!`,
+          type: NotificationType.ORDER_READY,
+          related_id: order.id,
+          related_type: RelatedType.ORDER,
+          data: { order_id: order.id, restaurant_id: order.restaurant_id },
+        });
+      } catch (err) {
+        this.logger.warn(`Notification creation failed for order ${order.id}: ${err instanceof Error ? err.message : 'unknown'}`);
+      }
     }
 
     if (updateStatusDto.status === OrderStatus.COMPLETED) {

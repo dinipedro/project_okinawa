@@ -6,6 +6,7 @@ import { CallsService } from './calls.service';
 import { CallsController } from './calls.controller';
 import { CallsGateway } from './calls.gateway';
 import { ServiceCall } from './entities/service-call.entity';
+import { NotificationsModule } from '@/modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ServiceCall } from './entities/service-call.entity';
         },
       }),
     }),
+    NotificationsModule,
   ],
   controllers: [CallsController],
   providers: [CallsService, CallsGateway],

@@ -7,6 +7,7 @@ import { Restaurant } from '@/modules/restaurants/entities/restaurant.entity';
 import { ReservationsGateway } from './reservations.gateway';
 import { NotFoundException } from '@nestjs/common';
 import { ReservationStatus } from '@common/enums';
+import { NotificationsService } from '@/modules/notifications/notifications.service';
 
 describe('ReservationsService', () => {
   let service: ReservationsService;
@@ -110,6 +111,10 @@ describe('ReservationsService', () => {
         {
           provide: ReservationsGateway,
           useValue: { emitToRestaurant: jest.fn(), notifyReservationUpdate: jest.fn(), notifyReservationCreated: jest.fn(), notifyReservationUpdated: jest.fn() },
+        },
+        {
+          provide: NotificationsService,
+          useValue: { create: jest.fn().mockResolvedValue({ id: 'notif-1' }) },
         },
       ],
     }).compile();

@@ -15,6 +15,8 @@ import { ORDERS } from '@common/constants/limits';
 import { ReservationsGateway } from './reservations.gateway';
 import { TablesService } from '@/modules/tables/tables.service';
 import { TableStatus } from '@/modules/tables/entities/restaurant-table.entity';
+import { NotificationsService } from '@/modules/notifications/notifications.service';
+import { NotificationType, RelatedType } from '@/modules/notifications/entities/notification.entity';
 
 /** Minimum party size to qualify as a group booking */
 const GROUP_BOOKING_MIN_SIZE = ORDERS.GROUP_BOOKING_MIN_SIZE;
@@ -31,6 +33,7 @@ export class ReservationsService {
     private dataSource: DataSource,
     private reservationsGateway: ReservationsGateway,
     private tablesService: TablesService,
+    private notificationsService: NotificationsService,
   ) {}
 
   async create(userId: string, createReservationDto: CreateReservationDto) {
@@ -171,10 +174,20 @@ export class ReservationsService {
     if (updateStatusDto.status === ReservationStatus.CONFIRMED) {
       reservation.confirmed_at = new Date();
 
-      // FIX-8: Push notification placeholder — reservation confirmed
-      this.logger.debug(
-        `[PUSH_PENDING] Notification to user ${reservation.user_id} — requires FCM integration`,
-      );
+      // Notify customer that their reservation is confirmed
+      try {
+        await this.notificationsService.create({
+          user_id: reservation.user_id,
+          title: 'Reservation Confirmed',
+          message: `Your reservation for ${reservation.party_size} guests has been confirmed.`,
+          type: NotificationType.RESERVATION_CONFIRMED,
+          related_id: reservation.id,
+          related_type: RelatedType.RESERVATION,
+          data: { reservation_id: reservation.id, restaurant_id: reservation.restaurant_id },
+        });
+      } catch (err) {
+        this.logger.warn(`Notification creation failed for reservation ${reservation.id}: ${err instanceof Error ? err.message : 'unknown'}`);
+      }
     }
 
     if (updateStatusDto.status === ReservationStatus.SEATED) {

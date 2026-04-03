@@ -10,6 +10,8 @@ import { Repository, Between, In } from 'typeorm';
 import { ServiceCall, ServiceCallStatus } from './entities/service-call.entity';
 import { CreateCallDto } from './dto/create-call.dto';
 import { CallsGateway } from './calls.gateway';
+import { NotificationsService } from '@/modules/notifications/notifications.service';
+import { NotificationType } from '@/modules/notifications/entities/notification.entity';
 
 @Injectable()
 export class CallsService {
@@ -19,6 +21,7 @@ export class CallsService {
     @InjectRepository(ServiceCall)
     private readonly callRepository: Repository<ServiceCall>,
     private readonly callsGateway: CallsGateway,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   /**
@@ -134,10 +137,19 @@ export class CallsService {
 
     const savedCall = await this.callRepository.save(call);
 
-    // FIX-10: Push notification placeholder — call acknowledged (waiter is coming)
-    this.logger.debug(
-      `[PUSH_PENDING] Notification to user ${call.user_id} — requires FCM integration`,
-    );
+    // Notify customer that their call was acknowledged
+    try {
+      await this.notificationsService.create({
+        user_id: call.user_id,
+        title: 'Waiter On The Way',
+        message: 'A staff member has acknowledged your call and is on the way.',
+        type: NotificationType.SYSTEM,
+        related_id: savedCall.id,
+        data: { call_id: savedCall.id, restaurant_id: call.restaurant_id },
+      });
+    } catch (err) {
+      this.logger.warn(`Notification creation failed for call ${savedCall.id}: ${err instanceof Error ? err.message : 'unknown'}`);
+    }
 
     try {
       this.callsGateway.emitCallUpdated(call.restaurant_id, savedCall);

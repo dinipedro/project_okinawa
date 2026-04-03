@@ -16,6 +16,7 @@ import { OrderCalculatorHelper } from './helpers';
 import { StockService } from '@/modules/stock/services/stock.service';
 import { CustomerCrmService } from '@/modules/customer-crm/services/customer-crm.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NotificationsService } from '@/modules/notifications/notifications.service';
 
 describe('OrdersService', () => {
   let service: OrdersService;
@@ -266,6 +267,10 @@ describe('OrdersService', () => {
         {
           provide: EventEmitter2,
           useValue: { emit: jest.fn() },
+        },
+        {
+          provide: NotificationsService,
+          useValue: { create: jest.fn().mockResolvedValue({ id: 'notif-1' }) },
         },
       ],
     }).compile();

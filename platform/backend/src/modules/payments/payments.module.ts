@@ -14,6 +14,7 @@ import { LoyaltyModule } from '@/modules/loyalty/loyalty.module';
 import { EventsModule } from '@/modules/events/events.module';
 import { FinancialModule } from '@/modules/financial/financial.module';
 import { OrdersModule } from '@/modules/orders/orders.module';
+import { NotificationsModule } from '@/modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { OrdersModule } from '@/modules/orders/orders.module';
     LoyaltyModule,
     EventsModule,
     FinancialModule,
+    NotificationsModule,
   ],
   controllers: [PaymentsController, PaymentSplitController],
   providers: [PaymentsService, PaymentSplitService],

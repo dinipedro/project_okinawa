@@ -21,6 +21,8 @@ import {
   TransactionCategory,
   ReferenceType,
 } from '@/modules/financial/entities/financial-transaction.entity';
+import { NotificationsService } from '@/modules/notifications/notifications.service';
+import { NotificationType, RelatedType } from '@/modules/notifications/entities/notification.entity';
 
 @Injectable()
 export class PaymentsService {
@@ -38,6 +40,7 @@ export class PaymentsService {
     private cashbackService: CashbackService,
     private eventsGateway: EventsGateway,
     private financialTransactionService: FinancialTransactionService,
+    private notificationsService: NotificationsService,
   ) {}
 
   /**
@@ -476,10 +479,20 @@ export class PaymentsService {
         );
       }
 
-      // FIX-9: Push notification placeholder — payment received
-      this.logger.debug(
-        `[PUSH_PENDING] Notification to user ${order.user_id} — requires FCM integration`,
-      );
+      // Notify customer that their payment was received
+      try {
+        await this.notificationsService.create({
+          user_id: order.user_id,
+          title: 'Payment Received',
+          message: `Your payment of R$${Number(processDto.amount).toFixed(2)} has been processed.`,
+          type: NotificationType.PAYMENT_RECEIVED,
+          related_id: order.id,
+          related_type: RelatedType.PAYMENT,
+          data: { order_id: order.id, amount: processDto.amount, transaction_id: transactionId },
+        });
+      } catch (err) {
+        this.logger.warn(`Notification creation failed for payment on order ${order.id}: ${err instanceof Error ? err.message : 'unknown'}`);
+      }
 
       const duration = Date.now() - startTime;
       this.logger.log({
