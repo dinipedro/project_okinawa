@@ -119,16 +119,31 @@ const screenComponents: Record<string, React.ComponentType> = {
   reservations: ReservationsScreen,
   'new-reservation': NewReservationScreen,
   'reservation-detail': ReservationDetailScreen,
+  'guest-invitation': GuestInvitationScreen,
   
   // Client Loyalty & Rewards
   loyalty: LoyaltyScreen,
   'loyalty-leaderboard': LoyaltyLeaderboardScreen,
+  'loyalty-home': LoyaltyHomeScreen,
+  'stamp-cards': StampCardsScreen,
   
   // Client Account
   favorites: FavoritesScreen,
   notifications: NotificationsScreen,
   settings: SettingsScreen,
   wallet: WalletScreen,
+  'manage-consents': ManageConsentsScreen,
+  
+  // Client Auth
+  register: RegisterScreen,
+  
+  // Client Menu & Payment
+  menu: MenuScreen,
+  payment: PaymentScreen,
+  'payment-success': PaymentSuccessScreen,
+  
+  // Client Buffet
+  'buffet-checkin': BuffetCheckinScreen,
   
   // Pub & Bar
   'tab': TabScreen,
@@ -142,6 +157,14 @@ const screenComponents: Record<string, React.ComponentType> = {
   'vip-table': VipTableScreen,
   'lineup': LineupScreen,
   'birthday-entry-request': BirthdayEntryRequestScreen,
+  'club-home': ClubHomeScreen,
+  'birthday-booking': BirthdayBookingScreen,
+  
+  // Waitlist
+  'waitlist-bar': WaitlistBarScreen,
+  'entry-choice': EntryChoiceScreen,
+  'family-mode': FamilyModeScreen,
+  'family-activities': FamilyActivitiesScreen,
   
   // Restaurant Main
   'restaurant-dashboard': RestaurantDashboardScreen,
