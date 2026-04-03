@@ -491,6 +491,11 @@ export default function PartialOrderScreen() {
             keyExtractor={(item) => item.id}
             scrollEnabled={true}
             nestedScrollEnabled={true}
+            getItemLayout={(_, index) => ({
+              length: 60,
+              offset: 60 * index,
+              index,
+            })}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.menuItem}

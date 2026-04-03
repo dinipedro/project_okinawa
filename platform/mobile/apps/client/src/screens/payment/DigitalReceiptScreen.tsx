@@ -443,13 +443,13 @@ Pagamento: ${receipt.paymentMethod}${receipt.cardLastDigits ? ` (**** ${receipt.
     <ScreenContainer>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Close receipt">
+        <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Close receipt" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
           <Ionicons name="close" size={24} color={colors.foreground} />
         </TouchableOpacity>
         <Text style={styles.title}>
           Comprovante Digital
         </Text>
-        <TouchableOpacity onPress={shareReceipt} accessibilityLabel="Share receipt">
+        <TouchableOpacity onPress={shareReceipt} accessibilityLabel="Share receipt" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
           <Ionicons name="share-outline" size={24} color={colors.primary} />
         </TouchableOpacity>
       </View>

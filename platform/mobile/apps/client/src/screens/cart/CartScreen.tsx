@@ -334,6 +334,11 @@ export default function CartScreen() {
         renderItem={renderCartItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
+        getItemLayout={(_, index) => ({
+          length: 100,
+          offset: 100 * index,
+          index,
+        })}
         ListHeaderComponent={
           <Text variant="headlineSmall" style={styles.title}>
             {t('cart.title')}

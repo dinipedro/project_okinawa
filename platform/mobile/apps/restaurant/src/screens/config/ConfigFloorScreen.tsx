@@ -353,10 +353,10 @@ export default function ConfigFloorScreen() {
                     {sec.name} {sec.capacity ? `(${sec.capacity})` : ''}
                   </Text>
                   <View style={styles.sectionCardActions}>
-                    <TouchableOpacity onPress={() => openEditSection(sec)} accessibilityRole="button" accessibilityLabel={t('common.edit')}>
+                    <TouchableOpacity onPress={() => openEditSection(sec)} accessibilityRole="button" accessibilityLabel={t('common.edit')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                       <Text style={styles.actionText}>{t('common.edit')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => deleteSection(sec.id)} accessibilityRole="button" accessibilityLabel={t('common.delete')}>
+                    <TouchableOpacity onPress={() => deleteSection(sec.id)} accessibilityRole="button" accessibilityLabel={t('common.delete')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                       <Text style={styles.deleteText}>{t('common.delete')}</Text>
                     </TouchableOpacity>
                   </View>
@@ -380,7 +380,7 @@ export default function ConfigFloorScreen() {
                   ))}
                 </View>
 
-                <TouchableOpacity onPress={() => openAddTable(sec.id)} style={{ marginTop: spacing[2] }} accessibilityRole="button" accessibilityLabel={t('config.floor.addTable')}>
+                <TouchableOpacity onPress={() => openAddTable(sec.id)} style={{ marginTop: spacing[2] }} accessibilityRole="button" accessibilityLabel={t('config.floor.addTable')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                   <Text style={styles.actionText}>+ {t('config.floor.addTable')}</Text>
                 </TouchableOpacity>
               </View>

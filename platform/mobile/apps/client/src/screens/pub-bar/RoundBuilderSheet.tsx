@@ -568,6 +568,11 @@ export default function RoundBuilderSheet({
                   renderItem={renderDrinkItem}
                   keyExtractor={(item) => item.id}
                   contentContainerStyle={styles.listContent}
+                  getItemLayout={(_, index) => ({
+                    length: 80,
+                    offset: 80 * index,
+                    index,
+                  })}
                   ListEmptyComponent={
                     <View style={styles.emptyContainer}>
                       <Icon

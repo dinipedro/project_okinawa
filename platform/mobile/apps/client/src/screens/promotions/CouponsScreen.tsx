@@ -334,6 +334,11 @@ export default function CouponsScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
         contentContainerStyle={styles.listContent}
+        getItemLayout={(_, index) => ({
+          length: 132,
+          offset: 132 * index,
+          index,
+        })}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>

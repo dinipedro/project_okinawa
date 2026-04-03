@@ -441,6 +441,16 @@ export default function NotificationsScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
         contentContainerStyle={styles.listContent}
+        getItemLayout={(_, index) => ({
+          length: 81,
+          offset: 81 * index,
+          index,
+        })}
+        windowSize={10}
+        initialNumToRender={15}
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={50}
+        removeClippedSubviews={true}
         ItemSeparatorComponent={() => <Divider style={styles.divider} />}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>

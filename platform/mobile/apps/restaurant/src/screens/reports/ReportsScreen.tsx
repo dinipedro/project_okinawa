@@ -320,7 +320,7 @@ export default function ReportsScreen() {
       <ScreenContainer>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 }}>
         <Text variant="bodyLarge" style={{ color: colors.foregroundSecondary, marginBottom: 16, textAlign: 'center' }}>{t('common.error')}</Text>
-        <TouchableOpacity onPress={loadData} accessibilityLabel={t('common.retry')}>
+        <TouchableOpacity onPress={loadData} accessibilityLabel={t('common.retry')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
           <Text variant="labelLarge" style={{ color: colors.primary, fontWeight: '600' }}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
@@ -390,6 +390,7 @@ export default function ReportsScreen() {
               <TouchableOpacity
                 onPress={handleExport}
                 accessibilityLabel={t('reports.export')}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',

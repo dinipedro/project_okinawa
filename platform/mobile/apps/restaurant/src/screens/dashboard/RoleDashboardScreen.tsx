@@ -497,7 +497,7 @@ export default function RoleDashboardScreen() {
         <Text variant="bodyLarge" style={{ color: colors.foregroundSecondary, marginBottom: 16, textAlign: 'center' }}>
           {t('common.error')}
         </Text>
-        <TouchableOpacity onPress={loadData} accessibilityRole="button" accessibilityLabel={t('common.retry')}>
+        <TouchableOpacity onPress={loadData} accessibilityRole="button" accessibilityLabel={t('common.retry')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
           <Text variant="labelLarge" style={{ color: colors.primary, fontWeight: '600' }}>
             {t('common.retry')}
           </Text>

@@ -402,6 +402,11 @@ export default function VipTableScreen({ route }: VipTableScreenProps) {
         numColumns={3}
         contentContainerStyle={styles.grid}
         columnWrapperStyle={styles.gridRow}
+        getItemLayout={(_, index) => ({
+          length: 140,
+          offset: 140 * index,
+          index,
+        })}
         ListEmptyComponent={
           <View style={styles.emptyState}>
             <Text style={{ fontSize: 48, marginBottom: 12 }}>🍾</Text>

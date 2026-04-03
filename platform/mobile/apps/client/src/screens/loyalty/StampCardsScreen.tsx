@@ -386,6 +386,11 @@ export default function StampCardsScreen() {
         keyExtractor={(item) => item.id}
         numColumns={2}
         contentContainerStyle={styles.list}
+        getItemLayout={(_, index) => ({
+          length: 180,
+          offset: 180 * index,
+          index,
+        })}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

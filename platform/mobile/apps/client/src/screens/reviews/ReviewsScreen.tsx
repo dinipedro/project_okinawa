@@ -153,6 +153,7 @@ export default function ReviewsScreen() {
             key={star}
             onPress={() => interactive && onPress && onPress(star)}
             disabled={!interactive}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             accessibilityRole={interactive ? 'button' : undefined}
             accessibilityLabel={interactive ? `Rate ${star} star${star !== 1 ? 's' : ''}` : undefined}
             accessibilityState={interactive ? { selected: star <= rating } : undefined}

@@ -279,10 +279,10 @@ export default function ConfigKitchenScreen() {
                   </Text>
                 </View>
                 <View style={styles.actionsRow}>
-                  <TouchableOpacity onPress={() => openEditStation(station)} accessibilityRole="button" accessibilityLabel={t('common.edit')}>
+                  <TouchableOpacity onPress={() => openEditStation(station)} accessibilityRole="button" accessibilityLabel={t('common.edit')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                     <Text style={styles.actionText}>{t('common.edit')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => deleteStation(station.id)} accessibilityRole="button" accessibilityLabel={t('common.delete')}>
+                  <TouchableOpacity onPress={() => deleteStation(station.id)} accessibilityRole="button" accessibilityLabel={t('common.delete')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                     <Text style={styles.deleteText}>{t('common.delete')}</Text>
                   </TouchableOpacity>
                 </View>

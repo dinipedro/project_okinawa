@@ -425,6 +425,11 @@ export default function ClubHomeScreen({ route }: ClubHomeScreenProps) {
         keyExtractor={(item) => item.id}
         renderItem={renderEvent}
         contentContainerStyle={eventStyles.list}
+        getItemLayout={(_, index) => ({
+          length: 200,
+          offset: 200 * index,
+          index,
+        })}
         ListEmptyComponent={renderEmpty}
         refreshControl={
           <RefreshControl

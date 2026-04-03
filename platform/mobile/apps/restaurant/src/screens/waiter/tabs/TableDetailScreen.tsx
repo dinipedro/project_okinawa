@@ -964,7 +964,7 @@ function TableDetailScreen({
                   <Text style={styles.orderingForName}>
                     {guests.find((g) => g.id === orderingForGuest)?.name || 'Convidado'}
                   </Text>
-                  <TouchableOpacity onPress={() => setOrderingForGuest(null)}>
+                  <TouchableOpacity onPress={() => setOrderingForGuest(null)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                     <Text style={styles.orderingForChange}>
                       {t('waiter.menu.ordering_for_change')}
                     </Text>

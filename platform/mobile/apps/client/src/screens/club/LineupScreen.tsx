@@ -318,6 +318,11 @@ export default function LineupScreen({ route }: LineupScreenProps) {
         keyExtractor={(item) => item.id}
         renderItem={renderSlot}
         contentContainerStyle={styles.list}
+        getItemLayout={(_, index) => ({
+          length: 100,
+          offset: 100 * index,
+          index,
+        })}
         ListEmptyComponent={
           <View style={styles.emptyState}>
             <Text style={{ fontSize: 48, marginBottom: 12 }}>🎵</Text>

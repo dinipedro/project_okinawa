@@ -297,6 +297,11 @@ export default function AddressesScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
         contentContainerStyle={styles.listContent}
+        getItemLayout={(_, index) => ({
+          length: 112,
+          offset: 112 * index,
+          index,
+        })}
         renderItem={({ item: address }) => (
           <TouchableOpacity
             style={[styles.addressCard, address.is_default && styles.addressCardDefault]}

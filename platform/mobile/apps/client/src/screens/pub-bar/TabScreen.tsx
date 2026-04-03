@@ -629,6 +629,11 @@ export default function TabScreen() {
         renderItem={renderRound}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
+        getItemLayout={(_, index) => ({
+          length: 120,
+          offset: 120 * index,
+          index,
+        })}
         ListEmptyComponent={renderEmpty}
         refreshControl={
           <RefreshControl
