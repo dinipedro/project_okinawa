@@ -20,10 +20,23 @@ export type RestaurantScreen =
   | 'cook-station' | 'stock' | 'waiter-calls' | 'waiter-tips'
   | 'floor-flow' | 'daily-report'
   | 'waiter-table-detail' | 'waiter-payment' | 'waiter-actions'
+  | 'waiter-assist'
+  // Financial Brain
+  | 'financial-dashboard' | 'cash-register' | 'fiscal' | 'cost-control' | 'forecast'
+  // Chef & KDS Advanced
+  | 'chef-approvals' | 'chef-table' | 'kds-analytics' | 'kds-brain-config'
+  // Operations Extended
+  | 'crm' | 'hr' | 'integrations' | 'loyalty-mgmt' | 'promotions-mgmt'
+  | 'qr-codes' | 'tap-to-pay' | 'reports' | 'reviews-mgmt' | 'reservations-mgmt'
+  // Club Management (restaurant side)
+  | 'club-door' | 'club-queue-mgmt' | 'club-promoter' | 'club-vip-mgmt'
+  // Service-type specific (restaurant side)
+  | 'drive-thru-mgmt' | 'food-truck-mgmt'
   // Configuration Hub screens
   | 'config-hub' | 'config-profile' | 'config-service-types' | 'config-experience'
   | 'config-floor' | 'config-menu' | 'config-team' | 'config-kitchen'
-  | 'config-payments' | 'config-features';
+  | 'config-payments' | 'config-features'
+  | 'config-language' | 'config-notifications';
 
 export type StaffRole = 'owner' | 'manager' | 'maitre' | 'barman' | 'chef' | 'cook' | 'waiter';
 
@@ -63,32 +76,43 @@ export interface RoleJourneyStage {
 export const ROLE_JOURNEYS: Record<StaffRole, RoleJourneyStage[]> = {
   owner: [
     { screen: 'dashboard', label: 'Dashboard', icon: BarChart3, desc: 'Visão executiva com KPIs em tempo real' },
+    { screen: 'financial-dashboard', label: 'Financeiro', icon: DollarSign, desc: 'Receita, custos, margens e fluxo de caixa' },
     { screen: 'table-map', label: 'Mapa de Mesas', icon: LayoutGrid, desc: 'Planta interativa do salão' },
     { screen: 'orders', label: 'Pedidos', icon: UtensilsCrossed, desc: 'Todos os pedidos ativos' },
     { screen: 'kds-kitchen', label: 'KDS Cozinha', icon: ChefHat, desc: 'Monitor da cozinha' },
     { screen: 'kds-bar', label: 'KDS Bar', icon: Wine, desc: 'Monitor do bar' },
     { screen: 'analytics', label: 'Analytics', icon: TrendingUp, desc: 'Relatórios e tendências' },
+    { screen: 'crm', label: 'CRM', icon: Users, desc: 'Perfil e histórico de clientes' },
     { screen: 'team', label: 'Equipe', icon: Users, desc: 'Gestão de colaboradores' },
+    { screen: 'hr', label: 'RH', icon: Briefcase, desc: 'Escalas, folgas e desempenho' },
     { screen: 'menu-editor', label: 'Cardápio', icon: BookOpen, desc: 'Editor de cardápio' },
+    { screen: 'integrations', label: 'Integrações', icon: Settings, desc: 'iFood, Rappi, UberEats' },
     { screen: 'config-hub', label: 'Central de Config', icon: Settings, desc: 'Hub de configuração completo' },
   ],
   manager: [
     { screen: 'manager-ops', label: 'Painel Operacional', icon: BarChart3, desc: 'Visão operacional em tempo real' },
     { screen: 'orders', label: 'Pedidos', icon: UtensilsCrossed, desc: 'Gestão de pedidos ativos' },
     { screen: 'approvals', label: 'Aprovações', icon: Shield, desc: 'Cancelamentos, cortesias e estornos' },
+    { screen: 'cash-register', label: 'Caixa', icon: DollarSign, desc: 'Abertura, fechamento e sangria' },
     { screen: 'table-map', label: 'Mapa de Mesas', icon: LayoutGrid, desc: 'Status do salão' },
     { screen: 'team', label: 'Equipe Hoje', icon: Users, desc: 'Quem está em serviço' },
     { screen: 'daily-report', label: 'Relatório do Dia', icon: ClipboardList, desc: 'Fechamento e métricas do dia' },
     { screen: 'stock', label: 'Estoque', icon: Package, desc: 'Alertas de estoque baixo' },
+    { screen: 'promotions-mgmt', label: 'Promoções', icon: Star, desc: 'Campanhas e cupons ativos' },
+    { screen: 'qr-codes', label: 'QR Codes', icon: Smartphone, desc: 'Gerar e imprimir QR codes' },
     { screen: 'config-hub', label: 'Central de Config', icon: Settings, desc: 'Hub de configuração completo' },
   ],
   maitre: [
     { screen: 'maitre', label: 'Reservas', icon: CalendarDays, desc: 'Reservas e check-in do dia' },
     { screen: 'floor-flow', label: 'Fluxo do Salão', icon: Users, desc: 'Fila virtual e tempos de espera' },
     { screen: 'table-map', label: 'Mapa de Mesas', icon: LayoutGrid, desc: 'Alocação e disponibilidade' },
+    { screen: 'reservations-mgmt', label: 'Gestão de Reservas', icon: CalendarDays, desc: 'Reservas detalhadas e histórico' },
   ],
   chef: [
     { screen: 'kds-kitchen', label: 'KDS Cozinha', icon: ChefHat, desc: 'Tickets e fila de preparo' },
+    { screen: 'chef-approvals', label: 'Aprovações', icon: Shield, desc: 'Aprovar reservas e menus especiais' },
+    { screen: 'kds-analytics', label: 'KDS Analytics', icon: TrendingUp, desc: 'Tempos de preparo e eficiência' },
+    { screen: 'cost-control', label: 'Custo & Margem', icon: DollarSign, desc: 'Fichas técnicas e margem por prato' },
     { screen: 'menu-editor', label: 'Cardápio', icon: BookOpen, desc: 'Itens, fichas técnicas e preparo' },
     { screen: 'stock', label: 'Estoque Cozinha', icon: Package, desc: 'Insumos e alertas' },
   ],
@@ -105,9 +129,12 @@ export const ROLE_JOURNEYS: Record<StaffRole, RoleJourneyStage[]> = {
   waiter: [
     { screen: 'waiter', label: 'Minhas Mesas', icon: LayoutGrid, desc: 'Mesas atribuídas e pedidos' },
     { screen: 'waiter-calls', label: 'Chamados', icon: Bell, desc: 'Chamados em tempo real dos clientes' },
-    { screen: 'waiter-payment', label: 'Cobrar / TAP', icon: Smartphone, desc: 'Processar pagamento na mesa' },
     { screen: 'waiter-actions', label: 'Ações na Mesa', icon: HandPlatter, desc: 'Executar ações pelo cliente' },
+    { screen: 'waiter-assist', label: 'Assistência', icon: Star, desc: 'QR, alérgenos, feedback, cortesias e pedidos especiais' },
+    { screen: 'waiter-payment', label: 'Cobrar / TAP', icon: Smartphone, desc: 'Processar pagamento na mesa' },
+    { screen: 'tap-to-pay', label: 'TAP to Pay', icon: Smartphone, desc: 'NFC — Aproxime o cartão do cliente' },
     { screen: 'orders', label: 'Pedidos Ativos', icon: UtensilsCrossed, desc: 'Pedidos das suas mesas' },
+    { screen: 'table-map', label: 'Mapa de Mesas', icon: LayoutGrid, desc: 'Visão geral do salão' },
     { screen: 'waiter-tips', label: 'Gorjetas', icon: DollarSign, desc: 'Suas gorjetas do dia' },
   ],
 };
@@ -138,6 +165,7 @@ export const SCREEN_INFO: Record<RestaurantScreen, { title: string; desc: string
   'waiter-table-detail': { title: 'Detalhe da Mesa', desc: 'Detalhes completos da mesa, pedidos e status dos clientes' },
   'waiter-payment': { title: 'Cobrar na Mesa', desc: 'TAP to Pay, PIX QR e cartão — transforme o celular em maquininha' },
   'waiter-actions': { title: 'Ações na Mesa', desc: 'Executar ações pelo cliente: adicionar itens, solicitar conta, chamar gerente' },
+  'waiter-assist': { title: 'Assistência ao Cliente', desc: 'QR code, alérgenos, feedback, cortesias, pedidos especiais e acessibilidade' },
   'floor-flow': { title: 'Fluxo do Salão', desc: 'Fila virtual, tempos de espera e rotação' },
   'daily-report': { title: 'Relatório do Dia', desc: 'Fechamento, métricas e comparativos' },
   'config-hub': { title: 'Central de Configuração', desc: 'Hub completo para configurar todos os aspectos do seu estabelecimento' },
@@ -150,6 +178,39 @@ export const SCREEN_INFO: Record<RestaurantScreen, { title: string; desc: string
   'config-kitchen': { title: 'Cozinha & Bar', desc: 'Estações de preparo, KDS e receitas' },
   'config-payments': { title: 'Pagamentos', desc: 'Taxa de serviço, gorjeta, split e métodos' },
   'config-features': { title: 'Marketplace de Features', desc: 'Ative módulos avançados: fidelidade, IA, eventos' },
+  // Financial Brain
+  'financial-dashboard': { title: 'Painel Financeiro', desc: 'Receita, custos, margens, DRE simplificado e fluxo de caixa' },
+  'cash-register': { title: 'Controle de Caixa', desc: 'Abertura, fechamento, sangria, reforço e conferência' },
+  fiscal: { title: 'Fiscal & NFC-e', desc: 'Emissão de notas fiscais, configuração CNPJ e certificado' },
+  'cost-control': { title: 'Custo & Margem', desc: 'Fichas técnicas, CMV por prato e dashboard de margem' },
+  forecast: { title: 'Previsão de Receita', desc: 'Forecast baseado em histórico, tendências e sazonalidade' },
+  // Chef & KDS Advanced
+  'chef-approvals': { title: 'Aprovações do Chef', desc: 'Aprovar reservas do Chef\'s Table e menus especiais' },
+  'chef-table': { title: 'Chef\'s Table', desc: 'Gestão de experiências exclusivas e menus degustação' },
+  'kds-analytics': { title: 'KDS Analytics', desc: 'Tempos de preparo, eficiência por estação e SLA' },
+  'kds-brain-config': { title: 'KDS Brain Config', desc: 'Auto-fire, convergência e roteamento inteligente' },
+  // Operations Extended
+  crm: { title: 'CRM de Clientes', desc: 'Perfil, histórico de visitas, preferências e segmentação' },
+  hr: { title: 'Gestão de RH', desc: 'Escalas, folgas, banco de horas e desempenho' },
+  integrations: { title: 'Integrações', desc: 'iFood, Rappi, UberEats — status, capacidade e sincronização' },
+  'loyalty-mgmt': { title: 'Gestão de Fidelidade', desc: 'Programas de pontos, tiers e stamp cards' },
+  'promotions-mgmt': { title: 'Promoções & Campanhas', desc: 'Cupons, happy hour, campanhas ativas' },
+  'qr-codes': { title: 'QR Codes', desc: 'Gerar QR codes individuais e em lote para mesas' },
+  'tap-to-pay': { title: 'TAP to Pay', desc: 'Transforme o celular em maquininha NFC' },
+  reports: { title: 'Relatórios', desc: 'Exportar relatórios em PDF e Excel' },
+  'reviews-mgmt': { title: 'Avaliações', desc: 'Avaliações dos clientes e moderação' },
+  'reservations-mgmt': { title: 'Gestão de Reservas', desc: 'Reservas detalhadas, grupos e chef approval' },
+  // Club Management
+  'club-door': { title: 'Controle de Porta', desc: 'Check-in, lista VIP e controle de capacidade' },
+  'club-queue-mgmt': { title: 'Gestão de Fila', desc: 'Fila virtual, chamadas e prioridades' },
+  'club-promoter': { title: 'Promoters', desc: 'Dashboard de promoters, listas e comissões' },
+  'club-vip-mgmt': { title: 'VIP & Camarotes', desc: 'Reservas de camarote, pacotes e consumação mínima' },
+  // Service-type specific
+  'drive-thru-mgmt': { title: 'Drive-Thru', desc: 'Gestão de faixas, GPS e pedidos no veículo' },
+  'food-truck-mgmt': { title: 'Food Truck', desc: 'Localização GPS, agenda semanal e fila virtual' },
+  // Extra configs
+  'config-language': { title: 'Idioma', desc: 'Idioma padrão do sistema e do cardápio digital' },
+  'config-notifications': { title: 'Notificações', desc: 'Alertas push, sons e configurações' },
 };
 
 // ============ MOCK TEAM DATA ============
