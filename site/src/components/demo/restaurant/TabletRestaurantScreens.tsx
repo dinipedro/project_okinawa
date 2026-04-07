@@ -1132,6 +1132,10 @@ export const TabletRestaurantScreen: React.FC<{
       {screen === 'club-vip-mgmt' && <ClubVipMgmtScreen />}
       {screen === 'drive-thru-mgmt' && <DriveThruMgmtScreen />}
       {screen === 'food-truck-mgmt' && <FoodTruckMgmtScreen />}
+      {screen === 'scanner' && <QRScannerStaffScreen />}
+      {screen === 'station-settings' && <StationSettingsScreen />}
+      {screen === 'maitre-dashboard' && <MaitreDashboardScreen />}
+      {screen === 'restaurant-settings' && <RestaurantSettingsExtScreen />}
 
       <div className="rounded-2xl border border-border bg-card p-3 flex items-center justify-between">
         <div>
