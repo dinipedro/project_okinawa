@@ -4,11 +4,12 @@ import {
   BadRequestException,
   NotFoundException,
   ConflictException,
-  NotImplementedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { Profile } from '@/modules/users/entities/profile.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -20,10 +21,12 @@ import {
   AuditLogService,
   CredentialService,
 } from '@/modules/identity';
+import { AuditAction } from '@/modules/identity/entities/audit-log.entity';
 import { PasswordResetService } from './password-reset.service';
 import { TokenService } from './token.service';
 import { AuthRegistrationService } from './auth-registration.service';
 import { AuthLoginService } from './auth-login.service';
+import { BiometricService } from './services/biometric.service';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +40,8 @@ export class AuthService {
     private tokenService: TokenService,
     private registrationService: AuthRegistrationService,
     private loginService: AuthLoginService,
+    private biometricService: BiometricService,
+    private configService: ConfigService,
   ) {}
 
   // ========== DELEGATION: REGISTRATION ==========
@@ -155,7 +160,9 @@ export class AuthService {
       }
 
       await this.auditLogService.logPasswordChange(userId, ipAddress, userAgent);
-      await this.emailService.sendPasswordChangedEmail(user.email, user.full_name || undefined);
+      if (user.email) {
+        await this.emailService.sendPasswordChangedEmail(user.email, user.full_name || undefined);
+      }
     }
 
     // Update email if provided
@@ -225,7 +232,10 @@ export class AuthService {
    * Find user by phone number (phone auth flow)
    */
   async findUserByPhone(phone: string): Promise<Profile | null> {
-    throw new NotImplementedException('Phone auth coming soon');
+    return this.profileRepository.findOne({
+      where: { phone, phone_verified: true },
+      relations: ['roles', 'roles.restaurant'],
+    });
   }
 
   /**
@@ -236,7 +246,19 @@ export class AuthService {
     ipAddress?: string,
     userAgent?: string,
   ): Promise<{ access_token: string; refresh_token: string; expires_in: number; biometric_enrollment_token?: string }> {
-    throw new NotImplementedException('Phone auth coming soon');
+    // Update last login
+    user.last_login_at = new Date();
+    await this.profileRepository.save(user);
+
+    await this.auditLogService.logLogin(user.id, ipAddress, userAgent);
+
+    const tokens = await this.tokenService.generateTokens(user);
+    const biometric_enrollment_token = this.biometricService.generateEnrollmentToken(user.id);
+
+    return {
+      ...tokens,
+      biometric_enrollment_token,
+    };
   }
 
   /**
@@ -247,20 +269,86 @@ export class AuthService {
     ipAddress?: string,
     userAgent?: string,
   ): Promise<{ access_token: string; refresh_token: string; user: Profile; biometric_enrollment_token?: string }> {
-    throw new NotImplementedException('Phone auth coming soon');
+    // Check if email is already in use
+    if (data.email) {
+      const existingEmail = await this.profileRepository.findOne({
+        where: { email: data.email },
+      });
+      if (existingEmail) {
+        throw new ConflictException('Email already in use');
+      }
+    }
+
+    // Create user profile with phone (no password)
+    const user = this.profileRepository.create({
+      email: data.email || null,
+      full_name: data.fullName,
+      phone: data.phone,
+      phone_verified: true,
+      birth_date: data.birthDate ? new Date(data.birthDate) : undefined,
+      provider: 'phone',
+      last_login_at: new Date(),
+      preferences: {},
+    });
+
+    await this.profileRepository.save(user);
+
+    // Log registration
+    await this.auditLogService.log({
+      userId: user.id,
+      action: AuditAction.REGISTER,
+      entityType: 'user',
+      entityId: user.id,
+      ipAddress,
+      userAgent,
+      success: true,
+      metadata: { via: 'phone' },
+    });
+
+    const tokens = await this.tokenService.generateTokens(user);
+    const biometric_enrollment_token = this.biometricService.generateEnrollmentToken(user.id);
+
+    return {
+      ...tokens,
+      user,
+      biometric_enrollment_token,
+    };
   }
 
   /**
    * Generate phone verification token (social auth flow)
+   * Used when an existing social user needs to verify their phone.
    */
   async generatePhoneVerificationToken(userId: string): Promise<string> {
-    throw new NotImplementedException('Phone verification coming soon');
+    const secret = this.configService.get<string>('JWT_SECRET');
+    if (!secret) {
+      throw new Error('JWT_SECRET is required');
+    }
+
+    const expiry = Date.now() + 15 * 60 * 1000; // 15 minutes
+    const signature = crypto
+      .createHmac('sha256', secret)
+      .update(`${userId}|${expiry}|phone_verify`)
+      .digest('hex')
+      .slice(0, 16);
+
+    return Buffer.from(`${userId}|${expiry}|${signature}`).toString('base64');
   }
 
   /**
    * Generate tokens for a user (social auth flow)
    */
   async generateTokens(user: Profile): Promise<{ access_token: string; refresh_token: string; expires_in: number; biometric_enrollment_token?: string }> {
-    throw new NotImplementedException('Social auth token generation coming soon');
+    // Update last login
+    user.last_login_at = new Date();
+    await this.profileRepository.save(user);
+
+    const tokens = await this.tokenService.generateTokens(user);
+    const biometric_enrollment_token = this.biometricService.generateEnrollmentToken(user.id);
+
+    return {
+      ...tokens,
+      biometric_enrollment_token,
+    };
   }
 }

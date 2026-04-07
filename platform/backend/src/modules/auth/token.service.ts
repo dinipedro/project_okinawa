@@ -59,6 +59,7 @@ export class TokenService {
     const basePayload = {
       sub: user.id,
       email: user.email,
+      phone: user.phone,
       full_name: user.full_name,
       roles: userWithRoles?.roles?.map((r) => r.role) || [],
       restaurants: restaurants,
@@ -68,14 +69,14 @@ export class TokenService {
 
     const accessToken = this.jwtService.sign({ ...basePayload, jti: accessJti });
     const refreshToken = this.jwtService.sign({ ...basePayload, jti: refreshJti }, {
-      expiresIn: '7d',
+      expiresIn: '30d',
     });
 
     return {
       access_token: accessToken,
       refresh_token: refreshToken,
       expires_in: 900, // 15 minutes in seconds (access token lifetime)
-      refresh_expires_in: 604800, // 7 days in seconds (refresh token lifetime)
+      refresh_expires_in: 2592000, // 30 days in seconds (refresh token lifetime)
     };
   }
 

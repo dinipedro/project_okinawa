@@ -14,8 +14,8 @@ export class Profile {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
-  email: string;
+  @Column({ unique: true, nullable: true })
+  email: string | null;
 
   @Column({ nullable: true })
   full_name: string | null;
@@ -28,6 +28,24 @@ export class Profile {
 
   @Column({ type: 'boolean', default: false })
   phone_verified: boolean;
+
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  provider: 'google' | 'apple' | 'phone' | null;
+
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  google_id: string | null;
+
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  apple_id: string | null;
+
+  @Column({ type: 'boolean', default: false })
+  biometric_enabled: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
+  fcm_token: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  last_login_at: Date | null;
 
   @Column({ nullable: true })
   default_address: string | null;

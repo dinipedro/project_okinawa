@@ -40,7 +40,11 @@
       "Bash(grep -rL accessibilityLabel apps/*/src/screens/ --include=*.tsx)",
       "Bash(grep -rl hitSlop apps/*/src/screens/ --include=*.tsx)",
       "Bash(grep -rl accessibilityHint apps/*/src/screens/ --include=*.tsx)",
-      "Read(//Users/pedrodini/project_okinawa-2/**)"
+      "Read(//Users/pedrodini/project_okinawa-2/**)",
+      "Bash(grep -r \"POST\\\\|GET\\\\|PUT\\\\|PATCH\" /Users/pedrodini/project_okinawa-3/platform/backend/src/modules/auth/controllers/*.ts)",
+      "Bash(grep -E \"\\\\.ts$\")",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(ls node_modules/.bin/tsc*)"
     ]
   }
 }
