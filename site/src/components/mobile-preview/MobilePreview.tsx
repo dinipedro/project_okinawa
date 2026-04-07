@@ -79,6 +79,11 @@ import { RoleDashboardScreen } from './restaurant/RoleDashboardScreen';
 import { TipsManagementScreen } from './restaurant/TipsManagementScreen';
 import { WaiterScreen } from './restaurant/WaiterScreen';
 import { StaffManagementScreen } from './restaurant/StaffManagementScreen';
+import { PromotionsScreen } from './restaurant/PromotionsScreen';
+import { ReportsScreen } from './restaurant/ReportsScreen';
+import { ReviewsScreen } from './restaurant/ReviewsScreen';
+import { LoyaltyManagementScreen } from './restaurant/LoyaltyManagementScreen';
+import { OrderPaymentTrackingScreen } from './restaurant/OrderPaymentTrackingScreen';
 
 // Restaurant Operations screens
 import { ChefViewScreen } from './restaurant/ChefViewScreen';
