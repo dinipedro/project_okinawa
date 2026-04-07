@@ -167,6 +167,13 @@ const screenComponents: Record<string, React.ComponentType> = {
   payment: PaymentScreen,
   'payment-success': PaymentSuccessScreen,
   
+  // Client Extra
+  addresses: AddressesScreen,
+  coupons: CouponsScreen,
+  'loyalty-detail': LoyaltyDetailScreen,
+  rating: RatingScreen,
+  support: SupportScreen,
+  
   // Client Buffet
   'buffet-checkin': BuffetCheckinScreen,
   
