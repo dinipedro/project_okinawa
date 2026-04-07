@@ -233,6 +233,11 @@ const screenComponents: Record<string, React.ComponentType> = {
   'role-dashboard': RoleDashboardScreen,
   'staff-management': StaffManagementScreen,
   'tips-management': TipsManagementScreen,
+  'promotions': PromotionsScreen,
+  'reports': ReportsScreen,
+  'reviews': ReviewsScreen,
+  'loyalty-management': LoyaltyManagementScreen,
+  'order-payment-tracking': OrderPaymentTrackingScreen,
   
   // Restaurant Pub & Bar Management
   'tab-management': TabManagementScreen,
