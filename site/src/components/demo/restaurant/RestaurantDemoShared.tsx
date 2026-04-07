@@ -213,6 +213,11 @@ export const SCREEN_INFO: Record<RestaurantScreen, { title: string; desc: string
   // Extra configs
   'config-language': { title: 'Idioma', desc: 'Idioma padrão do sistema e do cardápio digital' },
   'config-notifications': { title: 'Notificações', desc: 'Alertas push, sons e configurações' },
+  // Missing screens added for parity
+  scanner: { title: 'Scanner QR', desc: 'Escaneie QR codes de mesa para associação rápida' },
+  'station-settings': { title: 'Estações de Preparo', desc: 'Configure estações do KDS com nomes, tipos e alertas' },
+  'maitre-dashboard': { title: 'Dashboard do Maitre', desc: 'Reservas, mesas e check-in em visão consolidada' },
+  'restaurant-settings': { title: 'Configurações', desc: 'Notificações, idioma, conta e preferências do app' },
 };
 
 // ============ MOCK TEAM DATA ============
