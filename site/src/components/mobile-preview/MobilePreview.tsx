@@ -34,7 +34,7 @@ import { TipScreen } from './client/TipScreen';
 import { OrderStatusScreen } from './client/OrderStatusScreen';
 import { DigitalReceiptScreen } from './client/DigitalReceiptScreen';
 import { PairingAssistantScreen } from './client/PairingAssistantScreen';
-// NEW: 15 missing client screens
+// NEW: missing client screens
 import { RegisterScreen } from './client/RegisterScreen';
 import { MenuScreen } from './client/MenuScreen';
 import { PaymentScreen } from './client/PaymentScreen';
@@ -44,6 +44,11 @@ import { BuffetCheckinScreen } from './client/BuffetCheckinScreen';
 import { LoyaltyHomeScreen } from './client/LoyaltyHomeScreen';
 import { StampCardsScreen } from './client/StampCardsScreen';
 import { ManageConsentsScreen } from './client/ManageConsentsScreen';
+import { AddressesScreen } from './client/AddressesScreen';
+import { CouponsScreen } from './client/CouponsScreen';
+import { LoyaltyDetailScreen } from './client/LoyaltyDetailScreen';
+import { RatingScreen } from './client/RatingScreen';
+import { SupportScreen } from './client/SupportScreen';
 
 // Pub & Bar screens
 import { TabScreen, RepeatRoundSheet, TabSplitSheet, TabPaymentScreen } from './client/pub-bar';
