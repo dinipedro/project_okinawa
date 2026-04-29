@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Okinawa Restaurante",
+    "name": "Noowe Restaurante",
     "slug": "okinawa-restaurant",
     "version": "1.0.0",
     "orientation": "default",
@@ -82,19 +82,30 @@
     "plugins": [
       "expo-router",
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Permite escanear QR codes nas estações de trabalho"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permite identificar a filial do restaurante e modo food truck"
+        }
+      ],
+      [
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#A855F7",
-          "sounds": ["./assets/sounds/order-notification.wav"]
+          "color": "#A855F7"
         }
       ]
     ],
     "extra": {
       "eas": {
-        "projectId": "your-project-id"
+        "projectId": "744e4a02-0a92-4dfb-bf5a-ea0e68169afe"
       }
     },
-    "owner": "okinawa"
+    "owner": "dini-technologies"
   }
 }
